@@ -17,4 +17,13 @@ if __name__ == "__main__":
     print(f"🔗  API Endpoint : http://{host}:{port}")
     print(f"📚  Swagger Docs : http://{host}:{port}/docs")
     print("=" * 70)
-    uvicorn.run("app.main:app", host=host, port=port, reload=True, app_dir="backend")
+    uvicorn.run(
+        "app.main:app",
+        host=host,
+        port=port,
+        reload=True,
+        reload_dirs=["backend"],
+        reload_includes=["*.py"],
+        reload_excludes=[".venv/*", "frontend/*", "*.json", "*.log"],
+        app_dir="backend"
+    )

@@ -132,6 +132,19 @@ export default function HomePage() {
           } catch (_) {}
         }
       });
+      // Prefetch FII/DII data so opening FII/DII page is instantaneous with 0ms delay
+      try {
+        fetch(`${apiBase}/api/fii-dii`)
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => {
+            if (d) {
+              try {
+                sessionStorage.setItem('fii_dii_cache', JSON.stringify(d));
+              } catch (_) {}
+            }
+          })
+          .catch(() => {});
+      } catch (_) {}
     }, 1000);
 
     return () => clearTimeout(timer);

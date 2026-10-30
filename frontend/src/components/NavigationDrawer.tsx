@@ -186,6 +186,21 @@ export default function NavigationDrawer({
     }
   };
 
+  const prefetchFiiDii = () => {
+    try {
+      fetch(`${getApiBase()}/api/fii-dii`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            try {
+              sessionStorage.setItem('fii_dii_cache', JSON.stringify(d));
+            } catch (_) {}
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  };
+
   const handleSelectFiiDii = () => {
     onClose();
     router.push('/fii-dii');
@@ -383,6 +398,7 @@ export default function NavigationDrawer({
           {/* Option 2: FII / DII INSTITUTIONAL FLOWS & MARKET IMPACT */}
           <div
             onClick={handleSelectFiiDii}
+            onMouseEnter={prefetchFiiDii}
             style={{
               background: pathname === '/fii-dii'
                 ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)'

@@ -32,7 +32,7 @@ def main():
         cwd=root_dir
     )
 
-    time.sleep(2)
+    time.sleep(0.5)
 
     # 2. Start Next.js Frontend
     print("Starting Next.js Frontend...")

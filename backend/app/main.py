@@ -80,6 +80,9 @@ async def lifespan(app: FastAPI):
     tv_streamer.on_tick_callback = on_tradingview_tick
     tv_streamer.start()
 
+    # Pre-warm FII/DII cache asynchronously without delaying server startup
+    asyncio.create_task(asyncio.to_thread(nse_client.fetch_fii_dii_data))
+
     # Startup: spawn tick background loop
     tick_task = asyncio.create_task(tick_background_loop())
     yield

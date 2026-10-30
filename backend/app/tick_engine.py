@@ -267,33 +267,33 @@ class LiveTickEngine:
         self._init_gift_nifty()
 
     def _init_gift_nifty(self) -> None:
-        """Initialize GIFT NIFTY with genuine live futures market quote."""
-        logger.info("Initializing GIFT NIFTY with live exchange futures market data...")
-        quote = _fetch_gift_nifty_quote()
-        if not quote:
-            quote = {
-                "name": "GIFT NIFTY",
-                "symbol": "GIFTNIFTY",
-                "exchange": "NSE IX (GIFT City, Gandhinagar)",
-                "contract": "NIFTY Active Benchmark Futures",
-                "last_price": 23053.00,
-                "change": 275.00,
-                "percent_change": 1.21,
-                "open": 22740.0,
-                "high": 23059.0,
-                "low": 22711.3,
-                "previous_close": 22778.0,
-                "underlying_spot": 22936.75,
-                "basis_premium": 116.25,
-                "volume_contracts": 3480815,
-                "open_interest": 244698,
-                "currency": "USD Traded / INR Value",
-                "last_tick_direction": "UP",
-                "last_tick_time": time.strftime("%H:%M:%S")
-            }
-        self.gift_nifty = quote
+        """Initialize GIFT NIFTY with baseline quote instantly without blocking startup."""
+        self.gift_nifty = {
+            "name": "GIFT NIFTY",
+            "symbol": "GIFTNIFTY",
+            "tv_symbol": "NSEIX:NIFTY1!",
+            "source": "TradingView (NSEIX:NIFTY1!)",
+            "exchange": "NSE IX (GIFT City, Gandhinagar)",
+            "contract": "GIFT NIFTY 50 INDEX FUTURES (NIFTY1!)",
+            "last_price": 23053.00,
+            "change": 275.00,
+            "percent_change": 1.21,
+            "open": 22740.0,
+            "high": 23059.0,
+            "low": 22711.3,
+            "previous_close": 22778.0,
+            "underlying_spot": 22936.75,
+            "basis_premium": 116.25,
+            "volume_contracts": 3480815,
+            "open_interest": 244698,
+            "bid": 23052.5,
+            "ask": 23053.5,
+            "currency": "USD Traded / INR Value",
+            "last_tick_direction": "UP",
+            "last_tick_time": time.strftime("%H:%M:%S")
+        }
         self._last_gift_sync_time = time.time()
-        logger.info("GIFT NIFTY initialized: %s LTP=%.2f", self.gift_nifty.get("contract"), self.gift_nifty.get("last_price", 0))
+        logger.info("GIFT NIFTY initialized instantly with base market data.")
 
     def fetch_all_live_quotes(self) -> Dict[str, Dict[str, Any]]:
         """Fetch real-time live quotes for all symbols concurrently."""
@@ -309,35 +309,28 @@ class LiveTickEngine:
         return live_quotes
 
     def _init_stocks(self) -> None:
-        """Initialize stocks with genuine live market prices directly from exchange."""
-        logger.info("Initializing stock engine with live exchange market data...")
-        live_data = self.fetch_all_live_quotes()
-        logger.info("Fetched live prices for %d/%d stocks.", len(live_data), len(BASE_EQUITY_PRICES))
-
+        """Initialize stocks instantly with accurate baseline prices without blocking startup."""
         for symbol, base_price in BASE_EQUITY_PRICES.items():
-            if symbol in live_data:
-                self.stocks[symbol] = live_data[symbol]
-            else:
-                # Resilient fallback using accurate baseline
-                prev_close = base_price
-                ltp = base_price
-                self.stocks[symbol] = {
-                    "symbol": symbol,
-                    "ltp": ltp,
-                    "change": 0.0,
-                    "percent_change": 0.0,
-                    "open": prev_close,
-                    "high": round(ltp * 1.01, 2),
-                    "low": round(ltp * 0.99, 2),
-                    "previous_close": prev_close,
-                    "volume": random.randint(350000, 1500000),
-                    "bid": round(ltp - 0.05, 2),
-                    "ask": round(ltp + 0.05, 2),
-                    "last_tick_direction": "FLAT",
-                    "last_tick_time": time.strftime("%H:%M:%S")
-                }
+            prev_close = base_price
+            ltp = base_price
+            self.stocks[symbol] = {
+                "symbol": symbol,
+                "ltp": ltp,
+                "change": 0.0,
+                "percent_change": 0.0,
+                "open": prev_close,
+                "high": round(ltp * 1.01, 2),
+                "low": round(ltp * 0.99, 2),
+                "previous_close": prev_close,
+                "volume": random.randint(350000, 1500000),
+                "bid": round(ltp - 0.05, 2),
+                "ask": round(ltp + 0.05, 2),
+                "last_tick_direction": "FLAT",
+                "last_tick_time": time.strftime("%H:%M:%S")
+            }
 
         self._last_live_sync_time = time.time()
+        logger.info("Initialized %d stocks instantly.", len(self.stocks))
 
     async def refresh_live_quotes(self) -> List[Dict[str, Any]]:
         """Synchronize in-memory stocks with the latest live exchange market prices.
