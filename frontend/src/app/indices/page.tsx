@@ -89,16 +89,19 @@ export interface IndiaVixData {
   interpretation: string;
 }
 
+// In-memory instant client cache for 0ms transitions
+let globalIndicesCache: any = null;
+
 export default function AllIndicesPage() {
-  const [indices, setIndices] = useState<IndexData[]>([]);
-  const [giftNifty, setGiftNifty] = useState<GiftNiftyData | null>(null);
-  const [indiaVix, setIndiaVix] = useState<IndiaVixData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [indices, setIndices] = useState<IndexData[]>(() => globalIndicesCache?.indices || []);
+  const [giftNifty, setGiftNifty] = useState<GiftNiftyData | null>(() => globalIndicesCache?.gift_nifty || null);
+  const [indiaVix, setIndiaVix] = useState<IndiaVixData | null>(() => globalIndicesCache?.india_vix || null);
+  const [loading, setLoading] = useState<boolean>(!globalIndicesCache);
   const [search, setSearch] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<string>('change_desc');
-  const [marketBreadth, setMarketBreadth] = useState<{ advances: number; declines: number; unchanged: number; ratio: number } | null>(null);
-  const [timestamp, setTimestamp] = useState<string>('');
+  const [marketBreadth, setMarketBreadth] = useState<{ advances: number; declines: number; unchanged: number; ratio: number } | null>(() => globalIndicesCache?.market_breadth || null);
+  const [timestamp, setTimestamp] = useState<string>(() => globalIndicesCache?.timestamp || '');
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   // Ensure body scroll is never blocked on this separate page
@@ -109,13 +112,17 @@ export default function AllIndicesPage() {
 
   const fetchIndicesData = async (force: boolean = false, retries = 2) => {
     if (force) setRefreshing(true);
-    else setLoading(true);
+    else if (!globalIndicesCache) setLoading(true);
 
     try {
       const apiBase = getApiBase();
       const res = await fetch(`${apiBase}/api/indices?force_refresh=${force}`);
       if (res.ok) {
         const data = await res.json();
+        globalIndicesCache = data;
+        try {
+          sessionStorage.setItem('all_indices_cache', JSON.stringify(data));
+        } catch (_) {}
         setIndices(data.indices || []);
         setGiftNifty(data.gift_nifty || null);
         setIndiaVix(data.india_vix || null);
@@ -137,6 +144,21 @@ export default function AllIndicesPage() {
   };
 
   useEffect(() => {
+    if (!globalIndicesCache) {
+      try {
+        const stored = sessionStorage.getItem('all_indices_cache');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          globalIndicesCache = parsed;
+          setIndices(parsed.indices || []);
+          setGiftNifty(parsed.gift_nifty || null);
+          setIndiaVix(parsed.india_vix || null);
+          setMarketBreadth(parsed.market_breadth || null);
+          setTimestamp(parsed.timestamp || '');
+          setLoading(false);
+        }
+      } catch (_) {}
+    }
     fetchIndicesData();
     const interval = setInterval(() => fetchIndicesData(false), 15000);
     return () => clearInterval(interval);

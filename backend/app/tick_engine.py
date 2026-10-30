@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta, time as dtime
 import json
 import logging
+import os
 import random
 import time
 from typing import Any, Dict, List, Optional, Set
@@ -308,8 +309,34 @@ class LiveTickEngine:
 
         return live_quotes
 
+    def _get_cache_file(self) -> str:
+        data_dir = os.path.join(os.path.dirname(__file__), "data")
+        os.makedirs(data_dir, exist_ok=True)
+        return os.path.join(data_dir, "live_quotes_cache.json")
+
+    def _save_cache(self) -> None:
+        try:
+            cache_file = self._get_cache_file()
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(self.stocks, f, indent=2)
+        except Exception as e:
+            logger.debug("Failed saving live quotes cache: %s", e)
+
     def _init_stocks(self) -> None:
-        """Initialize stocks instantly with accurate baseline prices without blocking startup."""
+        """Initialize stocks instantly with accurate baseline or cached quotes without blocking startup."""
+        cache_file = self._get_cache_file()
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    cached = json.load(f)
+                    if isinstance(cached, dict) and len(cached) >= len(BASE_EQUITY_PRICES) - 5:
+                        self.stocks = cached
+                        self._last_live_sync_time = time.time()
+                        logger.info("Loaded %d stocks from persisted live quotes cache.", len(self.stocks))
+                        return
+            except Exception as e:
+                logger.debug("Failed reading cache: %s", e)
+
         for symbol, base_price in BASE_EQUITY_PRICES.items():
             prev_close = base_price
             ltp = base_price
@@ -331,6 +358,38 @@ class LiveTickEngine:
 
         self._last_live_sync_time = time.time()
         logger.info("Initialized %d stocks instantly.", len(self.stocks))
+
+    async def sync_initial_live_quotes(self) -> List[Dict[str, Any]]:
+        """Fetch and synchronize real live quotes from the exchange concurrently on startup and periodic sync."""
+        try:
+            live_quotes = await asyncio.to_thread(self.fetch_all_live_quotes)
+            if not live_quotes:
+                return []
+
+            for symbol, quote in live_quotes.items():
+                old = self.stocks.get(symbol)
+                direction = "FLAT"
+                if old:
+                    if quote["ltp"] > old["ltp"]:
+                        direction = "UP"
+                    elif quote["ltp"] < old["ltp"]:
+                        direction = "DOWN"
+                    else:
+                        direction = old.get("last_tick_direction", "FLAT")
+
+                quote["last_tick_direction"] = direction
+                self.stocks[symbol] = quote
+
+            self._save_cache()
+            self._last_live_sync_time = time.time()
+            logger.info("Synchronized %d authentic exchange quotes.", len(live_quotes))
+
+            # Broadcast updated quotes to all connected WebSocket clients
+            await self.broadcast_tick_update(list(self.stocks.values()))
+            return list(self.stocks.values())
+        except Exception as e:
+            logger.warning("Error in sync_initial_live_quotes: %s", e)
+            return []
 
     async def refresh_live_quotes(self) -> List[Dict[str, Any]]:
         """Synchronize in-memory stocks with the latest live exchange market prices.
@@ -359,6 +418,7 @@ class LiveTickEngine:
                 self.stocks[symbol] = quote
                 updated_stocks.append(quote)
 
+            self._save_cache()
             self._last_live_sync_time = time.time()
             return updated_stocks
         except Exception as e:

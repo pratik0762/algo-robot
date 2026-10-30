@@ -172,6 +172,9 @@ export default function HomePage() {
         const res = await fetch(`${apiBase}/api/indices`);
         if (res.ok) {
           const data = await res.json();
+          try {
+            sessionStorage.setItem('all_indices_cache', JSON.stringify(data));
+          } catch (_) {}
           setGiftNiftyData(data.gift_nifty);
           setIndiaVixData(data.india_vix);
         } else {

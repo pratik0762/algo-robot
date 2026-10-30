@@ -99,7 +99,8 @@ class NseClient:
     def fetch_all_indices(self, force_refresh: bool = False) -> Dict[str, Any]:
         """Fetch all 139+ official indices from NSE India with caching and BSE SENSEX integration."""
         now = time.time()
-        if not force_refresh and self._indices_cache and (now - self._indices_cache_time < 20):
+        # High-speed in-memory cache: return instantly in < 0.1ms if cache exists and fresh
+        if not force_refresh and self._indices_cache and (now - self._indices_cache_time < 45.0):
             return self._indices_cache
 
         url = f"{self.BASE_URL}/api/allIndices"
@@ -191,8 +192,12 @@ class NseClient:
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S IST")
         }
 
-        self._indices_cache = result
-        self._indices_cache_time = now
+        if formatted_indices:
+            self._indices_cache = result
+            self._indices_cache_time = now
+            return result
+        elif self._indices_cache:
+            return self._indices_cache
         return result
 
     def fetch_gift_nifty_quote(self, spot_nifty: float = 22850.0) -> Dict[str, Any]:

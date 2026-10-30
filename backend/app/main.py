@@ -37,6 +37,7 @@ async def tick_background_loop():
     last_gift_sync = time.time()
     last_gift_tick_time = time.time()
     last_news_sync = time.time()
+    last_indices_sync = time.time()
 
     while True:
         try:
@@ -48,6 +49,11 @@ async def tick_background_loop():
                 await news_engine.refresh_live_news()
                 last_news_sync = now
 
+            # Refresh all 140+ indices in background every 45s
+            if now - last_indices_sync >= 45.0:
+                await asyncio.to_thread(nse_client.fetch_all_indices)
+                last_indices_sync = now
+
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
             if is_indian_market_open():
                 if now - last_stock_sync >= 8.0:
@@ -57,6 +63,11 @@ async def tick_background_loop():
                 ticks = tick_engine.update_ticks()
                 if ticks:
                     await tick_engine.broadcast_tick_update(ticks)
+            else:
+                # Outside active market hours: sync official closing/settlement prices every 180s
+                if now - last_stock_sync >= 180.0:
+                    await tick_engine.sync_initial_live_quotes()
+                    last_stock_sync = now
 
             # 2. GIFT Nifty Multi-Session Trading: Session 1 (06:30 - 15:40) & Session 2 (16:35 - 02:45 IST)
             if gift_session["is_open"]:
@@ -87,9 +98,11 @@ async def lifespan(app: FastAPI):
     tv_streamer.on_tick_callback = on_tradingview_tick
     tv_streamer.start()
 
-    # Pre-warm FII/DII and News cache asynchronously without delaying server startup
+    # Pre-warm FII/DII, Indices, News, and Live Quotes cache asynchronously without delaying server startup
     asyncio.create_task(asyncio.to_thread(nse_client.fetch_fii_dii_data))
+    asyncio.create_task(asyncio.to_thread(nse_client.fetch_all_indices))
     asyncio.create_task(news_engine.refresh_live_news())
+    asyncio.create_task(tick_engine.sync_initial_live_quotes())
 
     # Startup: spawn tick background loop
     tick_task = asyncio.create_task(tick_background_loop())
