@@ -161,4 +161,35 @@ class IndiaVixDetail(BaseModel):
     per_change_365d: float
     interpretation: str
 
+class NewsItem(BaseModel):
+    id: str
+    headline: str
+    summary: str
+    company_symbol: str = "BROAD_MARKET"
+    company_name: str
+    sector: str
+    published_time: str
+    published_at: str
+    source: str
+    url: str
+    impact_rating: str  # "HIGH IMPACT", "MEDIUM IMPACT", "LOW IMPACT"
+    impact_score: float  # 1.0 to 10.0
+    sentiment: str  # "BULLISH", "BEARISH", "VOLATILE", "NEUTRAL"
+    impact_analysis: str  # Actionable details explaining valuation/earnings/price effect
+    market_relevance: str  # "Company Specific", "Sectoral Shift", "Macro / Broad Market"
+    is_top_market_moving: bool = False
+    tags: List[str] = Field(default_factory=list)
+
+class NewsResponse(BaseModel):
+    status: str
+    market_news_sentiment: str
+    bullish_count: int
+    bearish_count: int
+    high_impact_count: int
+    top_market_moving: List[NewsItem]
+    all_news: List[NewsItem]
+    total_count: int
+    timestamp: str
+
+
 

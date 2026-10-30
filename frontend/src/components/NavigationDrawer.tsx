@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Globe2,
   ArrowLeftRight,
-  Activity
+  Activity,
+  Newspaper
 } from 'lucide-react';
 
 export interface NavHubItem {
@@ -204,6 +205,26 @@ export default function NavigationDrawer({
   const handleSelectFiiDii = () => {
     onClose();
     router.push('/fii-dii');
+  };
+
+  const prefetchNews = () => {
+    try {
+      fetch(`${getApiBase()}/api/news`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            try {
+              sessionStorage.setItem('news_cache', JSON.stringify(d));
+            } catch (_) {}
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectNews = () => {
+    onClose();
+    router.push('/news');
   };
 
   return (
@@ -484,6 +505,98 @@ export default function NavigationDrawer({
                 Live Feed
               </span>
               <ChevronRight size={14} color="#34d399" />
+            </div>
+          </div>
+
+          {/* Option 3: MARKET & COMPANY NEWS INTELLIGENCE */}
+          <div
+            onClick={handleSelectNews}
+            onMouseEnter={prefetchNews}
+            style={{
+              background: pathname === '/news'
+                ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(236, 72, 153, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%)',
+              border: pathname === '/news' ? '1px solid #f59e0b' : '1px solid rgba(245, 158, 11, 0.4)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '14px 14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 20px -2px rgba(245, 158, 11, 0.2)',
+              boxSizing: 'border-box',
+              width: '100%',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(245, 158, 11, 0.4)',
+                }}
+              >
+                <Newspaper size={18} />
+              </div>
+
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span
+                    style={{
+                      fontSize: '0.88rem',
+                      fontWeight: 800,
+                      color: '#ffffff',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    MARKET & COMPANY NEWS
+                  </span>
+                  <span
+                    style={{
+                      background: 'rgba(245, 158, 11, 0.2)',
+                      color: '#fbbf24',
+                      fontSize: '0.60rem',
+                      fontWeight: 800,
+                      padding: '2px 6px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(245, 158, 11, 0.3)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    HIGH IMPACT
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
+                  Real-time Stock Impact, Catalysts & Reference Links
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  color: '#fbbf24',
+                  padding: '3px 7px',
+                  borderRadius: '6px',
+                  background: 'rgba(245, 158, 11, 0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Live Feed
+              </span>
+              <ChevronRight size={14} color="#fbbf24" />
             </div>
           </div>
         </div>

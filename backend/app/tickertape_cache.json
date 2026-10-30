@@ -650,7 +650,7 @@
     "industry": "Private Banks",
     "isin": "INE040A01034",
     "about": "HDFC Bank Limited offers a range of banking services covering commercial and investment banking on the wholesale side and transactional/branch banking on the retail side.",
-    "market_cap_cr": 1057254.65,
+    "market_cap_cr": 1054169.13,
     "pe_ratio": 13.9,
     "pb_ratio": 1.7,
     "dividend_yield_pct": 2.26,
@@ -963,7 +963,7 @@
         "roe_pct": 13.3
       }
     ],
-    "updated_at": "2026-10-29 16:45:35"
+    "updated_at": "2026-10-30 14:46:20"
   },
   "BHARTIARTL": {
     "symbol": "BHARTIARTL",

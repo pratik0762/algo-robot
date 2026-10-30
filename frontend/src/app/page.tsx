@@ -145,6 +145,20 @@ export default function HomePage() {
           })
           .catch(() => {});
       } catch (_) {}
+
+      // Prefetch News data so opening News page is instantaneous with 0ms delay
+      try {
+        fetch(`${apiBase}/api/news`)
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => {
+            if (d) {
+              try {
+                sessionStorage.setItem('news_cache', JSON.stringify(d));
+              } catch (_) {}
+            }
+          })
+          .catch(() => {});
+      } catch (_) {}
     }, 1000);
 
     return () => clearTimeout(timer);

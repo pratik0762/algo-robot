@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnec
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from app.models import CompanySummary, CompanyDetail, IndexItem, GiftNiftyDetail, IndiaVixDetail
+from app.models import CompanySummary, CompanyDetail, IndexItem, GiftNiftyDetail, IndiaVixDetail, NewsItem, NewsResponse
 from app.companies_data import (
     NIFTY_50_REGISTRY,
     get_all_companies_summary,
@@ -21,6 +21,7 @@ from app.companies_data import (
 from app.nse_client import NseClient
 from app.tick_engine import tick_engine, is_indian_market_open, get_gift_nifty_session_info
 from app.tradingview_client import tv_streamer
+from app.news_engine import news_engine
 try:
     from app.tickertape_client import tickertape_client
 except ImportError:
@@ -35,11 +36,17 @@ async def tick_background_loop():
     last_stock_sync = time.time()
     last_gift_sync = time.time()
     last_gift_tick_time = time.time()
+    last_news_sync = time.time()
 
     while True:
         try:
             now = time.time()
             gift_session = get_gift_nifty_session_info()
+
+            # Refresh live news intelligence every 120s
+            if now - last_news_sync >= 120.0:
+                await news_engine.refresh_live_news()
+                last_news_sync = now
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
             if is_indian_market_open():
@@ -80,8 +87,9 @@ async def lifespan(app: FastAPI):
     tv_streamer.on_tick_callback = on_tradingview_tick
     tv_streamer.start()
 
-    # Pre-warm FII/DII cache asynchronously without delaying server startup
+    # Pre-warm FII/DII and News cache asynchronously without delaying server startup
     asyncio.create_task(asyncio.to_thread(nse_client.fetch_fii_dii_data))
+    asyncio.create_task(news_engine.refresh_live_news())
 
     # Startup: spawn tick background loop
     tick_task = asyncio.create_task(tick_background_loop())
@@ -417,6 +425,29 @@ def get_fii_dii_report():
     except Exception as e:
         logger.error("Failed to generate FII/DII report: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch FII/DII institutional trading data")
+
+# =========================================================================
+# REAL-TIME MARKET & COMPANY NEWS INTELLIGENCE ENDPOINTS
+# =========================================================================
+
+@app.get("/api/news")
+def get_market_and_company_news(
+    symbol: Optional[str] = Query(None, description="Filter by company symbol (e.g. RELIANCE, TCS, HDFCBANK)"),
+    sentiment: Optional[str] = Query(None, description="Filter by sentiment: bullish, bearish, volatile, neutral"),
+    impact: Optional[str] = Query(None, description="Filter by impact level: high, medium, low"),
+    limit: int = Query(50, description="Max news items to return")
+):
+    """Retrieve live real-time company news, market impact scoring, and source reference links."""
+    try:
+        return news_engine.get_news(
+            symbol=symbol,
+            sentiment=sentiment,
+            impact=impact,
+            limit=limit
+        )
+    except Exception as e:
+        logger.error("Error retrieving news: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to retrieve live news intelligence")
 
 # =========================================================================
 # COMPANIES & CONSTITUENTS ENDPOINTS
