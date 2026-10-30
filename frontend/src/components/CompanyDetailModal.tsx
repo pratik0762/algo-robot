@@ -712,16 +712,34 @@ export default function CompanyDetailModal({
                 </div>
               </div>
 
-              <a
-                href={company.institutional_holdings?.nse_filing_url || `https://www.nseindia.com/get-quotes/equity?symbol=${company.symbol}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary"
-                style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
-                <ExternalLink size={14} />
-                Official NSE Equity Filings
-              </a>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <a
+                  href={
+                    company.institutional_holdings?.nse_filing_url &&
+                    !company.institutional_holdings.nse_filing_url.includes('nsearchives') &&
+                    !company.institutional_holdings.nse_filing_url.includes('.xml')
+                      ? company.institutional_holdings.nse_filing_url
+                      : `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(company.symbol)}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <ExternalLink size={14} />
+                  Live Quote & Filings on NSE
+                </a>
+                <a
+                  href="https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary"
+                  style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <ShieldCheck size={14} />
+                  NSE Shareholding Portal
+                </a>
+              </div>
             </div>
 
             {/* 4 Core Institutional Cards */}
