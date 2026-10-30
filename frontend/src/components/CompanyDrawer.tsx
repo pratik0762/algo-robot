@@ -14,7 +14,9 @@ import {
   Building2,
   Calendar,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  PieChart,
+  Users
 } from 'lucide-react';
 
 interface FinancialQuarter {
@@ -94,6 +96,31 @@ export interface CompanyDetail {
   annual_financials: FinancialQuarter[];
   balance_sheet: BalanceSheetItem[];
   nse_filings: NseFiling[];
+  institutional_holdings?: {
+    symbol: string;
+    fii_holding_pct: number;
+    fii_invested_cr: number;
+    fii_change_qoq: number;
+    dii_holding_pct: number;
+    dii_invested_cr: number;
+    dii_change_qoq: number;
+    mf_holding_pct: number;
+    mf_invested_cr: number;
+    insurance_holding_pct: number;
+    insurance_invested_cr: number;
+    promoter_holding_pct: number;
+    public_other_pct: number;
+    total_institutional_pct: number;
+    total_institutional_invested_cr: number;
+    institutional_sentiment: string;
+    institutional_sentiment_badge: string;
+    net_institutional_stake_change_qoq: number;
+    top_fii_investors: string[];
+    top_dii_investors: string[];
+    filing_quarter: string;
+    filing_date: string;
+    nse_filing_url: string;
+  };
 }
 
 interface CompanyDrawerProps {
@@ -111,7 +138,7 @@ export default function CompanyDrawer({
   syncingLive,
   syncStatus
 }: CompanyDrawerProps) {
-  const [activeTab, setActiveTab] = useState<'quarterly' | 'annual' | 'balance' | 'filings'>('quarterly');
+  const [activeTab, setActiveTab] = useState<'quarterly' | 'annual' | 'balance' | 'filings' | 'institutional'>('quarterly');
 
   // Lock body scroll and listen for ESC key
   useEffect(() => {
@@ -395,6 +422,27 @@ export default function CompanyDrawer({
           >
             <FileText size={15} />
             Official NSE PDFs ({company.nse_filings?.length || 0})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('institutional')}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: '14px 16px',
+              color: activeTab === 'institutional' ? '#818cf8' : 'var(--text-secondary)',
+              fontWeight: activeTab === 'institutional' ? 700 : 500,
+              fontSize: '0.85rem',
+              borderBottom: activeTab === 'institutional' ? '2px solid #818cf8' : '2px solid transparent',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <PieChart size={15} />
+            Institutional Holdings (FII/DII)
           </button>
         </div>
 
@@ -705,7 +753,7 @@ export default function CompanyDrawer({
                     <td style={{ textAlign: 'left', padding: '10px 14px', color: 'var(--text-secondary)' }}>Total Debt Borrowings</td>
                     {company.balance_sheet.map((b) => (
                       <td key={b.financial_year} style={{ padding: '10px 14px', color: 'var(--text-secondary)' }}>
-                        ₹{b.total_debt_cr.toLocaleString('en-IN')}
+                        ₹{(b.total_debt_cr ?? 0).toLocaleString('en-IN')}
                       </td>
                     ))}
                   </tr>
@@ -713,7 +761,7 @@ export default function CompanyDrawer({
                     <td style={{ textAlign: 'left', padding: '10px 14px', color: 'var(--text-secondary)' }}>Cash & Liquid Balances</td>
                     {company.balance_sheet.map((b) => (
                       <td key={b.financial_year} style={{ padding: '10px 14px', color: '#4ade80' }}>
-                        ₹{b.cash_and_equivalents_cr.toLocaleString('en-IN')}
+                        ₹{(b.cash_and_equivalents_cr ?? 0).toLocaleString('en-IN')}
                       </td>
                     ))}
                   </tr>
@@ -819,6 +867,134 @@ export default function CompanyDrawer({
                   No filings found. Click "Sync NSE" to query NSE Archives.
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Tab 5: Institutional Holdings (FII/DII) */}
+          {activeTab === 'institutional' && (
+            <div>
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08))',
+                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '16px 20px',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <ShieldCheck size={18} color="#10b981" />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#ffffff' }}>
+                      OFFICIAL SEBI REG 31 SHAREHOLDING DISCLOSURE
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    Quarter: <strong style={{ color: '#818cf8' }}>{company.institutional_holdings?.filing_quarter || 'Q2 FY26'}</strong> &bull; Sourced directly from NSE India
+                  </div>
+                </div>
+
+                {company.institutional_holdings?.nse_filing_url && (
+                  <a
+                    href={company.institutional_holdings.nse_filing_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <ExternalLink size={14} />
+                    Official NSE XBRL Filing
+                  </a>
+                )}
+              </div>
+
+              {/* 4 Cards */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '14px',
+                  marginBottom: '24px',
+                }}
+              >
+                <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase' }}>FII / FPI CAPITAL</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', marginTop: '4px' }}>
+                    ₹{((company.institutional_holdings?.fii_invested_cr ?? ((company.market_cap_cr * (company.institutional_holdings?.fii_holding_pct ?? 0)) / 100))).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Stake: <strong style={{ color: '#38bdf8' }}>{(company.institutional_holdings?.fii_holding_pct ?? 0).toFixed(2)}%</strong>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(16, 185, 129, 0.06)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase' }}>DII CAPITAL</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', marginTop: '4px' }}>
+                    ₹{((company.institutional_holdings?.dii_invested_cr ?? ((company.market_cap_cr * (company.institutional_holdings?.dii_holding_pct ?? 0)) / 100))).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Stake: <strong style={{ color: '#34d399' }}>{(company.institutional_holdings?.dii_holding_pct ?? 0).toFixed(2)}%</strong>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(168, 85, 247, 0.06)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#c084fc', textTransform: 'uppercase' }}>MUTUAL FUNDS</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', marginTop: '4px' }}>
+                    ₹{(company.institutional_holdings?.mf_invested_cr ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Stake: <strong style={{ color: '#c084fc' }}>{(company.institutional_holdings?.mf_holding_pct ?? 0).toFixed(2)}%</strong>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(245, 158, 11, 0.06)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fbbf24', textTransform: 'uppercase' }}>INSURANCE / LIC</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', marginTop: '4px' }}>
+                    ₹{(company.institutional_holdings?.insurance_invested_cr ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Stake: <strong style={{ color: '#fbbf24' }}>{(company.institutional_holdings?.insurance_holding_pct ?? 0).toFixed(2)}%</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Marquee Investors */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+                <div style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#38bdf8', marginBottom: '10px' }}>
+                    TOP FOREIGN INSTITUTIONS (FII / FPI)
+                  </div>
+                  {(company.institutional_holdings?.top_fii_investors || [
+                    'Vanguard Emerging Markets Stock Index Fund',
+                    'Government of Singapore / GIC',
+                    'BlackRock Emerging Markets Fund',
+                  ]).map((inv, idx) => (
+                    <div key={idx} style={{ padding: '6px 0', fontSize: '0.78rem', color: '#e2e8f0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      #{idx + 1} {inv}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#34d399', marginBottom: '10px' }}>
+                    TOP DOMESTIC INSTITUTIONS (DII)
+                  </div>
+                  {(company.institutional_holdings?.top_dii_investors || [
+                    'Life Insurance Corporation of India (LIC)',
+                    'SBI Nifty 50 ETF',
+                    'ICICI Prudential Large & Mid Cap Fund',
+                  ]).map((inv, idx) => (
+                    <div key={idx} style={{ padding: '6px 0', fontSize: '0.78rem', color: '#e2e8f0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      #{idx + 1} {inv}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>

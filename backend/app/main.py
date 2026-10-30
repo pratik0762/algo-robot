@@ -22,6 +22,7 @@ from app.nse_client import NseClient
 from app.tick_engine import tick_engine, is_indian_market_open, get_gift_nifty_session_info
 from app.tradingview_client import tv_streamer
 from app.news_engine import news_engine
+from app.institutional_holdings_engine import institutional_engine
 try:
     from app.tickertape_client import tickertape_client
 except ImportError:
@@ -439,6 +440,25 @@ def get_fii_dii_report():
         logger.error("Failed to generate FII/DII report: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch FII/DII institutional trading data")
 
+@app.get("/api/institutional-holdings")
+def get_company_institutional_investments(
+    search: Optional[str] = Query(None, description="Search by symbol or company name"),
+    sector: Optional[str] = Query(None, description="Filter by sector"),
+    sort_by: Optional[str] = Query("fii_amount_desc", description="Sort by: fii_amount_desc, dii_amount_desc, total_institutional_desc, fii_pct_desc, dii_pct_desc, market_cap_desc"),
+    limit: int = Query(50, description="Max companies to return")
+):
+    """Retrieve company-wise institutional investment amounts (₹ Cr) and holdings (%) for FIIs and DIIs sourced from NSE."""
+    try:
+        return institutional_engine.get_all_institutional_investments(
+            search=search,
+            sector=sector,
+            sort_by=sort_by or "fii_amount_desc",
+            limit=limit
+        )
+    except Exception as e:
+        logger.error("Failed to fetch institutional investments: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to fetch institutional holdings")
+
 # =========================================================================
 # REAL-TIME MARKET & COMPANY NEWS INTELLIGENCE ENDPOINTS
 # =========================================================================
@@ -510,6 +530,9 @@ def get_company(symbol: str):
         detail["day_high"] = live_info["high"]
         detail["day_low"] = live_info["low"]
         detail["volume"] = live_info["volume"]
+
+    mcap = float(detail.get("market_cap_cr") or 50000.0)
+    detail["institutional_holdings"] = institutional_engine.get_company_institutional_holding(symbol.upper(), mcap)
         
     return detail
 

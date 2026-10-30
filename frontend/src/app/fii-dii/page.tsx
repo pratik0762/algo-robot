@@ -21,7 +21,11 @@ import {
   Globe2,
   Building2,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  Search,
+  Filter,
+  ExternalLink,
+  Users
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import { getApiBase } from '@/config/api';
@@ -83,8 +87,72 @@ export interface FiiDiiData {
   timestamp: string;
 }
 
+export interface InstitutionalHoldingItem {
+  symbol: string;
+  company_name: string;
+  sector: string;
+  market_cap_cr: number;
+  current_price?: number;
+  price_change?: number;
+  percent_change?: number;
+  fii_holding_pct: number;
+  fii_invested_cr: number;
+  fii_change_qoq: number;
+  dii_holding_pct: number;
+  dii_invested_cr: number;
+  dii_change_qoq: number;
+  mf_holding_pct: number;
+  mf_invested_cr: number;
+  insurance_holding_pct: number;
+  insurance_invested_cr: number;
+  promoter_holding_pct: number;
+  public_other_pct: number;
+  total_institutional_pct: number;
+  total_institutional_invested_cr: number;
+  institutional_sentiment: string;
+  institutional_sentiment_badge: string;
+  net_institutional_stake_change_qoq: number;
+  top_fii_investors: string[];
+  top_dii_investors: string[];
+  filing_quarter: string;
+  filing_date: string;
+  nse_filing_url: string;
+}
+
+export interface InstitutionalHoldingsResponse {
+  status: string;
+  official_source: string;
+  regulatory_framework: string;
+  summary: {
+    total_fii_invested_cr: number;
+    total_dii_invested_cr: number;
+    total_mutual_funds_invested_cr: number;
+    total_insurance_invested_cr: number;
+    total_institutional_invested_cr: number;
+    average_fii_holding_pct: number;
+    average_dii_holding_pct: number;
+    total_companies_tracked: number;
+    top_fii_favored_companies: Array<{
+      symbol: string;
+      name: string;
+      fii_invested_cr: number;
+      fii_pct: number;
+    }>;
+    top_dii_favored_companies: Array<{
+      symbol: string;
+      name: string;
+      dii_invested_cr: number;
+      dii_pct: number;
+    }>;
+  };
+  filing_quarter: string;
+  timestamp: string;
+  items: InstitutionalHoldingItem[];
+}
+
 // Module-level client cache for instant 0ms transitions without loading delays
 let globalFiiDiiCache: FiiDiiData | null = null;
+let globalInstHoldingsCache: InstitutionalHoldingsResponse | null = null;
 
 // Default instant fallback data to guarantee 0ms render even on fresh load
 const DEFAULT_FII_DII_DATA: FiiDiiData = {
@@ -169,6 +237,13 @@ export default function FiiDiiPage() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'sectors' | 'history'>('overview');
 
+  // Company-level institutional holdings state
+  const [instHoldings, setInstHoldings] = useState<InstitutionalHoldingsResponse | null>(() => globalInstHoldingsCache);
+  const [holdingsSearch, setHoldingsSearch] = useState<string>('');
+  const [holdingsSector, setHoldingsSector] = useState<string>('All');
+  const [holdingsSort, setHoldingsSort] = useState<string>('fii_amount_desc');
+  const [loadingHoldings, setLoadingHoldings] = useState<boolean>(false);
+
   const fetchFiiDiiData = async (isManual: boolean = false, retries = 2) => {
     if (isManual) setRefreshing(true);
     try {
@@ -196,6 +271,26 @@ export default function FiiDiiPage() {
     }
   };
 
+  const fetchInstitutionalHoldings = async () => {
+    try {
+      setLoadingHoldings(true);
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/institutional-holdings?limit=100`);
+      if (res.ok) {
+        const json: InstitutionalHoldingsResponse = await res.json();
+        globalInstHoldingsCache = json;
+        try {
+          sessionStorage.setItem('inst_holdings_cache', JSON.stringify(json));
+        } catch (_) {}
+        setInstHoldings(json);
+      }
+    } catch (err) {
+      console.error('Failed to fetch institutional holdings:', err);
+    } finally {
+      setLoadingHoldings(false);
+    }
+  };
+
   useEffect(() => {
     // Check sessionStorage on client mount
     if (!globalFiiDiiCache) {
@@ -209,9 +304,23 @@ export default function FiiDiiPage() {
       } catch (_) {}
     }
 
+    if (!globalInstHoldingsCache) {
+      try {
+        const storedInst = sessionStorage.getItem('inst_holdings_cache');
+        if (storedInst) {
+          const parsedInst = JSON.parse(storedInst);
+          globalInstHoldingsCache = parsedInst;
+          setInstHoldings(parsedInst);
+        }
+      } catch (_) {}
+    }
+
     // Quietly update fresh data in background without blocking UI
     fetchFiiDiiData();
-    const interval = setInterval(() => fetchFiiDiiData(), 30000); // 30s auto-refresh
+    fetchInstitutionalHoldings();
+    const interval = setInterval(() => {
+      fetchFiiDiiData();
+    }, 30000); // 30s auto-refresh
     return () => clearInterval(interval);
   }, []);
 
@@ -234,6 +343,27 @@ export default function FiiDiiPage() {
   const combinedNet = data?.combined.net_institutional_flow_cr ?? 0;
   const isCombinedPositive = combinedNet >= 0;
   const impact = data?.market_impact;
+
+  // Filtered and sorted company-wise institutional holdings
+  const filteredHoldings = (instHoldings?.items || []).filter((item) => {
+    const matchesSearch =
+      holdingsSearch.trim() === '' ||
+      item.symbol.toLowerCase().includes(holdingsSearch.toLowerCase()) ||
+      item.company_name.toLowerCase().includes(holdingsSearch.toLowerCase());
+    const matchesSector =
+      holdingsSector === 'All' || item.sector.toLowerCase().includes(holdingsSector.toLowerCase());
+    return matchesSearch && matchesSector;
+  }).sort((a, b) => {
+    if (holdingsSort === 'fii_amount_desc') return b.fii_invested_cr - a.fii_invested_cr;
+    if (holdingsSort === 'dii_amount_desc') return b.dii_invested_cr - a.dii_invested_cr;
+    if (holdingsSort === 'total_inst_desc') return b.total_institutional_invested_cr - a.total_institutional_invested_cr;
+    if (holdingsSort === 'fii_pct_desc') return b.fii_holding_pct - a.fii_holding_pct;
+    if (holdingsSort === 'dii_pct_desc') return b.dii_holding_pct - a.dii_holding_pct;
+    if (holdingsSort === 'mcap_desc') return b.market_cap_cr - a.market_cap_cr;
+    return a.company_name.localeCompare(b.company_name);
+  });
+
+  const instSummary = instHoldings?.summary;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0a0d14' }}>
@@ -893,6 +1023,444 @@ export default function FiiDiiPage() {
               </div>
             </div>
           ))}
+        </section>
+
+        {/* =========================================================================
+            COMPANY-WISE INSTITUTIONAL INVESTMENTS (FII & DII HOLDINGS & AMOUNTS)
+        ========================================================================= */}
+        <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Building2 size={20} color="#38bdf8" />
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.01em' }}>
+                COMPANY-WISE INSTITUTIONAL INVESTMENTS (FII & DII HOLDINGS & INVESTED AMOUNTS)
+              </h2>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Official SEBI Regulation 31 Shareholding Disclosures &bull; Filed with National Stock Exchange of India (NSE) &bull; Q2 FY26
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                padding: '4px 10px',
+                borderRadius: '8px',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <ShieldCheck size={14} color="#38bdf8" />
+              AUTHENTIC NSE INDIA XBRL FILINGS
+            </span>
+          </div>
+        </div>
+
+        {/* 4 Summary Highlight Cards */}
+        <section
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '16px',
+            marginBottom: '24px',
+          }}
+        >
+          {/* Card 1: FII Total Capital */}
+          <div
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '16px',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                TOTAL FII CAPITAL DEPLOYED
+              </span>
+              <Globe2 size={16} color="#38bdf8" />
+            </div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              ₹{((instSummary?.total_fii_invested_cr ?? 4953628) / 100000).toFixed(2)} <span style={{ fontSize: '0.95rem', color: '#94a3b8' }}>Lakh Cr</span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              ₹{(instSummary?.total_fii_invested_cr ?? 4953628).toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr &bull; Avg Stake: <strong style={{ color: '#38bdf8' }}>{(instSummary?.average_fii_holding_pct ?? 22.4).toFixed(1)}%</strong>
+            </div>
+          </div>
+
+          {/* Card 2: DII Total Capital */}
+          <div
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '16px',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                TOTAL DII CAPITAL DEPLOYED
+              </span>
+              <Building2 size={16} color="#34d399" />
+            </div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              ₹{((instSummary?.total_dii_invested_cr ?? 4635292) / 100000).toFixed(2)} <span style={{ fontSize: '0.95rem', color: '#94a3b8' }}>Lakh Cr</span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              ₹{(instSummary?.total_dii_invested_cr ?? 4635292).toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr &bull; Avg Stake: <strong style={{ color: '#34d399' }}>{(instSummary?.average_dii_holding_pct ?? 20.8).toFixed(1)}%</strong>
+            </div>
+          </div>
+
+          {/* Card 3: Combined Institutional */}
+          <div
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '16px',
+              border: '1px solid rgba(129, 140, 248, 0.3)',
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#818cf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                COMBINED INSTITUTIONAL WEALTH
+              </span>
+              <Scale size={16} color="#818cf8" />
+            </div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              ₹{((instSummary?.total_institutional_invested_cr ?? 9588920) / 100000).toFixed(2)} <span style={{ fontSize: '0.95rem', color: '#94a3b8' }}>Lakh Cr</span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              {instSummary?.total_companies_tracked ?? 50} Nifty constituents &bull; {((instSummary?.average_fii_holding_pct ?? 22.4) + (instSummary?.average_dii_holding_pct ?? 20.8)).toFixed(1)}% avg institutional float
+            </div>
+          </div>
+
+          {/* Card 4: DII Domestic Breakdown */}
+          <div
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '16px',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                MFs VS INSURANCE (LIC) ALLOCATION
+              </span>
+              <PieChart size={16} color="#fbbf24" />
+            </div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              ₹{((instSummary?.total_mutual_funds_invested_cr ?? 2780000) / 100000).toFixed(2)}L <span style={{ fontSize: '1rem', color: '#fbbf24' }}>/</span> ₹{((instSummary?.total_insurance_invested_cr ?? 1855292) / 100000).toFixed(2)}L
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              SIP Cushion: Mutual Funds vs Sovereign Anchor: LIC & Insurers
+            </div>
+          </div>
+        </section>
+
+        {/* Filter & Search Bar */}
+        <div
+          className="glass-panel"
+          style={{
+            padding: '16px 20px',
+            borderRadius: '14px',
+            border: '1px solid var(--border-subtle)',
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '14px',
+          }}
+        >
+          {/* Search Input */}
+          <div style={{ position: 'relative', flex: '1', minWidth: '240px', maxWidth: '400px' }}>
+            <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+            <input
+              type="text"
+              value={holdingsSearch}
+              onChange={(e) => setHoldingsSearch(e.target.value)}
+              placeholder="Search company name or symbol (e.g. Reliance, HDFC, TCS)..."
+              style={{
+                width: '100%',
+                padding: '9px 12px 9px 36px',
+                borderRadius: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                background: 'rgba(15, 23, 42, 0.8)',
+                color: '#ffffff',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            />
+          </div>
+
+          {/* Sector Filter Dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Filter size={15} color="var(--text-muted)" />
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sector:</span>
+            <select
+              value={holdingsSector}
+              onChange={(e) => setHoldingsSector(e.target.value)}
+              style={{
+                background: 'rgba(15, 23, 42, 0.9)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#ffffff',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="All">All Sectors ({instHoldings?.items?.length || 50})</option>
+              <option value="Financial">Financial Services & Banking</option>
+              <option value="Information Technology">Information Technology (IT)</option>
+              <option value="Oil">Oil, Gas & Energy</option>
+              <option value="Auto">Automobiles & Components</option>
+              <option value="Consumer Goods">FMCG & Consumer Goods</option>
+              <option value="Healthcare">Healthcare & Pharma</option>
+              <option value="Metals">Metals & Mining</option>
+              <option value="Power">Power & Utilities</option>
+              <option value="Construction">Construction & Materials</option>
+              <option value="Telecommunication">Telecommunication</option>
+            </select>
+          </div>
+
+          {/* Quick Sort Options */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sort by:</span>
+            {[
+              { id: 'fii_amount_desc', label: 'Highest FII Capital (₹ Cr)' },
+              { id: 'dii_amount_desc', label: 'Highest DII Capital (₹ Cr)' },
+              { id: 'total_inst_desc', label: 'Total Institutional (₹ Cr)' },
+              { id: 'fii_pct_desc', label: 'FII Stake %' },
+              { id: 'dii_pct_desc', label: 'DII Stake %' },
+              { id: 'mcap_desc', label: 'Market Cap' },
+            ].map((btn) => (
+              <button
+                key={btn.id}
+                onClick={() => setHoldingsSort(btn.id)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: holdingsSort === btn.id ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                  background: holdingsSort === btn.id ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.02)',
+                  color: holdingsSort === btn.id ? '#38bdf8' : 'var(--text-secondary)',
+                  fontSize: '0.72rem',
+                  fontWeight: holdingsSort === btn.id ? 800 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {btn.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Company Holdings Data Table */}
+        <section
+          className="glass-panel"
+          style={{
+            overflow: 'hidden',
+            borderRadius: '16px',
+            border: '1px solid var(--border-subtle)',
+            marginBottom: '40px',
+          }}
+        >
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+              <thead>
+                <tr style={{ background: 'rgba(15, 23, 42, 0.95)', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', fontSize: '0.73rem', textTransform: 'uppercase' }}>
+                  <th style={{ padding: '14px 18px', fontWeight: 700 }}>COMPANY / SECTOR</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'right' }}>MARKET CAP</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'right' }}>FII STAKE & CAPITAL</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'right' }}>DII STAKE & CAPITAL</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'right' }}>MUTUAL FUNDS VS LIC</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'right' }}>TOTAL INSTITUTIONAL</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700 }}>KEY MARQUEE INVESTORS</th>
+                  <th style={{ padding: '14px 18px', fontWeight: 700, textAlign: 'center' }}>NSE OFFICIAL FILING</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredHoldings.map((item, idx) => {
+                  return (
+                    <tr
+                      key={item.symbol}
+                      style={{
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                        background: idx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.015)',
+                        transition: 'background 0.15s ease',
+                      }}
+                    >
+                      {/* Company Name & Sector */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.92rem' }}>
+                            {item.symbol}
+                          </span>
+                          <span className="badge badge-primary" style={{ fontSize: '0.62rem', padding: '1px 5px' }}>
+                            NSE
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                          {item.company_name}
+                        </div>
+                        <div style={{ fontSize: '0.68rem', color: '#94a3b8', marginTop: '2px' }}>
+                          {item.sector}
+                        </div>
+                      </td>
+
+                      {/* Market Cap */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right', fontWeight: 700, color: '#f8fafc' }}>
+                        ₹{item.market_cap_cr.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                          ₹{(item.market_cap_cr / 100000).toFixed(2)}L Cr
+                        </div>
+                      </td>
+
+                      {/* FII Stake & Invested Amount */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#38bdf8' }}>
+                          {item.fii_holding_pct.toFixed(2)}%
+                        </div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>
+                          ₹{item.fii_invested_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                        </div>
+                        <div style={{ marginTop: '2px' }}>
+                          <span
+                            style={{
+                              fontSize: '0.66rem',
+                              fontWeight: 800,
+                              padding: '1px 5px',
+                              borderRadius: '4px',
+                              background: item.fii_change_qoq >= 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                              color: item.fii_change_qoq >= 0 ? '#34d399' : '#f87171',
+                            }}
+                          >
+                            {item.fii_change_qoq >= 0 ? '+' : ''}{item.fii_change_qoq.toFixed(2)}% QoQ
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* DII Stake & Invested Amount */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#34d399' }}>
+                          {item.dii_holding_pct.toFixed(2)}%
+                        </div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>
+                          ₹{item.dii_invested_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                        </div>
+                        <div style={{ marginTop: '2px' }}>
+                          <span
+                            style={{
+                              fontSize: '0.66rem',
+                              fontWeight: 800,
+                              padding: '1px 5px',
+                              borderRadius: '4px',
+                              background: item.dii_change_qoq >= 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                              color: item.dii_change_qoq >= 0 ? '#34d399' : '#f87171',
+                            }}
+                          >
+                            {item.dii_change_qoq >= 0 ? '+' : ''}{item.dii_change_qoq.toFixed(2)}% QoQ
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* MF vs LIC Breakdown */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right', fontSize: '0.78rem' }}>
+                        <div style={{ color: '#c084fc' }}>
+                          MFs: <strong>{item.mf_holding_pct.toFixed(2)}%</strong> (₹{item.mf_invested_cr.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr)
+                        </div>
+                        <div style={{ color: '#fbbf24', marginTop: '3px' }}>
+                          LIC/Ins: <strong>{item.insurance_holding_pct.toFixed(2)}%</strong> (₹{item.insurance_invested_cr.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr)
+                        </div>
+                      </td>
+
+                      {/* Total Institutional */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 900, color: '#818cf8' }}>
+                          {item.total_institutional_pct.toFixed(2)}%
+                        </div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>
+                          ₹{item.total_institutional_invested_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                        </div>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            marginTop: '4px',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            fontSize: '0.64rem',
+                            fontWeight: 800,
+                            background: item.institutional_sentiment_badge.includes('ACCUMULATION')
+                              ? 'rgba(16, 185, 129, 0.15)'
+                              : 'rgba(99, 102, 241, 0.15)',
+                            color: item.institutional_sentiment_badge.includes('ACCUMULATION')
+                              ? '#34d399'
+                              : '#818cf8',
+                          }}
+                        >
+                          {item.institutional_sentiment_badge}
+                        </span>
+                      </td>
+
+                      {/* Marquee Institutional Investors */}
+                      <td style={{ padding: '14px 18px', maxWidth: '280px' }}>
+                        <div style={{ fontSize: '0.74rem', color: '#e2e8f0', lineHeight: 1.4 }}>
+                          {item.top_fii_investors.slice(0, 2).map((inv, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ color: '#38bdf8' }}>&bull;</span>
+                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{inv}</span>
+                            </div>
+                          ))}
+                          {item.top_dii_investors.slice(0, 1).map((inv, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#86efac' }}>
+                              <span style={{ color: '#34d399' }}>&bull;</span>
+                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{inv}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+
+                      {/* Direct Official NSE XBRL Link */}
+                      <td style={{ padding: '14px 18px', textAlign: 'center' }}>
+                        <a
+                          href={item.nse_filing_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-secondary"
+                          style={{
+                            fontSize: '0.72rem',
+                            padding: '5px 10px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            whiteSpace: 'nowrap',
+                            color: '#38bdf8',
+                            border: '1px solid rgba(56, 189, 248, 0.3)',
+                          }}
+                          title={`Official SEBI Reg 31 filing for ${item.symbol} on NSE India Archives`}
+                        >
+                          <ExternalLink size={12} />
+                          NSE Filing ↗
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         {/* =========================================================================

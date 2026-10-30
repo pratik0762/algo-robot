@@ -17,6 +17,7 @@ import {
   Activity,
   Newspaper
 } from 'lucide-react';
+import { getApiBase } from '@/config/api';
 
 export interface NavHubItem {
   id: string;

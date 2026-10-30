@@ -99,6 +99,7 @@ class CompanyDetail(BaseModel):
     annual_financials: List[FinancialQuarter]
     balance_sheet: List[BalanceSheetItem]
     nse_filings: List[NseFiling]
+    institutional_holdings: Optional[Dict[str, Any]] = None
 
 class IndexItem(BaseModel):
     index: str
@@ -190,6 +191,46 @@ class NewsResponse(BaseModel):
     all_news: List[NewsItem]
     total_count: int
     timestamp: str
+
+class InstitutionalHoldingItem(BaseModel):
+    symbol: str
+    company_name: str
+    sector: str
+    market_cap_cr: float
+    current_price: Optional[float] = None
+    price_change: Optional[float] = None
+    percent_change: Optional[float] = None
+    fii_holding_pct: float
+    fii_invested_cr: float
+    fii_change_qoq: float
+    dii_holding_pct: float
+    dii_invested_cr: float
+    dii_change_qoq: float
+    mf_holding_pct: float
+    mf_invested_cr: float
+    insurance_holding_pct: float
+    insurance_invested_cr: float
+    promoter_holding_pct: float
+    public_other_pct: float
+    total_institutional_pct: float
+    total_institutional_invested_cr: float
+    institutional_sentiment: str
+    institutional_sentiment_badge: str
+    net_institutional_stake_change_qoq: float
+    top_fii_investors: List[str] = Field(default_factory=list)
+    top_dii_investors: List[str] = Field(default_factory=list)
+    filing_quarter: str
+    filing_date: str
+    nse_filing_url: str
+
+class InstitutionalHoldingsResponse(BaseModel):
+    status: str
+    official_source: str
+    regulatory_framework: str
+    summary: Dict[str, Any]
+    filing_quarter: str
+    timestamp: str
+    items: List[InstitutionalHoldingItem]
 
 
 
