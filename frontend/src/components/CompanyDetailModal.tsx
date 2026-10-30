@@ -712,18 +712,16 @@ export default function CompanyDetailModal({
                 </div>
               </div>
 
-              {company.institutional_holdings?.nse_filing_url && (
-                <a
-                  href={company.institutional_holdings.nse_filing_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary"
-                  style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <ExternalLink size={14} />
-                  Official NSE XBRL Filing
-                </a>
-              )}
+              <a
+                href={company.institutional_holdings?.nse_filing_url || `https://www.nseindia.com/get-quotes/equity?symbol=${company.symbol}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <ExternalLink size={14} />
+                Official NSE Equity Filings
+              </a>
             </div>
 
             {/* 4 Core Institutional Cards */}

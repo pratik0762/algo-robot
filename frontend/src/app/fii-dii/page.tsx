@@ -1041,23 +1041,28 @@ export default function FiiDiiPage() {
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span
+            <a
+              href="https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 fontSize: '0.72rem',
                 fontWeight: 700,
-                padding: '4px 10px',
+                padding: '6px 12px',
                 borderRadius: '8px',
                 background: 'rgba(56, 189, 248, 0.12)',
                 color: '#38bdf8',
                 border: '1px solid rgba(56, 189, 248, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '6px',
+                textDecoration: 'none',
               }}
+              title="Official NSE India Corporate Filings Shareholding Pattern Portal"
             >
               <ShieldCheck size={14} color="#38bdf8" />
-              AUTHENTIC NSE INDIA XBRL FILINGS
-            </span>
+              NSE SHAREHOLDING PORTAL ↗
+            </a>
           </div>
         </div>
 
@@ -1432,10 +1437,10 @@ export default function FiiDiiPage() {
                         </div>
                       </td>
 
-                      {/* Direct Official NSE XBRL Link */}
+                      {/* Direct Official NSE Link */}
                       <td style={{ padding: '14px 18px', textAlign: 'center' }}>
                         <a
-                          href={item.nse_filing_url}
+                          href={item.nse_filing_url || `https://www.nseindia.com/get-quotes/equity?symbol=${item.symbol}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="btn btn-secondary"
@@ -1449,7 +1454,7 @@ export default function FiiDiiPage() {
                             color: '#38bdf8',
                             border: '1px solid rgba(56, 189, 248, 0.3)',
                           }}
-                          title={`Official SEBI Reg 31 filing for ${item.symbol} on NSE India Archives`}
+                          title={`Official Equity Filings & Shareholding for ${item.symbol} on NSE India`}
                         >
                           <ExternalLink size={12} />
                           NSE Filing ↗

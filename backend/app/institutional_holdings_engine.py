@@ -48,7 +48,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "HDFC Top 100 & Flexi Cap Fund (2.10%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1733480_18102026034510_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "RELIANCE": {
         "fii_holding_pct": 21.84,
@@ -74,7 +74,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India ETF Nifty 50 BeES (1.45%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1742991_21102026042504_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "ICICIBANK": {
         "fii_holding_pct": 44.52,
@@ -100,7 +100,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Kotak Flexicap Fund (2.05%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1743956_22102026051230_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "INFY": {
         "fii_holding_pct": 33.52,
@@ -126,7 +126,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India Growth Fund (1.85%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1739810_17102026041015_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "TCS": {
         "fii_holding_pct": 12.54,
@@ -152,7 +152,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "UTI Nifty 50 ETF (0.85%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1741905_19102026031545_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "BHARTIARTL": {
         "fii_holding_pct": 24.85,
@@ -178,7 +178,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India Large Cap Fund (1.40%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1741646_19102026024520_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "LT": {
         "fii_holding_pct": 24.52,
@@ -204,7 +204,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India Multi Cap Fund (2.10%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1744110_22102026063012_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "ITC": {
         "fii_holding_pct": 39.24,
@@ -230,7 +230,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "HDFC Balanced Advantage Fund (2.15%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1742880_21102026021530_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "SBIN": {
         "fii_holding_pct": 11.45,
@@ -255,7 +255,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Kotak Flexicap Fund (1.75%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1743510_22102026011245_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "AXISBANK": {
         "fii_holding_pct": 54.20,
@@ -281,7 +281,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India Large Cap (1.80%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1740920_18102026052010_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "KOTAKBANK": {
         "fii_holding_pct": 37.45,
@@ -307,7 +307,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India ETF Nifty 50 BeES (1.35%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1741120_19102026014530_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "BAJFINANCE": {
         "fii_holding_pct": 20.85,
@@ -332,7 +332,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Axis Bluechip Fund (1.45%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1740510_18102026023015_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "MARUTI": {
         "fii_holding_pct": 21.45,
@@ -357,7 +357,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Kotak Flexicap (1.45%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1742110_20102026041240_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "SUNPHARMA": {
         "fii_holding_pct": 17.85,
@@ -382,7 +382,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "HDFC Flexi Cap Fund (1.80%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1743110_21102026054015_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "TITAN": {
         "fii_holding_pct": 18.25,
@@ -407,7 +407,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "HDFC Top 100 Fund (1.20%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1741820_19102026042030_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "TATASTEEL": {
         "fii_holding_pct": 19.65,
@@ -432,7 +432,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India ETF Nifty 50 (1.65%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1742450_20102026053012_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "M&M": {
         "fii_holding_pct": 41.25,
@@ -458,7 +458,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Kotak Flexicap Fund (2.10%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1740810_18102026031525_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "NTPC": {
         "fii_holding_pct": 17.85,
@@ -483,7 +483,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India CPSE ETF (2.10%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1743120_21102026045010_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "POWERGRID": {
         "fii_holding_pct": 30.25,
@@ -508,7 +508,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "Nippon India ETF (1.40%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1742610_20102026061520_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     },
     "HINDUNILVR": {
         "fii_holding_pct": 12.85,
@@ -533,7 +533,7 @@ OFFICIAL_INSTITUTIONAL_HOLDINGS: Dict[str, Dict[str, Any]] = {
             "UTI Nifty 50 ETF (1.10%)"
         ],
         "filing_date": "30-Sep-2026",
-        "nse_filing_url": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1741450_19102026033010_WEB.xml"
+        "nse_filing_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
     }
 }
 
@@ -631,7 +631,8 @@ class InstitutionalHoldingsEngine:
             "top_dii_investors": h_data.get("top_dii_investors", []),
             "filing_quarter": "Q2 FY26 (Ended 30-Sep-2026)",
             "filing_date": h_data.get("filing_date", "30-Sep-2026"),
-            "nse_filing_url": h_data.get("nse_filing_url", f"https://www.nseindia.com/get-quotes/equity?symbol={sym_upper}")
+            "nse_filing_url": f"https://www.nseindia.com/get-quotes/equity?symbol={sym_upper}",
+            "nse_shareholding_portal_url": "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
         }
 
     def get_all_institutional_investments(
