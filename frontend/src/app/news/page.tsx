@@ -217,14 +217,14 @@ export default function NewsPage() {
                 <span
                   className="badge"
                   style={{
-                    background: 'rgba(245, 158, 11, 0.2)',
-                    color: '#fbbf24',
-                    border: '1px solid rgba(245, 158, 11, 0.4)',
+                    background: 'rgba(99, 102, 241, 0.2)',
+                    color: '#a5b4fc',
+                    border: '1px solid rgba(99, 102, 241, 0.4)',
                     fontSize: '0.68rem',
                     fontWeight: 800,
                   }}
                 >
-                  LIVE CATALYSTS
+                  OFFICIAL NSE INDIA DISCLOSURES
                 </span>
                 <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>
                   REAL-TIME IMPACT ENGINE
@@ -508,9 +508,9 @@ export default function NewsPage() {
                         gap: '5px',
                         textDecoration: 'none',
                       }}
-                      title="Read original source article / official regulatory filing"
+                      title="Read official NSE regulatory filing / disclosure (PDF / NSE Portal)"
                     >
-                      <span>Reference Link</span>
+                      <span>NSE Official Filing (PDF / Link)</span>
                       <ExternalLink size={13} />
                     </a>
                   </div>
@@ -803,7 +803,7 @@ export default function NewsPage() {
                           border: '1px solid rgba(56, 189, 248, 0.25)',
                         }}
                       >
-                        <span>Reference Link</span>
+                        <span>NSE Official Filing</span>
                         <ExternalLink size={12} />
                       </a>
                     </div>
@@ -817,3 +817,4 @@ export default function NewsPage() {
     </div>
   );
 }
+

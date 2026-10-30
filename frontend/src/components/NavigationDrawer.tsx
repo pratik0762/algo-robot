@@ -577,7 +577,7 @@ export default function NavigationDrawer({
                   </span>
                 </div>
                 <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
-                  Real-time Stock Impact, Catalysts & Reference Links
+                  Official NSE India Corporate Disclosures & Stock Impact Analysis
                 </div>
               </div>
             </div>
