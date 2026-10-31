@@ -1369,8 +1369,7 @@ function DealsPageContent() {
                       <th style={{ padding: '12px 16px', color: '#38bdf8' }}>DATE &amp; TIME</th>
                       <th style={{ padding: '12px 16px' }}>COMPANY &amp; SECTOR</th>
                       <th style={{ padding: '12px 16px' }}>CLIENT / TRADER NAME</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>DEAL TYPE</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>ACTION</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>DEAL TYPE &amp; ACTION</th>
                       <th style={{ padding: '12px 16px', textAlign: 'right' }}>VOLUME (SHARES)</th>
                       <th style={{ padding: '12px 16px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
                       <th style={{ padding: '12px 16px', textAlign: 'right' }}>TOTAL VALUE</th>
@@ -1382,7 +1381,7 @@ function DealsPageContent() {
                   <tbody>
                     {filteredDeals.length === 0 ? (
                       <tr>
-                        <td colSpan={11} style={{ padding: '48px 18px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                        <td colSpan={10} style={{ padding: '48px 18px', textAlign: 'center', color: 'var(--text-muted)' }}>
                           No transactions matching your active date or filter criteria. Click <strong>&quot;Clear&quot;</strong> in the Date Filter bar to reset.
                         </td>
                       </tr>
@@ -1472,46 +1471,47 @@ function DealsPageContent() {
                               </div>
                             </td>
 
-                            {/* 4. Deal Type Badge */}
-                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                              <span
-                                style={{
-                                  fontSize: '0.66rem',
-                                  fontWeight: 800,
-                                  padding: '4px 8px',
-                                  borderRadius: '6px',
-                                  background: isBulk ? 'rgba(6, 182, 212, 0.15)' : isBlock ? 'rgba(168, 85, 247, 0.15)' : 'rgba(236, 72, 153, 0.15)',
-                                  color: isBulk ? '#22d3ee' : isBlock ? '#c084fc' : '#f472b6',
-                                  border: isBulk ? '1px solid rgba(6, 182, 212, 0.35)' : isBlock ? '1px solid rgba(168, 85, 247, 0.35)' : '1px solid rgba(236, 72, 153, 0.35)',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
-                                {isBulk ? 'BULK DEAL' : isBlock ? 'BLOCK DEAL' : 'SHORT SELLING'}
-                              </span>
-                              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '3px', whiteSpace: 'nowrap' }}>
+                            {/* 4. Combined DEAL TYPE & ACTION Column */}
+                            <td style={{ padding: '12px 16px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                {/* Deal Type Badge */}
+                                <span
+                                  style={{
+                                    fontSize: '0.66rem',
+                                    fontWeight: 800,
+                                    padding: '3px 8px',
+                                    borderRadius: '6px',
+                                    background: isBulk ? 'rgba(6, 182, 212, 0.15)' : isBlock ? 'rgba(168, 85, 247, 0.15)' : 'rgba(236, 72, 153, 0.15)',
+                                    color: isBulk ? '#22d3ee' : isBlock ? '#c084fc' : '#f472b6',
+                                    border: isBulk ? '1px solid rgba(6, 182, 212, 0.35)' : isBlock ? '1px solid rgba(168, 85, 247, 0.35)' : '1px solid rgba(236, 72, 153, 0.35)',
+                                    letterSpacing: '0.02em',
+                                  }}
+                                >
+                                  {isBulk ? 'BULK' : isBlock ? 'BLOCK' : 'SHORT'}
+                                </span>
+
+                                {/* Action Badge */}
+                                <span
+                                  style={{
+                                    fontSize: '0.68rem',
+                                    fontWeight: 900,
+                                    padding: '3px 8px',
+                                    borderRadius: '6px',
+                                    background: isBuy ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                                    color: isBuy ? '#34d399' : '#f87171',
+                                    border: isBuy ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '3px',
+                                  }}
+                                >
+                                  {isBuy ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                                  {isShort ? 'SHORT' : item.action}
+                                </span>
+                              </div>
+                              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '3px' }}>
                                 {isBulk ? 'Normal Market' : isBlock ? 'Block Window' : 'Daily Mandate'}
                               </div>
-                            </td>
-
-                            {/* 5. Action BUY / SELL */}
-                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                              <span
-                                style={{
-                                  fontSize: '0.70rem',
-                                  fontWeight: 900,
-                                  padding: '4px 8px',
-                                  borderRadius: '6px',
-                                  background: isBuy ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                  color: isBuy ? '#34d399' : '#f87171',
-                                  border: isBuy ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '3px',
-                                }}
-                              >
-                                {isBuy ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                                {isShort ? 'SHORT' : item.action}
-                              </span>
                             </td>
 
                             {/* 6. Traded Volume (Shares) */}
