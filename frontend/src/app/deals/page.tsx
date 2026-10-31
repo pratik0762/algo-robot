@@ -81,17 +81,17 @@ export interface DealsResponse {
   official_source: string;
   regulatory_framework: string;
   summary: {
-    total_bulk_deal_value_cr: number;
-    total_block_deal_value_cr: number;
-    total_short_selling_value_cr: number;
-    total_buy_value_cr: number;
-    total_sell_value_cr: number;
-    net_institutional_bias: string;
-    total_deals_count: number;
-    bulk_deals_count: number;
-    block_deals_count: number;
-    short_selling_count: number;
-    most_active_stocks: Array<{
+    total_bulk_deal_value_cr?: number;
+    total_block_deal_value_cr?: number;
+    total_short_selling_value_cr?: number;
+    total_buy_value_cr?: number;
+    total_sell_value_cr?: number;
+    net_institutional_bias?: string;
+    total_deals_count?: number;
+    bulk_deals_count?: number;
+    block_deals_count?: number;
+    short_selling_count?: number;
+    most_active_stocks?: Array<{
       symbol: string;
       name: string;
       total_value_cr: number;
@@ -164,7 +164,7 @@ function DealsPageContent() {
         const json: DealsResponse = await res.json();
         globalDealsCache = json;
         try {
-          sessionStorage.setItem('deals_cache_v2', JSON.stringify(json));
+          sessionStorage.setItem('deals_cache_v3', JSON.stringify(json));
         } catch (_) {}
         setDealsData(json);
       } else {
@@ -183,17 +183,22 @@ function DealsPageContent() {
   };
 
   useEffect(() => {
-    if (!globalDealsCache) {
-      try {
-        const stored = sessionStorage.getItem('deals_cache_v2');
-        if (stored) {
-          const parsed = JSON.parse(stored);
+    // Clear legacy or outdated cache keys
+    try {
+      sessionStorage.removeItem('deals_cache');
+      sessionStorage.removeItem('deals_cache_v2');
+      const stored = sessionStorage.getItem('deals_cache_v3');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.summary && typeof parsed.summary.total_short_selling_value_cr === 'number') {
           globalDealsCache = parsed;
           setDealsData(parsed);
           setLoading(false);
+        } else {
+          sessionStorage.removeItem('deals_cache_v3');
         }
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
 
     fetchDeals();
     const interval = setInterval(() => fetchDeals(), 45000); // 45s live refresh
@@ -509,10 +514,10 @@ function DealsPageContent() {
               </div>
               <div style={{ margin: '8px 0 2px 0' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
-                  ₹{summary.total_bulk_deal_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  ₹{(summary?.total_bulk_deal_value_cr ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  {summary.bulk_deals_count} Open-Market Transactions
+                  {summary?.bulk_deals_count ?? 0} Open-Market Transactions
                 </div>
               </div>
               <div style={{ fontSize: '0.68rem', color: '#22d3ee', fontWeight: 600 }}>
@@ -540,10 +545,10 @@ function DealsPageContent() {
               </div>
               <div style={{ margin: '8px 0 2px 0' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
-                  ₹{summary.total_block_deal_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  ₹{(summary?.total_block_deal_value_cr ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  {summary.block_deals_count} Dedicated Window Deals
+                  {summary?.block_deals_count ?? 0} Dedicated Window Deals
                 </div>
               </div>
               <div style={{ fontSize: '0.68rem', color: '#c084fc', fontWeight: 600 }}>
@@ -571,10 +576,10 @@ function DealsPageContent() {
               </div>
               <div style={{ margin: '8px 0 2px 0' }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
-                  ₹{summary.total_short_selling_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                  ₹{(summary?.total_short_selling_value_cr ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  {summary.short_selling_count} Institutional Short Positions
+                  {summary?.short_selling_count ?? 0} Institutional Short Positions
                 </div>
               </div>
               <div style={{ fontSize: '0.68rem', color: '#f472b6', fontWeight: 600 }}>
@@ -586,7 +591,7 @@ function DealsPageContent() {
             <div
               style={{
                 background: 'var(--panel)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
                 borderRadius: '14px',
                 padding: '16px 18px',
                 display: 'flex',
@@ -602,19 +607,19 @@ function DealsPageContent() {
               </div>
               <div style={{ margin: '8px 0 2px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.5rem', fontWeight: 900, color: summary.net_institutional_bias === 'BULLISH' ? '#34d399' : '#f87171' }}>
-                    {summary.net_institutional_bias}
+                  <span style={{ fontSize: '1.5rem', fontWeight: 900, color: (summary?.net_institutional_bias || 'BULLISH') === 'BULLISH' ? '#34d399' : '#f87171' }}>
+                    {summary?.net_institutional_bias || 'BULLISH'}
                   </span>
-                  <span className={`badge ${summary.net_institutional_bias === 'BULLISH' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.60rem' }}>
+                  <span className={`badge ${(summary?.net_institutional_bias || 'BULLISH') === 'BULLISH' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.60rem' }}>
                     ACCUMULATION
                   </span>
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  Buy: <strong style={{ color: '#34d399' }}>₹{summary.total_buy_value_cr.toFixed(0)} Cr</strong> &bull; Sell: <strong style={{ color: '#f87171' }}>₹{summary.total_sell_value_cr.toFixed(0)} Cr</strong>
+                  Buy: <strong style={{ color: '#34d399' }}>₹{(summary?.total_buy_value_cr ?? 0).toFixed(0)} Cr</strong> &bull; Sell: <strong style={{ color: '#f87171' }}>₹{(summary?.total_sell_value_cr ?? 0).toFixed(0)} Cr</strong>
                 </div>
               </div>
               <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                {(summary.total_buy_value_cr / Math.max(summary.total_sell_value_cr, 1)).toFixed(2)}x Absorption
+                {((summary?.total_buy_value_cr ?? 0) / Math.max(summary?.total_sell_value_cr ?? 1, 1)).toFixed(2)}x Absorption
               </div>
             </div>
           </div>
@@ -1512,17 +1517,17 @@ function DealsPageContent() {
                             {/* 6. Traded Volume (Shares) */}
                             <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                               <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.84rem' }}>
-                                {item.quantity.toLocaleString('en-IN')}
+                                {(item.quantity ?? 0).toLocaleString('en-IN')}
                               </div>
                               <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
-                                {(item.quantity / 100000).toFixed(2)} Lakh Shares
+                                {((item.quantity ?? 0) / 100000).toFixed(2)} Lakh Shares
                               </div>
                             </td>
 
                             {/* 7. Deal Price vs Current LTP */}
                             <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                               <div style={{ fontWeight: 800, color: '#38bdf8', fontSize: '0.85rem' }}>
-                                ₹{item.trade_price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                ₹{(item.trade_price ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </div>
                               {item.current_market_price && (
                                 <div style={{ fontSize: '0.68rem', color: diffPct >= 0 ? '#34d399' : '#f87171', marginTop: '2px', fontWeight: 600 }}>
@@ -1534,7 +1539,7 @@ function DealsPageContent() {
                             {/* 8. Total Deal Value (Crores) */}
                             <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                               <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '0.95rem', letterSpacing: '-0.01em' }}>
-                                ₹{item.deal_value_cr.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Cr
+                                ₹{(item.deal_value_cr ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Cr
                               </div>
                               <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
                                 Transaction Size

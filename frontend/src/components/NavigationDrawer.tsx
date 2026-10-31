@@ -237,9 +237,9 @@ export default function NavigationDrawer({
       fetch(`${getApiBase()}/api/deals`)
         .then((r) => (r.ok ? r.json() : null))
         .then((d) => {
-          if (d) {
+          if (d && d.summary && typeof d.summary.total_short_selling_value_cr === 'number') {
             try {
-              sessionStorage.setItem('deals_cache', JSON.stringify(d));
+              sessionStorage.setItem('deals_cache_v3', JSON.stringify(d));
             } catch (_) {}
           }
         })
