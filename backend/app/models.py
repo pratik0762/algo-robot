@@ -233,4 +233,41 @@ class InstitutionalHoldingsResponse(BaseModel):
     items: List[InstitutionalHoldingItem]
 
 
+class DealItem(BaseModel):
+    id: str
+    deal_type: str
+    symbol: str
+    company_name: str
+    sector: str
+    client_name: str
+    client_category: str
+    action: str
+    quantity: int
+    trade_price: float
+    deal_value_cr: float
+    equity_percentage: float
+    execution_window: str
+    trade_date: str
+    trade_time: str
+    actionable_signal: str
+    strategy_takeaway: str
+    nse_official_url: str
+    current_market_price: Optional[float] = None
+    price_difference_pct: Optional[float] = None
+    live_change: Optional[float] = None
+    live_percent_change: Optional[float] = None
+
+
+class DealsResponse(BaseModel):
+    status: str
+    official_source: str
+    regulatory_framework: str
+    summary: Dict[str, Any]
+    strategies: List[Dict[str, Any]]
+    items: List[DealItem]
+    count: int
+    timestamp: str
+
+
+
 

@@ -419,6 +419,8 @@ def get_backend_dashboard_html() -> str:
           <button class="console-tab active" onclick="testEndpoint('/api/indices/gift-nifty')">GIFT Nifty</button>
           <button class="console-tab" onclick="testEndpoint('/api/indices/live')">Major Indices</button>
           <button class="console-tab" onclick="testEndpoint('/api/fii-dii')">FII/DII Flows</button>
+          <button class="console-tab" onclick="testEndpoint('/api/deals')">Bulk & Block Deals</button>
+          <button class="console-tab" onclick="testEndpoint('/api/deals/strategies')">Trader's Playbook</button>
           <button class="console-tab" onclick="testEndpoint('/api/institutional-holdings?limit=2')">Inst. Holdings</button>
           <button class="console-tab" onclick="testEndpoint('/api/news')">NSE News</button>
           <button class="console-tab" onclick="testEndpoint('/api/companies/HDFCBANK')">HDFC Bank Detail</button>
@@ -461,6 +463,20 @@ def get_backend_dashboard_html() -> str:
             <td>Official NSE Cash Market Settlement Feed & Strategic Market Impact Engine</td>
             <td>JSON (Net Values, 6-Day History)</td>
             <td style="text-align: right;"><a href="/api/fii-dii" target="_blank" class="btn btn-secondary" style="font-size: 0.72rem; padding: 4px 10px;">Test Live ↗</a></td>
+          </tr>
+          <tr>
+            <td><span class="method-badge method-get">GET</span></td>
+            <td><code>/api/deals</code></td>
+            <td>SEBI Bulk & Block Deals (who is trading, volume, execution price, and signals)</td>
+            <td>JSON (Deals Array)</td>
+            <td style="text-align: right;"><a href="/api/deals" target="_blank" class="btn btn-secondary" style="font-size: 0.72rem; padding: 4px 10px;">Test Live ↗</a></td>
+          </tr>
+          <tr>
+            <td><span class="method-badge method-get">GET</span></td>
+            <td><code>/api/deals/strategies</code></td>
+            <td>Institutional Trading Playbook: Floor Price, Whale Breakout, and Risk Tactics</td>
+            <td>JSON (Playbook Guide)</td>
+            <td style="text-align: right;"><a href="/api/deals/strategies" target="_blank" class="btn btn-secondary" style="font-size: 0.72rem; padding: 4px 10px;">Test Live ↗</a></td>
           </tr>
           <tr>
             <td><span class="method-badge method-get">GET</span></td>
@@ -558,3 +574,4 @@ def get_backend_dashboard_html() -> str:
 </body>
 </html>
 """
+

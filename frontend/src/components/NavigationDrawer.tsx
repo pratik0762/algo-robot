@@ -15,7 +15,9 @@ import {
   Globe2,
   ArrowLeftRight,
   Activity,
-  Newspaper
+  Newspaper,
+  Layers,
+  Boxes
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -145,16 +147,16 @@ export const NAV_HUBS: NavHubItem[] = [
 ];
 
 interface NavigationDrawerProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
-  activeHub: string;
-  onSelectHub: (hubId: string) => void;
+  activeHub?: string;
+  onSelectHub?: (hubId: string) => void;
 }
 
 export default function NavigationDrawer({
-  isOpen,
+  isOpen = true,
   onClose,
-  activeHub,
+  activeHub = 'nifty50',
   onSelectHub
 }: NavigationDrawerProps) {
   const router = useRouter();
@@ -179,7 +181,9 @@ export default function NavigationDrawer({
   if (!isOpen) return null;
 
   const handleSelectFinancialHub = () => {
-    onSelectHub('nifty50');
+    if (onSelectHub) {
+      onSelectHub('nifty50');
+    }
     onClose();
     if (pathname !== '/') {
       router.push('/');
@@ -226,6 +230,31 @@ export default function NavigationDrawer({
   const handleSelectNews = () => {
     onClose();
     router.push('/news');
+  };
+
+  const prefetchDeals = () => {
+    try {
+      fetch(`${getApiBase()}/api/deals`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            try {
+              sessionStorage.setItem('deals_cache', JSON.stringify(d));
+            } catch (_) {}
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectBulkDeals = () => {
+    onClose();
+    router.push('/deals?type=bulk');
+  };
+
+  const handleSelectBlockDeals = () => {
+    onClose();
+    router.push('/deals?type=block');
   };
 
   return (
@@ -598,6 +627,190 @@ export default function NavigationDrawer({
                 Live Feed
               </span>
               <ChevronRight size={14} color="#fbbf24" />
+            </div>
+          </div>
+
+          {/* Option 4: BULK DEALS (SEBI >= 0.5% EQUITY) */}
+          <div
+            onClick={handleSelectBulkDeals}
+            onMouseEnter={prefetchDeals}
+            style={{
+              background: pathname === '/deals'
+                ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(59, 130, 246, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%)',
+              border: pathname === '/deals' ? '1px solid #06b6d4' : '1px solid rgba(6, 182, 212, 0.4)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '14px 14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 20px -2px rgba(6, 182, 212, 0.2)',
+              boxSizing: 'border-box',
+              width: '100%',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(6, 182, 212, 0.4)',
+                }}
+              >
+                <Layers size={18} />
+              </div>
+
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span
+                    style={{
+                      fontSize: '0.88rem',
+                      fontWeight: 800,
+                      color: '#ffffff',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    BULK DEALS
+                  </span>
+                  <span
+                    style={{
+                      background: 'rgba(6, 182, 212, 0.2)',
+                      color: '#22d3ee',
+                      fontSize: '0.60rem',
+                      fontWeight: 800,
+                      padding: '2px 6px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(6, 182, 212, 0.3)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    SEBI &ge;0.5%
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
+                  Large Open-Market Transactions, Whale Accumulation & Trading Strategies
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  color: '#22d3ee',
+                  padding: '3px 7px',
+                  borderRadius: '6px',
+                  background: 'rgba(6, 182, 212, 0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                NSE Feed
+              </span>
+              <ChevronRight size={14} color="#22d3ee" />
+            </div>
+          </div>
+
+          {/* Option 5: BLOCK DEALS (>= INR 10 CR WINDOW) */}
+          <div
+            onClick={handleSelectBlockDeals}
+            onMouseEnter={prefetchDeals}
+            style={{
+              background: pathname === '/deals'
+                ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(236, 72, 153, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%)',
+              border: pathname === '/deals' ? '1px solid #a855f7' : '1px solid rgba(168, 85, 247, 0.4)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '14px 14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 20px -2px rgba(168, 85, 247, 0.2)',
+              boxSizing: 'border-box',
+              width: '100%',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #9333ea 0%, #a855f7 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(168, 85, 247, 0.4)',
+                }}
+              >
+                <Boxes size={18} />
+              </div>
+
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span
+                    style={{
+                      fontSize: '0.88rem',
+                      fontWeight: 800,
+                      color: '#ffffff',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    BLOCK DEALS
+                  </span>
+                  <span
+                    style={{
+                      background: 'rgba(168, 85, 247, 0.2)',
+                      color: '#c084fc',
+                      fontSize: '0.60rem',
+                      fontWeight: 800,
+                      padding: '2px 6px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    &ge;₹10 CR WINDOW
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
+                  Dedicated Pre-Market & Afternoon Window Deals (Institutional Crossings)
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  color: '#c084fc',
+                  padding: '3px 7px',
+                  borderRadius: '6px',
+                  background: 'rgba(168, 85, 247, 0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                NSE Window
+              </span>
+              <ChevronRight size={14} color="#c084fc" />
             </div>
           </div>
         </div>

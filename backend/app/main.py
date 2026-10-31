@@ -12,7 +12,17 @@ from fastapi import FastAPI, HTTPException, Query, Request, WebSocket, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
-from app.models import CompanySummary, CompanyDetail, IndexItem, GiftNiftyDetail, IndiaVixDetail, NewsItem, NewsResponse
+from app.models import (
+    CompanySummary,
+    CompanyDetail,
+    IndexItem,
+    GiftNiftyDetail,
+    IndiaVixDetail,
+    NewsItem,
+    NewsResponse,
+    DealItem,
+    DealsResponse
+)
 from app.companies_data import (
     NIFTY_50_REGISTRY,
     get_all_companies_summary,
@@ -23,6 +33,7 @@ from app.tick_engine import tick_engine, is_indian_market_open, get_gift_nifty_s
 from app.tradingview_client import tv_streamer
 from app.news_engine import news_engine
 from app.institutional_holdings_engine import institutional_engine
+from app.deals_engine import deals_engine
 from app.dashboard_html import get_backend_dashboard_html
 try:
     from app.tickertape_client import tickertape_client
@@ -164,6 +175,10 @@ def root(request: Request):
             "/ws/live-ticks",
             "/api/fii-dii",
             "/api/institutional-holdings",
+            "/api/deals",
+            "/api/deals/bulk",
+            "/api/deals/block",
+            "/api/deals/strategies",
             "/api/news",
             "/api/sectors",
             "/api/market-overview"
@@ -498,6 +513,52 @@ def get_market_and_company_news(
     except Exception as e:
         logger.error("Error retrieving news: %s", e)
         raise HTTPException(status_code=500, detail="Failed to retrieve live news intelligence")
+
+# =========================================================================
+# BULK DEALS & BLOCK DEALS INSTITUTIONAL TRADING ENGINE ENDPOINTS
+# =========================================================================
+
+@app.get("/api/deals", response_model=DealsResponse)
+def get_bulk_and_block_deals(
+    deal_type: Optional[str] = Query("all", description="Filter deal type: all, bulk, block"),
+    action: Optional[str] = Query("all", description="Filter trade action: all, BUY, SELL"),
+    category: Optional[str] = Query("all", description="Filter client category: all, FII, DII, MUTUAL_FUND, PROMOTER, HNI"),
+    search: Optional[str] = Query(None, description="Search by symbol, company name, client name or sector"),
+    sort_by: str = Query("value_desc", description="Sort order: value_desc, value_asc, qty_desc, equity_desc, diff_desc"),
+    limit: int = Query(50, description="Max deals to return")
+):
+    """Retrieve official SEBI Bulk Deals and Block Deals with live price cushion and actionable signals."""
+    try:
+        return deals_engine.get_all_deals(
+            deal_type=deal_type,
+            action=action,
+            category=category,
+            search=search,
+            sort_by=sort_by,
+            limit=limit
+        )
+    except Exception as e:
+        logger.error("Error retrieving bulk/block deals: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to retrieve deals data")
+
+@app.get("/api/deals/bulk")
+def get_bulk_deals_only(limit: int = Query(50, description="Max bulk deals")):
+    """Convenience endpoint dedicated exclusively to SEBI Bulk Deals (>= 0.5% equity)."""
+    return deals_engine.get_all_deals(deal_type="BULK", limit=limit)
+
+@app.get("/api/deals/block")
+def get_block_deals_only(limit: int = Query(50, description="Max block deals")):
+    """Convenience endpoint dedicated exclusively to SEBI Block Deals (>= ₹10 Cr window)."""
+    return deals_engine.get_all_deals(deal_type="BLOCK", limit=limit)
+
+@app.get("/api/deals/strategies")
+def get_deals_trading_strategies():
+    """Retrieve comprehensive institutional trading strategies for utilizing bulk and block deals."""
+    return {
+        "status": "success",
+        "title": "Trader's Playbook: How to Profitably Trade Bulk & Block Deals",
+        "strategies": deals_engine.get_trading_strategies()
+    }
 
 # =========================================================================
 # COMPANIES & CONSTITUENTS ENDPOINTS
