@@ -249,7 +249,7 @@ export default function FiiDiiPage() {
 
   // Sanitizer guaranteeing valid official NSE URLs and preventing 404 / broken links
   const getOfficialNseUrl = (symbol: string, rawUrl?: string) => {
-    if (!rawUrl || rawUrl.includes('nsearchives') || rawUrl.includes('.xml') || rawUrl.includes('SHP_')) {
+    if (!rawUrl || rawUrl.includes('nsearchives') || rawUrl.includes('.xml') || rawUrl.includes('SHP_') || rawUrl.includes('.pdf')) {
       return `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(symbol)}`;
     }
     return rawUrl;

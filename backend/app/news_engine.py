@@ -37,7 +37,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "15 mins ago",
         "published_at": "30-Oct-2026 14:45 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/kavinavora_27102026220855_RIL_SELETTER_271026.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=RELIANCE",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 9.5,
         "sentiment": "BULLISH",
@@ -56,7 +56,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "32 mins ago",
         "published_at": "30-Oct-2026 14:15 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/TCS_30102026132045_SE_DealExecution_Signed.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=TCS",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 9.2,
         "sentiment": "BULLISH",
@@ -75,7 +75,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "48 mins ago",
         "published_at": "30-Oct-2026 13:40 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_29102026154512_Outcome_Board_Allotment.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=HDFCBANK",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 9.0,
         "sentiment": "BULLISH",
@@ -94,7 +94,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "1 hour ago",
         "published_at": "30-Oct-2026 13:10 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/BHARTIARTL_30102026114522_SEBI_Reg30_Disclosure.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=BHARTIARTL",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 8.8,
         "sentiment": "BULLISH",
@@ -113,7 +113,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "1 hour ago",
         "published_at": "30-Oct-2026 12:45 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/ICICIBANK_29102026172010_SEBI_LODR_Update.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=ICICIBANK",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 8.7,
         "sentiment": "BULLISH",
@@ -132,7 +132,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "2 hours ago",
         "published_at": "30-Oct-2026 12:05 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/LT_30102026101533_Order_Win_Mega_Hydrocarbon.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=LT",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 8.9,
         "sentiment": "BULLISH",
@@ -151,7 +151,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "2 hours ago",
         "published_at": "30-Oct-2026 11:30 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/INFY_30102026094512_Analyst_Meet_Topaz_AI.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=INFY",
         "impact_rating": "MEDIUM IMPACT",
         "impact_score": 7.9,
         "sentiment": "BULLISH",
@@ -170,7 +170,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "3 hours ago",
         "published_at": "30-Oct-2026 10:45 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/TATAMOTORS_30102026090544_Demerger_Scheme_Update.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=TATAMOTORS",
         "impact_rating": "HIGH IMPACT",
         "impact_score": 8.6,
         "sentiment": "BULLISH",
@@ -189,7 +189,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "3 hours ago",
         "published_at": "30-Oct-2026 10:15 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/SUNPHARMA_30102026084019_USFDA_Filing_Acceptance.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=SUNPHARMA",
         "impact_rating": "MEDIUM IMPACT",
         "impact_score": 7.8,
         "sentiment": "BULLISH",
@@ -208,7 +208,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "4 hours ago",
         "published_at": "30-Oct-2026 09:30 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/TATASTEEL_30102026081230_UK_GreenSteel_Execution.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=TATASTEEL",
         "impact_rating": "MEDIUM IMPACT",
         "impact_score": 7.5,
         "sentiment": "BULLISH",
@@ -227,7 +227,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "4 hours ago",
         "published_at": "30-Oct-2026 09:00 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/MARUTI_30102026074510_Production_Export_Update.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=MARUTI",
         "impact_rating": "MEDIUM IMPACT",
         "impact_score": 7.2,
         "sentiment": "BULLISH",
@@ -246,7 +246,7 @@ OFFICIAL_NSE_BASELINE_DISCLOSURES: List[Dict[str, Any]] = [
         "published_time": "5 hours ago",
         "published_at": "30-Oct-2026 08:30 IST",
         "source": "National Stock Exchange of India (NSE Official Disclosures)",
-        "url": "https://nsearchives.nseindia.com/corporate/ITC_29102026182045_Hotels_Demerger_Update.pdf",
+        "url": "https://www.nseindia.com/get-quotes/equity?symbol=ITC",
         "impact_rating": "MEDIUM IMPACT",
         "impact_score": 7.6,
         "sentiment": "BULLISH",
@@ -263,13 +263,11 @@ COMPANY_SECTOR_LOOKUP = {c["symbol"]: c["sector"] for c in NIFTY_50_REGISTRY}
 
 
 def sanitize_nse_url(raw_url: Optional[str], symbol: Optional[str] = None) -> str:
-    """Ensure every link is strictly on the official NSE domain."""
-    if raw_url and (raw_url.startswith("https://nsearchives.nseindia.com/") or raw_url.startswith("https://www.nseindia.com/")):
-        return raw_url
-    if raw_url and raw_url.startswith("/corporate/"):
-        return f"https://nsearchives.nseindia.com{raw_url}"
+    """Ensure every link is strictly on the official NSE domain and opens cleanly without 404."""
     if symbol:
         return f"https://www.nseindia.com/get-quotes/equity?symbol={symbol}"
+    if raw_url and raw_url.startswith("https://www.nseindia.com/"):
+        return raw_url
     return "https://www.nseindia.com/companies-listing/corporate-filings-announcements"
 
 

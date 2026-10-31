@@ -395,7 +395,17 @@ function CompanyDetailInner() {
                     Type: {filing.filing_type} • Broadcast: {filing.broadcast_date}
                   </div>
                 </div>
-                <a href={filing.file_url} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: '0.8rem' }}>
+                <a
+                  href={
+                    filing.file_url && !filing.file_url.includes('nsearchives') && !filing.file_url.includes('.xml')
+                      ? filing.file_url
+                      : `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(company.symbol)}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.8rem' }}
+                >
                   <ExternalLink size={14} /> Open NSE PDF
                 </a>
               </div>

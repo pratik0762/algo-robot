@@ -8,9 +8,9 @@ import json
 import logging
 import time
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
 from app.models import CompanySummary, CompanyDetail, IndexItem, GiftNiftyDetail, IndiaVixDetail, NewsItem, NewsResponse
 from app.companies_data import (
@@ -23,6 +23,7 @@ from app.tick_engine import tick_engine, is_indian_market_open, get_gift_nifty_s
 from app.tradingview_client import tv_streamer
 from app.news_engine import news_engine
 from app.institutional_holdings_engine import institutional_engine
+from app.dashboard_html import get_backend_dashboard_html
 try:
     from app.tickertape_client import tickertape_client
 except ImportError:
@@ -137,13 +138,21 @@ app.add_middleware(
 nse_client = NseClient()
 
 @app.get("/")
-def root():
+def root(request: Request):
+    """Root endpoint: serves interactive Backend Dashboard in browser, JSON for API clients."""
+    accept = request.headers.get("accept", "")
+    format_param = request.query_params.get("format", "")
+    if "text/html" in accept and format_param != "json":
+        return HTMLResponse(get_backend_dashboard_html())
     return {
         "status": "online",
         "service": "Nifty 50 Financial Reports & All Indices Intelligence API",
         "total_companies": len(NIFTY_50_REGISTRY),
         "source": "National Stock Exchange of India (NSE) & NSE IX",
         "endpoints": [
+            "/dashboard",
+            "/docs",
+            "/redoc",
             "/api/companies",
             "/api/companies/{symbol}",
             "/api/indices",
@@ -153,10 +162,18 @@ def root():
             "/api/stocks/live-ticks",
             "/api/ticks/stream",
             "/ws/live-ticks",
+            "/api/fii-dii",
+            "/api/institutional-holdings",
+            "/api/news",
             "/api/sectors",
             "/api/market-overview"
         ]
     }
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def get_dashboard():
+    """Direct route to the interactive FastAPI Backend Control Center UI."""
+    return HTMLResponse(get_backend_dashboard_html())
 
 # =========================================================================
 # REAL-TIME LIVE STOCK TICKS (WEBSOCKET, SSE, & REST)

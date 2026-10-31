@@ -72,6 +72,16 @@ export default function NewsPage() {
   const [selectedImpact, setSelectedImpact] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  // Sanitizer guaranteeing valid official NSE URLs and preventing 404 / broken links
+  const getOfficialNseUrl = (symbol?: string, rawUrl?: string) => {
+    if (!rawUrl || rawUrl.includes('nsearchives') || rawUrl.includes('.xml') || rawUrl.includes('.pdf')) {
+      return symbol && symbol !== 'BROAD_MARKET'
+        ? `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(symbol)}`
+        : 'https://www.nseindia.com/companies-listing/corporate-filings-announcements';
+    }
+    return rawUrl;
+  };
+
   const fetchNews = async (isManual: boolean = false, retries = 2) => {
     if (isManual) setRefreshing(true);
     try {
@@ -492,7 +502,7 @@ export default function NewsPage() {
                     </div>
 
                     <a
-                      href={item.url}
+                      href={getOfficialNseUrl(item.company_symbol, item.url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
@@ -787,7 +797,7 @@ export default function NewsPage() {
                       ))}
 
                       <a
-                        href={item.url}
+                        href={getOfficialNseUrl(item.company_symbol, item.url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

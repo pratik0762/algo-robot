@@ -850,7 +850,11 @@ export default function CompanyDrawer({
                         </span>
                       )}
                       <a
-                        href={filing.file_url}
+                        href={
+                          filing.file_url && !filing.file_url.includes('nsearchives') && !filing.file_url.includes('.xml')
+                            ? filing.file_url
+                            : `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(company.symbol)}`
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn btn-primary"
