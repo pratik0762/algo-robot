@@ -248,7 +248,10 @@ class DealItem(BaseModel):
     equity_percentage: float
     execution_window: str
     trade_date: str
+    trade_date_iso: Optional[str] = None
     trade_time: str
+    timestamp_epoch: Optional[float] = None
+    days_ago: Optional[int] = None
     actionable_signal: str
     strategy_takeaway: str
     nse_official_url: str

@@ -520,36 +520,56 @@ def get_market_and_company_news(
 
 @app.get("/api/deals", response_model=DealsResponse)
 def get_bulk_and_block_deals(
-    deal_type: Optional[str] = Query("all", description="Filter deal type: all, bulk, block"),
+    deal_type: Optional[str] = Query("all", description="Filter deal type: all, bulk, block, short_selling"),
     action: Optional[str] = Query("all", description="Filter trade action: all, BUY, SELL"),
-    category: Optional[str] = Query("all", description="Filter client category: all, FII, DII, MUTUAL_FUND, PROMOTER, HNI"),
+    category: Optional[str] = Query("all", description="Filter client category: all, FII, DII, MUTUAL_FUND, PROMOTER, HNI, PROP_DESK"),
+    time_range: Optional[str] = Query(None, description="Time filter: 1D, 1W, 1M, 3M, 6M, 1Y, custom, all"),
+    start_date: Optional[str] = Query(None, description="Start date for custom range (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="End date for custom range (YYYY-MM-DD)"),
     search: Optional[str] = Query(None, description="Search by symbol, company name, client name or sector"),
-    sort_by: str = Query("value_desc", description="Sort order: value_desc, value_asc, qty_desc, equity_desc, diff_desc"),
-    limit: int = Query(50, description="Max deals to return")
+    sort_by: str = Query("date_desc", description="Sort order: date_desc, date_asc, value_desc, value_asc, qty_desc, equity_desc, diff_desc"),
+    limit: int = Query(100, description="Max deals to return")
 ):
-    """Retrieve official SEBI Bulk Deals and Block Deals with live price cushion and actionable signals."""
+    """Retrieve official SEBI Bulk Deals, Block Deals, and Short Selling Disclosures organized by date."""
     try:
         return deals_engine.get_all_deals(
             deal_type=deal_type,
             action=action,
             category=category,
+            time_range=time_range,
+            start_date=start_date,
+            end_date=end_date,
             search=search,
             sort_by=sort_by,
             limit=limit
         )
     except Exception as e:
-        logger.error("Error retrieving bulk/block deals: %s", e)
+        logger.error("Error retrieving market deals: %s", e)
         raise HTTPException(status_code=500, detail="Failed to retrieve deals data")
 
 @app.get("/api/deals/bulk")
-def get_bulk_deals_only(limit: int = Query(50, description="Max bulk deals")):
+def get_bulk_deals_only(
+    time_range: Optional[str] = Query(None),
+    limit: int = Query(100, description="Max bulk deals")
+):
     """Convenience endpoint dedicated exclusively to SEBI Bulk Deals (>= 0.5% equity)."""
-    return deals_engine.get_all_deals(deal_type="BULK", limit=limit)
+    return deals_engine.get_all_deals(deal_type="BULK", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/block")
-def get_block_deals_only(limit: int = Query(50, description="Max block deals")):
+def get_block_deals_only(
+    time_range: Optional[str] = Query(None),
+    limit: int = Query(100, description="Max block deals")
+):
     """Convenience endpoint dedicated exclusively to SEBI Block Deals (>= ₹10 Cr window)."""
-    return deals_engine.get_all_deals(deal_type="BLOCK", limit=limit)
+    return deals_engine.get_all_deals(deal_type="BLOCK", time_range=time_range, limit=limit)
+
+@app.get("/api/deals/short-selling")
+def get_short_selling_deals_only(
+    time_range: Optional[str] = Query(None),
+    limit: int = Query(100, description="Max short selling deals")
+):
+    """Convenience endpoint dedicated exclusively to SEBI Institutional Short Selling Disclosures."""
+    return deals_engine.get_all_deals(deal_type="SHORT_SELLING", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/strategies")
 def get_deals_trading_strategies():

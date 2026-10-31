@@ -24,7 +24,10 @@ import {
   Lightbulb,
   Crosshair,
   BarChart3,
-  BookOpen
+  BookOpen,
+  Calendar,
+  XCircle,
+  ArrowDownRight
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import NavigationDrawer from '@/components/NavigationDrawer';
@@ -32,12 +35,12 @@ import { getApiBase } from '@/config/api';
 
 export interface DealItem {
   id: string;
-  deal_type: 'BULK' | 'BLOCK';
+  deal_type: 'BULK' | 'BLOCK' | 'SHORT_SELLING';
   symbol: string;
   company_name: string;
   sector: string;
   client_name: string;
-  client_category: 'FII' | 'DII' | 'MUTUAL_FUND' | 'PROMOTER' | 'HNI' | 'PROP_DESK';
+  client_category: 'FII' | 'DII' | 'MUTUAL_FUND' | 'PROMOTER' | 'HNI' | 'PROP_DESK' | 'INSTITUTIONAL';
   action: 'BUY' | 'SELL';
   quantity: number;
   trade_price: number;
@@ -45,7 +48,10 @@ export interface DealItem {
   equity_percentage: number;
   execution_window: string;
   trade_date: string;
+  trade_date_iso?: string;
   trade_time: string;
+  timestamp_epoch?: number;
+  days_ago?: number;
   actionable_signal: string;
   strategy_takeaway: string;
   nse_official_url: string;
@@ -77,12 +83,14 @@ export interface DealsResponse {
   summary: {
     total_bulk_deal_value_cr: number;
     total_block_deal_value_cr: number;
+    total_short_selling_value_cr: number;
     total_buy_value_cr: number;
     total_sell_value_cr: number;
     net_institutional_bias: string;
     total_deals_count: number;
     bulk_deals_count: number;
     block_deals_count: number;
+    short_selling_count: number;
     most_active_stocks: Array<{
       symbol: string;
       name: string;
@@ -96,6 +104,8 @@ export interface DealsResponse {
   timestamp: string;
 }
 
+type DateFilterOption = 'ALL' | '1D' | '1W' | '1M' | '3M' | '6M' | '1Y' | 'CUSTOM';
+
 // Module-level client cache for instant 0ms transitions
 let globalDealsCache: DealsResponse | null = null;
 
@@ -103,9 +113,10 @@ function DealsPageContent() {
   const searchParams = useSearchParams();
   const initialTypeParam = searchParams.get('type');
 
-  const [activeTab, setActiveTab] = useState<'all' | 'bulk' | 'block' | 'playbook'>(() => {
+  const [activeTab, setActiveTab] = useState<'all' | 'bulk' | 'block' | 'short' | 'playbook'>(() => {
     if (initialTypeParam === 'bulk') return 'bulk';
     if (initialTypeParam === 'block') return 'block';
+    if (initialTypeParam === 'short' || initialTypeParam === 'short_selling') return 'short';
     if (initialTypeParam === 'playbook') return 'playbook';
     return 'all';
   });
@@ -115,18 +126,24 @@ function DealsPageContent() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-  // Filters
+  // Exact required Date Filters: 1D, 1W, 1M, 3M, 6M, 1Y, 'Custom', and 'Clear'
+  const [dateFilter, setDateFilter] = useState<DateFilterOption>('ALL');
+  const [customStartDate, setCustomStartDate] = useState<string>('2026-10-01');
+  const [customEndDate, setCustomEndDate] = useState<string>('2026-10-31');
+  const [showCustomInputs, setShowCustomInputs] = useState<boolean>(false);
+
+  // Other filters & search
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [actionFilter, setActionFilter] = useState<'ALL' | 'BUY' | 'SELL'>('ALL');
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
-  const [sortBy, setSortBy] = useState<string>('value_desc');
-  const [selectedStrategy, setSelectedStrategy] = useState<TradingStrategyGuideItem | null>(null);
+  const [sortBy, setSortBy] = useState<string>('date_desc'); // Default: most recent on top
 
   // Sync tab with URL search parameter if changed
   useEffect(() => {
     const typeParam = searchParams.get('type');
     if (typeParam === 'bulk') setActiveTab('bulk');
     else if (typeParam === 'block') setActiveTab('block');
+    else if (typeParam === 'short' || typeParam === 'short_selling') setActiveTab('short');
     else if (typeParam === 'playbook') setActiveTab('playbook');
   }, [searchParams]);
 
@@ -142,12 +159,12 @@ function DealsPageContent() {
     if (isManual) setRefreshing(true);
     try {
       const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/deals?limit=100`);
+      const res = await fetch(`${apiBase}/api/deals?limit=100&sort_by=date_desc`);
       if (res.ok) {
         const json: DealsResponse = await res.json();
         globalDealsCache = json;
         try {
-          sessionStorage.setItem('deals_cache', JSON.stringify(json));
+          sessionStorage.setItem('deals_cache_v2', JSON.stringify(json));
         } catch (_) {}
         setDealsData(json);
       } else {
@@ -157,7 +174,7 @@ function DealsPageContent() {
       if (retries > 0) {
         setTimeout(() => fetchDeals(isManual, retries - 1), 600);
       } else {
-        console.error('Failed to fetch bulk/block deals:', err);
+        console.error('Failed to fetch market deals:', err);
       }
     } finally {
       setLoading(false);
@@ -168,7 +185,7 @@ function DealsPageContent() {
   useEffect(() => {
     if (!globalDealsCache) {
       try {
-        const stored = sessionStorage.getItem('deals_cache');
+        const stored = sessionStorage.getItem('deals_cache_v2');
         if (stored) {
           const parsed = JSON.parse(stored);
           globalDealsCache = parsed;
@@ -179,18 +196,43 @@ function DealsPageContent() {
     }
 
     fetchDeals();
-    const interval = setInterval(() => fetchDeals(), 45000); // 45s auto-refresh
+    const interval = setInterval(() => fetchDeals(), 45000); // 45s live refresh
     return () => clearInterval(interval);
   }, []);
 
-  // Filtered Deals
+  // Filtered & Chronologically Organized Deals
   const filteredDeals = useMemo(() => {
     if (!dealsData?.items) return [];
+
+    const timeRangeDaysMap: Record<string, number> = {
+      '1D': 1,
+      '1W': 7,
+      '1M': 30,
+      '3M': 90,
+      '6M': 180,
+      '1Y': 365,
+    };
+
+    const maxDays = timeRangeDaysMap[dateFilter];
 
     return dealsData.items.filter((item) => {
       // Tab filter
       if (activeTab === 'bulk' && item.deal_type !== 'BULK') return false;
       if (activeTab === 'block' && item.deal_type !== 'BLOCK') return false;
+      if (activeTab === 'short' && item.deal_type !== 'SHORT_SELLING') return false;
+
+      // Date Filter: 1D, 1W, 1M, 3M, 6M, 1Y
+      if (maxDays !== undefined) {
+        if (item.days_ago !== undefined && item.days_ago > maxDays) {
+          return false;
+        }
+      }
+
+      // Date Filter: Custom
+      if (dateFilter === 'CUSTOM' && item.trade_date_iso) {
+        if (customStartDate && item.trade_date_iso < customStartDate) return false;
+        if (customEndDate && item.trade_date_iso > customEndDate) return false;
+      }
 
       // Action filter
       if (actionFilter !== 'ALL' && item.action !== actionFilter) return false;
@@ -205,19 +247,28 @@ function DealsPageContent() {
         const inComp = item.company_name.toLowerCase().includes(s);
         const inClient = item.client_name.toLowerCase().includes(s);
         const inSector = item.sector.toLowerCase().includes(s);
-        if (!inSym && !inComp && !inClient && !inSector) return false;
+        const inDate = item.trade_date.toLowerCase().includes(s);
+        if (!inSym && !inComp && !inClient && !inSector && !inDate) return false;
       }
 
       return true;
     }).sort((a, b) => {
+      // Primary requirement: ORGANIZED BY DATE (Most recent entries at the top)
+      if (sortBy === 'date_desc') {
+        return (b.timestamp_epoch || 0) - (a.timestamp_epoch || 0);
+      }
+      if (sortBy === 'date_asc') {
+        return (a.timestamp_epoch || 0) - (b.timestamp_epoch || 0);
+      }
       if (sortBy === 'value_desc') return b.deal_value_cr - a.deal_value_cr;
       if (sortBy === 'value_asc') return a.deal_value_cr - b.deal_value_cr;
       if (sortBy === 'qty_desc') return b.quantity - a.quantity;
       if (sortBy === 'equity_desc') return b.equity_percentage - a.equity_percentage;
       if (sortBy === 'diff_desc') return (b.price_difference_pct || 0) - (a.price_difference_pct || 0);
-      return 0;
+      // Default fallback: newest date first
+      return (b.timestamp_epoch || 0) - (a.timestamp_epoch || 0);
     });
-  }, [dealsData, activeTab, actionFilter, categoryFilter, searchTerm, sortBy]);
+  }, [dealsData, activeTab, dateFilter, customStartDate, customEndDate, actionFilter, categoryFilter, searchTerm, sortBy]);
 
   const summary = dealsData?.summary;
   const strategies = dealsData?.strategies || [];
@@ -286,26 +337,26 @@ function DealsPageContent() {
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h1 style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.02em', margin: 0, color: '#ffffff' }}>
-                  BULK & BLOCK DEALS
+                <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', margin: 0, color: '#ffffff' }}>
+                  MARKET DEAL
                 </h1>
                 <span
                   style={{
-                    background: 'rgba(6, 182, 212, 0.15)',
+                    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)',
                     color: '#22d3ee',
                     fontSize: '0.65rem',
                     fontWeight: 800,
                     padding: '2px 8px',
                     borderRadius: '6px',
                     border: '1px solid rgba(6, 182, 212, 0.3)',
-                    letterSpacing: '0.05em',
+                    letterSpacing: '0.04em',
                   }}
                 >
-                  SEBI DISCLOSURES & TRADING PLAYBOOK
+                  BULK &bull; BLOCK &bull; SHORT SELLING
                 </span>
               </div>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
-                Track who is trading which companies, traded volume, execution price cushion & actionable trading strategies
+                Track who is trading which companies, traded volume, short selling disclosures &amp; date-filtered institutional analytics
               </p>
             </div>
           </div>
@@ -324,7 +375,7 @@ function DealsPageContent() {
                 color: activeTab === 'playbook' ? '#34d399' : '#ffffff',
                 border: activeTab === 'playbook' ? '1px solid #10b981' : '1px solid var(--border-subtle)',
               }}
-              title="View Institutional Trading Playbook"
+              title="View Institutional Trading Playbook & Short Squeeze Tactics"
             >
               <BookOpen size={14} />
               <span>How to Trade Deals</span>
@@ -335,7 +386,7 @@ function DealsPageContent() {
               disabled={refreshing}
               className="btn btn-secondary"
               style={{ padding: '8px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-              title="Refresh latest deals"
+              title="Refresh latest deals feed"
             >
               <RefreshCw size={14} className={refreshing ? 'pulse-indicator' : ''} />
               {refreshing ? 'Updating...' : 'Refresh Feed'}
@@ -357,7 +408,7 @@ function DealsPageContent() {
             border: '1px solid rgba(6, 182, 212, 0.35)',
             borderRadius: '14px',
             padding: '16px 20px',
-            marginBottom: '24px',
+            marginBottom: '20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -371,7 +422,7 @@ function DealsPageContent() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '12px',
-                background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                background: 'linear-gradient(135deg, #0891b2 0%, #a855f7 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -385,14 +436,14 @@ function DealsPageContent() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#ffffff' }}>
-                  Actionable Trader&apos;s Playbook: How to Trade Bulk &amp; Block Deals
+                  Institutional Strategy: How to Trade Bulk Deals, Block Windows &amp; Short Squeezes
                 </span>
                 <span className="badge badge-success" style={{ fontSize: '0.62rem' }}>
-                  INSTITUTIONAL STRATEGY
+                  TRADER&apos;S PLAYBOOK
                 </span>
               </div>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '3px 0 0 0', lineHeight: 1.4 }}>
-                Learn how to exploit the <strong>Institutional Floor Price Setup</strong>, trade <strong>Whale Breakouts</strong>, and avoid high-frequency arbitrage traps.
+                Discover how to exploit <strong>Floor Price Reversals</strong>, track <strong>Short Selling Traps &amp; Squeezes</strong>, and filter out HFT prop churn.
               </p>
             </div>
           </div>
@@ -407,7 +458,7 @@ function DealsPageContent() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                background: 'linear-gradient(135deg, #0891b2 0%, #a855f7 100%)',
                 border: 'none',
               }}
             >
@@ -420,7 +471,7 @@ function DealsPageContent() {
               rel="noopener noreferrer"
               className="btn btn-secondary"
               style={{ fontSize: '0.78rem', padding: '8px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-              title="Official NSE Bulk & Block Deals Report"
+              title="Official NSE Bulk, Block Deals & Short Selling Reports"
             >
               <ExternalLink size={14} />
               NSE Official Portal
@@ -435,7 +486,7 @@ function DealsPageContent() {
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
               gap: '16px',
-              marginBottom: '24px',
+              marginBottom: '20px',
             }}
           >
             {/* Card 1: Bulk Deals Value */}
@@ -444,28 +495,28 @@ function DealsPageContent() {
                 background: 'var(--panel)',
                 border: '1px solid rgba(6, 182, 212, 0.3)',
                 borderRadius: '14px',
-                padding: '18px 20px',
+                padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#22d3ee' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   BULK DEALS (SEBI &ge;0.5%)
                 </span>
                 <Layers size={16} />
               </div>
-              <div style={{ margin: '10px 0 4px 0' }}>
-                <div style={{ fontSize: '1.65rem', fontWeight: 900, color: '#ffffff' }}>
+              <div style={{ margin: '8px 0 2px 0' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
                   ₹{summary.total_bulk_deal_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
                 </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                  {summary.bulk_deals_count} High-Impact Open Market Deals
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  {summary.bulk_deals_count} Open-Market Transactions
                 </div>
               </div>
-              <div style={{ fontSize: '0.70rem', color: '#22d3ee', fontWeight: 600 }}>
-                Disclosed post-market / live exchange hours
+              <div style={{ fontSize: '0.68rem', color: '#22d3ee', fontWeight: 600 }}>
+                Normal exchange trading hours
               </div>
             </div>
 
@@ -475,132 +526,116 @@ function DealsPageContent() {
                 background: 'var(--panel)',
                 border: '1px solid rgba(168, 85, 247, 0.3)',
                 borderRadius: '14px',
-                padding: '18px 20px',
+                padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#c084fc' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   BLOCK DEALS (&ge;₹10 CR)
                 </span>
                 <Boxes size={16} />
               </div>
-              <div style={{ margin: '10px 0 4px 0' }}>
-                <div style={{ fontSize: '1.65rem', fontWeight: 900, color: '#ffffff' }}>
+              <div style={{ margin: '8px 0 2px 0' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
                   ₹{summary.total_block_deal_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
                 </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                  {summary.block_deals_count} Dedicated Window Executions
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  {summary.block_deals_count} Dedicated Window Deals
                 </div>
               </div>
-              <div style={{ fontSize: '0.70rem', color: '#c084fc', fontWeight: 600 }}>
-                Concealed order book (Window 1 &amp; Window 2)
+              <div style={{ fontSize: '0.68rem', color: '#c084fc', fontWeight: 600 }}>
+                Concealed order book matching
               </div>
             </div>
 
-            {/* Card 3: Institutional Buy vs Sell Flow */}
+            {/* Card 3: Short Selling Disclosures Value */}
+            <div
+              style={{
+                background: 'var(--panel)',
+                border: '1px solid rgba(236, 72, 153, 0.3)',
+                borderRadius: '14px',
+                padding: '16px 18px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#f472b6' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  SHORT SELLING DISCLOSURES
+                </span>
+                <ArrowDownRight size={16} />
+              </div>
+              <div style={{ margin: '8px 0 2px 0' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ffffff' }}>
+                  ₹{summary.total_short_selling_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  {summary.short_selling_count} Institutional Short Positions
+                </div>
+              </div>
+              <div style={{ fontSize: '0.68rem', color: '#f472b6', fontWeight: 600 }}>
+                SEBI daily mandated institutional reporting
+              </div>
+            </div>
+
+            {/* Card 4: Institutional Bias & Net Buy/Sell */}
             <div
               style={{
                 background: 'var(--panel)',
                 border: '1px solid rgba(16, 185, 129, 0.3)',
                 borderRadius: '14px',
-                padding: '18px 20px',
+                padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#34d399' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  INSTITUTIONAL BIAS
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  NET INSTITUTIONAL BIAS
                 </span>
                 <TrendingUp size={16} />
               </div>
-              <div style={{ margin: '10px 0 4px 0' }}>
+              <div style={{ margin: '8px 0 2px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.65rem', fontWeight: 900, color: summary.net_institutional_bias === 'BULLISH' ? '#34d399' : '#f87171' }}>
+                  <span style={{ fontSize: '1.5rem', fontWeight: 900, color: summary.net_institutional_bias === 'BULLISH' ? '#34d399' : '#f87171' }}>
                     {summary.net_institutional_bias}
                   </span>
-                  <span className={`badge ${summary.net_institutional_bias === 'BULLISH' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.62rem' }}>
-                    NET ACCUMULATION
+                  <span className={`badge ${summary.net_institutional_bias === 'BULLISH' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.60rem' }}>
+                    ACCUMULATION
                   </span>
                 </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                  Buys: <strong style={{ color: '#34d399' }}>₹{summary.total_buy_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr</strong> &bull; Sells: <strong style={{ color: '#f87171' }}>₹{summary.total_sell_value_cr.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr</strong>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  Buy: <strong style={{ color: '#34d399' }}>₹{summary.total_buy_value_cr.toFixed(0)} Cr</strong> &bull; Sell: <strong style={{ color: '#f87171' }}>₹{summary.total_sell_value_cr.toFixed(0)} Cr</strong>
                 </div>
               </div>
-              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
-                Absorption ratio: {(summary.total_buy_value_cr / Math.max(summary.total_sell_value_cr, 1)).toFixed(2)}x
-              </div>
-            </div>
-
-            {/* Card 4: Most Active Marquee Stocks */}
-            <div
-              style={{
-                background: 'var(--panel)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '14px',
-                padding: '18px 20px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fbbf24' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  MOST ACTIVE STOCKS
-                </span>
-                <Flame size={16} />
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '10px 0 4px 0' }}>
-                {summary.most_active_stocks.map((stk) => (
-                  <button
-                    key={stk.symbol}
-                    onClick={() => {
-                      setSearchTerm(stk.symbol);
-                      if (activeTab === 'playbook') setActiveTab('all');
-                    }}
-                    style={{
-                      background: searchTerm === stk.symbol ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.05)',
-                      border: searchTerm === stk.symbol ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
-                      borderRadius: '6px',
-                      padding: '4px 8px',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      color: searchTerm === stk.symbol ? '#38bdf8' : '#ffffff',
-                      cursor: 'pointer',
-                    }}
-                    title={`Filter deals for ${stk.symbol} (₹${stk.total_value_cr} Cr)`}
-                  >
-                    {stk.symbol} <span style={{ color: 'var(--text-muted)', fontSize: '0.62rem' }}>₹{stk.total_value_cr.toFixed(0)}Cr</span>
-                  </button>
-                ))}
-              </div>
-              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
-                Click any symbol to isolate transactions
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                {(summary.total_buy_value_cr / Math.max(summary.total_sell_value_cr, 1)).toFixed(2)}x Absorption
               </div>
             </div>
           </div>
         )}
 
-        {/* Navigation Tabs */}
+        {/* Section Tabs: All, Bulk, Block, Short Selling, Playbook */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             borderBottom: '1px solid var(--border-subtle)',
-            marginBottom: '20px',
+            marginBottom: '16px',
             overflowX: 'auto',
           }}
         >
           <button
             onClick={() => setActiveTab('all')}
             style={{
-              padding: '12px 18px',
-              fontSize: '0.85rem',
+              padding: '10px 16px',
+              fontSize: '0.84rem',
               fontWeight: activeTab === 'all' ? 800 : 500,
               color: activeTab === 'all' ? '#38bdf8' : 'var(--text-secondary)',
               borderBottom: activeTab === 'all' ? '2px solid #38bdf8' : '2px solid transparent',
@@ -615,8 +650,8 @@ function DealsPageContent() {
               whiteSpace: 'nowrap',
             }}
           >
-            <span>All Deals</span>
-            <span className="badge badge-primary" style={{ fontSize: '0.65rem' }}>
+            <span>All Deals &amp; Disclosures</span>
+            <span className="badge badge-primary" style={{ fontSize: '0.62rem' }}>
               {dealsData?.items.length || 0}
             </span>
           </button>
@@ -624,8 +659,8 @@ function DealsPageContent() {
           <button
             onClick={() => setActiveTab('bulk')}
             style={{
-              padding: '12px 18px',
-              fontSize: '0.85rem',
+              padding: '10px 16px',
+              fontSize: '0.84rem',
               fontWeight: activeTab === 'bulk' ? 800 : 500,
               color: activeTab === 'bulk' ? '#06b6d4' : 'var(--text-secondary)',
               borderBottom: activeTab === 'bulk' ? '2px solid #06b6d4' : '2px solid transparent',
@@ -642,7 +677,7 @@ function DealsPageContent() {
           >
             <Layers size={14} />
             <span>Bulk Deals (SEBI &ge;0.5%)</span>
-            <span className="badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: '#22d3ee', fontSize: '0.65rem' }}>
+            <span className="badge" style={{ background: 'rgba(6, 182, 212, 0.2)', color: '#22d3ee', fontSize: '0.62rem' }}>
               {dealsData?.items.filter((d) => d.deal_type === 'BULK').length || 0}
             </span>
           </button>
@@ -650,8 +685,8 @@ function DealsPageContent() {
           <button
             onClick={() => setActiveTab('block')}
             style={{
-              padding: '12px 18px',
-              fontSize: '0.85rem',
+              padding: '10px 16px',
+              fontSize: '0.84rem',
               fontWeight: activeTab === 'block' ? 800 : 500,
               color: activeTab === 'block' ? '#a855f7' : 'var(--text-secondary)',
               borderBottom: activeTab === 'block' ? '2px solid #a855f7' : '2px solid transparent',
@@ -668,16 +703,42 @@ function DealsPageContent() {
           >
             <Boxes size={14} />
             <span>Block Deals (&ge;₹10 Cr Window)</span>
-            <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', fontSize: '0.65rem' }}>
+            <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', fontSize: '0.62rem' }}>
               {dealsData?.items.filter((d) => d.deal_type === 'BLOCK').length || 0}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('short')}
+            style={{
+              padding: '10px 16px',
+              fontSize: '0.84rem',
+              fontWeight: activeTab === 'short' ? 800 : 500,
+              color: activeTab === 'short' ? '#f472b6' : 'var(--text-secondary)',
+              borderBottom: activeTab === 'short' ? '2px solid #f472b6' : '2px solid transparent',
+              background: 'transparent',
+              borderTop: 'none',
+              borderLeft: 'none',
+              borderRight: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <ArrowDownRight size={14} />
+            <span>Short Selling Data</span>
+            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#f472b6', fontSize: '0.62rem' }}>
+              {dealsData?.items.filter((d) => d.deal_type === 'SHORT_SELLING').length || 0}
             </span>
           </button>
 
           <button
             onClick={() => setActiveTab('playbook')}
             style={{
-              padding: '12px 18px',
-              fontSize: '0.85rem',
+              padding: '10px 16px',
+              fontSize: '0.84rem',
               fontWeight: activeTab === 'playbook' ? 800 : 500,
               color: activeTab === 'playbook' ? '#34d399' : 'var(--text-secondary)',
               borderBottom: activeTab === 'playbook' ? '2px solid #34d399' : '2px solid transparent',
@@ -693,22 +754,261 @@ function DealsPageContent() {
             }}
           >
             <BookOpen size={14} />
-            <span>Trader&apos;s Playbook (How to Trade)</span>
-            <span className="badge badge-success" style={{ fontSize: '0.65rem' }}>
-              4 STRATEGIES
+            <span>Trader&apos;s Playbook</span>
+            <span className="badge badge-success" style={{ fontSize: '0.62rem' }}>
+              5 STRATEGIES
             </span>
           </button>
         </div>
+
+        {/* DATE FILTERING SYSTEM (1D, 1W, 1M, 3M, 6M, 1Y, 'Custom', and 'Clear') */}
+        <div
+          style={{
+            background: 'var(--panel)',
+            border: '1px solid rgba(56, 189, 248, 0.2)',
+            borderRadius: '12px',
+            padding: '12px 18px',
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <Calendar size={14} />
+              Date Filter:
+            </span>
+
+            {/* 1D */}
+            <button
+              onClick={() => { setDateFilter('1D'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '1D' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '1D' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '1D' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 1 day"
+            >
+              1D
+            </button>
+
+            {/* 1W */}
+            <button
+              onClick={() => { setDateFilter('1W'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '1W' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '1W' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '1W' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 1 week (7 days)"
+            >
+              1W
+            </button>
+
+            {/* 1M */}
+            <button
+              onClick={() => { setDateFilter('1M'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '1M' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '1M' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '1M' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 1 month (30 days)"
+            >
+              1M
+            </button>
+
+            {/* 3M */}
+            <button
+              onClick={() => { setDateFilter('3M'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '3M' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '3M' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '3M' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 3 months (90 days)"
+            >
+              3M
+            </button>
+
+            {/* 6M */}
+            <button
+              onClick={() => { setDateFilter('6M'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '6M' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '6M' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '6M' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 6 months (180 days)"
+            >
+              6M
+            </button>
+
+            {/* 1Y */}
+            <button
+              onClick={() => { setDateFilter('1Y'); setShowCustomInputs(false); }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === '1Y' ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+                background: dateFilter === '1Y' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === '1Y' ? '#38bdf8' : 'var(--text-secondary)',
+              }}
+              title="Filter entries within the last 1 year (365 days)"
+            >
+              1Y
+            </button>
+
+            {/* 'Custom' */}
+            <button
+              onClick={() => {
+                setDateFilter('CUSTOM');
+                setShowCustomInputs(!showCustomInputs || dateFilter !== 'CUSTOM');
+              }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: dateFilter === 'CUSTOM' ? '1px solid #a855f7' : '1px solid var(--border-subtle)',
+                background: dateFilter === 'CUSTOM' ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: dateFilter === 'CUSTOM' ? '#c084fc' : 'var(--text-secondary)',
+              }}
+              title="Pick a custom start and end date range"
+            >
+              Custom
+            </button>
+
+            {/* 'Clear' */}
+            <button
+              onClick={() => {
+                setDateFilter('ALL');
+                setShowCustomInputs(false);
+              }}
+              style={{
+                padding: '5px 12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                background: 'rgba(239, 68, 68, 0.1)',
+                color: '#f87171',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+              title="Clear all date filters and show complete historical records"
+            >
+              <XCircle size={13} />
+              Clear
+            </button>
+          </div>
+
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Clock size={13} color="#10b981" />
+            <span>Organized chronologically: <strong>Most recent entries on top</strong></span>
+          </div>
+        </div>
+
+        {/* Custom Date Picker Bar (when 'Custom' is selected) */}
+        {showCustomInputs && dateFilter === 'CUSTOM' && (
+          <div
+            style={{
+              background: 'rgba(168, 85, 247, 0.08)',
+              border: '1px solid rgba(168, 85, 247, 0.3)',
+              borderRadius: '10px',
+              padding: '12px 18px',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: 700 }}>From Date:</span>
+              <input
+                type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '6px',
+                  background: 'rgba(15, 23, 42, 0.8)',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  color: '#ffffff',
+                  fontSize: '0.75rem',
+                  outline: 'none',
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: 700 }}>To Date:</span>
+              <input
+                type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '6px',
+                  background: 'rgba(15, 23, 42, 0.8)',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  color: '#ffffff',
+                  fontSize: '0.75rem',
+                  outline: 'none',
+                }}
+              />
+            </div>
+
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              Filtering between {customStartDate} and {customEndDate}
+            </span>
+          </div>
+        )}
 
         {/* IF PLAYBOOK TAB SELECTED */}
         {activeTab === 'playbook' ? (
           <div>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
-                INSTITUTIONAL TRADER&apos;S PLAYBOOK: HOW TO TRADE BULK &amp; BLOCK DEALS
+                INSTITUTIONAL TRADER&apos;S PLAYBOOK: HOW TO TRADE MARKET DEALS &amp; SHORT SELLING
               </h2>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                A step-by-step masterclass on decoding institutional footprint, identifying floor prices, timing whale breakout momentum, and protecting your trading capital.
+                A step-by-step masterclass on decoding institutional footprints, identifying floor prices, exploiting short squeezes, and protecting trading capital.
               </p>
             </div>
 
@@ -724,39 +1024,49 @@ function DealsPageContent() {
             >
               <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#38bdf8', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <HelpCircle size={18} />
-                The Fundamental Difference: Bulk Deal vs. Block Deal
+                Market Deals Architecture: Bulk Deals, Block Windows &amp; Short Selling
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
                 <div style={{ background: 'rgba(6, 182, 212, 0.06)', border: '1px solid rgba(6, 182, 212, 0.25)', borderRadius: '10px', padding: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                     <Layers size={16} color="#06b6d4" />
-                    <strong style={{ color: '#22d3ee', fontSize: '0.85rem' }}>BULK DEAL (SEBI LODR)</strong>
+                    <strong style={{ color: '#22d3ee', fontSize: '0.85rem' }}>BULK DEALS (SEBI LODR)</strong>
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    <li><strong>Threshold:</strong> Any single or aggregate trade exceeding <strong>0.5% of total listed equity shares</strong>.</li>
+                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                    <li><strong>Threshold:</strong> Single or aggregate trade &ge; <strong>0.5% of total listed equity shares</strong>.</li>
                     <li><strong>Execution Window:</strong> Traded during <strong>Normal Market Hours (09:15 AM - 03:30 PM)</strong>.</li>
-                    <li><strong>Impact:</strong> Directly consumes regular exchange order book liquidity, causing immediate intraday price volatility.</li>
-                    <li><strong>Reporting:</strong> Disclosed to NSE immediately or within 1 hour after market close.</li>
+                    <li><strong>Impact:</strong> Consumes regular exchange liquidity, causing immediate intraday volatility.</li>
                   </ul>
                 </div>
 
                 <div style={{ background: 'rgba(168, 85, 247, 0.06)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                     <Boxes size={16} color="#a855f7" />
-                    <strong style={{ color: '#c084fc', fontSize: '0.85rem' }}>BLOCK DEAL (SEBI DEDICATED WINDOW)</strong>
+                    <strong style={{ color: '#c084fc', fontSize: '0.85rem' }}>BLOCK DEALS (DEDICATED WINDOW)</strong>
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
                     <li><strong>Threshold:</strong> Minimum transaction value of <strong>₹10 Crore</strong>.</li>
-                    <li><strong>Execution Window:</strong> Dedicated matching windows: <strong>Morning (08:45 - 09:00 AM)</strong> and <strong>Afternoon (02:05 - 02:20 PM)</strong>.</li>
-                    <li><strong>Impact:</strong> Executed within a tight &plusmn;1% price band of reference price. Orders are concealed to prevent market impact.</li>
-                    <li><strong>Strategic Value:</strong> Establishes major institutional benchmark cost basis for the stock.</li>
+                    <li><strong>Execution Window:</strong> <strong>Morning (08:45 - 09:00 AM)</strong> and <strong>Afternoon (02:05 - 02:20 PM)</strong>.</li>
+                    <li><strong>Impact:</strong> Matched within &plusmn;1% price band with concealed order book.</li>
+                  </ul>
+                </div>
+
+                <div style={{ background: 'rgba(236, 72, 153, 0.06)', border: '1px solid rgba(236, 72, 153, 0.25)', borderRadius: '10px', padding: '14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <ArrowDownRight size={16} color="#ec4899" />
+                    <strong style={{ color: '#f472b6', fontSize: '0.85rem' }}>SHORT SELLING (SEBI MANDATE)</strong>
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                    <li><strong>Threshold:</strong> Daily mandatory reporting of all institutional short sales.</li>
+                    <li><strong>Mechanism:</strong> Borrowed shares sold to capture downside or hedge equity portfolios.</li>
+                    <li><strong>Squeeze Potential:</strong> If price pushes above short level, forced buy-backs trigger explosive short squeezes.</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            {/* 4 Strategy Deep-Dive Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
+            {/* 5 Strategy Deep-Dive Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px' }}>
               {strategies.map((strat, i) => (
                 <div
                   key={strat.id}
@@ -891,7 +1201,7 @@ function DealsPageContent() {
             </div>
           </div>
         ) : (
-          /* DEALS TABLE & CARD VIEW */
+          /* DEALS & SHORT SELLING TABLE VIEW */
           <div>
             {/* Filter Toolbar */}
             <div
@@ -899,31 +1209,31 @@ function DealsPageContent() {
                 background: 'var(--panel)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: '14px',
-                padding: '16px 20px',
-                marginBottom: '20px',
+                padding: '14px 18px',
+                marginBottom: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '14px',
+                gap: '12px',
                 flexWrap: 'wrap',
               }}
             >
               {/* Search Bar */}
-              <div style={{ position: 'relative', flex: 1, minWidth: '240px' }}>
+              <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
                 <Search size={15} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="text"
-                  placeholder="Search by company, symbol or investor (e.g. Morgan Stanley, Zomato, Rekha)..."
+                  placeholder="Search by symbol, company, investor or date (e.g. Citadel, Zomato, 30-Oct)..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '9px 12px 9px 36px',
+                    padding: '8px 12px 8px 36px',
                     borderRadius: '8px',
                     background: 'rgba(255, 255, 255, 0.04)',
                     border: '1px solid var(--border-subtle)',
                     color: '#ffffff',
-                    fontSize: '0.82rem',
+                    fontSize: '0.80rem',
                     boxSizing: 'border-box',
                     outline: 'none',
                   }}
@@ -932,15 +1242,15 @@ function DealsPageContent() {
 
               {/* Action Filter (BUY vs SELL) */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>Action:</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Action:</span>
                 {(['ALL', 'BUY', 'SELL'] as const).map((act) => (
                   <button
                     key={act}
                     onClick={() => setActionFilter(act)}
                     style={{
-                      padding: '6px 12px',
+                      padding: '5px 10px',
                       borderRadius: '6px',
-                      fontSize: '0.74rem',
+                      fontSize: '0.72rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       border: actionFilter === act ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
@@ -959,17 +1269,17 @@ function DealsPageContent() {
 
               {/* Category Filter */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>Investor:</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Investor:</span>
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   style={{
-                    padding: '7px 12px',
+                    padding: '6px 10px',
                     borderRadius: '6px',
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid var(--border-subtle)',
                     color: '#ffffff',
-                    fontSize: '0.76rem',
+                    fontSize: '0.74rem',
                     outline: 'none',
                     cursor: 'pointer',
                   }}
@@ -980,47 +1290,54 @@ function DealsPageContent() {
                   <option value="DII">Domestic Inst. (DII / LIC)</option>
                   <option value="PROMOTER">Promoter &amp; Strategic</option>
                   <option value="HNI">Marquee HNIs &amp; Celebrities</option>
+                  <option value="PROP_DESK">Prop Desks &amp; Arbitrage</option>
                 </select>
               </div>
 
-              {/* Sort By */}
+              {/* Sort By: Default is strictly Newest Date First */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sort:</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sort Order:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   style={{
-                    padding: '7px 12px',
+                    padding: '6px 10px',
                     borderRadius: '6px',
                     background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#ffffff',
-                    fontSize: '0.76rem',
+                    border: '1px solid rgba(56, 189, 248, 0.4)',
+                    color: '#38bdf8',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
                     outline: 'none',
                     cursor: 'pointer',
                   }}
                 >
-                  <option value="value_desc">Highest Value (₹ Cr)</option>
-                  <option value="value_asc">Lowest Value (₹ Cr)</option>
-                  <option value="qty_desc">Highest Volume (Shares)</option>
-                  <option value="equity_desc">Highest Equity %</option>
-                  <option value="diff_desc">Best Price Gain Since Deal</option>
+                  <option value="date_desc">📅 Date: Newest First (Top)</option>
+                  <option value="date_asc">📅 Date: Oldest First</option>
+                  <option value="value_desc">💰 Highest Value (₹ Cr)</option>
+                  <option value="value_asc">💰 Lowest Value (₹ Cr)</option>
+                  <option value="qty_desc">📊 Highest Volume (Shares)</option>
+                  <option value="equity_desc">📈 Highest Equity %</option>
+                  <option value="diff_desc">🚀 Best Price Gain Since Deal</option>
                 </select>
               </div>
             </div>
 
-            {/* Results count banner */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+            {/* Results count & chronological order notice */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '0.74rem', color: 'var(--text-muted)', flexWrap: 'wrap', gap: '8px' }}>
               <div>
-                Showing <strong style={{ color: '#ffffff' }}>{filteredDeals.length}</strong> verified transactions across Indian exchanges
+                Showing <strong style={{ color: '#ffffff' }}>{filteredDeals.length}</strong> entries &bull; Active Date Filter: <strong style={{ color: '#38bdf8' }}>{dateFilter}</strong>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="badge badge-success" style={{ fontSize: '0.62rem' }}>
+                  CHRONOLOGICAL ORDER: MOST RECENT AT TOP
+                </span>
                 <ShieldCheck size={14} color="#10b981" />
-                <span>Audited SEBI &bull; Sourced directly from NSE India</span>
+                <span>Audited SEBI &bull; NSE Disclosures</span>
               </div>
             </div>
 
-            {/* Detailed Deals Table */}
+            {/* Detailed Table with Date Display */}
             <div
               style={{
                 background: 'var(--panel)',
@@ -1044,29 +1361,32 @@ function DealsPageContent() {
                         letterSpacing: '0.04em',
                       }}
                     >
-                      <th style={{ padding: '14px 18px' }}>COMPANY &amp; SECTOR</th>
-                      <th style={{ padding: '14px 18px' }}>CLIENT / TRADER NAME</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'center' }}>DEAL TYPE</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'center' }}>ACTION</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'right' }}>VOLUME (SHARES)</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'right' }}>TOTAL VALUE</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'center' }}>EQUITY %</th>
-                      <th style={{ padding: '14px 18px' }}>TRADING SIGNAL &amp; TAKEAWAY</th>
-                      <th style={{ padding: '14px 18px', textAlign: 'center' }}>NSE LINK</th>
+                      <th style={{ padding: '12px 16px', color: '#38bdf8' }}>DATE &amp; TIME</th>
+                      <th style={{ padding: '12px 16px' }}>COMPANY &amp; SECTOR</th>
+                      <th style={{ padding: '12px 16px' }}>CLIENT / TRADER NAME</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>DEAL TYPE</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>ACTION</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>VOLUME (SHARES)</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>TOTAL VALUE</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>EQUITY %</th>
+                      <th style={{ padding: '12px 16px' }}>SIGNAL &amp; STRATEGY TAKEAWAY</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>NSE LINK</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredDeals.length === 0 ? (
                       <tr>
-                        <td colSpan={10} style={{ padding: '48px 18px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                          No transactions matching your active filter criteria. Try clearing search or switching deal type tab.
+                        <td colSpan={11} style={{ padding: '48px 18px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                          No transactions matching your active date or filter criteria. Click <strong>&quot;Clear&quot;</strong> in the Date Filter bar to reset.
                         </td>
                       </tr>
                     ) : (
                       filteredDeals.map((item, idx) => {
                         const isBuy = item.action === 'BUY';
                         const isBulk = item.deal_type === 'BULK';
+                        const isBlock = item.deal_type === 'BLOCK';
+                        const isShort = item.deal_type === 'SHORT_SELLING';
                         const diffPct = item.price_difference_pct || 0.0;
 
                         return (
@@ -1078,169 +1398,187 @@ function DealsPageContent() {
                               transition: 'background 0.15s ease',
                             }}
                           >
-                            {/* Company Name & Sector */}
-                            <td style={{ padding: '14px 18px' }}>
+                            {/* 1. Explicit DATE & TIME (Mandatory User Requirement) */}
+                            <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <Calendar size={13} color="#38bdf8" />
+                                <strong style={{ color: '#ffffff', fontSize: '0.82rem' }}>
+                                  {item.trade_date}
+                                </strong>
+                              </div>
+                              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <Clock size={11} />
+                                <span>{item.trade_time}</span>
+                                {item.days_ago !== undefined && (
+                                  <span style={{ color: item.days_ago === 0 ? '#34d399' : item.days_ago === 1 ? '#38bdf8' : 'var(--text-muted)', fontWeight: 600 }}>
+                                    &bull; {item.days_ago === 0 ? 'Today' : item.days_ago === 1 ? 'Yesterday' : `${item.days_ago}d ago`}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            {/* 2. Company Name & Sector */}
+                            <td style={{ padding: '12px 16px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.92rem' }}>
+                                <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.90rem' }}>
                                   {item.symbol}
                                 </div>
                                 {item.live_change !== undefined && (
-                                  <span style={{ fontSize: '0.72rem', color: (item.live_change || 0) >= 0 ? '#34d399' : '#f87171', fontWeight: 700 }}>
+                                  <span style={{ fontSize: '0.70rem', color: (item.live_change || 0) >= 0 ? '#34d399' : '#f87171', fontWeight: 700 }}>
                                     {(item.live_change || 0) >= 0 ? '+' : ''}{(item.live_percent_change || 0).toFixed(2)}%
                                   </span>
                                 )}
                               </div>
-                              <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap' }}>
                                 {item.company_name}
                               </div>
-                              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                                 {item.sector}
                               </div>
                             </td>
 
-                            {/* Client Name & Category */}
-                            <td style={{ padding: '14px 18px', maxWidth: '280px' }}>
-                              <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '0.84rem', lineHeight: 1.35 }}>
+                            {/* 3. Client Name & Category */}
+                            <td style={{ padding: '12px 16px', maxWidth: '260px' }}>
+                              <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '0.82rem', lineHeight: 1.35 }}>
                                 {item.client_name}
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
                                 <span
                                   style={{
-                                    fontSize: '0.62rem',
+                                    fontSize: '0.60rem',
                                     fontWeight: 800,
                                     padding: '2px 6px',
                                     borderRadius: '4px',
                                     background: item.client_category === 'FII' ? 'rgba(56, 189, 248, 0.15)' :
                                       item.client_category === 'MUTUAL_FUND' ? 'rgba(168, 85, 247, 0.15)' :
                                       item.client_category === 'PROMOTER' ? 'rgba(245, 158, 11, 0.15)' :
-                                      item.client_category === 'HNI' ? 'rgba(236, 72, 153, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                                      item.client_category === 'HNI' ? 'rgba(236, 72, 153, 0.15)' :
+                                      item.client_category === 'PROP_DESK' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                                     color: item.client_category === 'FII' ? '#38bdf8' :
                                       item.client_category === 'MUTUAL_FUND' ? '#c084fc' :
                                       item.client_category === 'PROMOTER' ? '#fbbf24' :
-                                      item.client_category === 'HNI' ? '#f472b6' : '#34d399',
+                                      item.client_category === 'HNI' ? '#f472b6' :
+                                      item.client_category === 'PROP_DESK' ? '#fb7185' : '#34d399',
                                     border: '1px solid rgba(255, 255, 255, 0.1)',
                                   }}
                                 >
                                   {item.client_category}
                                 </span>
-                                <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                                  {item.trade_date}
-                                </span>
                               </div>
                             </td>
 
-                            {/* Deal Type */}
-                            <td style={{ padding: '14px 18px', textAlign: 'center' }}>
+                            {/* 4. Deal Type Badge */}
+                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                               <span
                                 style={{
-                                  fontSize: '0.68rem',
+                                  fontSize: '0.66rem',
                                   fontWeight: 800,
-                                  padding: '4px 10px',
+                                  padding: '4px 8px',
                                   borderRadius: '6px',
-                                  background: isBulk ? 'rgba(6, 182, 212, 0.15)' : 'rgba(168, 85, 247, 0.15)',
-                                  color: isBulk ? '#22d3ee' : '#c084fc',
-                                  border: isBulk ? '1px solid rgba(6, 182, 212, 0.35)' : '1px solid rgba(168, 85, 247, 0.35)',
+                                  background: isBulk ? 'rgba(6, 182, 212, 0.15)' : isBlock ? 'rgba(168, 85, 247, 0.15)' : 'rgba(236, 72, 153, 0.15)',
+                                  color: isBulk ? '#22d3ee' : isBlock ? '#c084fc' : '#f472b6',
+                                  border: isBulk ? '1px solid rgba(6, 182, 212, 0.35)' : isBlock ? '1px solid rgba(168, 85, 247, 0.35)' : '1px solid rgba(236, 72, 153, 0.35)',
                                   whiteSpace: 'nowrap',
                                 }}
                               >
-                                {isBulk ? 'BULK DEAL' : 'BLOCK DEAL'}
+                                {isBulk ? 'BULK DEAL' : isBlock ? 'BLOCK DEAL' : 'SHORT SELLING'}
                               </span>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                                {isBulk ? 'Normal Hours' : 'Concealed Window'}
+                              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '3px', whiteSpace: 'nowrap' }}>
+                                {isBulk ? 'Normal Market' : isBlock ? 'Block Window' : 'Daily Mandate'}
                               </div>
                             </td>
 
-                            {/* Action BUY / SELL */}
-                            <td style={{ padding: '14px 18px', textAlign: 'center' }}>
+                            {/* 5. Action BUY / SELL */}
+                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                               <span
                                 style={{
-                                  fontSize: '0.72rem',
+                                  fontSize: '0.70rem',
                                   fontWeight: 900,
-                                  padding: '4px 10px',
+                                  padding: '4px 8px',
                                   borderRadius: '6px',
                                   background: isBuy ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
                                   color: isBuy ? '#34d399' : '#f87171',
                                   border: isBuy ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
                                   display: 'inline-flex',
                                   alignItems: 'center',
-                                  gap: '4px',
+                                  gap: '3px',
                                 }}
                               >
-                                {isBuy ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                                {item.action}
+                                {isBuy ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                                {isShort ? 'SHORT' : item.action}
                               </span>
                             </td>
 
-                            {/* Traded Volume (Shares) */}
-                            <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                              <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.88rem' }}>
+                            {/* 6. Traded Volume (Shares) */}
+                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                              <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.84rem' }}>
                                 {item.quantity.toLocaleString('en-IN')}
                               </div>
-                              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
                                 {(item.quantity / 100000).toFixed(2)} Lakh Shares
                               </div>
                             </td>
 
-                            {/* Deal Price vs Current LTP */}
-                            <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                              <div style={{ fontWeight: 800, color: '#38bdf8', fontSize: '0.88rem' }}>
+                            {/* 7. Deal Price vs Current LTP */}
+                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                              <div style={{ fontWeight: 800, color: '#38bdf8', fontSize: '0.85rem' }}>
                                 ₹{item.trade_price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </div>
                               {item.current_market_price && (
-                                <div style={{ fontSize: '0.70rem', color: diffPct >= 0 ? '#34d399' : '#f87171', marginTop: '2px', fontWeight: 600 }}>
+                                <div style={{ fontSize: '0.68rem', color: diffPct >= 0 ? '#34d399' : '#f87171', marginTop: '2px', fontWeight: 600 }}>
                                   LTP: ₹{item.current_market_price.toFixed(1)} ({diffPct >= 0 ? '+' : ''}{diffPct.toFixed(1)}%)
                                 </div>
                               )}
                             </td>
 
-                            {/* Total Deal Value (Crores) */}
-                            <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                              <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '1.0rem', letterSpacing: '-0.01em' }}>
+                            {/* 8. Total Deal Value (Crores) */}
+                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                              <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '0.95rem', letterSpacing: '-0.01em' }}>
                                 ₹{item.deal_value_cr.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Cr
                               </div>
-                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
                                 Transaction Size
                               </div>
                             </td>
 
-                            {/* Equity % */}
-                            <td style={{ padding: '14px 18px', textAlign: 'center' }}>
+                            {/* 9. Equity % */}
+                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                               <span
                                 style={{
-                                  fontSize: '0.78rem',
+                                  fontSize: '0.76rem',
                                   fontWeight: 800,
                                   color: item.equity_percentage >= 1.0 ? '#fbbf24' : '#ffffff',
                                 }}
                               >
                                 {item.equity_percentage.toFixed(2)}%
                               </span>
-                              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                                of Total Capital
+                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
+                                of Capital
                               </div>
                             </td>
 
-                            {/* Trading Signal & Actionable Takeaway */}
-                            <td style={{ padding: '14px 18px', maxWidth: '340px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                                <span style={{ fontWeight: 800, fontSize: '0.76rem', color: '#ffffff' }}>
+                            {/* 10. Signal & Takeaway */}
+                            <td style={{ padding: '12px 16px', maxWidth: '320px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+                                <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#ffffff' }}>
                                   {item.actionable_signal}
                                 </span>
                               </div>
-                              <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                                 {item.strategy_takeaway}
                               </div>
                             </td>
 
-                            {/* NSE Official Link */}
-                            <td style={{ padding: '14px 18px', textAlign: 'center' }}>
+                            {/* 11. NSE Link */}
+                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                               <a
                                 href={getOfficialNseUrl(item.symbol, item.nse_official_url)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn btn-secondary"
                                 style={{
-                                  fontSize: '0.72rem',
-                                  padding: '6px 10px',
+                                  fontSize: '0.70rem',
+                                  padding: '5px 8px',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '4px',
@@ -1250,8 +1588,8 @@ function DealsPageContent() {
                                 }}
                                 title={`Open ${item.symbol} quote & official disclosures on NSE India`}
                               >
-                                <span>Quote &amp; Filing</span>
-                                <ExternalLink size={12} />
+                                <span>NSE Portal</span>
+                                <ExternalLink size={11} />
                               </a>
                             </td>
                           </tr>
