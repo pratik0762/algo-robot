@@ -155,7 +155,7 @@ function generateDefaultChartData(symbol: string): ChartDataResponse {
   let cur = basePrice * 0.94;
   let ema9 = cur;
   let ema21 = cur;
-  const now = Date.now();
+  const BASE_TIMESTAMP = 1730000000000;
   for (let i = 0; i < 45; i++) {
     const timeStr = `${45 - i}d ago`;
     const delta = (Math.sin(i * 0.4) * 0.015 + (i * 0.002)) * basePrice;
@@ -170,7 +170,7 @@ function generateDefaultChartData(symbol: string): ChartDataResponse {
     const st = Math.round((close > ema21 ? low * 0.985 : high * 1.015) * 100) / 100;
     candles.push({
       time: timeStr,
-      timestamp: now - (45 - i) * 86400000,
+      timestamp: BASE_TIMESTAMP - (45 - i) * 86400000,
       open,
       high,
       low,
@@ -214,7 +214,7 @@ function generateDefaultChartData(symbol: string): ChartDataResponse {
   };
 }
 
-export default function ChartingAndHeatmapPage() {
+function ChartingAndHeatmapContent() {
   const [activeView, setActiveView] = useState<'chart' | 'heatmap' | 'signals' | 'playbook'>('chart');
   const [selectedSymbol, setSelectedSymbol] = useState<string>('RELIANCE');
   const [timeframe, setTimeframe] = useState<string>('1D');
@@ -1648,6 +1648,14 @@ export default function ChartingAndHeatmapPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ChartingAndHeatmapPage() {
+  return (
+    <React.Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0d14' }} />}>
+      <ChartingAndHeatmapContent />
+    </React.Suspense>
   );
 }
 

@@ -435,3 +435,4 @@ class SignalsHeatmapEngine:
 
 # Global singleton
 signals_heatmap_engine = SignalsHeatmapEngine()
+
