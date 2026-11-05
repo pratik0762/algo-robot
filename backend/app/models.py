@@ -276,5 +276,40 @@ class DealsResponse(BaseModel):
     timestamp: str
 
 
+class Week52StockItem(BaseModel):
+    symbol: str
+    company_name: str
+    sector: str
+    industry: str
+    market_cap_cr: float
+    current_price: float
+    price_change: float
+    percent_change: float
+    high_52w: float
+    low_52w: float
+    distance_from_high_pct: float
+    distance_from_high_inr: float
+    gain_from_low_pct: float
+    gain_from_low_inr: float
+    range_position_pct: float
+    signal_badge: str
+    signal_category: str
+    sentiment: str
+    pe_ratio: float
+    dividend_yield_pct: float
+    nse_official_url: str
+
+
+class Week52Response(BaseModel):
+    status: str
+    official_source: str
+    regulatory_framework: str
+    summary: Dict[str, Any]
+    timestamp: str
+    items: List[Week52StockItem]
+    count: int
+
+
+
 
 

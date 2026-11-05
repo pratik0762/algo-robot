@@ -252,6 +252,26 @@ export default function NavigationDrawer({
     router.push('/deals');
   };
 
+  const prefetch52Week = () => {
+    try {
+      fetch(`${getApiBase()}/api/52-week`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            try {
+              sessionStorage.setItem('week52_cache', JSON.stringify(d));
+            } catch (_) {}
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelect52Week = () => {
+    onClose();
+    router.push('/52-week');
+  };
+
   return (
     <div
       className="drawer-backdrop"
@@ -309,17 +329,6 @@ export default function NavigationDrawer({
               >
                 MARKET HUBS NAVIGATOR
               </h2>
-              <p
-                style={{
-                  fontSize: '0.70rem',
-                  color: 'var(--text-secondary)',
-                  margin: '2px 0 0 0',
-                  lineHeight: 1.3,
-                  wordBreak: 'break-word',
-                }}
-              >
-                Switch between Index Portals & Institutional Flows
-              </p>
             </div>
           </div>
 
@@ -352,11 +361,11 @@ export default function NavigationDrawer({
             padding: '18px 16px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '10px',
             boxSizing: 'border-box',
           }}
         >
-          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
             Available Market Portals
           </div>
 
@@ -364,23 +373,23 @@ export default function NavigationDrawer({
           <div
             onClick={handleSelectFinancialHub}
             style={{
-              background: pathname === '/' ? 'rgba(99, 102, 241, 0.14)' : 'rgba(255, 255, 255, 0.03)',
+              background: pathname === '/' ? 'rgba(99, 102, 241, 0.16)' : 'rgba(255, 255, 255, 0.03)',
               border: pathname === '/' ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: 'var(--radius-lg)',
-              padding: '14px 14px',
+              padding: '12px 16px',
+              minHeight: '56px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '10px',
+              gap: '12px',
               transition: 'all 0.2s ease',
               boxShadow: pathname === '/' ? '0 4px 20px -2px rgba(99, 102, 241, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
-              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
               <div
                 style={{
                   width: '38px',
@@ -398,50 +407,29 @@ export default function NavigationDrawer({
                 <Building2 size={18} />
               </div>
 
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 800,
-                      color: '#ffffff',
-                      letterSpacing: '-0.01em',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    FINANCIAL HUB
-                  </span>
-                  {pathname === '/' && (
-                    <span className="badge badge-primary" style={{ padding: '2px 6px', fontSize: '0.60rem', whiteSpace: 'nowrap' }}>
-                      ACTIVE
-                    </span>
-                  )}
-                </div>
-                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
-                  National Stock Exchange of India (NSE) Benchmark Index
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
               <span
                 style={{
-                  fontSize: '0.68rem',
-                  fontWeight: 600,
-                  color: 'var(--text-muted)',
-                  padding: '3px 7px',
-                  borderRadius: '6px',
-                  background: 'rgba(255, 255, 255, 0.04)',
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                50 Stocks
+                FINANCIAL HUB
               </span>
-              <ChevronRight size={14} color="#818cf8" />
+
+              {pathname === '/' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
             </div>
+
+            <ChevronRight size={16} color="#818cf8" style={{ flexShrink: 0 }} />
           </div>
 
-          {/* Option 2: FII / DII INSTITUTIONAL FLOWS & MARKET IMPACT */}
+          {/* Option 2: FII / DII INSTITUTIONAL DATA */}
           <div
             onClick={handleSelectFiiDii}
             onMouseEnter={prefetchFiiDii}
@@ -449,22 +437,22 @@ export default function NavigationDrawer({
               background: pathname === '/fii-dii'
                 ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)'
                 : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%)',
-              border: pathname === '/fii-dii' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.4)',
+              border: pathname === '/fii-dii' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
               borderRadius: 'var(--radius-lg)',
-              padding: '14px 14px',
+              padding: '12px 16px',
+              minHeight: '56px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '10px',
+              gap: '12px',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 20px -2px rgba(16, 185, 129, 0.2)',
+              boxShadow: pathname === '/fii-dii' ? '0 4px 20px -2px rgba(16, 185, 129, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
-              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
               <div
                 style={{
                   width: '38px',
@@ -482,58 +470,29 @@ export default function NavigationDrawer({
                 <ArrowLeftRight size={18} />
               </div>
 
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 800,
-                      color: '#ffffff',
-                      letterSpacing: '-0.01em',
-                    }}
-                  >
-                    FII / DII INSTITUTIONAL DATA
-                  </span>
-                  <span
-                    style={{
-                      background: 'rgba(16, 185, 129, 0.2)',
-                      color: '#34d399',
-                      fontSize: '0.60rem',
-                      fontWeight: 800,
-                      padding: '2px 6px',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    MARKET IMPACT
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
-                  NSE Official FII/DII Net Flow & Quantitative Sentiment Engine
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
               <span
                 style={{
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  color: '#34d399',
-                  padding: '3px 7px',
-                  borderRadius: '6px',
-                  background: 'rgba(16, 185, 129, 0.1)',
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                Live Feed
+                FII / DII INSTITUTIONAL DATA
               </span>
-              <ChevronRight size={14} color="#34d399" />
+
+              {pathname === '/fii-dii' && (
+                <span className="badge badge-success" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
             </div>
+
+            <ChevronRight size={16} color="#34d399" style={{ flexShrink: 0 }} />
           </div>
 
-          {/* Option 3: MARKET & COMPANY NEWS INTELLIGENCE */}
+          {/* Option 3: MARKET & COMPANY NEWS */}
           <div
             onClick={handleSelectNews}
             onMouseEnter={prefetchNews}
@@ -541,22 +500,22 @@ export default function NavigationDrawer({
               background: pathname === '/news'
                 ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(236, 72, 153, 0.18) 100%)'
                 : 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%)',
-              border: pathname === '/news' ? '1px solid #f59e0b' : '1px solid rgba(245, 158, 11, 0.4)',
+              border: pathname === '/news' ? '1px solid #f59e0b' : '1px solid rgba(245, 158, 11, 0.35)',
               borderRadius: 'var(--radius-lg)',
-              padding: '14px 14px',
+              padding: '12px 16px',
+              minHeight: '56px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '10px',
+              gap: '12px',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 20px -2px rgba(245, 158, 11, 0.2)',
+              boxShadow: pathname === '/news' ? '0 4px 20px -2px rgba(245, 158, 11, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
-              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
               <div
                 style={{
                   width: '38px',
@@ -574,58 +533,29 @@ export default function NavigationDrawer({
                 <Newspaper size={18} />
               </div>
 
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 800,
-                      color: '#ffffff',
-                      letterSpacing: '-0.01em',
-                    }}
-                  >
-                    MARKET & COMPANY NEWS
-                  </span>
-                  <span
-                    style={{
-                      background: 'rgba(245, 158, 11, 0.2)',
-                      color: '#fbbf24',
-                      fontSize: '0.60rem',
-                      fontWeight: 800,
-                      padding: '2px 6px',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(245, 158, 11, 0.3)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    HIGH IMPACT
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
-                  Official NSE India Corporate Disclosures & Stock Impact Analysis
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
               <span
                 style={{
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  color: '#fbbf24',
-                  padding: '3px 7px',
-                  borderRadius: '6px',
-                  background: 'rgba(245, 158, 11, 0.1)',
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                Live Feed
+                MARKET &amp; COMPANY NEWS
               </span>
-              <ChevronRight size={14} color="#fbbf24" />
+
+              {pathname === '/news' && (
+                <span className="badge badge-warning" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
             </div>
+
+            <ChevronRight size={16} color="#fbbf24" style={{ flexShrink: 0 }} />
           </div>
 
-          {/* Option 4: MARKET DEAL (Bulk Deals, Block Deals & Short Selling) */}
+          {/* Option 4: MARKET DEAL */}
           <div
             onClick={handleSelectMarketDeal}
             onMouseEnter={prefetchDeals}
@@ -633,22 +563,22 @@ export default function NavigationDrawer({
               background: pathname === '/deals'
                 ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(168, 85, 247, 0.18) 100%)'
                 : 'linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)',
-              border: pathname === '/deals' ? '1px solid #06b6d4' : '1px solid rgba(6, 182, 212, 0.4)',
+              border: pathname === '/deals' ? '1px solid #06b6d4' : '1px solid rgba(6, 182, 212, 0.35)',
               borderRadius: 'var(--radius-lg)',
-              padding: '14px 14px',
+              padding: '12px 16px',
+              minHeight: '56px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '10px',
+              gap: '12px',
               transition: 'all 0.2s ease',
               boxShadow: pathname === '/deals' ? '0 4px 20px -2px rgba(6, 182, 212, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
-              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
               <div
                 style={{
                   width: '38px',
@@ -666,55 +596,89 @@ export default function NavigationDrawer({
                 <Layers size={18} />
               </div>
 
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 800,
-                      color: '#ffffff',
-                      letterSpacing: '-0.01em',
-                    }}
-                  >
-                    MARKET DEAL
-                  </span>
-                  <span
-                    style={{
-                      background: 'rgba(6, 182, 212, 0.2)',
-                      color: '#22d3ee',
-                      fontSize: '0.60rem',
-                      fontWeight: 800,
-                      padding: '2px 6px',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(6, 182, 212, 0.3)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    BULK &bull; BLOCK &bull; SHORT SELLING
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35, wordBreak: 'break-word' }}>
-                  SEBI Disclosures, Large Institutional Transactions, Short Selling Data &amp; Date Filters
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
               <span
                 style={{
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  color: '#22d3ee',
-                  padding: '3px 7px',
-                  borderRadius: '6px',
-                  background: 'rgba(6, 182, 212, 0.1)',
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                Live Disclosures
+                MARKET DEAL
               </span>
-              <ChevronRight size={14} color="#22d3ee" />
+
+              {pathname === '/deals' && (
+                <span className="badge badge-info" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
             </div>
+
+            <ChevronRight size={16} color="#22d3ee" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 5: 52-WEEK HIGH & LOW */}
+          <div
+            onClick={handleSelect52Week}
+            onMouseEnter={prefetch52Week}
+            style={{
+              background: pathname === '/52-week'
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(6, 182, 212, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+              border: pathname === '/52-week' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/52-week' ? '0 4px 20px -2px rgba(16, 185, 129, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(16, 185, 129, 0.4)',
+                }}
+              >
+                <TrendingUp size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                52-WEEK HIGH &amp; LOW
+              </span>
+
+              {pathname === '/52-week' && (
+                <span className="badge badge-success" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#34d399" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

@@ -21,7 +21,8 @@ from app.models import (
     NewsItem,
     NewsResponse,
     DealItem,
-    DealsResponse
+    DealsResponse,
+    Week52Response
 )
 from app.companies_data import (
     NIFTY_50_REGISTRY,
@@ -34,6 +35,7 @@ from app.tradingview_client import tv_streamer
 from app.news_engine import news_engine
 from app.institutional_holdings_engine import institutional_engine
 from app.deals_engine import deals_engine
+from app.week52_engine import week52_engine
 from app.dashboard_html import get_backend_dashboard_html
 try:
     from app.tickertape_client import tickertape_client
@@ -581,6 +583,28 @@ def get_deals_trading_strategies():
     }
 
 # =========================================================================
+# 52-WEEK HIGH & LOW BREAKOUT RADAR ENDPOINTS
+# =========================================================================
+
+@app.get("/api/52-week", response_model=Week52Response)
+@app.get("/api/week-52", response_model=Week52Response)
+def get_52_week_data(
+    filter_type: Optional[str] = Query("ALL", description="Filter by: ALL, NEAR_HIGH, NEAR_LOW, BREAKOUT, MID_RANGE"),
+    sector: Optional[str] = Query(None, description="Filter by sector name"),
+    search: Optional[str] = Query(None, description="Search by symbol or company name"),
+    sort_by: Optional[str] = Query("dist_high_asc", description="Sort by: dist_high_asc, gain_low_desc, gain_low_asc, high52_desc, low52_asc, range_pos_desc, mcap_desc, symbol_asc"),
+    limit: int = Query(100, ge=1, le=100)
+):
+    """Retrieve real-time 52-week high, low, breakout radar, and price spectrum data across all Nifty 50 stocks."""
+    return week52_engine.get_52_week_data(
+        filter_type=filter_type or "ALL",
+        sector=sector,
+        search=search,
+        sort_by=sort_by or "dist_high_asc",
+        limit=limit
+    )
+
+# =========================================================================
 # COMPANIES & CONSTITUENTS ENDPOINTS
 # =========================================================================
 
@@ -668,12 +692,17 @@ def sync_nse_live(symbol: str):
     for ar in live_ar:
         file_name = ar.get("fileName")
         if file_name:
+            safe_ar_url = (
+                file_name
+                if (file_name.startswith("http") and not any(x in file_name for x in ("nsearchives", ".xml", "SHP_")))
+                else f"https://www.nseindia.com/get-quotes/equity?symbol={symbol_upper}"
+            )
             merged_filings.insert(0, {
                 "title": f"Official NSE Annual Report {ar.get('fromYr', '')}-{ar.get('toYr', '')}",
                 "filing_type": "Annual Report",
                 "financial_year_or_period": f"{ar.get('fromYr', '')}-{ar.get('toYr', '')}",
                 "broadcast_date": ar.get("broadcast_dttm") or "Recent",
-                "file_url": file_name,
+                "file_url": safe_ar_url,
                 "file_size": ar.get("attFileSize") or "PDF",
                 "submission_type": "Direct NSE Live Sync"
             })
@@ -681,12 +710,17 @@ def sync_nse_live(symbol: str):
     for ann in live_ann[:5]:
         file_url = ann.get("attchmntFile")
         if file_url:
+            safe_ann_url = (
+                file_url
+                if (file_url.startswith("http") and not any(x in file_url for x in ("nsearchives", ".xml", "SHP_")))
+                else f"https://www.nseindia.com/get-quotes/equity?symbol={symbol_upper}"
+            )
             merged_filings.append({
                 "title": ann.get("desc") or "Financial Update Filing",
                 "filing_type": "Corporate Filing",
                 "financial_year_or_period": ann.get("an_dt", "").split(" ")[0] if ann.get("an_dt") else "Recent",
                 "broadcast_date": ann.get("an_dt") or "Recent",
-                "file_url": file_url,
+                "file_url": safe_ann_url,
                 "file_size": f"{ann.get('attFileSize')} KB" if ann.get("attFileSize") else "PDF",
                 "submission_type": "SEBI Filing (NSE)"
             })
