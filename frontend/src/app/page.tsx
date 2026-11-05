@@ -59,6 +59,8 @@ interface CompanySummary {
   current_price?: number;
   price_change?: number;
   percent_change?: number;
+  high_52w?: number;
+  low_52w?: number;
 }
 
 export default function HomePage() {
@@ -294,6 +296,8 @@ export default function HomePage() {
         if (sortBy === 'revenue_desc') return b.revenue_latest_cr - a.revenue_latest_cr;
         if (sortBy === 'profit_desc') return b.net_profit_latest_cr - a.net_profit_latest_cr;
         if (sortBy === 'pe_asc') return a.pe_ratio - b.pe_ratio;
+        if (sortBy === 'high52_desc') return (b.high_52w ?? 0) - (a.high_52w ?? 0);
+        if (sortBy === 'low52_asc') return (a.low_52w ?? 0) - (b.low_52w ?? 0);
         if (sortBy === 'symbol_asc') return a.symbol.localeCompare(b.symbol);
         return 0;
       });
@@ -858,6 +862,8 @@ export default function HomePage() {
                 <option value="revenue_desc">Revenue (Highest)</option>
                 <option value="profit_desc">Net Profit (Highest)</option>
                 <option value="pe_asc">P/E Ratio (Lowest / Value)</option>
+                <option value="high52_desc">52-Week High (Highest)</option>
+                <option value="low52_asc">52-Week Low (Lowest / Value)</option>
                 <option value="symbol_asc">Symbol (A-Z)</option>
               </select>
             </div>
@@ -1066,9 +1072,85 @@ export default function HomePage() {
                     </div>
 
                   {/* Sector & Industry */}
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
                     {company.sector} • {company.industry.split('/')[0]}
                   </div>
+
+                  {/* 52-Week High & Low Range Indicator */}
+                  {(() => {
+                    const h52 = live?.high_52w || company.high_52w || 0;
+                    const l52 = live?.low_52w || company.low_52w || 0;
+                    const rangeSpan = h52 - l52;
+                    const rangePct = rangeSpan > 0 ? Math.min(Math.max(((ltp - l52) / rangeSpan) * 100, 0), 100) : 50;
+
+                    if (h52 <= 0 || l52 <= 0) return null;
+
+                    return (
+                      <div
+                        style={{
+                          background: 'rgba(15, 23, 42, 0.75)',
+                          border: '1px solid rgba(255, 255, 255, 0.06)',
+                          borderRadius: '8px',
+                          padding: '8px 12px',
+                          marginBottom: '14px',
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            fontSize: '0.68rem',
+                            marginBottom: '6px',
+                          }}
+                        >
+                          <span style={{ color: 'var(--text-muted)' }}>
+                            52W L: <strong style={{ color: '#f87171' }}>₹{l52.toLocaleString('en-IN', { maximumFractionDigits: 1 })}</strong>
+                          </span>
+                          <span style={{ color: '#818cf8', fontWeight: 800, fontSize: '0.62rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                            52-Week Range
+                          </span>
+                          <span style={{ color: 'var(--text-muted)' }}>
+                            52W H: <strong style={{ color: '#34d399' }}>₹{h52.toLocaleString('en-IN', { maximumFractionDigits: 1 })}</strong>
+                          </span>
+                        </div>
+                        {/* Visual Gradient Range Track & Current Price Needle Indicator */}
+                        <div
+                          style={{
+                            position: 'relative',
+                            height: '5px',
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            borderRadius: '3px',
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: 'absolute',
+                              left: 0,
+                              top: 0,
+                              bottom: 0,
+                              width: `${rangePct}%`,
+                              background: 'linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%)',
+                              borderRadius: '3px',
+                            }}
+                          />
+                          <div
+                            style={{
+                              position: 'absolute',
+                              left: `calc(${rangePct}% - 4px)`,
+                              top: '-3px',
+                              width: '8px',
+                              height: '11px',
+                              background: '#ffffff',
+                              borderRadius: '2px',
+                              boxShadow: '0 0 6px rgba(255, 255, 255, 0.8)',
+                            }}
+                            title={`Current LTP: ₹${ltp.toFixed(2)} (${rangePct.toFixed(0)}% within 52W range)`}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Key Financial Metrics Grid */}
                   <div

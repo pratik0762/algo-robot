@@ -95,6 +95,10 @@ def get_gift_nifty_session_info() -> Dict[str, Any]:
         }
 
 from app.tradingview_client import fetch_tradingview_scanner_quote, TRADINGVIEW_GIFT_TICKER
+try:
+    from app.tickertape_client import tickertape_client
+except ImportError:
+    from backend.app.tickertape_client import tickertape_client
 
 def _fetch_gift_nifty_quote() -> Optional[Dict[str, Any]]:
     """Fetch real-time live quote for GIFT Nifty directly from TradingView (NSEIX:NIFTY1!)."""
@@ -234,6 +238,8 @@ def _fetch_single_quote(symbol: str) -> Optional[Dict[str, Any]]:
             day_low = float(meta.get("regularMarketDayLow") or ltp)
             day_open = float(meta.get("regularMarketDayHigh") or prev_close)
             volume = int(meta.get("regularMarketVolume") or random.randint(500000, 2500000))
+            fifty_two_high = float(meta.get("fiftyTwoWeekHigh") or 0.0)
+            fifty_two_low = float(meta.get("fiftyTwoWeekLow") or 0.0)
 
             return {
                 "symbol": symbol,
@@ -243,6 +249,8 @@ def _fetch_single_quote(symbol: str) -> Optional[Dict[str, Any]]:
                 "open": day_open,
                 "high": max(day_high, ltp),
                 "low": min(day_low, ltp),
+                "high_52w": fifty_two_high,
+                "low_52w": fifty_two_low,
                 "previous_close": prev_close,
                 "volume": volume,
                 "bid": round(ltp - 0.05, 2),
@@ -331,8 +339,14 @@ class LiveTickEngine:
                     cached = json.load(f)
                     if isinstance(cached, dict) and len(cached) >= len(BASE_EQUITY_PRICES) - 5:
                         self.stocks = cached
+                        # Ensure 52-week high and low are present
+                        for s_sym, s_data in self.stocks.items():
+                            if not s_data.get("high_52w") or not s_data.get("low_52w"):
+                                tt = tickertape_client.get_company(s_sym) or {}
+                                s_data["high_52w"] = float(tt.get("high_52w") or round(s_data.get("ltp", 1000) * 1.25, 2))
+                                s_data["low_52w"] = float(tt.get("low_52w") or round(s_data.get("ltp", 1000) * 0.80, 2))
                         self._last_live_sync_time = time.time()
-                        logger.info("Loaded %d stocks from persisted live quotes cache.", len(self.stocks))
+                        logger.info("Loaded %d stocks from persisted live quotes cache with 52W metrics.", len(self.stocks))
                         return
             except Exception as e:
                 logger.debug("Failed reading cache: %s", e)
@@ -340,6 +354,9 @@ class LiveTickEngine:
         for symbol, base_price in BASE_EQUITY_PRICES.items():
             prev_close = base_price
             ltp = base_price
+            tt = tickertape_client.get_company(symbol) or {}
+            h52 = float(tt.get("high_52w") or round(ltp * 1.25, 2))
+            l52 = float(tt.get("low_52w") or round(ltp * 0.80, 2))
             self.stocks[symbol] = {
                 "symbol": symbol,
                 "ltp": ltp,
@@ -348,6 +365,8 @@ class LiveTickEngine:
                 "open": prev_close,
                 "high": round(ltp * 1.01, 2),
                 "low": round(ltp * 0.99, 2),
+                "high_52w": h52,
+                "low_52w": l52,
                 "previous_close": prev_close,
                 "volume": random.randint(350000, 1500000),
                 "bid": round(ltp - 0.05, 2),
@@ -357,7 +376,7 @@ class LiveTickEngine:
             }
 
         self._last_live_sync_time = time.time()
-        logger.info("Initialized %d stocks instantly.", len(self.stocks))
+        logger.info("Initialized %d stocks instantly with 52W high/low.", len(self.stocks))
 
     async def sync_initial_live_quotes(self) -> List[Dict[str, Any]]:
         """Fetch and synchronize real live quotes from the exchange concurrently on startup and periodic sync."""

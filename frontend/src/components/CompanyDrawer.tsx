@@ -91,6 +91,8 @@ export interface CompanyDetail {
   percent_change?: number;
   day_high?: number;
   day_low?: number;
+  high_52w?: number;
+  low_52w?: number;
   volume?: number;
   quarterly_results: FinancialQuarter[];
   annual_financials: FinancialQuarter[];

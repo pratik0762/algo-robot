@@ -146,7 +146,15 @@ export default function CompanyDetailModal({
                 </div>
                 {company.day_high && company.day_low && (
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    H: ₹{company.day_high.toFixed(2)} • L: ₹{company.day_low.toFixed(2)}
+                    Day H: ₹{company.day_high.toFixed(2)} • L: ₹{company.day_low.toFixed(2)}
+                  </div>
+                )}
+                {company.high_52w && company.low_52w && (
+                  <div style={{ fontSize: '0.75rem', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>•</span>
+                    <span>52W H: <strong style={{ color: '#34d399' }}>₹{company.high_52w.toFixed(2)}</strong></span>
+                    <span>•</span>
+                    <span>52W L: <strong style={{ color: '#f87171' }}>₹{company.low_52w.toFixed(2)}</strong></span>
                   </div>
                 )}
               </div>
@@ -266,7 +274,88 @@ export default function CompanyDetailModal({
               {(company.operating_margin_pct ?? company.quarterly_results?.[0]?.operating_margin_pct ?? 0).toFixed(1)}%
             </div>
           </div>
+          {company.high_52w && (
+            <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+              <span style={{ fontSize: '0.7rem', color: '#34d399', fontWeight: 700 }}>52-WEEK HIGH</span>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#34d399', marginTop: '2px' }}>
+                ₹{company.high_52w.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+            </div>
+          )}
+          {company.low_52w && (
+            <div style={{ background: 'rgba(239, 68, 68, 0.05)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
+              <span style={{ fontSize: '0.7rem', color: '#f87171', fontWeight: 700 }}>52-WEEK LOW</span>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f87171', marginTop: '2px' }}>
+                ₹{company.low_52w.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* 52-Week Range Bar */}
+        {company.high_52w && company.low_52w && company.current_price && (
+          <div
+            style={{
+              background: 'rgba(15, 23, 42, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: 'var(--radius-md)',
+              padding: '14px 18px',
+              marginBottom: '24px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.8rem' }}>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>52-Week Low: </span>
+                <strong style={{ color: '#f87171' }}>₹{company.low_52w.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#818cf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  52-Week Price Range
+                </span>
+                <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
+                  Current LTP: ₹{company.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ color: 'var(--text-muted)' }}>52-Week High: </span>
+                <strong style={{ color: '#34d399' }}>₹{company.high_52w.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+              </div>
+            </div>
+            {/* Visual Bar */}
+            {(() => {
+              const span = company.high_52w - company.low_52w;
+              const pct = span > 0 ? Math.min(Math.max(((company.current_price - company.low_52w) / span) * 100, 0), 100) : 50;
+              return (
+                <div style={{ position: 'relative', height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px' }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: `${pct}%`,
+                      background: 'linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%)',
+                      borderRadius: '4px',
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: `calc(${pct}% - 6px)`,
+                      top: '-4px',
+                      width: '12px',
+                      height: '16px',
+                      background: '#ffffff',
+                      borderRadius: '3px',
+                      boxShadow: '0 0 8px rgba(255, 255, 255, 0.9)',
+                    }}
+                    title={`Current: ₹${company.current_price} (${pct.toFixed(1)}% of 52W range)`}
+                  />
+                </div>
+              );
+            })()}
+          </div>
+        )}
 
         {/* Tab Switcher */}
         <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '20px', overflowX: 'auto' }}>

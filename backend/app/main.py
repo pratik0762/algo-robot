@@ -600,6 +600,10 @@ def list_companies(
             c["current_price"] = live_info["ltp"]
             c["price_change"] = live_info["change"]
             c["percent_change"] = live_info["percent_change"]
+            if live_info.get("high_52w"):
+                c["high_52w"] = live_info["high_52w"]
+            if live_info.get("low_52w"):
+                c["low_52w"] = live_info["low_52w"]
 
     if sector and sector.lower() != "all":
         companies = [c for c in companies if sector.lower() in c["sector"].lower()]
@@ -627,6 +631,10 @@ def get_company(symbol: str):
         detail["percent_change"] = live_info["percent_change"]
         detail["day_high"] = live_info["high"]
         detail["day_low"] = live_info["low"]
+        if live_info.get("high_52w"):
+            detail["high_52w"] = live_info["high_52w"]
+        if live_info.get("low_52w"):
+            detail["low_52w"] = live_info["low_52w"]
         detail["volume"] = live_info["volume"]
 
     mcap = float(detail.get("market_cap_cr") or 50000.0)

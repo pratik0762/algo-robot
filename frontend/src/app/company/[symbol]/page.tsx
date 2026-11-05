@@ -106,7 +106,15 @@ function CompanyDetailInner() {
                 </div>
                 {company.day_high && company.day_low && (
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    High: ₹{company.day_high.toFixed(2)} • Low: ₹{company.day_low.toFixed(2)}
+                    Day H: ₹{company.day_high.toFixed(2)} • Day L: ₹{company.day_low.toFixed(2)}
+                  </div>
+                )}
+                {company.high_52w && company.low_52w && (
+                  <div style={{ fontSize: '0.8rem', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>•</span>
+                    <span>52W H: <strong style={{ color: '#34d399' }}>₹{company.high_52w.toFixed(2)}</strong></span>
+                    <span>•</span>
+                    <span>52W L: <strong style={{ color: '#f87171' }}>₹{company.low_52w.toFixed(2)}</strong></span>
                   </div>
                 )}
               </div>
@@ -119,6 +127,71 @@ function CompanyDetailInner() {
             </span>
           </div>
         </div>
+
+        {/* 52-Week Range Bar */}
+        {company.high_52w && company.low_52w && company.current_price && (
+          <div
+            style={{
+              marginTop: '16px',
+              background: 'rgba(15, 23, 42, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: 'var(--radius-md)',
+              padding: '12px 18px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.8rem' }}>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>52-Week Low: </span>
+                <strong style={{ color: '#f87171' }}>₹{company.low_52w.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#818cf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  52-Week Price Spectrum
+                </span>
+                <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
+                  Current LTP: ₹{company.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ color: 'var(--text-muted)' }}>52-Week High: </span>
+                <strong style={{ color: '#34d399' }}>₹{company.high_52w.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+              </div>
+            </div>
+            {/* Visual Bar */}
+            {(() => {
+              const span = company.high_52w - company.low_52w;
+              const pct = span > 0 ? Math.min(Math.max(((company.current_price - company.low_52w) / span) * 100, 0), 100) : 50;
+              return (
+                <div style={{ position: 'relative', height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px' }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: `${pct}%`,
+                      background: 'linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%)',
+                      borderRadius: '4px',
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: `calc(${pct}% - 6px)`,
+                      top: '-4px',
+                      width: '12px',
+                      height: '16px',
+                      background: '#ffffff',
+                      borderRadius: '3px',
+                      boxShadow: '0 0 8px rgba(255, 255, 255, 0.9)',
+                    }}
+                    title={`Current: ₹${company.current_price} (${pct.toFixed(1)}% of 52W range)`}
+                  />
+                </div>
+              );
+            })()}
+          </div>
+        )}
 
         <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)' }}>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>

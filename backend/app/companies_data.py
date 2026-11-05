@@ -826,6 +826,8 @@ def get_all_companies_summary(index_type: str = "all") -> List[Dict[str, Any]]:
             "pe_ratio": pe,
             "pb_ratio": pb,
             "dividend_yield_pct": dy,
+            "high_52w": float(tt.get("high_52w") or 0.0),
+            "low_52w": float(tt.get("low_52w") or 0.0),
             "latest_quarter": latest_q.get("quarter_name", "Recent"),
             "revenue_latest_cr": latest_q.get("revenue_operations_cr", 0.0),
             "net_profit_latest_cr": latest_q.get("net_profit_cr", 0.0),
@@ -862,6 +864,8 @@ def get_company_full_detail(symbol: str) -> Dict[str, Any] | None:
     return {
         **target,
         **fin,
+        "high_52w": float(tt.get("high_52w") or 0.0),
+        "low_52w": float(tt.get("low_52w") or 0.0),
         "latest_quarter": latest_q.get("quarter_name", "Recent"),
         "revenue_latest_cr": latest_q.get("revenue_operations_cr", 0.0),
         "net_profit_latest_cr": latest_q.get("net_profit_cr", 0.0),

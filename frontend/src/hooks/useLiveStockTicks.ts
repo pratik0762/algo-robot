@@ -11,6 +11,8 @@ export interface StockTickData {
   open: number;
   high: number;
   low: number;
+  high_52w?: number;
+  low_52w?: number;
   previous_close: number;
   volume: number;
   bid: number;
@@ -32,6 +34,8 @@ export interface GiftNiftyLive {
   open: number;
   high: number;
   low: number;
+  high_52w?: number;
+  low_52w?: number;
   previous_close: number;
   underlying_spot: number;
   basis_premium: number;

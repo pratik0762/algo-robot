@@ -23,6 +23,8 @@ class CompanySummary(BaseModel):
     current_price: Optional[float] = None
     price_change: Optional[float] = None
     percent_change: Optional[float] = None
+    high_52w: Optional[float] = None
+    low_52w: Optional[float] = None
 
 class FinancialQuarter(BaseModel):
     quarter_name: str  # e.g. "Q1 FY26", "Q4 FY25"
@@ -94,6 +96,8 @@ class CompanyDetail(BaseModel):
     percent_change: Optional[float] = None
     day_high: Optional[float] = None
     day_low: Optional[float] = None
+    high_52w: Optional[float] = None
+    low_52w: Optional[float] = None
     volume: Optional[int] = None
     quarterly_results: List[FinancialQuarter]
     annual_financials: List[FinancialQuarter]
