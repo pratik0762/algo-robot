@@ -1,6 +1,8 @@
 """Launcher for Nifty 50 Financial Reports FastAPI Backend."""
 
 import sys
+import os
+sys.path.insert(0, os.path.abspath("backend"))
 import uvicorn
 
 if sys.platform == "win32":
@@ -17,13 +19,9 @@ if __name__ == "__main__":
     print(f"🔗  API Endpoint : http://{host}:{port}")
     print(f"📚  Swagger Docs : http://{host}:{port}/docs")
     print("=" * 70)
+    from app.main import app
     uvicorn.run(
-        "app.main:app",
+        app,
         host=host,
-        port=port,
-        reload=True,
-        reload_dirs=["backend"],
-        reload_includes=["*.py"],
-        reload_excludes=[".venv/*", "frontend/*", "*.json", "*.log"],
-        app_dir="backend"
+        port=port
     )

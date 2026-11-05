@@ -17,7 +17,8 @@ import {
   Activity,
   Newspaper,
   Layers,
-  Boxes
+  Boxes,
+  BarChart2
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -270,6 +271,17 @@ export default function NavigationDrawer({
   const handleSelect52Week = () => {
     onClose();
     router.push('/52-week');
+  };
+
+  const prefetchChart = () => {
+    try {
+      fetch(`${getApiBase()}/api/heatmap`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectChart = () => {
+    onClose();
+    router.push('/chart');
   };
 
   return (
@@ -679,6 +691,69 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#34d399" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 6: CHART & HEAT MAP (Buy/Sell Signals & Drawing Tools) */}
+          <div
+            onClick={handleSelectChart}
+            onMouseEnter={prefetchChart}
+            style={{
+              background: pathname === '/chart'
+                ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(56, 189, 248, 0.15) 100%)'
+                : 'linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(56, 189, 248, 0.06) 100%)',
+              border: pathname === '/chart' ? '1px solid #38bdf8' : '1px solid rgba(56, 189, 248, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/chart' ? '0 4px 20px -2px rgba(56, 189, 248, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(56, 189, 248, 0.4)',
+                }}
+              >
+                <BarChart2 size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                CHART &amp; HEAT MAP
+              </span>
+
+              {pathname === '/chart' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

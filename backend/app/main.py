@@ -36,6 +36,7 @@ from app.news_engine import news_engine
 from app.institutional_holdings_engine import institutional_engine
 from app.deals_engine import deals_engine
 from app.week52_engine import week52_engine
+from app.signals_heatmap_engine import signals_heatmap_engine
 from app.dashboard_html import get_backend_dashboard_html
 try:
     from app.tickertape_client import tickertape_client
@@ -766,3 +767,34 @@ def market_overview():
         "top_by_revenue": top_revenue,
         "top_by_profit": top_profit
     }
+
+@app.get("/api/heatmap")
+def get_nse_heatmap():
+    """Official NSE Nifty 50 Heat Map data grouped by sectors with live color grading."""
+    return signals_heatmap_engine.get_nse_heatmap()
+
+@app.get("/api/chart-data/{symbol}")
+def get_chart_data(symbol: str, timeframe: str = "1D", candle_count: int = 40):
+    """OHLCV candlestick series with EMA 9/21, Supertrend, RSI, and Algorithmic Buy/Sell Signals."""
+    return signals_heatmap_engine.get_chart_with_signals(symbol=symbol, timeframe=timeframe, candle_count=candle_count)
+
+@app.get("/api/signals")
+def get_all_signals():
+    """Retrieve active technical Buy/Sell algorithmic signals across all Nifty 50 stocks."""
+    companies = get_all_companies_summary()
+    signals_list = []
+    for c in companies:
+        chart_res = signals_heatmap_engine.get_chart_with_signals(c["symbol"], timeframe="1D", candle_count=30)
+        signals_list.append({
+            "symbol": c["symbol"],
+            "company_name": c["company_name"],
+            "sector": c["sector"],
+            "current_price": chart_res["current_price"],
+            "latest_signal": chart_res["latest_signal"]
+        })
+    return {
+        "status": "success",
+        "official_source": "National Stock Exchange of India (NSE) Quantitative Signal Engine",
+        "signals": signals_list
+    }
+

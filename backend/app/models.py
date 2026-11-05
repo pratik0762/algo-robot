@@ -298,13 +298,25 @@ class Week52StockItem(BaseModel):
     pe_ratio: float
     dividend_yield_pct: float
     nse_official_url: str
+    bse_scrip_code: Optional[str] = None
+    bse_security_id: Optional[str] = None
+    bse_high_52w: Optional[float] = None
+    bse_low_52w: Optional[float] = None
+    bse_ltp: Optional[float] = None
+    bse_price_spread_inr: Optional[float] = None
+    bse_price_spread_pct: Optional[float] = None
+    bse_official_url: Optional[str] = None
+    bse_report_url: Optional[str] = "https://www.bseindia.com/markets/equity/EQReports/HighLow.aspx"
 
 
 class Week52Response(BaseModel):
     status: str
     official_source: str
     regulatory_framework: str
+    bse_official_source: Optional[str] = "Bombay Stock Exchange (BSE India) Equity 52-Week High/Low Report"
+    bse_report_url: Optional[str] = "https://www.bseindia.com/markets/equity/EQReports/HighLow.aspx"
     summary: Dict[str, Any]
+    playbook: Optional[List[Dict[str, Any]]] = None
     timestamp: str
     items: List[Week52StockItem]
     count: int
