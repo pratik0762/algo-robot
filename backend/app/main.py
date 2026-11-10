@@ -30,6 +30,7 @@ from app.companies_data import (
     get_company_full_detail
 )
 from app.nse_client import NseClient
+from app.market_status import get_indian_market_status
 from app.tick_engine import tick_engine, is_indian_market_open, get_gift_nifty_session_info
 from app.tradingview_client import tv_streamer
 from app.news_engine import news_engine
@@ -212,20 +213,22 @@ async def websocket_live_ticks(websocket: WebSocket):
 async def sse_ticks_stream():
     """Server-Sent Events (SSE) stream delivering real-time stock and GIFT Nifty ticks to browsers."""
     async def event_generator():
-        # First send initial snapshot with market status
+        market_info = get_indian_market_status()
+        # First send initial snapshot with market status and specific closure reason
         snapshot = {
             "type": "SNAPSHOT",
             "stocks": tick_engine.get_all_stocks_ticks(),
             "gift_nifty": tick_engine.get_gift_nifty(),
-            "is_market_open": is_indian_market_open(),
+            "is_market_open": market_info["is_open"],
             "gift_nifty_session": get_gift_nifty_session_info(),
-            "market_status": "OPEN" if is_indian_market_open() else "CLOSED",
+            "market_status": market_info["status"],
+            "market_status_detail": market_info,
             "timestamp": time.strftime("%H:%M:%S")
         }
         yield f"data: {json.dumps(snapshot)}\n\n"
 
         while True:
-            # 1. Domestic equity stocks when market is open (09:15 - 15:30 IST)
+            # 1. Domestic equity stocks ONLY when market is actively open (09:15 - 15:30 IST)
             if is_indian_market_open():
                 ticks = tick_engine.update_ticks()
                 if ticks:
@@ -260,19 +263,25 @@ async def sse_ticks_stream():
         }
     )
 
+@app.get("/api/market-status")
+def get_market_status_endpoint():
+    """Return comprehensive Indian Stock Market (NSE & BSE) status, session, and specific closure reasons."""
+    return get_indian_market_status()
+
 @app.get("/api/stocks/live-ticks")
 def get_all_live_stock_ticks():
     """Retrieve current snapshot of live tick prices, LTP, Day High/Low, volume, and GIFT Nifty."""
-    market_open = is_indian_market_open()
+    market_info = get_indian_market_status()
     gift_info = get_gift_nifty_session_info()
     return {
         "status": "success",
         "stocks": tick_engine.get_all_stocks_ticks(),
         "total_stocks": len(tick_engine.stocks),
         "gift_nifty": tick_engine.get_gift_nifty(),
-        "is_market_open": market_open,
+        "is_market_open": market_info["is_open"],
+        "market_status": market_info["status"],
+        "market_status_detail": market_info,
         "gift_nifty_session": gift_info,
-        "market_status": "OPEN (09:15 - 15:30 IST)" if market_open else "CLOSED (09:15 - 15:30 IST)",
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S IST")
     }
 
@@ -427,10 +436,13 @@ def get_live_ticker_indices():
                 "special": None
             })
 
+    market_info = get_indian_market_status()
     return {
         "status": "success",
         "items": ticker_items,
         "count": len(ticker_items),
+        "is_market_open": market_info["is_open"],
+        "market_status_detail": market_info,
         "timestamp": feed.get("timestamp")
     }
 

@@ -36,6 +36,7 @@ import {
 import NavigationDrawer, { NAV_HUBS } from '@/components/NavigationDrawer';
 import CompanyDetailModal from '@/components/CompanyDetailModal';
 import IndicesBarometer from '@/components/IndicesBarometer';
+import MarketStatusBanner from '@/components/MarketStatusBanner';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 import { getApiBase } from '@/config/api';
 import type { CompanyDetail } from '@/components/CompanyDrawer';
@@ -79,7 +80,7 @@ export default function HomePage() {
   const [indiaVixData, setIndiaVixData] = useState<any>(null);
 
   // Real-time live stock and GIFT Nifty ticks stream
-  const { ticks: liveTicks, giftNifty: liveGiftNifty, giftFlash, flashMap, isConnected: isLiveTicksConnected, isMarketOpen, tickCount } = useLiveStockTicks();
+  const { ticks: liveTicks, giftNifty: liveGiftNifty, giftFlash, flashMap, isConnected: isLiveTicksConnected, isMarketOpen, marketStatusDetail, tickCount } = useLiveStockTicks();
 
   // Ultra-fast in-memory client caches for 0ms transitions
   const hubCache = useRef<Record<string, CompanySummary[]>>({});
@@ -459,18 +460,18 @@ export default function HomePage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <div
-              className={`badge ${isMarketOpen ? 'badge-success' : 'badge-secondary'}`}
+              className={`badge ${isMarketOpen ? 'badge-success' : 'badge-danger'}`}
               style={{
                 padding: '6px 12px',
-                background: isMarketOpen ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                border: isMarketOpen ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)',
-                color: isMarketOpen ? '#34d399' : '#94a3b8'
+                background: isMarketOpen ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                border: isMarketOpen ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.35)',
+                color: isMarketOpen ? '#34d399' : '#f87171'
               }}
             >
               <span
                 className={isMarketOpen ? 'pulse-indicator' : ''}
                 style={{
-                  background: isMarketOpen ? '#10b981' : '#94a3b8',
+                  background: isMarketOpen ? '#10b981' : '#ef4444',
                   width: '7px',
                   height: '7px',
                   borderRadius: '50%',
@@ -480,7 +481,7 @@ export default function HomePage() {
               ></span>
               {isMarketOpen
                 ? `${currentHubMeta.exchange} Live Market Open`
-                : `${currentHubMeta.exchange} Market Closed (09:15 - 15:30 IST)`}
+                : `${currentHubMeta.exchange} Market Closed • ${marketStatusDetail?.reason || 'Holiday / After-Hours'}`}
             </div>
             <div className="badge badge-cyan" style={{ padding: '6px 12px' }}>
               <ShieldCheck size={14} />
@@ -504,6 +505,13 @@ export default function HomePage() {
 
       {/* Main Container */}
       <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 24px 32px 24px' }}>
+        {/* Market Status Notification (Prominent when closed with authentic reason & next session) */}
+        {!isMarketOpen && (
+          <div style={{ marginBottom: '20px' }}>
+            <MarketStatusBanner statusDetail={marketStatusDetail} />
+          </div>
+        )}
+
         {/* Quick Hub Fast-Navigation Pill Bar */}
         <div
           style={{

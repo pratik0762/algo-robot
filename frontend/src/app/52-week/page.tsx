@@ -23,6 +23,7 @@ import {
 import IndicesBarometer from '@/components/IndicesBarometer';
 import NavigationDrawer from '@/components/NavigationDrawer';
 import CompanyDetailModal from '@/components/CompanyDetailModal';
+import MarketStatusBanner from '@/components/MarketStatusBanner';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 import { getApiBase } from '@/config/api';
 import type { CompanyDetail } from '@/components/CompanyDrawer';
@@ -135,7 +136,7 @@ export default function Week52Page() {
   const [modalLoading, setModalLoading] = useState<boolean>(false);
 
   // Live real-time ticks
-  const { ticks: liveTicks, flashMap } = useLiveStockTicks();
+  const { ticks: liveTicks, flashMap, isMarketOpen, marketStatusDetail } = useLiveStockTicks();
 
   const fetchWeek52Data = useCallback(async (isManual: boolean = false, retries: number = 2) => {
     if (isManual) setRefreshing(true);
@@ -429,6 +430,13 @@ export default function Week52Page() {
 
       {/* Main Container */}
       <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}>
+        {/* Market Status Notification (Prominent when closed with authentic reason & next session) */}
+        {!isMarketOpen && (
+          <div style={{ marginBottom: '20px' }}>
+            <MarketStatusBanner statusDetail={marketStatusDetail} />
+          </div>
+        )}
+
         {/* 4 Summary Highlight Cards */}
         {summary && (
           <div
@@ -1432,7 +1440,7 @@ export default function Week52Page() {
         <CompanyDetailModal
           company={selectedCompany}
           onClose={() => setSelectedCompany(null)}
-          onSyncLive={() => {}}
+          onSyncLive={async () => {}}
           syncingLive={false}
           syncStatus=""
         />

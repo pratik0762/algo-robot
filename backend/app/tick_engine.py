@@ -22,17 +22,17 @@ logger = logging.getLogger("tick_engine")
 # Indian Standard Time (UTC+05:30)
 IST = timezone(timedelta(hours=5, minutes=30))
 
+try:
+    from app.market_status import get_indian_market_status
+except ImportError:
+    from backend.app.market_status import get_indian_market_status
+
 def is_indian_market_open() -> bool:
     """Return True only during active trading hours for Indian stock exchanges (NSE/BSE).
-    Regular trading session: Monday through Friday, 09:15 AM to 03:30 PM IST.
-    Outside these hours and on weekends, the market is closed and prices do not fluctuate.
+    Regular trading session: Monday through Friday, 09:15 AM to 03:30 PM IST (excluding holidays).
+    Outside these hours, on exchange holidays, and on weekends, the market is closed and prices do not fluctuate.
     """
-    now_ist = datetime.now(IST)
-    # 0 = Monday, ..., 4 = Friday, 5 = Saturday, 6 = Sunday
-    if now_ist.weekday() >= 5:
-        return False
-    current_time = now_ist.time()
-    return dtime(9, 15) <= current_time <= dtime(15, 30)
+    return bool(get_indian_market_status().get("is_open", False))
 
 def get_gift_nifty_session_info() -> Dict[str, Any]:
     """Determine live trading session for GIFT Nifty on NSE IX (GIFT City, Gandhinagar).
@@ -403,8 +403,9 @@ class LiveTickEngine:
             self._last_live_sync_time = time.time()
             logger.info("Synchronized %d authentic exchange quotes.", len(live_quotes))
 
-            # Broadcast updated quotes to all connected WebSocket clients
-            await self.broadcast_tick_update(list(self.stocks.values()))
+            # Broadcast updated quotes ONLY when market is actively open
+            if is_indian_market_open():
+                await self.broadcast_tick_update(list(self.stocks.values()))
             return list(self.stocks.values())
         except Exception as e:
             logger.warning("Error in sync_initial_live_quotes: %s", e)
@@ -555,14 +556,17 @@ class LiveTickEngine:
     async def register_websocket(self, websocket: WebSocket) -> None:
         await websocket.accept()
         self._connected_websockets.add(websocket)
-        # Immediately send snapshot of all stocks and GIFT Nifty with explicit market status
+        market_info = get_indian_market_status()
+        is_open = market_info["is_open"]
+        # Immediately send snapshot of all stocks and GIFT Nifty with explicit market status and closure reason
         snapshot = {
             "type": "SNAPSHOT",
             "stocks": self.get_all_stocks_ticks(),
             "gift_nifty": self.get_gift_nifty(),
-            "is_market_open": is_indian_market_open(),
+            "is_market_open": is_open,
+            "market_status": market_info["status"],
+            "market_status_detail": market_info,
             "gift_nifty_session": get_gift_nifty_session_info(),
-            "market_status": "OPEN" if is_indian_market_open() else "CLOSED",
             "timestamp": time.strftime("%H:%M:%S")
         }
         await websocket.send_text(json.dumps(snapshot))
@@ -571,8 +575,11 @@ class LiveTickEngine:
         self._connected_websockets.discard(websocket)
 
     async def broadcast_tick_update(self, ticks: List[Dict[str, Any]]) -> None:
-        """Broadcast updated ticks to all connected websocket clients."""
-        if not self._connected_websockets or not ticks:
+        """Broadcast updated ticks to all connected websocket clients.
+        Strictly suppressed when the Indian stock market is closed.
+        """
+        if not is_indian_market_open() or not self._connected_websockets or not ticks:
+            return
             return
 
         message = json.dumps({

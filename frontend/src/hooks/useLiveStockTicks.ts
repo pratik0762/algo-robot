@@ -21,6 +21,24 @@ export interface StockTickData {
   last_tick_time: string;
 }
 
+export interface MarketStatusDetail {
+  is_open: boolean;
+  status: string;
+  market_state: string;
+  badge: string;
+  headline: string;
+  reason_category: string;
+  reason: string;
+  detailed_explanation: string;
+  next_session: string;
+  trading_hours: string;
+  holiday_name?: string;
+  holiday_desc?: string;
+  current_time_ist?: string;
+  exchange: string;
+  settlement_note?: string;
+}
+
 export interface GiftNiftyLive {
   name: string;
   symbol: string;
@@ -64,14 +82,21 @@ export function useLiveStockTicks() {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isMarketOpen, setIsMarketOpen] = useState<boolean>(false);
   const [marketStatus, setMarketStatus] = useState<string>('');
+  const [marketStatusDetail, setMarketStatusDetail] = useState<MarketStatusDetail | null>(null);
   const [tickCount, setTickCount] = useState<number>(0);
   const [lastTickTime, setLastTickTime] = useState<string>('');
 
+  const isMarketOpenRef = useRef<boolean>(false);
   const flashTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
   const giftFlashTimeout = useRef<NodeJS.Timeout | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   const handleIncomingTicks = useCallback((updatedList: StockTickData[]) => {
+    // If the Indian stock market is closed, strictly prevent any price updates or visual flashes
+    if (!isMarketOpenRef.current) {
+      setFlashMap({});
+      return;
+    }
     if (!updatedList || updatedList.length === 0) return;
 
     const newFlash: Record<string, 'UP' | 'DOWN'> = {};
@@ -89,7 +114,7 @@ export function useLiveStockTicks() {
       return next;
     });
 
-    // Trigger visual tick flash animation
+    // Trigger visual tick flash animation only during active market hours
     if (Object.keys(newFlash).length > 0) {
       setFlashMap((prev) => ({ ...prev, ...newFlash }));
 
@@ -132,11 +157,18 @@ export function useLiveStockTicks() {
           if (data.gift_nifty) {
             setGiftNifty(data.gift_nifty);
           }
-          if (data.is_market_open !== undefined) {
-            setIsMarketOpen(Boolean(data.is_market_open));
+          const openState = Boolean(data.is_market_open);
+          setIsMarketOpen(openState);
+          isMarketOpenRef.current = openState;
+          if (!openState) {
+            setFlashMap({});
+            setGiftFlash(null);
           }
           if (data.market_status) {
             setMarketStatus(data.market_status);
+          }
+          if (data.market_status_detail) {
+            setMarketStatusDetail(data.market_status_detail);
           }
         }
       })
@@ -166,14 +198,23 @@ export function useLiveStockTicks() {
               if (data.gift_nifty) {
                 setGiftNifty(data.gift_nifty);
               }
-              if (data.is_market_open !== undefined) {
-                setIsMarketOpen(Boolean(data.is_market_open));
+              const openState = Boolean(data.is_market_open);
+              setIsMarketOpen(openState);
+              isMarketOpenRef.current = openState;
+              if (!openState) {
+                setFlashMap({});
+                setGiftFlash(null);
               }
               if (data.market_status) {
                 setMarketStatus(data.market_status);
               }
+              if (data.market_status_detail) {
+                setMarketStatusDetail(data.market_status_detail);
+              }
             } else if (data.type === 'TICK' && data.ticks) {
-              handleIncomingTicks(data.ticks);
+              if (isMarketOpenRef.current) {
+                handleIncomingTicks(data.ticks);
+              }
             } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
               const g = data.gift_nifty;
               setGiftNifty((prev) => {
@@ -225,14 +266,23 @@ export function useLiveStockTicks() {
               if (data.gift_nifty) {
                 setGiftNifty(data.gift_nifty);
               }
-              if (data.is_market_open !== undefined) {
-                setIsMarketOpen(Boolean(data.is_market_open));
+              const openState = Boolean(data.is_market_open);
+              setIsMarketOpen(openState);
+              isMarketOpenRef.current = openState;
+              if (!openState) {
+                setFlashMap({});
+                setGiftFlash(null);
               }
               if (data.market_status) {
                 setMarketStatus(data.market_status);
               }
+              if (data.market_status_detail) {
+                setMarketStatusDetail(data.market_status_detail);
+              }
             } else if (data.type === 'TICK' && data.ticks) {
-              handleIncomingTicks(data.ticks);
+              if (isMarketOpenRef.current) {
+                handleIncomingTicks(data.ticks);
+              }
             } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
               const g = data.gift_nifty;
               setGiftNifty((prev) => {
@@ -296,6 +346,7 @@ export function useLiveStockTicks() {
     isConnected,
     isMarketOpen,
     marketStatus,
+    marketStatusDetail,
     tickCount,
     lastTickTime,
   };

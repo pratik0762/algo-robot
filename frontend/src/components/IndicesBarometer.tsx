@@ -15,6 +15,7 @@ import {
 
 import Link from 'next/link';
 import { getApiBase } from '@/config/api';
+import MarketStatusBanner, { MarketStatusDetail } from '@/components/MarketStatusBanner';
 
 export interface LiveTickerItem {
   name: string;
@@ -36,6 +37,8 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
   const [tickerItems, setTickerItems] = useState<LiveTickerItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [timestamp, setTimestamp] = useState<string>('');
+  const [isMarketOpen, setIsMarketOpen] = useState<boolean>(true);
+  const [marketStatusDetail, setMarketStatusDetail] = useState<MarketStatusDetail | null>(null);
 
   const fetchLiveTicker = async () => {
     try {
@@ -45,6 +48,12 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
         const data = await res.json();
         setTickerItems(data.items || []);
         setTimestamp(data.timestamp || '');
+        if (data.is_market_open !== undefined) {
+          setIsMarketOpen(Boolean(data.is_market_open));
+        }
+        if (data.market_status_detail) {
+          setMarketStatusDetail(data.market_status_detail);
+        }
       }
     } catch (err) {
       console.error('Failed to fetch live indices ticker:', err);
@@ -80,52 +89,63 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
   }
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(90deg, rgba(13, 17, 28, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)',
-        borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
-        padding: '8px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        overflow: 'hidden',
-        gap: '16px',
-        fontSize: '0.78rem',
-      }}
-    >
-      {/* Left Label & Dedicated Full Page Link */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-        <Link
-          href="/indices"
-          className="btn"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '5px 12px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: '0.72rem',
-            border: 'none',
-            cursor: 'pointer',
-            boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)',
-            whiteSpace: 'nowrap',
-            textDecoration: 'none',
-          }}
-          title="Open dedicated page with ALL 140+ official Indian indices"
-        >
-          <Layers size={13} />
-          <span>ALL 140+ INDICES (PAGE)</span>
-          <ChevronRight size={13} />
-        </Link>
+    <>
+      {!isMarketOpen && (
+        <MarketStatusBanner statusDetail={marketStatusDetail} compact={true} />
+      )}
+      <div
+        style={{
+          background: 'linear-gradient(90deg, rgba(13, 17, 28, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)',
+          borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
+          padding: '8px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          overflow: 'hidden',
+          gap: '16px',
+          fontSize: '0.78rem',
+        }}
+      >
+        {/* Left Label & Dedicated Full Page Link */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+          <Link
+            href="/indices"
+            className="btn"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 12px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: '0.72rem',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)',
+              whiteSpace: 'nowrap',
+              textDecoration: 'none',
+            }}
+            title="Open dedicated page with ALL 140+ official Indian indices"
+          >
+            <Layers size={13} />
+            <span>ALL 140+ INDICES (PAGE)</span>
+            <ChevronRight size={13} />
+          </Link>
 
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span className="pulse-indicator" style={{ background: '#10b981', width: '6px', height: '6px' }}></span>
-          LIVE NSE & NSE IX FEED
-        </span>
-      </div>
+          {isMarketOpen ? (
+            <span style={{ color: '#34d399', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span className="pulse-indicator" style={{ background: '#10b981', width: '6px', height: '6px' }}></span>
+              LIVE NSE &amp; BSE FEED
+            </span>
+          ) : (
+            <span style={{ color: '#f87171', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 700 }}>
+              <span style={{ background: '#ef4444', width: '7px', height: '7px', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 6px #ef4444' }}></span>
+              MARKET CLOSED
+            </span>
+          )}
+        </div>
 
       {/* Marquee Ticker of Key Indices with GIFT NIFTY & INDIA VIX Spotlight */}
       <div
@@ -268,5 +288,6 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
         </button>
       </div>
     </div>
+    </>
   );
 }

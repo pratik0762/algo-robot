@@ -35,6 +35,8 @@ import {
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
+import MarketStatusBanner from '@/components/MarketStatusBanner';
+import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 
 export interface Candle {
   time: string;
@@ -224,6 +226,9 @@ function ChartingAndHeatmapContent() {
   const [loadingHeatmap, setLoadingHeatmap] = useState<boolean>(true);
   const [selectedSignal, setSelectedSignal] = useState<TradeSignal | null>(() => generateDefaultChartData('RELIANCE').latest_signal);
 
+  // Live market status & ticks hook
+  const { isMarketOpen, marketStatusDetail } = useLiveStockTicks();
+
   // Drawing tools state
   const [activeTool, setActiveTool] = useState<DrawingTool>('none');
   const [drawings, setDrawings] = useState<DrawingItem[]>([]);
@@ -395,6 +400,13 @@ function ChartingAndHeatmapContent() {
 
       {/* Main Container */}
       <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 20px' }}>
+        {/* Market Status Notification (Prominent when closed with authentic reason & next session) */}
+        {!isMarketOpen && (
+          <div style={{ marginBottom: '20px' }}>
+            <MarketStatusBanner statusDetail={marketStatusDetail} />
+          </div>
+        )}
+
         {/* Header Strip */}
         <div
           style={{
