@@ -23,9 +23,11 @@ import {
   ArrowUpRight,
   AlertTriangle,
   Clock,
-  Tag
+  Tag,
+  Menu
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import { getApiBase } from '@/config/api';
 
 export interface NewsItem {
@@ -71,6 +73,7 @@ export default function NewsPage() {
   const [selectedSentiment, setSelectedSentiment] = useState<string>('ALL');
   const [selectedImpact, setSelectedImpact] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
 
   // Sanitizer guaranteeing valid official NSE URLs and preventing 404 / broken links
   const getOfficialNseUrl = (symbol?: string, rawUrl?: string) => {
@@ -218,6 +221,27 @@ export default function NewsPage() {
               <ArrowLeft size={16} />
               <span>Back to Hub</span>
             </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 14px',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                border: '1px solid rgba(245, 158, 11, 0.4)',
+                background: 'rgba(245, 158, 11, 0.1)',
+                color: '#fbbf24',
+                cursor: 'pointer',
+              }}
+              title="Open Navigation Hub Drawer"
+            >
+              <Menu size={16} />
+              <span>Drawer</span>
+            </button>
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -824,6 +848,9 @@ export default function NewsPage() {
           </div>
         </section>
       </main>
+
+      {/* Navigation Hub Drawer */}
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
     </div>
   );
 }

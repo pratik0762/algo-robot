@@ -31,11 +31,13 @@ import {
   Square,
   Hash,
   Trash2,
-  BookOpen
+  BookOpen,
+  Menu
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 
 export interface Candle {
@@ -228,6 +230,9 @@ function ChartingAndHeatmapContent() {
 
   // Live market status & ticks hook
   const { isMarketOpen, marketStatusDetail } = useLiveStockTicks();
+
+  // Navigation drawer state
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
 
   // Drawing tools state
   const [activeTool, setActiveTool] = useState<DrawingTool>('none');
@@ -423,8 +428,47 @@ function ChartingAndHeatmapContent() {
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.36)'
           }}
         >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <Link
+              href="/"
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                color: 'var(--text-secondary)',
+              }}
+              title="Return to Financial Hub"
+            >
+              &larr; Hub
+            </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(56, 189, 248, 0.4)',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                fontWeight: 700,
+                boxShadow: '0 0 15px rgba(56, 189, 248, 0.25)',
+                cursor: 'pointer',
+              }}
+              title="Open Market Hubs Navigator Drawer"
+            >
+              <Menu size={16} color="#38bdf8" />
+              <span>Drawer</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
                 style={{
                   width: '36px',
@@ -1658,6 +1702,8 @@ function ChartingAndHeatmapContent() {
             </div>
           </div>
         )}
+        {/* Navigation Hub Drawer */}
+        <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
       </div>
     </div>
   );

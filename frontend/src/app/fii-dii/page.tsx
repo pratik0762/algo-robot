@@ -27,9 +27,11 @@ import {
   ExternalLink,
   Users,
   X,
-  FileText
+  FileText,
+  Menu
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import { getApiBase } from '@/config/api';
 
 export interface FiiDiiData {
@@ -238,6 +240,7 @@ export default function FiiDiiPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'sectors' | 'history'>('overview');
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   // Company-level institutional holdings state
   const [instHoldings, setInstHoldings] = useState<InstitutionalHoldingsResponse | null>(() => globalInstHoldingsCache);
@@ -437,6 +440,28 @@ export default function FiiDiiPage() {
               <ArrowLeft size={16} />
               <span>Back to Financial Hub</span>
             </Link>
+
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 14px',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                cursor: 'pointer',
+              }}
+              title="Open Navigation Drawer"
+            >
+              <Menu size={16} />
+              <span>Drawer</span>
+            </button>
 
             <div
               style={{
@@ -1914,6 +1939,8 @@ export default function FiiDiiPage() {
           </div>
         </div>
       )}
+      {/* Navigation Hub Drawer */}
+      <NavigationDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
   );
 }
