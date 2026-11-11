@@ -1,0 +1,958 @@
+'use client';
+
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import Link from 'next/link';
+import {
+  Zap,
+  Menu,
+  Search,
+  Filter,
+  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight,
+  Activity,
+  Clock,
+  ShieldCheck,
+  CheckCircle2,
+  TrendingUp,
+  TrendingDown,
+  Layers,
+  Sparkles,
+  Sliders,
+  ExternalLink,
+  ChevronRight,
+  Info,
+  SlidersHorizontal,
+  Flame,
+  Volume2
+} from 'lucide-react';
+import { getApiBase } from '@/config/api';
+import IndicesBarometer from '@/components/IndicesBarometer';
+import MarketStatusBanner from '@/components/MarketStatusBanner';
+import NavigationDrawer from '@/components/NavigationDrawer';
+import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
+
+export interface TradeSignalItem {
+  id: string;
+  symbol: string;
+  company_name: string;
+  sector: string;
+  market_cap_category: 'LARGE_CAP' | 'MID_CAP' | 'SMALL_CAP';
+  market_cap_cr: number;
+  type: 'BUY' | 'SELL';
+  strength: string;
+  strategy_id: string;
+  strategy_name: string;
+  strategy_badge?: string;
+  current_price: number;
+  entry_price: number;
+  stop_loss: number;
+  target_1: number;
+  target_2: number;
+  risk_reward: string;
+  indicator_reason: string;
+  execution_advice: string;
+  issued_at: string;
+  timestamp_ms: number;
+  time_elapsed: string;
+  offset_seconds?: number;
+  status: 'ACTIVE' | 'TARGET_1_HIT' | 'TARGET_2_HIT' | 'STOP_LOSS_HIT';
+  timeframe: string;
+  confidence_score?: number;
+}
+
+export interface StrategyItem {
+  id: string;
+  name: string;
+  badge: string;
+  category?: string;
+  win_rate?: string;
+  description?: string;
+}
+
+export interface TradeSignalsResponse {
+  status: string;
+  total_signals: number;
+  filtered_count: number;
+  available_strategies: StrategyItem[];
+  signals: TradeSignalItem[];
+  summary: {
+    buy_count: number;
+    sell_count: number;
+    large_cap_count: number;
+    mid_cap_count: number;
+    small_cap_count: number;
+    latest_timestamp: string;
+  };
+}
+
+// Extensible fallback strategies array
+const DEFAULT_STRATEGIES: StrategyItem[] = [
+  { id: 'all', name: 'All Strategies', badge: 'COMPREHENSIVE' },
+  { id: 'ema_cross', name: 'EMA 9/21 Trend Crossover', badge: 'TREND FOLLOWING' },
+  { id: 'supertrend', name: 'Supertrend (10, 3) Breakout', badge: 'VOLATILITY BAND' },
+  { id: 'breakout_52w', name: '52-Week Breakout & Reversal', badge: 'MOMENTUM / S&R' },
+  { id: 'rsi_reversal', name: 'RSI Mean Reversion', badge: 'OSCILLATOR' },
+  { id: 'volume_momentum', name: 'Volume Spike & Order Block', badge: 'INSTITUTIONAL FLOW' },
+  { id: 'macd_cross', name: 'MACD Histogram Expansion', badge: 'MOMENTUM ACCELERATION' },
+  { id: 'bollinger_squeeze', name: 'Bollinger Bands Squeeze', badge: 'VOLATILITY EXPANSION' }
+];
+
+function TradeSignalsContent() {
+  const [signals, setSignals] = useState<TradeSignalItem[]>([]);
+  const [strategies, setStrategies] = useState<StrategyItem[]>(DEFAULT_STRATEGIES);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [selectedStrategy, setSelectedStrategy] = useState<string>('all');
+  const [selectedCap, setSelectedCap] = useState<string>('ALL');
+  const [selectedType, setSelectedType] = useState<string>('ALL');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
+  const [summary, setSummary] = useState<any>(null);
+
+  // Persistent Toast State (Must remain visible until user clicks 'OK')
+  const [activeToast, setActiveToast] = useState<TradeSignalItem | null>(null);
+  const seenSignalIds = useRef<Set<string>>(new Set());
+
+  // Real-time market status hook
+  const { isMarketOpen, marketStatusDetail } = useLiveStockTicks();
+
+  // Dynamic elapsed ticker time state (deterministic initial SSR state; updated on mount)
+  const [currentTimeMs, setCurrentTimeMs] = useState<number>(1730000000000);
+
+  useEffect(() => {
+    setCurrentTimeMs(Date.now());
+    const timer = setInterval(() => {
+      setCurrentTimeMs(Date.now());
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Compute live elapsed time string
+  const formatTimeAgo = useCallback((timestampMs: number): string => {
+    const diffSec = Math.max(0, Math.floor((currentTimeMs - timestampMs) / 1000));
+    if (diffSec < 60) return `${diffSec}s ago`;
+    if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+    if (diffSec < 86400) {
+      const hrs = Math.floor(diffSec / 3600);
+      const mins = Math.floor((diffSec % 3600) / 60);
+      return `${hrs}h ${mins}m ago`;
+    }
+    return `${Math.floor(diffSec / 86400)}d ago`;
+  }, [currentTimeMs]);
+
+  // Fetch Signals from backend
+  const fetchSignals = useCallback(async (isManual: boolean = false) => {
+    if (isManual) setRefreshing(true);
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/trade-signals`);
+      if (res.ok) {
+        const data: TradeSignalsResponse = await res.json();
+        setSignals(data.signals || []);
+        if (data.available_strategies && data.available_strategies.length > 0) {
+          setStrategies(data.available_strategies);
+        }
+        setSummary(data.summary);
+
+        // Populate seen IDs on first load
+        if (seenSignalIds.current.size === 0) {
+          data.signals.forEach(s => seenSignalIds.current.add(s.id));
+        } else {
+          // Check for any newly arrived signal that was not seen before
+          const brandNew = data.signals.find(s => !seenSignalIds.current.has(s.id));
+          if (brandNew) {
+            seenSignalIds.current.add(brandNew.id);
+            // Trigger persistent toast notification in bottom-left corner
+            setActiveToast(brandNew);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch trade signals:', err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSignals();
+    // Live polling check for new signals every 20 seconds
+    const interval = setInterval(() => {
+      fetchSignals(false);
+    }, 20000);
+    return () => clearInterval(interval);
+  }, [fetchSignals]);
+
+  // Manual Trigger to simulate a new live signal event for testing
+  const handleTriggerSimulatedSignal = async () => {
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/trade-signals/trigger`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        const newSig: TradeSignalItem = data.signal;
+        setSignals(prev => [newSig, ...prev]);
+        seenSignalIds.current.add(newSig.id);
+        // Display toast in bottom-left corner that persists until user clicks OK
+        setActiveToast(newSig);
+      }
+    } catch (err) {
+      console.error('Failed to trigger live signal:', err);
+    }
+  };
+
+  // Filter signals locally for instantaneous 0ms response
+  const filteredSignals = useMemo(() => {
+    return signals.filter(sig => {
+      // Strategy filter
+      if (selectedStrategy !== 'all' && sig.strategy_id !== selectedStrategy) {
+        return false;
+      }
+      // Market cap filter
+      if (selectedCap !== 'ALL' && sig.market_cap_category !== selectedCap) {
+        return false;
+      }
+      // Buy/Sell filter
+      if (selectedType !== 'ALL' && sig.type !== selectedType) {
+        return false;
+      }
+      // Search filter
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase();
+        const match =
+          sig.symbol.toLowerCase().includes(term) ||
+          sig.company_name.toLowerCase().includes(term) ||
+          sig.sector.toLowerCase().includes(term) ||
+          sig.strategy_name.toLowerCase().includes(term);
+        if (!match) return false;
+      }
+      return true;
+    });
+  }, [signals, selectedStrategy, selectedCap, selectedType, searchTerm]);
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      {/* Top Barometer Strip */}
+      <IndicesBarometer />
+
+      {/* Main Container */}
+      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+        {/* Market Status Notification (when closed) */}
+        {!isMarketOpen && (
+          <div style={{ marginBottom: '20px' }}>
+            <MarketStatusBanner statusDetail={marketStatusDetail} />
+          </div>
+        )}
+
+        {/* Header Strip with Drawer & Hub Buttons */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px',
+            marginBottom: '20px',
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.7))',
+            padding: '20px 24px',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.36)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <Link
+              href="/"
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                color: 'var(--text-secondary)',
+              }}
+              title="Return to Financial Hub"
+            >
+              &larr; Hub
+            </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 16px',
+                border: '1px solid rgba(239, 68, 68, 0.45)',
+                background: 'rgba(239, 68, 68, 0.12)',
+                color: '#f87171',
+                fontWeight: 700,
+                boxShadow: '0 0 15px rgba(239, 68, 68, 0.25)',
+                cursor: 'pointer',
+              }}
+              title="Open Market Hubs Navigator Drawer"
+            >
+              <Menu size={16} color="#f87171" />
+              <span>Drawer</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  boxShadow: '0 0 16px rgba(239, 68, 68, 0.4)'
+                }}
+              >
+                <Zap size={20} />
+              </div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h1 style={{ fontSize: '1.45rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                    ALGORITHMIC TRADE SIGNALS
+                  </h1>
+                  <span
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.18)',
+                      border: '1px solid rgba(239, 68, 68, 0.35)',
+                      color: '#f87171',
+                      fontSize: '0.62rem',
+                      fontWeight: 800,
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    LIVE FEED &bull; ALL CAPS
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                  Multi-Strategy High Probability Signals &bull; Large-Cap, Mid-Cap &amp; Small-Cap Universe &bull; No Charts Required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleTriggerSimulatedSignal}
+              className="btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 14px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 0 15px rgba(99, 102, 241, 0.35)'
+              }}
+              title="Simulate / Trigger a New Real-Time Signal (Tests Toast Notification)"
+            >
+              <Sparkles size={15} />
+              <span>Simulate New Signal</span>
+            </button>
+
+            <button
+              onClick={() => fetchSignals(true)}
+              disabled={refreshing}
+              className="btn btn-secondary"
+              style={{ padding: '8px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+              title="Refresh trade signals feed"
+            >
+              <RefreshCw size={14} className={refreshing ? 'pulse-indicator' : ''} />
+              <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Summary Stat Strip */}
+        {summary && (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '14px',
+              marginBottom: '20px'
+            }}
+          >
+            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                Active BUY Signals
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#34d399', marginTop: '4px' }}>
+                {summary.buy_count} Setups
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                Active SELL Signals
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#f87171', marginTop: '4px' }}>
+                {summary.sell_count} Setups
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
+              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                Large-Cap Signals
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#a5b4fc', marginTop: '4px' }}>
+                {summary.large_cap_count} Stocks
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                Mid &amp; Small-Cap Signals
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fbbf24', marginTop: '4px' }}>
+                {summary.mid_cap_count + summary.small_cap_count} Stocks
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Filter Controls Panel */}
+        <div
+          style={{
+            background: 'var(--panel)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '18px 20px',
+            marginBottom: '20px'
+          }}
+        >
+          {/* Strategy Selection Filter (Extensible) */}
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                FILTER BY QUANT STRATEGY ({strategies.length} Strategies Supported)
+              </span>
+              <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700 }}>
+                Extensible Strategy Engine
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+              {strategies.map((strat) => {
+                const isActive = selectedStrategy === strat.id;
+                return (
+                  <button
+                    key={strat.id}
+                    onClick={() => setSelectedStrategy(strat.id)}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: '8px',
+                      fontSize: '0.78rem',
+                      fontWeight: isActive ? 800 : 600,
+                      whiteSpace: 'nowrap',
+                      background: isActive
+                        ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)'
+                        : 'rgba(255, 255, 255, 0.04)',
+                      border: isActive ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                      color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      boxShadow: isActive ? '0 0 12px rgba(99, 102, 241, 0.35)' : 'none'
+                    }}
+                  >
+                    {strat.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Secondary Filter Row: Market Cap, Direction & Search */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              {/* Market Cap Pill Filters */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                {[
+                  { id: 'ALL', label: 'All Caps' },
+                  { id: 'LARGE_CAP', label: 'Large-Cap' },
+                  { id: 'MID_CAP', label: 'Mid-Cap' },
+                  { id: 'SMALL_CAP', label: 'Small-Cap' },
+                ].map((cap) => {
+                  const isActive = selectedCap === cap.id;
+                  return (
+                    <button
+                      key={cap.id}
+                      onClick={() => setSelectedCap(cap.id)}
+                      style={{
+                        padding: '5px 12px',
+                        borderRadius: '6px',
+                        fontSize: '0.74rem',
+                        fontWeight: isActive ? 800 : 500,
+                        background: isActive ? '#6366f1' : 'transparent',
+                        color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {cap.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* BUY / SELL Action Filter */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                {[
+                  { id: 'ALL', label: 'All Signals' },
+                  { id: 'BUY', label: 'BUY Only' },
+                  { id: 'SELL', label: 'SELL Only' },
+                ].map((act) => {
+                  const isActive = selectedType === act.id;
+                  let activeBg = '#6366f1';
+                  if (act.id === 'BUY') activeBg = '#059669';
+                  if (act.id === 'SELL') activeBg = '#dc2626';
+
+                  return (
+                    <button
+                      key={act.id}
+                      onClick={() => setSelectedType(act.id)}
+                      style={{
+                        padding: '5px 12px',
+                        borderRadius: '6px',
+                        fontSize: '0.74rem',
+                        fontWeight: isActive ? 800 : 500,
+                        background: isActive ? activeBg : 'transparent',
+                        color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {act.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Search Input */}
+            <div style={{ position: 'relative', minWidth: '260px' }}>
+              <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search symbol, company, or sector..."
+                style={{
+                  width: '100%',
+                  padding: '7px 12px 7px 34px',
+                  borderRadius: '8px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                  fontSize: '0.78rem',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Header Results Count Strip */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+          <div>
+            Showing <strong style={{ color: '#ffffff' }}>{filteredSignals.length}</strong> active trade setups
+            {selectedStrategy !== 'all' && <span> for <strong>{strategies.find(s => s.id === selectedStrategy)?.name}</strong></span>}
+            {selectedCap !== 'ALL' && <span> in <strong>{selectedCap.replace('_', ' ')}</strong></span>}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Clock size={13} color="#818cf8" />
+            <span>Timestamps synchronized with National Stock Exchange of India (NSE)</span>
+          </div>
+        </div>
+
+        {/* Signals List - Rendered in the exact format of the attached screenshot */}
+        {loading ? (
+          <div style={{ padding: '48px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <RefreshCw size={24} className="pulse-indicator" color="#6366f1" style={{ margin: '0 auto 12px auto' }} />
+            <div>Loading live algorithmic trade signals...</div>
+          </div>
+        ) : filteredSignals.length === 0 ? (
+          <div style={{ padding: '48px 24px', textAlign: 'center', background: 'var(--panel)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+            <Activity size={32} color="#6366f1" style={{ margin: '0 auto 12px auto' }} />
+            <h3 style={{ margin: '0 0 6px 0', fontSize: '1rem', color: '#ffffff' }}>No Trade Signals Found</h3>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              No active signals currently match your selected filters. Try choosing "All Strategies" or "All Caps".
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {filteredSignals.map((sig) => {
+              const isBuy = sig.type === 'BUY';
+              const isSell = sig.type === 'SELL';
+
+              const elapsedDisplay = formatTimeAgo(sig.timestamp_ms);
+
+              return (
+                <div
+                  key={sig.id}
+                  style={{
+                    background: isBuy
+                      ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(5, 150, 105, 0.06) 100%)'
+                      : isSell
+                      ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.16) 0%, rgba(185, 28, 28, 0.06) 100%)'
+                      : 'linear-gradient(135deg, rgba(51, 65, 85, 0.2) 0%, rgba(30, 41, 59, 0.1) 100%)',
+                    border: isBuy
+                      ? '1px solid rgba(16, 185, 129, 0.45)'
+                      : isSell
+                      ? '1px solid rgba(239, 68, 68, 0.45)'
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    boxShadow: isBuy
+                      ? '0 4px 20px -2px rgba(16, 185, 129, 0.12)'
+                      : '0 4px 20px -2px rgba(239, 68, 68, 0.12)',
+                    transition: 'transform 0.15s ease, border-color 0.15s ease',
+                  }}
+                >
+                  {/* Left Column: Action Badge + Title & Rationale */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: '1 1 540px' }}>
+                    {/* Big Action Badge (SELL / BUY) */}
+                    <div
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        background: isBuy ? '#10b981' : isSell ? '#ef4444' : '#475569',
+                        color: 'white',
+                        fontWeight: 900,
+                        fontSize: '1.05rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        boxShadow: isBuy ? '0 0 16px rgba(16, 185, 129, 0.4)' : '0 0 16px rgba(239, 68, 68, 0.4)',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {isBuy ? (
+                        <ArrowUpRight size={20} />
+                      ) : isSell ? (
+                        <ArrowDownRight size={20} />
+                      ) : (
+                        <Activity size={20} />
+                      )}
+                      <span>{sig.strength}</span>
+                    </div>
+
+                    {/* Stock Symbol, Price, Sector Pill, Cap Badge & Rationale */}
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.01em' }}>
+                          {sig.symbol} &bull; ₹{sig.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </span>
+
+                        <span
+                          style={{
+                            background: 'rgba(99, 102, 241, 0.18)',
+                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            color: '#a5b4fc',
+                            fontSize: '0.65rem',
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                          }}
+                        >
+                          {sig.sector}
+                        </span>
+
+                        <span
+                          style={{
+                            background:
+                              sig.market_cap_category === 'LARGE_CAP'
+                                ? 'rgba(59, 130, 246, 0.15)'
+                                : sig.market_cap_category === 'MID_CAP'
+                                ? 'rgba(245, 158, 11, 0.15)'
+                                : 'rgba(168, 85, 247, 0.15)',
+                            border:
+                              sig.market_cap_category === 'LARGE_CAP'
+                                ? '1px solid rgba(59, 130, 246, 0.35)'
+                                : sig.market_cap_category === 'MID_CAP'
+                                ? '1px solid rgba(245, 158, 11, 0.35)'
+                                : '1px solid rgba(168, 85, 247, 0.35)',
+                            color:
+                              sig.market_cap_category === 'LARGE_CAP'
+                                ? '#60a5fa'
+                                : sig.market_cap_category === 'MID_CAP'
+                                ? '#fbbf24'
+                                : '#c084fc',
+                            fontSize: '0.62rem',
+                            fontWeight: 800,
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {sig.market_cap_category.replace('_', '-')}
+                        </span>
+                      </div>
+
+                      {/* Rationale and Execution Advice */}
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
+                        Rationale: <strong style={{ color: '#38bdf8' }}>{sig.indicator_reason}</strong> &bull; {sig.execution_advice}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Key Numbers Strip + Timestamp & Elapsed */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                    {/* Entry */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                        ENTRY
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#ffffff' }}>
+                        ₹{sig.entry_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Stop Loss */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#f87171', textTransform: 'uppercase', fontWeight: 700 }}>
+                        STOP LOSS
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#f87171' }}>
+                        ₹{sig.stop_loss.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Target 1 */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#34d399', textTransform: 'uppercase', fontWeight: 700 }}>
+                        TARGET 1
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#34d399' }}>
+                        ₹{sig.target_1.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Target 2 */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#22d3ee', textTransform: 'uppercase', fontWeight: 700 }}>
+                        TARGET 2
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#22d3ee' }}>
+                        ₹{sig.target_2.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Risk / Reward */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                        RISK / REWARD
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#fbbf24' }}>
+                        {sig.risk_reward}
+                      </div>
+                    </div>
+
+                    {/* Timestamp & Elapsed Time Indicator (Requested Feature) */}
+                    <div
+                      style={{
+                        paddingLeft: '14px',
+                        borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+                        textAlign: 'right',
+                        minWidth: '135px'
+                      }}
+                    >
+                      <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                        <Clock size={11} color="#818cf8" />
+                        <span>{sig.issued_at}</span>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '0.78rem',
+                          fontWeight: 800,
+                          color: '#38bdf8',
+                          marginTop: '2px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                          gap: '4px'
+                        }}
+                      >
+                        <span className="pulse-indicator" style={{ width: '6px', height: '6px', background: '#38bdf8' }} />
+                        <span>{elapsedDisplay}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Navigation Hub Drawer */}
+        <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
+      </div>
+
+      {/* ========================================================================= */}
+      {/* PERSISTENT TOAST NOTIFICATION (BOTTOM-LEFT CORNER)                         */}
+      {/* Must remain visible until user explicitly clicks the 'OK' button          */}
+      {/* ========================================================================= */}
+      {activeToast && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '24px',
+            zIndex: 99999,
+            maxWidth: '430px',
+            width: 'calc(100vw - 48px)',
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(20, 28, 48, 0.98) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: activeToast.type === 'BUY' ? '1.5px solid #10b981' : '1.5px solid #ef4444',
+            borderRadius: '16px',
+            padding: '18px 20px',
+            boxShadow: activeToast.type === 'BUY'
+              ? '0 12px 48px -4px rgba(16, 185, 129, 0.45), 0 0 24px rgba(16, 185, 129, 0.2)'
+              : '0 12px 48px -4px rgba(239, 68, 68, 0.45), 0 0 24px rgba(239, 68, 68, 0.2)',
+            animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxSizing: 'border-box',
+          }}
+        >
+          {/* Toast Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span
+                className="pulse-indicator"
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: activeToast.type === 'BUY' ? '#10b981' : '#ef4444',
+                  boxShadow: activeToast.type === 'BUY' ? '0 0 10px #10b981' : '0 0 10px #ef4444'
+                }}
+              />
+              <span style={{ fontSize: '0.72rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', color: activeToast.type === 'BUY' ? '#34d399' : '#f87171' }}>
+                NEW TRADE SIGNAL DETECTED
+              </span>
+            </div>
+
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+              {activeToast.issued_at}
+            </span>
+          </div>
+
+          {/* Toast Body */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+            <div
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: activeToast.type === 'BUY' ? '#10b981' : '#ef4444',
+                color: '#ffffff',
+                fontWeight: 900,
+                fontSize: '0.90rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                flexShrink: 0
+              }}
+            >
+              {activeToast.type === 'BUY' ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+              <span>{activeToast.type}</span>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff' }}>
+                {activeToast.symbol} &bull; ₹{activeToast.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                {activeToast.strategy_name} &bull; {activeToast.market_cap_category.replace('_', '-')}
+              </div>
+            </div>
+          </div>
+
+          {/* Strategy Details Strip */}
+          <div
+            style={{
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              fontSize: '0.72rem',
+              color: '#e2e8f0',
+              marginBottom: '14px',
+              lineHeight: 1.4,
+              border: '1px solid rgba(255, 255, 255, 0.08)'
+            }}
+          >
+            <strong style={{ color: '#38bdf8' }}>{activeToast.indicator_reason}</strong>
+            <br />
+            Entry: <strong>₹{activeToast.entry_price}</strong> &bull; SL: <span style={{ color: '#f87171' }}>₹{activeToast.stop_loss}</span> &bull; T1: <span style={{ color: '#34d399' }}>₹{activeToast.target_1}</span>
+          </div>
+
+          {/* Toast Footer with Prominent 'OK' Button */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+              Awaiting user acknowledgement
+            </div>
+
+            <button
+              onClick={() => setActiveToast(null)}
+              className="btn"
+              style={{
+                background: activeToast.type === 'BUY'
+                  ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
+                  : 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 24px',
+                fontWeight: 900,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+                letterSpacing: '0.04em',
+                boxShadow: activeToast.type === 'BUY'
+                  ? '0 0 16px rgba(16, 185, 129, 0.5)'
+                  : '0 0 16px rgba(239, 68, 68, 0.5)',
+                transition: 'transform 0.1s ease',
+              }}
+              title="Acknowledge and dismiss notification"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function TradeSignalsPage() {
+  return (
+    <React.Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0d14' }} />}>
+      <TradeSignalsContent />
+    </React.Suspense>
+  );
+}
+

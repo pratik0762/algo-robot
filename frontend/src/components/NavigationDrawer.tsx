@@ -284,6 +284,17 @@ export default function NavigationDrawer({
     router.push('/chart');
   };
 
+  const prefetchSignals = () => {
+    try {
+      fetch(`${getApiBase()}/api/trade-signals`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectSignals = () => {
+    onClose();
+    router.push('/signals');
+  };
+
   return (
     <div
       className="drawer-backdrop"
@@ -754,6 +765,69 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 7: TRADE SIGNALS */}
+          <div
+            onClick={handleSelectSignals}
+            onMouseEnter={prefetchSignals}
+            style={{
+              background: pathname === '/signals'
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(245, 158, 11, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.06) 100%)',
+              border: pathname === '/signals' ? '1px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/signals' ? '0 4px 20px -2px rgba(239, 68, 68, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(239, 68, 68, 0.4)',
+                }}
+              >
+                <Zap size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                TRADE SIGNALS
+              </span>
+
+              {pathname === '/signals' && (
+                <span className="badge badge-danger" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#ef4444" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

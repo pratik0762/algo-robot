@@ -38,6 +38,7 @@ from app.institutional_holdings_engine import institutional_engine
 from app.deals_engine import deals_engine
 from app.week52_engine import week52_engine
 from app.signals_heatmap_engine import signals_heatmap_engine
+from app.trade_signals_engine import get_trade_signals, generate_live_signal_event, AVAILABLE_STRATEGIES
 from app.dashboard_html import get_backend_dashboard_html
 try:
     from app.tickertape_client import tickertape_client
@@ -809,4 +810,37 @@ def get_all_signals():
         "official_source": "National Stock Exchange of India (NSE) Quantitative Signal Engine",
         "signals": signals_list
     }
+
+@app.get("/api/trade-signals")
+def api_get_trade_signals(
+    strategy: Optional[str] = None,
+    market_cap: Optional[str] = None,
+    type: Optional[str] = None,
+    search: Optional[str] = None
+):
+    """Multi-Strategy Quantitative Trade Signals across Large-Cap, Mid-Cap, and Small-Cap equities."""
+    return get_trade_signals(
+        strategy_id=strategy,
+        market_cap=market_cap,
+        signal_type=type,
+        search=search
+    )
+
+@app.get("/api/trade-signals/strategies")
+def api_get_trade_strategies():
+    """Available algorithmic strategies and configuration models."""
+    return {
+        "status": "success",
+        "strategies": AVAILABLE_STRATEGIES
+    }
+
+@app.post("/api/trade-signals/trigger")
+def api_trigger_new_signal():
+    """Generates a fresh real-time trade signal event."""
+    new_sig = generate_live_signal_event()
+    return {
+        "status": "success",
+        "signal": new_sig
+    }
+
 
