@@ -18,7 +18,8 @@ import {
   Newspaper,
   Layers,
   Boxes,
-  BarChart2
+  BarChart2,
+  Grid
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -742,7 +743,7 @@ export default function NavigationDrawer({
                   boxShadow: '0 0 16px rgba(56, 189, 248, 0.4)',
                 }}
               >
-                <BarChart2 size={18} />
+                <Grid size={18} />
               </div>
 
               <span
@@ -754,7 +755,7 @@ export default function NavigationDrawer({
                   whiteSpace: 'nowrap',
                 }}
               >
-                CHART &amp; HEAT MAP
+                NSE MARKET HEAT MAP
               </span>
 
               {pathname === '/chart' && (

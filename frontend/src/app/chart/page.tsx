@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import {
   TrendingUp,
@@ -11,78 +11,25 @@ import {
   ExternalLink,
   ShieldCheck,
   ChevronRight,
-  Maximize2,
   Filter,
   BarChart2,
-  Sliders,
   RefreshCw,
-  Compass,
+  Zap,
+  Grid,
+  Menu,
+  Clock,
+  CheckCircle2,
+  SlidersHorizontal,
+  Flame,
   ArrowUpRight,
   ArrowDownRight,
-  Eye,
-  CheckCircle2,
-  AlertTriangle,
-  Zap,
-  Target,
-  Crosshair,
-  Grid,
-  PenTool,
-  Minus,
-  Square,
-  Hash,
-  Trash2,
-  BookOpen,
-  Menu
+  Sliders
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
 import NavigationDrawer from '@/components/NavigationDrawer';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
-
-export interface Candle {
-  time: string;
-  timestamp: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  ema_9: number;
-  ema_21: number;
-  rsi: number;
-  supertrend: number;
-  supertrend_dir: number;
-}
-
-export interface TradeSignal {
-  id: string;
-  type: 'BUY' | 'SELL' | 'NEUTRAL';
-  time: string;
-  timestamp: number;
-  candle_index?: number;
-  entry_price: number;
-  stop_loss: number;
-  target_1: number;
-  target_2: number;
-  risk_reward: string;
-  strength: string;
-  indicator_reason: string;
-  execution_advice: string;
-}
-
-export interface ChartDataResponse {
-  status: string;
-  symbol: string;
-  company_name: string;
-  sector: string;
-  timeframe: string;
-  current_price: number;
-  latest_signal: TradeSignal;
-  all_signals: TradeSignal[];
-  candles: Candle[];
-  timestamp: string;
-}
 
 export interface HeatmapStock {
   symbol: string;
@@ -127,275 +74,691 @@ export interface HeatmapResponse {
   sectors: HeatmapSector[];
 }
 
-type DrawingTool = 'none' | 'trendline' | 'horizontal' | 'rect' | 'fibonacci' | 'measure';
-
-interface DrawingItem {
-  id: string;
-  tool: DrawingTool;
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  startPrice?: number;
-  endPrice?: number;
-}
-
-const NIFTY_SYMBOLS = [
-  'RELIANCE', 'TCS', 'HDFCBANK', 'BHARTIARTL', 'ICICIBANK',
-  'INFY', 'SBIN', 'LICI', 'ITC', 'HINDUNILVR',
-  'LT', 'BAJFINANCE', 'HCLTECH', 'MARUTI', 'SUNPHARMA',
-  'ADANIENT', 'KOTAKBANK', 'TITAN', 'ONGC', 'TATAMOTORS',
-  'NTPC', 'AXISBANK', 'ADANIPORTS', 'POWERGRID', 'M&M',
-  'COALINDIA', 'BAJAJFINSV', 'ASIANPAINT', 'NESTLEIND', 'ULTRACEMCO',
-  'JSWSTEEL', 'TATASTEEL', 'GRASIM', 'TECHM', 'WIPRO',
-  'HDFCLIFE', 'SBILIFE', 'HINDALCO', 'DRREDDY', 'BRITANNIA',
-  'CIPLA', 'TATACONSUM', 'EICHERMOT', 'APOLLOHOSP', 'INDUSINDBK',
-  'DIVISLAB', 'BPCL', 'HEROMOTOCO', 'BAJAJ-AUTO', 'SHRIRAMFIN'
+// Fallback baseline Nifty 50 stocks for instant client-side rendering
+const FALLBACK_SECTORS: HeatmapSector[] = [
+  {
+    sector: 'Financial Services & Banking',
+    average_percent_change: 0.82,
+    total_market_cap_cr: 3840000,
+    total_index_weight_pct: 35.2,
+    stocks_count: 6,
+    color: '#059669',
+    stocks: [
+      {
+        symbol: 'HDFCBANK',
+        company_name: 'HDFC Bank Limited',
+        sector: 'Financial Services',
+        industry: 'Private Bank',
+        ltp: 810.75,
+        change: 12.6,
+        percent_change: 1.58,
+        market_cap_cr: 1289400,
+        index_weight_pct: 11.4,
+        signal: 'STRONG BUY',
+        heat_grade: 'STRONG_GAIN',
+        color: '#059669',
+        pe_ratio: 18.2,
+        high_52w: 1017.5,
+        low_52w: 669.2,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=HDFCBANK'
+      },
+      {
+        symbol: 'ICICIBANK',
+        company_name: 'ICICI Bank Limited',
+        sector: 'Financial Services',
+        industry: 'Private Bank',
+        ltp: 1278.6,
+        change: 14.2,
+        percent_change: 1.12,
+        market_cap_cr: 894300,
+        index_weight_pct: 8.2,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 17.6,
+        high_52w: 1340.0,
+        low_52w: 980.5,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=ICICIBANK'
+      },
+      {
+        symbol: 'SBIN',
+        company_name: 'State Bank of India',
+        sector: 'Financial Services',
+        industry: 'Public Bank',
+        ltp: 818.4,
+        change: 7.8,
+        percent_change: 0.96,
+        market_cap_cr: 728900,
+        index_weight_pct: 6.1,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 11.4,
+        high_52w: 912.0,
+        low_52w: 590.2,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=SBIN'
+      },
+      {
+        symbol: 'AXISBANK',
+        company_name: 'Axis Bank Limited',
+        sector: 'Financial Services',
+        industry: 'Private Bank',
+        ltp: 1184.2,
+        change: -4.8,
+        percent_change: -0.4,
+        market_cap_cr: 365000,
+        index_weight_pct: 3.4,
+        signal: 'HOLD',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 14.8,
+        high_52w: 1339.6,
+        low_52w: 978.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=AXISBANK'
+      },
+      {
+        symbol: 'KOTAKBANK',
+        company_name: 'Kotak Mahindra Bank',
+        sector: 'Financial Services',
+        industry: 'Private Bank',
+        ltp: 1785.4,
+        change: 9.2,
+        percent_change: 0.52,
+        market_cap_cr: 355000,
+        index_weight_pct: 3.2,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 19.5,
+        high_52w: 1908.0,
+        low_52w: 1544.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=KOTAKBANK'
+      },
+      {
+        symbol: 'BAJFINANCE',
+        company_name: 'Bajaj Finance Limited',
+        sector: 'Financial Services',
+        industry: 'NBFC',
+        ltp: 6890.5,
+        change: 78.4,
+        percent_change: 1.15,
+        market_cap_cr: 425000,
+        index_weight_pct: 2.9,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 28.4,
+        high_52w: 7840.0,
+        low_52w: 6160.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=BAJFINANCE'
+      }
+    ]
+  },
+  {
+    sector: 'Information Technology',
+    average_percent_change: 1.24,
+    total_market_cap_cr: 2650000,
+    total_index_weight_pct: 14.8,
+    stocks_count: 4,
+    color: '#059669',
+    stocks: [
+      {
+        symbol: 'TCS',
+        company_name: 'Tata Consultancy Services',
+        sector: 'Information Technology',
+        industry: 'IT Services',
+        ltp: 2460.6,
+        change: 32.4,
+        percent_change: 1.33,
+        market_cap_cr: 1465200,
+        index_weight_pct: 4.8,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 28.5,
+        high_52w: 3350.0,
+        low_52w: 1976.8,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=TCS'
+      },
+      {
+        symbol: 'INFY',
+        company_name: 'Infosys Limited',
+        sector: 'Information Technology',
+        industry: 'IT Services',
+        ltp: 1890.3,
+        change: 38.6,
+        percent_change: 2.08,
+        market_cap_cr: 765400,
+        index_weight_pct: 5.6,
+        signal: 'STRONG BUY',
+        heat_grade: 'STRONG_GAIN',
+        color: '#059669',
+        pe_ratio: 29.2,
+        high_52w: 1991.4,
+        low_52w: 1358.3,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=INFY'
+      },
+      {
+        symbol: 'HCLTECH',
+        company_name: 'HCL Technologies Ltd',
+        sector: 'Information Technology',
+        industry: 'IT Services',
+        ltp: 1780.2,
+        change: 21.4,
+        percent_change: 1.22,
+        market_cap_cr: 482000,
+        index_weight_pct: 2.4,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 26.8,
+        high_52w: 1898.0,
+        low_52w: 1235.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=HCLTECH'
+      },
+      {
+        symbol: 'WIPRO',
+        company_name: 'Wipro Limited',
+        sector: 'Information Technology',
+        industry: 'IT Services',
+        ltp: 548.6,
+        change: 1.8,
+        percent_change: 0.33,
+        market_cap_cr: 285000,
+        index_weight_pct: 2.0,
+        signal: 'HOLD',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 22.4,
+        high_52w: 595.0,
+        low_52w: 435.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=WIPRO'
+      }
+    ]
+  },
+  {
+    sector: 'Energy & Petrochemicals',
+    average_percent_change: 0.45,
+    total_market_cap_cr: 2540000,
+    total_index_weight_pct: 12.6,
+    stocks_count: 3,
+    color: '#10b981',
+    stocks: [
+      {
+        symbol: 'RELIANCE',
+        company_name: 'Reliance Industries Ltd',
+        sector: 'Energy',
+        industry: 'Oil & Gas / Retail',
+        ltp: 1335.6,
+        change: 11.2,
+        percent_change: 0.85,
+        market_cap_cr: 1948500,
+        index_weight_pct: 9.8,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 26.4,
+        high_52w: 1611.8,
+        low_52w: 1152.2,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=RELIANCE'
+      },
+      {
+        symbol: 'ONGC',
+        company_name: 'Oil & Natural Gas Corp',
+        sector: 'Energy',
+        industry: 'Upstream Oil',
+        ltp: 268.4,
+        change: -1.6,
+        percent_change: -0.59,
+        market_cap_cr: 337000,
+        index_weight_pct: 1.5,
+        signal: 'HOLD',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 7.8,
+        high_52w: 344.0,
+        low_52w: 182.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=ONGC'
+      },
+      {
+        symbol: 'BPCL',
+        company_name: 'Bharat Petroleum Corp',
+        sector: 'Energy',
+        industry: 'Refining & Marketing',
+        ltp: 312.5,
+        change: 3.4,
+        percent_change: 1.1,
+        market_cap_cr: 135000,
+        index_weight_pct: 1.3,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 8.6,
+        high_52w: 388.0,
+        low_52w: 235.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=BPCL'
+      }
+    ]
+  },
+  {
+    sector: 'Automobile & Transport',
+    average_percent_change: -0.32,
+    total_market_cap_cr: 1420000,
+    total_index_weight_pct: 7.4,
+    stocks_count: 4,
+    color: '#ef4444',
+    stocks: [
+      {
+        symbol: 'MARUTI',
+        company_name: 'Maruti Suzuki India',
+        sector: 'Automobile',
+        industry: 'Passenger Cars',
+        ltp: 12450.0,
+        change: -98.0,
+        percent_change: -0.78,
+        market_cap_cr: 389200,
+        index_weight_pct: 2.2,
+        signal: 'SELL',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 28.2,
+        high_52w: 13680.0,
+        low_52w: 9800.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=MARUTI'
+      },
+      {
+        symbol: 'M&M',
+        company_name: 'Mahindra & Mahindra',
+        sector: 'Automobile',
+        industry: 'SUVs & Tractors',
+        ltp: 2980.5,
+        change: 42.0,
+        percent_change: 1.43,
+        market_cap_cr: 368000,
+        index_weight_pct: 2.4,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 24.6,
+        high_52w: 3220.0,
+        low_52w: 1530.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=M&M'
+      },
+      {
+        symbol: 'TATAMOTORS',
+        company_name: 'Tata Motors Limited',
+        sector: 'Automobile',
+        industry: 'Commercial & Passenger',
+        ltp: 812.4,
+        change: -11.2,
+        percent_change: -1.36,
+        market_cap_cr: 298000,
+        index_weight_pct: 1.8,
+        signal: 'SELL',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 10.2,
+        high_52w: 1179.0,
+        low_52w: 660.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=TATAMOTORS'
+      },
+      {
+        symbol: 'BAJAJ-AUTO',
+        company_name: 'Bajaj Auto Limited',
+        sector: 'Automobile',
+        industry: '2 & 3 Wheelers',
+        ltp: 9420.0,
+        change: -54.0,
+        percent_change: -0.57,
+        market_cap_cr: 264000,
+        index_weight_pct: 1.0,
+        signal: 'HOLD',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 32.5,
+        high_52w: 12774.0,
+        low_52w: 5200.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=BAJAJ-AUTO'
+      }
+    ]
+  },
+  {
+    sector: 'Consumer Goods & FMCG',
+    average_percent_change: -0.15,
+    total_market_cap_cr: 1380000,
+    total_index_weight_pct: 8.5,
+    stocks_count: 3,
+    color: '#ef4444',
+    stocks: [
+      {
+        symbol: 'ITC',
+        company_name: 'ITC Limited',
+        sector: 'Consumer Goods',
+        industry: 'FMCG & Cigarettes',
+        ltp: 472.1,
+        change: 2.1,
+        percent_change: 0.45,
+        market_cap_cr: 589200,
+        index_weight_pct: 4.1,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 28.2,
+        high_52w: 528.5,
+        low_52w: 399.3,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=ITC'
+      },
+      {
+        symbol: 'HINDUNILVR',
+        company_name: 'Hindustan Unilever Ltd',
+        sector: 'Consumer Goods',
+        industry: 'Personal & Home Care',
+        ltp: 2390.4,
+        change: -18.2,
+        percent_change: -0.76,
+        market_cap_cr: 561000,
+        index_weight_pct: 2.8,
+        signal: 'SELL',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 54.2,
+        high_52w: 3034.0,
+        low_52w: 2170.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=HINDUNILVR'
+      },
+      {
+        symbol: 'TITAN',
+        company_name: 'Titan Company Limited',
+        sector: 'Consumer Goods',
+        industry: 'Jewellery & Watches',
+        ltp: 3480.0,
+        change: -6.0,
+        percent_change: -0.17,
+        market_cap_cr: 312400,
+        index_weight_pct: 1.6,
+        signal: 'HOLD',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 84.5,
+        high_52w: 3886.0,
+        low_52w: 3055.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=TITAN'
+      }
+    ]
+  },
+  {
+    sector: 'Healthcare & Pharma',
+    average_percent_change: 0.95,
+    total_market_cap_cr: 980000,
+    total_index_weight_pct: 4.8,
+    stocks_count: 3,
+    color: '#059669',
+    stocks: [
+      {
+        symbol: 'SUNPHARMA',
+        company_name: 'Sun Pharma Industries',
+        sector: 'Healthcare & Pharma',
+        industry: 'Formulations & API',
+        ltp: 1780.5,
+        change: 22.4,
+        percent_change: 1.27,
+        market_cap_cr: 425600,
+        index_weight_pct: 2.1,
+        signal: 'STRONG BUY',
+        heat_grade: 'STRONG_GAIN',
+        color: '#059669',
+        pe_ratio: 38.4,
+        high_52w: 1960.0,
+        low_52w: 1195.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=SUNPHARMA'
+      },
+      {
+        symbol: 'DRREDDY',
+        company_name: "Dr. Reddy's Laboratories",
+        sector: 'Healthcare & Pharma',
+        industry: 'Generics & Biosimilars',
+        ltp: 1260.4,
+        change: 8.6,
+        percent_change: 0.69,
+        market_cap_cr: 210000,
+        index_weight_pct: 1.4,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 18.9,
+        high_52w: 1400.0,
+        low_52w: 960.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=DRREDDY'
+      },
+      {
+        symbol: 'CIPLA',
+        company_name: 'Cipla Limited',
+        sector: 'Healthcare & Pharma',
+        industry: 'Respiratory & Generics',
+        ltp: 1540.2,
+        change: 13.5,
+        percent_change: 0.88,
+        market_cap_cr: 124000,
+        index_weight_pct: 1.3,
+        signal: 'BUY',
+        heat_grade: 'MILD_GAIN',
+        color: '#10b981',
+        pe_ratio: 28.1,
+        high_52w: 1702.0,
+        low_52w: 1180.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=CIPLA'
+      }
+    ]
+  },
+  {
+    sector: 'Metals & Mining',
+    average_percent_change: -1.45,
+    total_market_cap_cr: 780000,
+    total_index_weight_pct: 3.9,
+    stocks_count: 2,
+    color: '#dc2626',
+    stocks: [
+      {
+        symbol: 'TATASTEEL',
+        company_name: 'Tata Steel Limited',
+        sector: 'Metals & Mining',
+        industry: 'Primary Steel',
+        ltp: 148.2,
+        change: -2.4,
+        percent_change: -1.59,
+        market_cap_cr: 185000,
+        index_weight_pct: 1.6,
+        signal: 'SELL',
+        heat_grade: 'STRONG_LOSS',
+        color: '#dc2626',
+        pe_ratio: 42.0,
+        high_52w: 184.6,
+        low_52w: 124.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=TATASTEEL'
+      },
+      {
+        symbol: 'JSWSTEEL',
+        company_name: 'JSW Steel Limited',
+        sector: 'Metals & Mining',
+        industry: 'Alloy & Flats',
+        ltp: 962.0,
+        change: -12.8,
+        percent_change: -1.31,
+        market_cap_cr: 235000,
+        index_weight_pct: 1.5,
+        signal: 'SELL',
+        heat_grade: 'MILD_LOSS',
+        color: '#ef4444',
+        pe_ratio: 34.6,
+        high_52w: 1060.0,
+        low_52w: 780.0,
+        nse_official_url: 'https://www.nseindia.com/get-quotes/equity?symbol=JSWSTEEL'
+      }
+    ]
+  }
 ];
 
-function generateDefaultChartData(symbol: string): ChartDataResponse {
-  const basePrice = symbol === 'RELIANCE' ? 1285.0 : 1500.0;
-  const candles: Candle[] = [];
-  let cur = basePrice * 0.94;
-  let ema9 = cur;
-  let ema21 = cur;
-  const BASE_TIMESTAMP = 1730000000000;
-  for (let i = 0; i < 45; i++) {
-    const timeStr = `${45 - i}d ago`;
-    const delta = (Math.sin(i * 0.4) * 0.015 + (i * 0.002)) * basePrice;
-    const open = Math.round((cur + delta * 0.2) * 100) / 100;
-    const close = Math.round((open + (Math.sin(i * 0.8) * 0.012 + 0.002) * basePrice) * 100) / 100;
-    const high = Math.round((Math.max(open, close) + 0.008 * basePrice) * 100) / 100;
-    const low = Math.round((Math.min(open, close) - 0.007 * basePrice) * 100) / 100;
-    const vol = Math.floor(1200000 + Math.sin(i) * 500000);
-    ema9 = Math.round((close * 0.2 + ema9 * 0.8) * 100) / 100;
-    ema21 = Math.round((close * 0.09 + ema21 * 0.91) * 100) / 100;
-    const rsi = Math.round((50 + Math.sin(i * 0.5) * 18) * 10) / 10;
-    const st = Math.round((close > ema21 ? low * 0.985 : high * 1.015) * 100) / 100;
-    candles.push({
-      time: timeStr,
-      timestamp: BASE_TIMESTAMP - (45 - i) * 86400000,
-      open,
-      high,
-      low,
-      close,
-      volume: vol,
-      ema_9: ema9,
-      ema_21: ema21,
-      rsi,
-      supertrend: st,
-      supertrend_dir: close >= st ? 1 : -1,
-    });
-    cur = close;
-  }
-  const lastC = candles[candles.length - 1];
-  const sigBuy: TradeSignal = {
-    id: `${symbol}_BUY_40`,
-    type: 'BUY',
-    time: candles[38].time,
-    timestamp: candles[38].timestamp,
-    candle_index: 38,
-    entry_price: candles[38].close,
-    stop_loss: Math.round(candles[38].low * 0.985 * 100) / 100,
-    target_1: Math.round(candles[38].close * 1.045 * 100) / 100,
-    target_2: Math.round(candles[38].close * 1.085 * 100) / 100,
-    risk_reward: '1 : 3.2',
-    strength: 'STRONG',
-    indicator_reason: 'Golden Cross (EMA 9 crossed above EMA 21) + Supertrend Bullish flip + RSI at 58.4.',
-    execution_advice: 'Enter Long above breakout candle high. Place hard Stop Loss below swing low.'
-  };
-  return {
-    status: 'success',
-    symbol,
-    company_name: symbol === 'RELIANCE' ? 'Reliance Industries Limited' : symbol,
-    sector: 'Energy',
-    timeframe: '1D',
-    current_price: lastC.close,
-    latest_signal: sigBuy,
-    all_signals: [sigBuy],
-    candles,
-    timestamp: 'Live'
-  };
-}
-
-function ChartingAndHeatmapContent() {
-  const [activeView, setActiveView] = useState<'chart' | 'heatmap' | 'signals' | 'playbook'>('chart');
-  const [selectedSymbol, setSelectedSymbol] = useState<string>('RELIANCE');
-  const [timeframe, setTimeframe] = useState<string>('1D');
-  const [chartData, setChartData] = useState<ChartDataResponse | null>(() => generateDefaultChartData('RELIANCE'));
+function HeatmapContent() {
   const [heatmapData, setHeatmapData] = useState<HeatmapResponse | null>(null);
-  const [loadingChart, setLoadingChart] = useState<boolean>(false);
-  const [loadingHeatmap, setLoadingHeatmap] = useState<boolean>(true);
-  const [selectedSignal, setSelectedSignal] = useState<TradeSignal | null>(() => generateDefaultChartData('RELIANCE').latest_signal);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedSector, setSelectedSector] = useState<string>('ALL');
+  const [selectedGrade, setSelectedGrade] = useState<string>('ALL');
+  const [sortBy, setSortBy] = useState<'pct_desc' | 'pct_asc' | 'weight' | 'alpha'>('pct_desc');
+  const [viewMode, setViewMode] = useState<'sectors' | 'unified'>('sectors');
+  const [selectedStock, setSelectedStock] = useState<HeatmapStock | null>(FALLBACK_SECTORS[0].stocks[0]);
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
+  const [syncCountdown, setSyncCountdown] = useState<number>(20);
 
-  // Live market status & ticks hook
+  // Live market status hook
   const { isMarketOpen, marketStatusDetail } = useLiveStockTicks();
 
-  // Navigation drawer state
-  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-
-  // Drawing tools state
-  const [activeTool, setActiveTool] = useState<DrawingTool>('none');
-  const [drawings, setDrawings] = useState<DrawingItem[]>([]);
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  const [currentDrawing, setCurrentDrawing] = useState<DrawingItem | null>(null);
-
-  const svgRef = useRef<SVGSVGElement | null>(null);
-
-  // Fetch chart data with signals
-  const fetchChart = async (sym: string, tf: string) => {
-    try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/chart-data/${encodeURIComponent(sym)}?timeframe=${encodeURIComponent(tf)}&candle_count=45`);
-      if (res.ok) {
-        const json: ChartDataResponse = await res.json();
-        setChartData(json);
-        setSelectedSignal(json.latest_signal);
-      }
-    } catch (e) {
-      console.error('Failed to load chart data:', e);
-    } finally {
-      setLoadingChart(false);
-    }
-  };
-
   // Fetch official NSE heatmap data
-  const fetchHeatmap = async () => {
+  const fetchHeatmap = useCallback(async () => {
     try {
-      setLoadingHeatmap(true);
       const apiBase = getApiBase();
       const res = await fetch(`${apiBase}/api/heatmap`);
       if (res.ok) {
         const json: HeatmapResponse = await res.json();
         setHeatmapData(json);
+        // If no stock is selected, pick the top active stock
+        if (!selectedStock && json.sectors?.[0]?.stocks?.[0]) {
+          setSelectedStock(json.sectors[0].stocks[0]);
+        }
       }
     } catch (e) {
-      console.error('Failed to load heatmap data:', e);
+      console.error('Failed to load NSE heatmap data:', e);
     } finally {
-      setLoadingHeatmap(false);
+      setLoading(false);
+      setSyncCountdown(20);
     }
-  };
-
-  useEffect(() => {
-    fetchChart(selectedSymbol, timeframe);
-  }, [selectedSymbol, timeframe]);
+  }, [selectedStock]);
 
   useEffect(() => {
     fetchHeatmap();
-    const interval = setInterval(fetchHeatmap, 30000);
+    const interval = setInterval(() => {
+      fetchHeatmap();
+    }, 20000);
     return () => clearInterval(interval);
+  }, [fetchHeatmap]);
+
+  // Countdown timer for next live exchange sync
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSyncCountdown((prev) => (prev <= 1 ? 20 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Compute SVG chart coordinates and scaling
-  const chartMetrics = useMemo(() => {
-    if (!chartData || !chartData.candles || chartData.candles.length === 0) {
-      return null;
+  // Effective sectors source
+  const currentSectors: HeatmapSector[] = useMemo(() => {
+    if (heatmapData?.sectors && heatmapData.sectors.length > 0) {
+      return heatmapData.sectors;
     }
-    const candles = chartData.candles;
-    const n = candles.length;
-    const width = 960;
-    const height = 480;
-    const paddingLeft = 60;
-    const paddingRight = 70;
-    const paddingTop = 30;
-    const paddingBottom = 60;
-    const plotWidth = width - paddingLeft - paddingRight;
-    const plotHeight = height - paddingTop - paddingBottom;
+    return FALLBACK_SECTORS;
+  }, [heatmapData]);
 
-    const highs = candles.map((c) => c.high);
-    const lows = candles.map((c) => c.low);
-    const minPrice = Math.min(...lows) * 0.995;
-    const maxPrice = Math.max(...highs) * 1.005;
-    const priceRange = maxPrice - minPrice || 1;
+  // Flat list of all available stocks
+  const allStocks: HeatmapStock[] = useMemo(() => {
+    return currentSectors.flatMap((s) => s.stocks);
+  }, [currentSectors]);
 
-    const slotWidth = plotWidth / n;
-    const candleWidth = Math.max(slotWidth * 0.65, 4);
-
-    const priceToY = (p: number) => {
-      return paddingTop + (1 - (p - minPrice) / priceRange) * plotHeight;
-    };
-
-    const yToPrice = (y: number) => {
-      const norm = 1 - (y - paddingTop) / plotHeight;
-      return minPrice + norm * priceRange;
-    };
-
-    const indexToX = (idx: number) => {
-      return paddingLeft + idx * slotWidth + slotWidth / 2;
-    };
-
+  // Market Breadth computation
+  const breadthStats = useMemo(() => {
+    if (heatmapData?.breadth) return heatmapData.breadth;
+    const adv = allStocks.filter((s) => s.percent_change > 0).length;
+    const dec = allStocks.filter((s) => s.percent_change < 0).length;
+    const unc = allStocks.filter((s) => s.percent_change === 0).length;
     return {
-      width,
-      height,
-      paddingLeft,
-      paddingRight,
-      paddingTop,
-      paddingBottom,
-      plotWidth,
-      plotHeight,
-      minPrice,
-      maxPrice,
-      priceRange,
-      slotWidth,
-      candleWidth,
-      priceToY,
-      yToPrice,
-      indexToX
+      advances: adv,
+      declines: dec,
+      unchanged: unc,
+      advance_decline_ratio: dec > 0 ? Math.round((adv / dec) * 100) / 100 : adv
     };
-  }, [chartData]);
+  }, [heatmapData, allStocks]);
 
-  // Handle SVG drawing interaction
-  const getSvgCoordinates = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (!svgRef.current) return { x: 0, y: 0 };
-    const rect = svgRef.current.getBoundingClientRect();
-    const scaleX = 960 / rect.width;
-    const scaleY = 480 / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY
-    };
+  // List of unique sector names for filter pills
+  const availableSectorNames = useMemo(() => {
+    return ['ALL', ...Array.from(new Set(currentSectors.map((s) => s.sector)))];
+  }, [currentSectors]);
+
+  // Filter and sort stocks
+  const filterStocks = useCallback(
+    (stocks: HeatmapStock[]): HeatmapStock[] => {
+      let filtered = stocks.filter((stock) => {
+        // Sector Filter
+        if (selectedSector !== 'ALL' && stock.sector.toLowerCase() !== selectedSector.toLowerCase()) {
+          return false;
+        }
+
+        // Grade Filter
+        if (selectedGrade === 'GAINERS' && stock.percent_change <= 0) return false;
+        if (selectedGrade === 'LOSERS' && stock.percent_change >= 0) return false;
+        if (selectedGrade === 'STRONG_GAIN' && stock.percent_change < 1.5) return false;
+        if (selectedGrade === 'STRONG_LOSS' && stock.percent_change > -1.5) return false;
+
+        // Search Filter
+        if (searchTerm.trim()) {
+          const term = searchTerm.toLowerCase();
+          const match =
+            stock.symbol.toLowerCase().includes(term) ||
+            stock.company_name.toLowerCase().includes(term) ||
+            stock.sector.toLowerCase().includes(term) ||
+            stock.industry.toLowerCase().includes(term);
+          if (!match) return false;
+        }
+
+        return true;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        if (sortBy === 'pct_desc') return b.percent_change - a.percent_change;
+        if (sortBy === 'pct_asc') return a.percent_change - b.percent_change;
+        if (sortBy === 'weight') return b.index_weight_pct - a.index_weight_pct;
+        if (sortBy === 'alpha') return a.symbol.localeCompare(b.symbol);
+        return 0;
+      });
+
+      return filtered;
+    },
+    [selectedSector, selectedGrade, searchTerm, sortBy]
+  );
+
+  // Sector-grouped filtered list
+  const filteredSectors = useMemo(() => {
+    return currentSectors
+      .map((sec) => {
+        const matchingStocks = filterStocks(sec.stocks);
+        return {
+          ...sec,
+          stocks: matchingStocks
+        };
+      })
+      .filter((sec) => sec.stocks.length > 0);
+  }, [currentSectors, filterStocks]);
+
+  // Unified flat filtered list
+  const unifiedFilteredStocks = useMemo(() => {
+    return filterStocks(allStocks);
+  }, [allStocks, filterStocks]);
+
+  // Dynamic Tile Color Resolver based on % change
+  const getTileBg = (pct: number): string => {
+    if (pct >= 2.5) return 'linear-gradient(135deg, #047857 0%, #059669 100%)';
+    if (pct >= 1.0) return 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+    if (pct > 0.0) return 'linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.2) 100%)';
+    if (pct === 0.0) return 'linear-gradient(135deg, rgba(71, 85, 105, 0.25) 0%, rgba(51, 65, 85, 0.2) 100%)';
+    if (pct > -1.0) return 'linear-gradient(135deg, rgba(239, 68, 68, 0.28) 0%, rgba(185, 28, 28, 0.2) 100%)';
+    if (pct > -2.5) return 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)';
+    return 'linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)';
   };
 
-  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (activeTool === 'none' || !chartMetrics) return;
-    const { x, y } = getSvgCoordinates(e);
-    setIsDrawing(true);
-    const newDrawing: DrawingItem = {
-      id: `draw_${Date.now()}`,
-      tool: activeTool,
-      startX: x,
-      startY: y,
-      endX: x,
-      endY: y,
-      startPrice: chartMetrics.yToPrice(y),
-      endPrice: chartMetrics.yToPrice(y)
-    };
-    setCurrentDrawing(newDrawing);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (!isDrawing || !currentDrawing || !chartMetrics) return;
-    const { x, y } = getSvgCoordinates(e);
-    setCurrentDrawing({
-      ...currentDrawing,
-      endX: x,
-      endY: y,
-      endPrice: chartMetrics.yToPrice(y)
-    });
-  };
-
-  const handleMouseUp = () => {
-    if (isDrawing && currentDrawing) {
-      setDrawings((prev) => [...prev, currentDrawing]);
-      setCurrentDrawing(null);
-      setIsDrawing(false);
-    }
-  };
-
-  const clearDrawings = () => {
-    setDrawings([]);
-    setCurrentDrawing(null);
-    setIsDrawing(false);
+  const getTileBorder = (pct: number, isSelected: boolean): string => {
+    if (isSelected) return '2px solid #38bdf8';
+    if (pct > 0) return '1px solid rgba(16, 185, 129, 0.45)';
+    if (pct < 0) return '1px solid rgba(239, 68, 68, 0.45)';
+    return '1px solid rgba(255, 255, 255, 0.1)';
   };
 
   return (
@@ -404,15 +767,15 @@ function ChartingAndHeatmapContent() {
       <IndicesBarometer />
 
       {/* Main Container */}
-      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 20px' }}>
-        {/* Market Status Notification (Prominent when closed with authentic reason & next session) */}
+      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+        {/* Market Status Notification (when closed) */}
         {!isMarketOpen && (
           <div style={{ marginBottom: '20px' }}>
             <MarketStatusBanner statusDetail={marketStatusDetail} />
           </div>
         )}
 
-        {/* Header Strip */}
+        {/* Header Strip with Drawer, Hub Buttons and Direct Trade Signals Portal Shortcut */}
         <div
           style={{
             display: 'flex',
@@ -424,10 +787,11 @@ function ChartingAndHeatmapContent() {
             background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.7))',
             padding: '20px 24px',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(56, 189, 248, 0.3)',
+            border: '1px solid rgba(56, 189, 248, 0.35)',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.36)'
           }}
         >
+          {/* Left Title & Navigation Buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <Link
               href="/"
@@ -439,7 +803,7 @@ function ChartingAndHeatmapContent() {
                 fontSize: '0.8rem',
                 padding: '8px 12px',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: 'var(--text-secondary)',
+                color: 'var(--text-secondary)'
               }}
               title="Return to Financial Hub"
             >
@@ -455,12 +819,12 @@ function ChartingAndHeatmapContent() {
                 gap: '8px',
                 fontSize: '0.82rem',
                 padding: '8px 14px',
-                border: '1px solid rgba(56, 189, 248, 0.4)',
+                border: '1px solid rgba(56, 189, 248, 0.45)',
                 background: 'rgba(56, 189, 248, 0.12)',
                 color: '#38bdf8',
                 fontWeight: 700,
                 boxShadow: '0 0 15px rgba(56, 189, 248, 0.25)',
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               title="Open Market Hubs Navigator Drawer"
             >
@@ -471,8 +835,8 @@ function ChartingAndHeatmapContent() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '38px',
+                  height: '38px',
                   borderRadius: '10px',
                   background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
                   display: 'flex',
@@ -482,1229 +846,701 @@ function ChartingAndHeatmapContent() {
                   boxShadow: '0 0 16px rgba(56, 189, 248, 0.4)'
                 }}
               >
-                <PenTool size={18} />
+                <Grid size={20} />
               </div>
               <div>
-                <h1 style={{ fontSize: '1.45rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
-                  CHARTING DESK &amp; NSE HEAT MAP
+                <h1 style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                  NSE MARKET HEAT MAP
                 </h1>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  Algorithmic Buy &amp; Sell Signals &bull; Interactive Drawing Tools &bull; Official NSE India Market Map
+                  Live Market Breadth &bull; Sector Performance Matrix &bull; Interactive Stock Selection
                 </div>
               </div>
             </div>
           </div>
 
-          {/* View Mode Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setActiveView('chart')}
-              className={`btn ${activeView === 'chart' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.82rem', padding: '9px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          {/* Right Action Shortcuts */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {/* Live Exchange Sync Indicator */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 14px',
+                borderRadius: '8px',
+                background: 'rgba(16, 185, 129, 0.12)',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                color: '#34d399'
+              }}
             >
-              <BarChart2 size={15} />
-              Interactive Chart &amp; Signals
-            </button>
+              <span
+                className="pulse-indicator"
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 10px #10b981'
+                }}
+              />
+              <span>LIVE NSE SYNC ({syncCountdown}s)</span>
+            </div>
+
+            {/* Direct Link to Trade Signals Portal */}
+            <Link
+              href="/signals"
+              className="btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 16px',
+                background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 0 16px rgba(239, 68, 68, 0.4)',
+                cursor: 'pointer'
+              }}
+              title="Open Algorithmic Trade Signals with Entry, SL & Targets"
+            >
+              <Zap size={16} />
+              <span>Algorithmic Trade Signals &rarr;</span>
+            </Link>
 
             <button
-              onClick={() => setActiveView('heatmap')}
-              className={`btn ${activeView === 'heatmap' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.82rem', padding: '9px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => fetchHeatmap()}
+              className="btn btn-secondary"
+              style={{
+                fontSize: '0.8rem',
+                padding: '8px 12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+              title="Refresh Heat Map Data"
             >
-              <Grid size={15} />
-              NSE Market Heat Map
-            </button>
-
-            <button
-              onClick={() => setActiveView('signals')}
-              className={`btn ${activeView === 'signals' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.82rem', padding: '9px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <Target size={15} />
-              Active Signals Terminal
-            </button>
-
-            <button
-              onClick={() => setActiveView('playbook')}
-              className={`btn ${activeView === 'playbook' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.82rem', padding: '9px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <BookOpen size={15} />
-              Trade Execution Guide
+              <RefreshCw size={14} className={loading ? 'pulse-indicator' : ''} />
+              <span>Sync</span>
             </button>
           </div>
         </div>
 
-        {/* VIEW 1: INTERACTIVE CHART & SIGNALS */}
-        {activeView === 'chart' && (
-          <div>
-            {/* Chart Toolbar Strip */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px',
-                padding: '12px 18px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                marginBottom: '16px'
-              }}
-            >
-              {/* Stock Selector & Timeframe */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700 }}>STOCK:</span>
-                  <select
-                    value={selectedSymbol}
-                    onChange={(e) => setSelectedSymbol(e.target.value)}
-                    style={{
-                      padding: '7px 12px',
-                      borderRadius: '8px',
-                      background: 'rgba(255, 255, 255, 0.06)',
-                      border: '1px solid rgba(56, 189, 248, 0.3)',
-                      color: 'white',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {NIFTY_SYMBOLS.map((s) => (
-                      <option key={s} value={s} style={{ background: '#0f172a', color: 'white' }}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Timeframe Buttons */}
-                <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '8px', padding: '2px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  {['1m', '5m', '15m', '1D', '1W'].map((tf) => (
-                    <button
-                      key={tf}
-                      onClick={() => setTimeframe(tf)}
-                      style={{
-                        padding: '5px 12px',
-                        borderRadius: '6px',
-                        border: 'none',
-                        background: timeframe === tf ? 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' : 'transparent',
-                        color: timeframe === tf ? 'white' : 'var(--text-secondary)',
-                        fontSize: '0.74rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      {tf}
-                    </button>
-                  ))}
-                </div>
+        {/* Market Breadth & Sector Pulse Barometer Strip */}
+        <div
+          style={{
+            background: 'var(--panel)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 20px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px'
+          }}
+        >
+          {/* Advances vs Declines Visual Ratio Bar */}
+          <div style={{ flex: '1 1 360px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                MARKET BREADTH (ADVANCES / DECLINES)
               </div>
-
-              {/* Drawing Tools Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, marginRight: '4px' }}>DRAW TOOLS:</span>
-
-                <button
-                  onClick={() => setActiveTool(activeTool === 'trendline' ? 'none' : 'trendline')}
-                  title="Draw Trendline: Click and drag across two price points"
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: activeTool === 'trendline' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
-                    background: activeTool === 'trendline' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    color: activeTool === 'trendline' ? '#38bdf8' : 'white',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <PenTool size={13} />
-                  Trendline
-                </button>
-
-                <button
-                  onClick={() => setActiveTool(activeTool === 'horizontal' ? 'none' : 'horizontal')}
-                  title="Horizontal Line: Click and drag to place support or resistance level"
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: activeTool === 'horizontal' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
-                    background: activeTool === 'horizontal' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    color: activeTool === 'horizontal' ? '#38bdf8' : 'white',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <Minus size={13} />
-                  Horizontal S/R
-                </button>
-
-                <button
-                  onClick={() => setActiveTool(activeTool === 'rect' ? 'none' : 'rect')}
-                  title="Supply / Demand Zone: Draw a colored rectangle zone"
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: activeTool === 'rect' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
-                    background: activeTool === 'rect' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    color: activeTool === 'rect' ? '#38bdf8' : 'white',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <Square size={13} />
-                  Zone Box
-                </button>
-
-                <button
-                  onClick={() => setActiveTool(activeTool === 'fibonacci' ? 'none' : 'fibonacci')}
-                  title="Fibonacci Retracement: Click swing low to swing high"
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: activeTool === 'fibonacci' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
-                    background: activeTool === 'fibonacci' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    color: activeTool === 'fibonacci' ? '#38bdf8' : 'white',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <Hash size={13} />
-                  Fibonacci
-                </button>
-
-                <button
-                  onClick={clearDrawings}
-                  title="Clear all drawings from chart"
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#f87171',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <Trash2 size={13} />
-                  Clear
-                </button>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800 }}>
+                <span style={{ color: '#34d399' }}>▲ {breadthStats.advances} Adv</span>
+                <span style={{ color: 'var(--text-muted)', margin: '0 6px' }}>&bull;</span>
+                <span style={{ color: '#f87171' }}>▼ {breadthStats.declines} Dec</span>
+                <span style={{ color: 'var(--text-muted)', margin: '0 6px' }}>&bull;</span>
+                <span style={{ color: '#94a3b8' }}>▬ {breadthStats.unchanged} Unch</span>
               </div>
             </div>
 
-            {/* Active Signal Banner */}
-            {chartData && chartData.latest_signal && (
-              <div
-                style={{
-                  background:
-                    chartData.latest_signal.type === 'BUY'
-                      ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.08) 100%)'
-                      : chartData.latest_signal.type === 'SELL'
-                      ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.08) 100%)'
-                      : 'linear-gradient(135deg, rgba(51, 65, 85, 0.2) 0%, rgba(30, 41, 59, 0.1) 100%)',
-                  border:
-                    chartData.latest_signal.type === 'BUY'
-                      ? '1px solid rgba(16, 185, 129, 0.4)'
-                      : chartData.latest_signal.type === 'SELL'
-                      ? '1px solid rgba(239, 68, 68, 0.4)'
-                      : '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '16px 20px',
-                  marginBottom: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '16px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
-                  <div
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      background:
-                        chartData.latest_signal.type === 'BUY'
-                          ? '#10b981'
-                          : chartData.latest_signal.type === 'SELL'
-                          ? '#ef4444'
-                          : '#475569',
-                      color: 'white',
-                      fontWeight: 900,
-                      fontSize: '1.05rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '0 0 16px rgba(0,0,0,0.3)'
-                    }}
-                  >
-                    {chartData.latest_signal.type === 'BUY' ? (
-                      <ArrowUpRight size={20} />
-                    ) : chartData.latest_signal.type === 'SELL' ? (
-                      <ArrowDownRight size={20} />
-                    ) : (
-                      <Activity size={20} />
-                    )}
-                    {chartData.latest_signal.strength}
-                  </div>
-
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white' }}>
-                        {chartData.symbol} &bull; ₹{chartData.current_price.toLocaleString('en-IN')}
-                      </span>
-                      <span className="badge badge-primary" style={{ fontSize: '0.65rem' }}>
-                        {chartData.sector}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '3px' }}>
-                      Rationale: <strong style={{ color: '#38bdf8' }}>{chartData.latest_signal.indicator_reason}</strong> &bull; {chartData.latest_signal.execution_advice}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Key Numbers Strip */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ENTRY</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
-                      ₹{chartData.latest_signal.entry_price.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#f87171', textTransform: 'uppercase' }}>STOP LOSS</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f87171' }}>
-                      ₹{chartData.latest_signal.stop_loss.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#34d399', textTransform: 'uppercase' }}>TARGET 1</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#34d399' }}>
-                      ₹{chartData.latest_signal.target_1.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#22d3ee', textTransform: 'uppercase' }}>TARGET 2</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#22d3ee' }}>
-                      ₹{chartData.latest_signal.target_2.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>RISK / REWARD</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#fbbf24' }}>
-                      {chartData.latest_signal.risk_reward}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Main Interactive SVG Chart Canvas */}
+            {/* Graphical Progress Bar */}
             <div
               style={{
-                background: '#090d16',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid rgba(56, 189, 248, 0.25)',
-                padding: '16px 12px',
-                position: 'relative',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
-                overflow: 'hidden'
+                width: '100%',
+                height: '8px',
+                borderRadius: '4px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                overflow: 'hidden',
+                display: 'flex'
               }}
             >
-              {loadingChart && !chartData ? (
-                <div style={{ height: '480px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <RefreshCw className="spin" size={24} style={{ marginRight: '8px' }} />
-                  Loading candlestick feed &amp; indicators for {selectedSymbol}...
-                </div>
-              ) : chartMetrics ? (
-                <svg
-                  ref={svgRef}
-                  viewBox={`0 0 ${chartMetrics.width} ${chartMetrics.height}`}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    cursor: activeTool !== 'none' ? 'crosshair' : 'default',
-                    userSelect: 'none'
-                  }}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                >
-                  {/* Grid Lines */}
-                  {[0.2, 0.4, 0.6, 0.8].map((ratio) => {
-                    const y = chartMetrics.paddingTop + chartMetrics.plotHeight * ratio;
-                    const price = chartMetrics.yToPrice(y);
-                    return (
-                      <g key={ratio}>
-                        <line
-                          x1={chartMetrics.paddingLeft}
-                          y1={y}
-                          x2={chartMetrics.width - chartMetrics.paddingRight}
-                          y2={y}
-                          stroke="rgba(255, 255, 255, 0.05)"
-                          strokeDasharray="4 4"
-                        />
-                        <text
-                          x={chartMetrics.width - chartMetrics.paddingRight + 8}
-                          y={y + 4}
-                          fill="var(--text-muted)"
-                          fontSize="10"
-                          fontFamily="monospace"
-                        >
-                          ₹{price.toFixed(1)}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {/* Volume Bars Background */}
-                  {chartData?.candles.map((c, i) => {
-                    const x = chartMetrics.indexToX(i);
-                    const maxVol = Math.max(...chartData.candles.map((x) => x.volume)) || 1;
-                    const volHeight = (c.volume / maxVol) * 60;
-                    const volY = chartMetrics.height - chartMetrics.paddingBottom - volHeight;
-                    const isGreen = c.close >= c.open;
-                    return (
-                      <rect
-                        key={`vol_${i}`}
-                        x={x - chartMetrics.candleWidth / 2}
-                        y={volY}
-                        width={chartMetrics.candleWidth}
-                        height={volHeight}
-                        fill={isGreen ? 'rgba(16, 185, 129, 0.18)' : 'rgba(239, 68, 68, 0.18)'}
-                      />
-                    );
-                  })}
-
-                  {/* EMA 9 Polyline */}
-                  <polyline
-                    fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth="1.5"
-                    points={chartData?.candles
-                      .map((c, i) => `${chartMetrics.indexToX(i)},${chartMetrics.priceToY(c.ema_9)}`)
-                      .join(' ')}
-                  />
-
-                  {/* EMA 21 Polyline */}
-                  <polyline
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="1.5"
-                    points={chartData?.candles
-                      .map((c, i) => `${chartMetrics.indexToX(i)},${chartMetrics.priceToY(c.ema_21)}`)
-                      .join(' ')}
-                  />
-
-                  {/* Supertrend Line */}
-                  <polyline
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    strokeDasharray="3 3"
-                    points={chartData?.candles
-                      .map((c, i) => `${chartMetrics.indexToX(i)},${chartMetrics.priceToY(c.supertrend)}`)
-                      .join(' ')}
-                  />
-
-                  {/* Candlesticks */}
-                  {chartData?.candles.map((c, i) => {
-                    const x = chartMetrics.indexToX(i);
-                    const openY = chartMetrics.priceToY(c.open);
-                    const closeY = chartMetrics.priceToY(c.close);
-                    const highY = chartMetrics.priceToY(c.high);
-                    const lowY = chartMetrics.priceToY(c.low);
-                    const isGreen = c.close >= c.open;
-                    const bodyTop = Math.min(openY, closeY);
-                    const bodyHeight = Math.max(Math.abs(closeY - openY), 2);
-                    const candleColor = isGreen ? '#10b981' : '#ef4444';
-
-                    return (
-                      <g key={i}>
-                        {/* Upper & Lower Wicks */}
-                        <line x1={x} y1={highY} x2={x} y2={lowY} stroke={candleColor} strokeWidth="1.2" />
-                        {/* Real Body */}
-                        <rect
-                          x={x - chartMetrics.candleWidth / 2}
-                          y={bodyTop}
-                          width={chartMetrics.candleWidth}
-                          height={bodyHeight}
-                          fill={candleColor}
-                          stroke={candleColor}
-                          rx="1"
-                        />
-                      </g>
-                    );
-                  })}
-
-                  {/* Buy / Sell Signal Markers on Chart */}
-                  {chartData?.all_signals.map((sig, sIdx) => {
-                    if (sig.candle_index === undefined) return null;
-                    const c = chartData.candles[sig.candle_index];
-                    if (!c) return null;
-                    const x = chartMetrics.indexToX(sig.candle_index);
-                    const isBuy = sig.type === 'BUY';
-                    const y = isBuy ? chartMetrics.priceToY(c.low) + 20 : chartMetrics.priceToY(c.high) - 20;
-                    const badgeBg = isBuy ? '#10b981' : '#ef4444';
-
-                    return (
-                      <g
-                        key={`sig_${sIdx}`}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setSelectedSignal(sig)}
-                      >
-                        {/* Triangular pointer */}
-                        <polygon
-                          points={
-                            isBuy
-                              ? `${x},${y - 12} ${x - 5},${y - 4} ${x + 5},${y - 4}`
-                              : `${x},${y + 12} ${x - 5},${y + 4} ${x + 5},${y + 4}`
-                          }
-                          fill={badgeBg}
-                        />
-                        {/* Pill badge */}
-                        <rect
-                          x={x - 24}
-                          y={isBuy ? y - 3 : y - 22}
-                          width="48"
-                          height="18"
-                          rx="4"
-                          fill={badgeBg}
-                          stroke="#ffffff"
-                          strokeWidth="0.8"
-                        />
-                        <text
-                          x={x}
-                          y={isBuy ? y + 9 : y - 10}
-                          textAnchor="middle"
-                          fill="#ffffff"
-                          fontSize="9"
-                          fontWeight="900"
-                        >
-                          {sig.type}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {/* User Drawings */}
-                  {drawings.map((d) => {
-                    if (d.tool === 'trendline') {
-                      return (
-                        <line
-                          key={d.id}
-                          x1={d.startX}
-                          y1={d.startY}
-                          x2={d.endX}
-                          y2={d.endY}
-                          stroke="#38bdf8"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        />
-                      );
-                    }
-                    if (d.tool === 'horizontal') {
-                      return (
-                        <g key={d.id}>
-                          <line
-                            x1={chartMetrics.paddingLeft}
-                            y1={d.startY}
-                            x2={chartMetrics.width - chartMetrics.paddingRight}
-                            y2={d.startY}
-                            stroke="#fbbf24"
-                            strokeWidth="2"
-                            strokeDasharray="5 3"
-                          />
-                          <text
-                            x={chartMetrics.width - chartMetrics.paddingRight + 6}
-                            y={d.startY + 4}
-                            fill="#fbbf24"
-                            fontSize="10"
-                            fontWeight="800"
-                          >
-                            ₹{d.startPrice?.toFixed(1)}
-                          </text>
-                        </g>
-                      );
-                    }
-                    if (d.tool === 'rect') {
-                      const rx = Math.min(d.startX, d.endX);
-                      const ry = Math.min(d.startY, d.endY);
-                      const rw = Math.abs(d.endX - d.startX);
-                      const rh = Math.abs(d.endY - d.startY);
-                      return (
-                        <rect
-                          key={d.id}
-                          x={rx}
-                          y={ry}
-                          width={rw}
-                          height={rh}
-                          fill="rgba(56, 189, 248, 0.14)"
-                          stroke="#38bdf8"
-                          strokeWidth="1.5"
-                          strokeDasharray="4 2"
-                        />
-                      );
-                    }
-                    if (d.tool === 'fibonacci') {
-                      const fibLevels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.0];
-                      const dy = d.endY - d.startY;
-                      return (
-                        <g key={d.id}>
-                          {fibLevels.map((lvl) => {
-                            const curY = d.startY + dy * lvl;
-                            return (
-                              <g key={lvl}>
-                                <line
-                                  x1={chartMetrics.paddingLeft}
-                                  y1={curY}
-                                  x2={chartMetrics.width - chartMetrics.paddingRight}
-                                  y2={curY}
-                                  stroke={lvl === 0.5 || lvl === 0.618 ? '#10b981' : '#c084fc'}
-                                  strokeWidth="1.2"
-                                  strokeDasharray="3 3"
-                                />
-                                <text
-                                  x={chartMetrics.paddingLeft + 6}
-                                  y={curY - 3}
-                                  fill="#c084fc"
-                                  fontSize="9"
-                                  fontWeight="700"
-                                >
-                                  {(lvl * 100).toFixed(1)}% Fib
-                                </text>
-                              </g>
-                            );
-                          })}
-                        </g>
-                      );
-                    }
-                    return null;
-                  })}
-
-                  {/* Active In-Progress Drawing */}
-                  {currentDrawing && currentDrawing.tool === 'trendline' && (
-                    <line
-                      x1={currentDrawing.startX}
-                      y1={currentDrawing.startY}
-                      x2={currentDrawing.endX}
-                      y2={currentDrawing.endY}
-                      stroke="#38bdf8"
-                      strokeWidth="2.5"
-                      strokeDasharray="4 2"
-                    />
-                  )}
-                  {currentDrawing && currentDrawing.tool === 'rect' && (
-                    <rect
-                      x={Math.min(currentDrawing.startX, currentDrawing.endX)}
-                      y={Math.min(currentDrawing.startY, currentDrawing.endY)}
-                      width={Math.abs(currentDrawing.endX - currentDrawing.startX)}
-                      height={Math.abs(currentDrawing.endY - currentDrawing.startY)}
-                      fill="rgba(56, 189, 248, 0.15)"
-                      stroke="#38bdf8"
-                      strokeWidth="1.5"
-                    />
-                  )}
-                  {currentDrawing && currentDrawing.tool === 'horizontal' && (
-                    <line
-                      x1={chartMetrics.paddingLeft}
-                      y1={currentDrawing.startY}
-                      x2={chartMetrics.width - chartMetrics.paddingRight}
-                      y2={currentDrawing.startY}
-                      stroke="#fbbf24"
-                      strokeWidth="2"
-                      strokeDasharray="4 2"
-                    />
-                  )}
-                </svg>
-              ) : null}
-
-              {/* Chart Legend Footer */}
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '12px',
-                  marginTop: '10px',
-                  padding: '8px 12px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  borderRadius: '6px',
-                  fontSize: '0.72rem',
-                  color: 'var(--text-muted)'
+                  width: `${(breadthStats.advances / (breadthStats.advances + breadthStats.declines || 1)) * 100}%`,
+                  background: '#10b981',
+                  transition: 'width 0.4s ease'
                 }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '12px', height: '2px', background: '#38bdf8' }} />
-                    <span>EMA 9 (Momentum)</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '12px', height: '2px', background: '#f59e0b' }} />
-                    <span>EMA 21 (Baseline)</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '12px', height: '2px', background: '#10b981', borderTop: '1px dashed #10b981' }} />
-                    <span>Supertrend (10, 3)</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ color: '#10b981', fontWeight: 800 }}>▲ BUY</span> / <span style={{ color: '#ef4444', fontWeight: 800 }}>▼ SELL</span>
-                    <span>Signals</span>
-                  </div>
-                </div>
-
-                <div>Click on any BUY/SELL signal marker to inspect execution details.</div>
-              </div>
+              />
+              <div
+                style={{
+                  width: `${(breadthStats.declines / (breadthStats.advances + breadthStats.declines || 1)) * 100}%`,
+                  background: '#ef4444',
+                  transition: 'width 0.4s ease'
+                }}
+              />
             </div>
           </div>
-        )}
 
-        {/* VIEW 2: OFFICIAL NSE MARKET HEAT MAP */}
-        {activeView === 'heatmap' && (
-          <div>
-            {/* Heatmap Subheader */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px',
-                padding: '16px 20px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                marginBottom: '20px'
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'white' }}>
-                    OFFICIAL NSE NIFTY 50 LIVE MARKET HEAT MAP
-                  </span>
-                  <span className="badge badge-success" style={{ fontSize: '0.65rem' }}>LIVE EXCHANGE SYNC</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  Sized by Index Weightage &bull; Color-graded by Live % Change &bull; Click any tile to load technical chart
-                </div>
+          {/* Color Heat Legend */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>HEAT GRADIENT:</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ background: '#047857', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                &gt;+2%
+              </span>
+              <span style={{ background: '#10b981', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                +1%
+              </span>
+              <span style={{ background: 'rgba(16, 185, 129, 0.3)', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                +0.5%
+              </span>
+              <span style={{ background: 'rgba(148, 163, 184, 0.2)', color: '#cbd5e1', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                0%
+              </span>
+              <span style={{ background: 'rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                -0.5%
+              </span>
+              <span style={{ background: '#ef4444', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                -1%
+              </span>
+              <span style={{ background: '#991b1b', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 800 }}>
+                &lt;-2%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Selected Stock Quick Inspector (Makes it effortless to interpret & take action on stocks) */}
+        {selectedStock && (
+          <div
+            style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%)',
+              border: '1.5px solid #38bdf8',
+              borderRadius: 'var(--radius-lg)',
+              padding: '20px 24px',
+              marginBottom: '20px',
+              boxShadow: '0 8px 30px rgba(56, 189, 248, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '20px'
+            }}
+          >
+            {/* Stock Title & Tags */}
+            <div style={{ flex: '1 1 320px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
+                  {selectedStock.symbol}
+                </span>
+                <span style={{ fontSize: '0.90rem', color: 'var(--text-secondary)' }}>
+                  {selectedStock.company_name}
+                </span>
+                <span
+                  style={{
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    border: '1px solid rgba(56, 189, 248, 0.4)',
+                    color: '#38bdf8',
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                    padding: '2px 8px',
+                    borderRadius: '6px'
+                  }}
+                >
+                  {selectedStock.sector}
+                </span>
+                <span
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    color: '#cbd5e1',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '6px'
+                  }}
+                >
+                  {selectedStock.industry}
+                </span>
               </div>
 
-              {/* Market Breadth Pill */}
-              {heatmapData && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '0.74rem', color: '#34d399', fontWeight: 800 }}>
-                      ▲ {heatmapData.breadth.advances} Advances
-                    </span>
-                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>&bull;</span>
-                    <span style={{ fontSize: '0.74rem', color: '#f87171', fontWeight: 800 }}>
-                      ▼ {heatmapData.breadth.declines} Declines
-                    </span>
-                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>&bull;</span>
-                    <span style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
-                      {heatmapData.breadth.unchanged} Unchanged
-                    </span>
-                  </div>
-
-                  <a
-                    href="https://www.nseindia.com/market-data/live-market-indices"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.74rem', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <ExternalLink size={13} />
-                    NSE Official Market Map
-                  </a>
-                </div>
-              )}
+              {/* Price and Day Change */}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginTop: '6px' }}>
+                <span style={{ fontSize: '1.65rem', fontWeight: 900, color: '#ffffff' }}>
+                  ₹{selectedStock.ltp.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.92rem',
+                    fontWeight: 800,
+                    color: selectedStock.percent_change >= 0 ? '#34d399' : '#f87171'
+                  }}
+                >
+                  {selectedStock.percent_change >= 0 ? '+' : ''}
+                  {selectedStock.percent_change.toFixed(2)}% ({selectedStock.change >= 0 ? '+' : ''}₹{selectedStock.change.toFixed(2)})
+                </span>
+              </div>
             </div>
 
-            {/* Heatmap Grid of Sectors */}
-            {loadingHeatmap ? (
-              <div style={{ height: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                <RefreshCw className="spin" size={24} style={{ marginRight: '8px' }} />
-                Loading NSE Nifty 50 Market Map...
+            {/* 52-Week Range Barometer */}
+            <div style={{ flex: '1 1 280px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <span>52W Low: <strong>₹{selectedStock.low_52w.toFixed(1)}</strong></span>
+                <span style={{ color: '#38bdf8', fontWeight: 800 }}>52-WEEK RANGE</span>
+                <span>52W High: <strong>₹{selectedStock.high_52w.toFixed(1)}</strong></span>
               </div>
-            ) : heatmapData?.sectors ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                {heatmapData.sectors.map((sec) => (
-                  <div
-                    key={sec.sector}
-                    style={{
-                      background: 'rgba(15, 23, 42, 0.7)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      padding: '16px 18px',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                    }}
-                  >
-                    {/* Sector Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#ffffff' }}>
-                          {sec.sector.toUpperCase()}
-                        </span>
-                        <span
-                          style={{
-                            fontSize: '0.68rem',
-                            fontWeight: 800,
-                            padding: '2px 8px',
-                            borderRadius: '6px',
-                            background: sec.color,
-                            color: '#ffffff'
-                          }}
-                        >
-                          {sec.average_percent_change >= 0 ? '+' : ''}
-                          {sec.average_percent_change.toFixed(2)}% Avg
-                        </span>
-                      </div>
-
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                        Weight: <strong style={{ color: '#38bdf8' }}>{sec.total_index_weight_pct}%</strong> &bull; {sec.stocks_count} Stocks
-                      </div>
-                    </div>
-
-                    {/* Stock Tiles in this Sector */}
+              <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '3px', position: 'relative' }}>
+                {(() => {
+                  const range = selectedStock.high_52w - selectedStock.low_52w || 1;
+                  const pos = Math.min(100, Math.max(0, ((selectedStock.ltp - selectedStock.low_52w) / range) * 100));
+                  return (
                     <div
                       style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
-                        gap: '10px'
+                        position: 'absolute',
+                        left: `${pos}%`,
+                        top: '-3px',
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        background: '#38bdf8',
+                        border: '2px solid white',
+                        boxShadow: '0 0 8px #38bdf8',
+                        transform: 'translateX(-50%)'
+                      }}
+                    />
+                  );
+                })()}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.70rem', color: 'var(--text-secondary)' }}>
+                <span>Index Weight: <strong style={{ color: '#ffffff' }}>{selectedStock.index_weight_pct}%</strong></span>
+                <span>P/E Ratio: <strong style={{ color: '#ffffff' }}>{selectedStock.pe_ratio.toFixed(1)}</strong></span>
+                <span>Signal: <strong style={{ color: selectedStock.percent_change >= 0 ? '#34d399' : '#f87171' }}>{selectedStock.signal}</strong></span>
+              </div>
+            </div>
+
+            {/* 1-Click Action Buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <Link
+                href={`/signals?search=${encodeURIComponent(selectedStock.symbol)}`}
+                className="btn"
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                  color: 'white',
+                  padding: '9px 18px',
+                  borderRadius: '8px',
+                  fontSize: '0.80rem',
+                  fontWeight: 800,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 15px rgba(99, 102, 241, 0.35)',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                title={`View active quantitative buy/sell signals for ${selectedStock.symbol}`}
+              >
+                <Zap size={15} />
+                <span>Trade Signals for {selectedStock.symbol} &rarr;</span>
+              </Link>
+
+              <Link
+                href={`/52-week?search=${encodeURIComponent(selectedStock.symbol)}`}
+                className="btn btn-secondary"
+                style={{
+                  padding: '9px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                title="Inspect 52-Week High/Low Proximity Radar"
+              >
+                <TrendingUp size={15} color="#10b981" />
+                <span>52W Radar</span>
+              </Link>
+
+              <a
+                href={selectedStock.nse_official_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{
+                  padding: '9px 12px',
+                  borderRadius: '8px',
+                  fontSize: '0.78rem',
+                  color: 'var(--text-muted)'
+                }}
+                title="View on Official NSE Website"
+              >
+                <ExternalLink size={14} />
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* Filter & Search Bar */}
+        <div
+          style={{
+            background: 'var(--panel)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 20px',
+            marginBottom: '20px'
+          }}
+        >
+          {/* Top Row: Search Input + Sort + Layout Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', marginBottom: '14px' }}>
+            {/* Search Input */}
+            <div style={{ position: 'relative', flex: '1 1 300px' }}>
+              <Search
+                size={16}
+                color="var(--text-muted)"
+                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+              />
+              <input
+                type="text"
+                placeholder="Search by Symbol, Company Name, or Sector (e.g. RELIANCE, TCS, Banking)..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px 10px 38px',
+                  borderRadius: '8px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#ffffff',
+                  fontSize: '0.84rem',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+
+            {/* Sort Options */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700 }}>SORT:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  color: '#ffffff',
+                  fontSize: '0.80rem',
+                  fontWeight: 700,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="pct_desc" style={{ background: '#0f172a' }}>Top Gainers First (% Change)</option>
+                <option value="pct_asc" style={{ background: '#0f172a' }}>Top Losers First (% Change)</option>
+                <option value="weight" style={{ background: '#0f172a' }}>Index Weight (Heavyweights)</option>
+                <option value="alpha" style={{ background: '#0f172a' }}>Alphabetical (A - Z)</option>
+              </select>
+
+              {/* View Layout Switcher */}
+              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.04)', padding: '3px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <button
+                  onClick={() => setViewMode('sectors')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '0.74rem',
+                    fontWeight: viewMode === 'sectors' ? 800 : 600,
+                    background: viewMode === 'sectors' ? '#38bdf8' : 'transparent',
+                    color: viewMode === 'sectors' ? '#0f172a' : 'var(--text-secondary)',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  By Sector
+                </button>
+                <button
+                  onClick={() => setViewMode('unified')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '0.74rem',
+                    fontWeight: viewMode === 'unified' ? 800 : 600,
+                    background: viewMode === 'unified' ? '#38bdf8' : 'transparent',
+                    color: viewMode === 'unified' ? '#0f172a' : 'var(--text-secondary)',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  All 50 Matrix
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Sector Filter Tabs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 800, whiteSpace: 'nowrap' }}>
+              SECTORS:
+            </span>
+            {availableSectorNames.map((secName) => {
+              const isActive = selectedSector === secName;
+              return (
+                <button
+                  key={secName}
+                  onClick={() => setSelectedSector(secName)}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '8px',
+                    fontSize: '0.76rem',
+                    fontWeight: isActive ? 800 : 600,
+                    whiteSpace: 'nowrap',
+                    background: isActive ? 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' : 'rgba(255, 255, 255, 0.04)',
+                    border: isActive ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                    color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    boxShadow: isActive ? '0 0 12px rgba(56, 189, 248, 0.35)' : 'none'
+                  }}
+                >
+                  {secName === 'ALL' ? 'All Sectors' : secName}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Heat Map Main Display */}
+        {loading && !currentSectors.length ? (
+          <div style={{ padding: '60px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <RefreshCw size={28} className="pulse-indicator" color="#38bdf8" style={{ margin: '0 auto 12px auto' }} />
+            <div>Loading live NSE India market map...</div>
+          </div>
+        ) : viewMode === 'sectors' ? (
+          /* SECTOR-GROUPED VIEW */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            {filteredSectors.map((sec) => (
+              <div
+                key={sec.sector}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.75)',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '18px 20px',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                {/* Sector Header Strip */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.01em' }}>
+                      {sec.sector}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '0.74rem',
+                        fontWeight: 800,
+                        padding: '3px 10px',
+                        borderRadius: '6px',
+                        background: sec.average_percent_change >= 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        color: sec.average_percent_change >= 0 ? '#34d399' : '#f87171',
+                        border: sec.average_percent_change >= 0 ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)'
                       }}
                     >
-                      {sec.stocks.map((stock) => {
-                        const isGain = stock.percent_change >= 0;
-                        return (
-                          <div
-                            key={stock.symbol}
-                            onClick={() => {
-                              setSelectedSymbol(stock.symbol);
-                              setActiveView('chart');
-                            }}
-                            title={`Click to open ${stock.symbol} Chart with Buy/Sell Signals`}
+                      {sec.average_percent_change >= 0 ? '+' : ''}
+                      {sec.average_percent_change.toFixed(2)}% Avg
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                    Index Weight: <strong style={{ color: '#38bdf8' }}>{sec.total_index_weight_pct}%</strong> &bull; {sec.stocks.length} Constituents
+                  </div>
+                </div>
+
+                {/* Grid of Stock Tiles in this Sector */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '12px'
+                  }}
+                >
+                  {sec.stocks.map((stock) => {
+                    const isSelected = selectedStock?.symbol === stock.symbol;
+                    const isGain = stock.percent_change >= 0;
+                    return (
+                      <div
+                        key={stock.symbol}
+                        onClick={() => setSelectedStock(stock)}
+                        style={{
+                          background: getTileBg(stock.percent_change),
+                          border: getTileBorder(stock.percent_change, isSelected),
+                          borderRadius: '12px',
+                          padding: '14px 16px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          color: '#ffffff',
+                          transition: 'all 0.15s ease',
+                          boxShadow: isSelected
+                            ? '0 0 20px rgba(56, 189, 248, 0.5)'
+                            : '0 2px 10px rgba(0, 0, 0, 0.25)',
+                          transform: isSelected ? 'scale(1.02)' : 'none'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isSelected) {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.35)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isSelected) {
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.25)';
+                          }
+                        }}
+                      >
+                        {/* Top Row: Symbol & Signal Pill */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '0.98rem', fontWeight: 900, letterSpacing: '0.01em' }}>
+                            {stock.symbol}
+                          </span>
+                          <span
                             style={{
-                              background: stock.color,
-                              borderRadius: '8px',
-                              padding: '12px 14px',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'space-between',
-                              color: '#ffffff',
-                              transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.25)'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
+                              fontSize: '0.62rem',
+                              fontWeight: 900,
+                              background: 'rgba(0, 0, 0, 0.4)',
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              letterSpacing: '0.03em'
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <span style={{ fontSize: '0.88rem', fontWeight: 900, letterSpacing: '0.01em' }}>
-                                {stock.symbol}
-                              </span>
-                              <span
-                                style={{
-                                  fontSize: '0.62rem',
-                                  fontWeight: 800,
-                                  background: 'rgba(0,0,0,0.3)',
-                                  padding: '1px 5px',
-                                  borderRadius: '4px'
-                                }}
-                              >
-                                {stock.signal}
-                              </span>
-                            </div>
+                            {stock.signal}
+                          </span>
+                        </div>
 
-                            <div style={{ marginTop: '8px' }}>
-                              <div style={{ fontSize: '1.05rem', fontWeight: 900 }}>
-                                ₹{stock.ltp.toLocaleString('en-IN', { maximumFractionDigits: 1 })}
-                              </div>
-                              <div style={{ fontSize: '0.74rem', fontWeight: 700, marginTop: '2px', opacity: 0.95 }}>
-                                {isGain ? '+' : ''}
-                                {stock.percent_change.toFixed(2)}% ({isGain ? '+' : ''}₹{stock.change.toFixed(1)})
-                              </div>
-                            </div>
+                        {/* Middle: Company Name */}
+                        <div style={{ fontSize: '0.70rem', color: 'rgba(255, 255, 255, 0.85)', marginTop: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {stock.company_name}
+                        </div>
 
-                            <div style={{ marginTop: '6px', fontSize: '0.62rem', opacity: 0.8, display: 'flex', justifyContent: 'space-between' }}>
-                              <span>Weight: {stock.index_weight_pct}%</span>
-                              <span>P/E: {stock.pe_ratio.toFixed(1)}</span>
-                            </div>
+                        {/* Price & Change */}
+                        <div style={{ marginTop: '10px' }}>
+                          <div style={{ fontSize: '1.20rem', fontWeight: 900 }}>
+                            ₹{stock.ltp.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                           </div>
-                        );
-                      })}
+                          <div style={{ fontSize: '0.78rem', fontWeight: 800, marginTop: '2px' }}>
+                            {isGain ? '+' : ''}
+                            {stock.percent_change.toFixed(2)}% ({isGain ? '+' : ''}₹{stock.change.toFixed(2)})
+                          </div>
+                        </div>
+
+                        {/* Bottom Row: Weight & P/E */}
+                        <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.15)', fontSize: '0.64rem', display: 'flex', justifyContent: 'space-between', opacity: 0.9 }}>
+                          <span>Weight: <strong>{stock.index_weight_pct}%</strong></span>
+                          <span>P/E: <strong>{stock.pe_ratio.toFixed(1)}</strong></span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* UNIFIED 50 MATRIX VIEW */
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: '12px'
+            }}
+          >
+            {unifiedFilteredStocks.map((stock) => {
+              const isSelected = selectedStock?.symbol === stock.symbol;
+              const isGain = stock.percent_change >= 0;
+              return (
+                <div
+                  key={stock.symbol}
+                  onClick={() => setSelectedStock(stock)}
+                  style={{
+                    background: getTileBg(stock.percent_change),
+                    border: getTileBorder(stock.percent_change, isSelected),
+                    borderRadius: '12px',
+                    padding: '14px 16px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    color: '#ffffff',
+                    transition: 'all 0.15s ease',
+                    boxShadow: isSelected
+                      ? '0 0 20px rgba(56, 189, 248, 0.5)'
+                      : '0 2px 10px rgba(0, 0, 0, 0.25)',
+                    transform: isSelected ? 'scale(1.02)' : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.35)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.25)';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.98rem', fontWeight: 900 }}>{stock.symbol}</span>
+                    <span
+                      style={{
+                        fontSize: '0.62rem',
+                        fontWeight: 800,
+                        background: 'rgba(0, 0, 0, 0.35)',
+                        padding: '2px 6px',
+                        borderRadius: '4px'
+                      }}
+                    >
+                      {stock.sector}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '0.70rem', color: 'rgba(255, 255, 255, 0.85)', marginTop: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {stock.company_name}
+                  </div>
+
+                  <div style={{ marginTop: '10px' }}>
+                    <div style={{ fontSize: '1.20rem', fontWeight: 900 }}>
+                      ₹{stock.ltp.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                    </div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 800, marginTop: '2px' }}>
+                      {isGain ? '+' : ''}
+                      {stock.percent_change.toFixed(2)}% ({isGain ? '+' : ''}₹{stock.change.toFixed(2)})
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : null}
+
+                  <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.15)', fontSize: '0.64rem', display: 'flex', justifyContent: 'space-between', opacity: 0.9 }}>
+                    <span>Weight: <strong>{stock.index_weight_pct}%</strong></span>
+                    <span>P/E: <strong>{stock.pe_ratio.toFixed(1)}</strong></span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
-
-        {/* VIEW 3: ACTIVE SIGNALS TERMINAL */}
-        {activeView === 'signals' && (
-          <div>
-            <div
-              style={{
-                background: 'rgba(15, 23, 42, 0.85)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--border-subtle)',
-                padding: '20px 24px',
-                marginBottom: '20px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <div>
-                  <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'white' }}>
-                    QUANTITATIVE ALGORITHMIC SIGNALS ENGINE
-                  </h2>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                    Automated multi-factor triggers based on EMA 9/21 crossovers, Supertrend (10, 3) reversals, and RSI volume expansion
-                  </div>
-                </div>
-
-                <div style={{ fontSize: '0.74rem', color: '#38bdf8', fontWeight: 700 }}>
-                  50 Constituents Tracked Live
-                </div>
-              </div>
-
-              {/* Signals Grid Table */}
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-muted)' }}>
-                      <th style={{ padding: '10px 14px', textAlign: 'left' }}>SYMBOL &amp; SECTOR</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'right' }}>LTP</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'center' }}>SIGNAL TYPE</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'right' }}>ENTRY PRICE</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'right' }}>STOP LOSS (SL)</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'right' }}>TARGET 1</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'right' }}>TARGET 2</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'left' }}>INDICATOR REASON</th>
-                      <th style={{ padding: '10px 14px', textAlign: 'center' }}>ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {heatmapData?.sectors
-                      .flatMap((s) => s.stocks)
-                      .slice(0, 25)
-                      .map((stock) => {
-                        const isBuy = stock.signal.includes('BUY');
-                        const isSell = stock.signal.includes('SELL');
-                        const entry = stock.ltp;
-                        const sl = isBuy ? round2(entry * 0.985) : round2(entry * 1.015);
-                        const t1 = isBuy ? round2(entry * 1.025) : round2(entry * 0.975);
-                        const t2 = isBuy ? round2(entry * 1.045) : round2(entry * 0.955);
-
-                        return (
-                          <tr
-                            key={stock.symbol}
-                            style={{
-                              borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                              transition: 'background 0.15s ease'
-                            }}
-                          >
-                            <td style={{ padding: '12px 14px' }}>
-                              <div style={{ fontWeight: 800, color: 'white' }}>{stock.symbol}</div>
-                              <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>{stock.sector}</div>
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800 }}>
-                              ₹{stock.ltp.toLocaleString('en-IN', { maximumFractionDigits: 1 })}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'center' }}>
-                              <span
-                                style={{
-                                  padding: '4px 10px',
-                                  borderRadius: '6px',
-                                  fontWeight: 800,
-                                  fontSize: '0.72rem',
-                                  background: isBuy ? 'rgba(16, 185, 129, 0.2)' : isSell ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255,255,255,0.06)',
-                                  color: isBuy ? '#34d399' : isSell ? '#f87171' : '#94a3b8',
-                                  border: isBuy ? '1px solid rgba(16, 185, 129, 0.4)' : isSell ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(255,255,255,0.1)'
-                                }}
-                              >
-                                {stock.signal}
-                              </span>
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700 }}>
-                              ₹{entry.toFixed(1)}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#f87171' }}>
-                              ₹{sl.toFixed(1)}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#34d399' }}>
-                              ₹{t1.toFixed(1)}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#38bdf8' }}>
-                              ₹{t2.toFixed(1)}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', color: 'var(--text-secondary)', fontSize: '0.74rem' }}>
-                              {isBuy
-                                ? 'EMA 9 > EMA 21 Momentum Golden Cross & Bullish Volume'
-                                : isSell
-                                ? 'EMA 9 < EMA 21 Death Cross & Supertrend Breakdown'
-                                : 'Neutral Rangebound Consolidation'}
-                            </td>
-
-                            <td style={{ padding: '12px 14px', textAlign: 'center' }}>
-                              <button
-                                onClick={() => {
-                                  setSelectedSymbol(stock.symbol);
-                                  setActiveView('chart');
-                                }}
-                                className="btn btn-primary"
-                                style={{ fontSize: '0.72rem', padding: '5px 12px' }}
-                              >
-                                Open Chart
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* VIEW 4: TRADE EXECUTION GUIDE & PLAYBOOK */}
-        {activeView === 'playbook' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Guide Header Banner */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.15))',
-                border: '1px solid rgba(56, 189, 248, 0.35)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '24px 28px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <ShieldCheck size={22} color="#38bdf8" />
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 900, margin: 0, color: 'white' }}>
-                  INSTITUTIONAL TRADE EXECUTION PLAYBOOK: HEAT MAP &amp; SIGNALS
-                </h2>
-              </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                This institutional framework outlines exactly how professional traders combine macro sector breadth (via the NSE Heat Map) with micro-technical entry points (via Algorithmic Buy/Sell Signals and Chart Drawing Tools) to generate positive expected alpha while rigorously controlling downside risk.
-              </p>
-            </div>
-
-            {/* 4-Step Execution Workflow Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
-              {/* Step 1 */}
-              <div
-                style={{
-                  background: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: '#0284c7',
-                      color: 'white',
-                      fontWeight: 900,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    1
-                  </div>
-                  <h3 style={{ fontSize: '0.98rem', fontWeight: 800, margin: 0, color: 'white' }}>
-                    Scan Sector Breadth on NSE Heat Map
-                  </h3>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                  Open the <strong>NSE Market Heat Map</strong> at market open (9:15 AM - 9:30 AM). Look for <strong>sector clusters</strong> with high green intensity (e.g. Financial Services or IT advancing &gt;+1.5%). Never buy a stock whose entire sector is deep red; trade with sectoral tailwinds.
-                </p>
-                <div style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: 700 }}>
-                  Rule: Identify top 2 performing sectors and avoid lagging sectors.
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div
-                style={{
-                  background: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: '#10b981',
-                      color: 'white',
-                      fontWeight: 900,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    2
-                  </div>
-                  <h3 style={{ fontSize: '0.98rem', fontWeight: 800, margin: 0, color: 'white' }}>
-                    Chart Analysis &amp; S/R Drawing Setup
-                  </h3>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                  Click the leading stock tile from the Heat Map to load its chart. Use the <strong>Horizontal S/R</strong> and <strong>Trendline</strong> drawing tools to mark the prior day high/low and key swing levels. Validate that price is trading above the cyan <strong>EMA 9</strong> and orange <strong>EMA 21</strong>.
-                </p>
-                <div style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: 700 }}>
-                  Rule: Price must be supported by the 9-EMA and 21-EMA dynamic band.
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div
-                style={{
-                  background: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: '#f59e0b',
-                      color: 'white',
-                      fontWeight: 900,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    3
-                  </div>
-                  <h3 style={{ fontSize: '0.98rem', fontWeight: 800, margin: 0, color: 'white' }}>
-                    Confirm Algorithmic Buy/Sell Trigger
-                  </h3>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                  Wait for the green <strong>▲ BUY</strong> signal flag to form at candle close. Confirm that the Supertrend has flipped green and volume is at least 1.3x higher than previous candles. Avoid entering mid-candle before closing confirmation.
-                </p>
-                <div style={{ fontSize: '0.72rem', color: '#fbbf24', fontWeight: 700 }}>
-                  Rule: Never trade on anticipating signals; wait for candle close.
-                </div>
-              </div>
-
-              {/* Step 4 */}
-              <div
-                style={{
-                  background: 'rgba(15, 23, 42, 0.85)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: '#8b5cf6',
-                      color: 'white',
-                      fontWeight: 900,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    4
-                  </div>
-                  <h3 style={{ fontSize: '0.98rem', fontWeight: 800, margin: 0, color: 'white' }}>
-                    Execute Bracket / Cover Order with Strict SL
-                  </h3>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                  Place an intraday <strong>Bracket Order (BO)</strong> or Cover Order with your broker (Zerodha, Groww, AngelOne):
-                  <br />&bull; <strong>Entry</strong>: Signal Entry Price
-                  <br />&bull; <strong>Stop Loss</strong>: Algorithmic SL level (1.5% - 2.0% risk)
-                  <br />&bull; <strong>Target 1</strong>: Book 50% profits; move SL to breakeven
-                  <br />&bull; <strong>Target 2</strong>: Trail remainder using the Supertrend line
-                </p>
-                <div style={{ fontSize: '0.72rem', color: '#c084fc', fontWeight: 700 }}>
-                  Rule: Never risk more than 1.5% of total trading capital on a single setup.
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* Navigation Hub Drawer */}
-        <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
       </div>
+
+      {/* Navigation Drawer Component */}
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
     </div>
   );
 }
@@ -1712,11 +1548,7 @@ function ChartingAndHeatmapContent() {
 export default function ChartingAndHeatmapPage() {
   return (
     <React.Suspense fallback={<div style={{ minHeight: '100vh', background: '#0a0d14' }} />}>
-      <ChartingAndHeatmapContent />
+      <HeatmapContent />
     </React.Suspense>
   );
-}
-
-function round2(v: number): number {
-  return Math.round(v * 100) / 100;
 }
