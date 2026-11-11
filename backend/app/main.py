@@ -56,6 +56,7 @@ async def tick_background_loop():
     last_gift_tick_time = time.time()
     last_news_sync = time.time()
     last_indices_sync = time.time()
+    last_signal_gen = time.time()
 
     while True:
         try:
@@ -71,6 +72,11 @@ async def tick_background_loop():
             if now - last_indices_sync >= 45.0:
                 await asyncio.to_thread(nse_client.fetch_all_indices)
                 last_indices_sync = now
+
+            # Auto-generate fresh real-time algorithmic trade signals every 25s
+            if now - last_signal_gen >= 25.0:
+                generate_live_signal_event()
+                last_signal_gen = now
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
             if is_indian_market_open():
@@ -816,6 +822,7 @@ def api_get_trade_signals(
     strategy: Optional[str] = None,
     market_cap: Optional[str] = None,
     type: Optional[str] = None,
+    timeframe: Optional[str] = None,
     search: Optional[str] = None
 ):
     """Multi-Strategy Quantitative Trade Signals across Large-Cap, Mid-Cap, and Small-Cap equities."""
@@ -823,6 +830,7 @@ def api_get_trade_signals(
         strategy_id=strategy,
         market_cap=market_cap,
         signal_type=type,
+        timeframe=timeframe,
         search=search
     )
 

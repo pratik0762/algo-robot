@@ -218,7 +218,7 @@ def build_signal_object(
         "time_elapsed": elapsed_str,
         "offset_seconds": offset_seconds,
         "status": "ACTIVE",
-        "timeframe": random.choice(["5m", "15m", "1D"]),
+        "timeframe": random.choice(["5m", "15m", "1H", "1D"]),
         "confidence_score": random.randint(84, 98)
     }
 
@@ -243,6 +243,7 @@ def initialize_trade_signals() -> List[Dict[str, Any]]:
     sig_rel["target_2"] = 1155.85
     sig_rel["indicator_reason"] = "EMA 9/21 Bearish Death Cross"
     sig_rel["execution_advice"] = "Short at ₹1349.67. Place Stop Loss at ₹1427.2. Cover 50% at ₹1233.38, trail remainder to ₹1155.85."
+    sig_rel["timeframe"] = "15m"
     signals.append(sig_rel)
 
     # 2. Large-Cap Signals
@@ -279,6 +280,7 @@ def get_trade_signals(
     strategy_id: Optional[str] = None,
     market_cap: Optional[str] = None,
     signal_type: Optional[str] = None,
+    timeframe: Optional[str] = None,
     search: Optional[str] = None
 ) -> Dict[str, Any]:
     """Retrieve and filter trade signals."""
@@ -307,6 +309,9 @@ def get_trade_signals(
 
     if signal_type and signal_type.upper() != "ALL":
         filtered = [s for s in filtered if s["type"] == signal_type.upper()]
+
+    if timeframe and timeframe.upper() != "ALL":
+        filtered = [s for s in filtered if s["timeframe"].upper() == timeframe.upper()]
 
     if search and search.strip():
         term = search.strip().lower()

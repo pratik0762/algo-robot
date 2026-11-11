@@ -106,9 +106,11 @@ function TradeSignalsContent() {
   const [selectedStrategy, setSelectedStrategy] = useState<string>('all');
   const [selectedCap, setSelectedCap] = useState<string>('ALL');
   const [selectedType, setSelectedType] = useState<string>('ALL');
+  const [selectedTimeframe, setSelectedTimeframe] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
   const [summary, setSummary] = useState<any>(null);
+  const [syncCountdown, setSyncCountdown] = useState<number>(6);
 
   // Persistent Toast State (Must remain visible until user clicks 'OK')
   const [activeToast, setActiveToast] = useState<TradeSignalItem | null>(null);
@@ -117,14 +119,16 @@ function TradeSignalsContent() {
   // Real-time market status hook
   const { isMarketOpen, marketStatusDetail } = useLiveStockTicks();
 
-  // Dynamic elapsed ticker time state (deterministic initial SSR state; updated on mount)
+  // Dynamic elapsed ticker time state (deterministic initial SSR state; updated live on client)
   const [currentTimeMs, setCurrentTimeMs] = useState<number>(1730000000000);
 
   useEffect(() => {
     setCurrentTimeMs(Date.now());
+    // Live real-time elapsed counter updating every 1s
     const timer = setInterval(() => {
       setCurrentTimeMs(Date.now());
-    }, 5000);
+      setSyncCountdown(prev => (prev <= 1 ? 6 : prev - 1));
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -141,7 +145,7 @@ function TradeSignalsContent() {
     return `${Math.floor(diffSec / 86400)}d ago`;
   }, [currentTimeMs]);
 
-  // Fetch Signals from backend
+  // Fetch Signals from backend (silent background sync; zero flickering)
   const fetchSignals = useCallback(async (isManual: boolean = false) => {
     if (isManual) setRefreshing(true);
     try {
@@ -173,15 +177,16 @@ function TradeSignalsContent() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+      setSyncCountdown(6);
     }
   }, []);
 
+  // Automatic real-time background sync loop (every 6 seconds - no manual refresh needed)
   useEffect(() => {
     fetchSignals();
-    // Live polling check for new signals every 20 seconds
     const interval = setInterval(() => {
       fetchSignals(false);
-    }, 20000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [fetchSignals]);
 
@@ -218,6 +223,10 @@ function TradeSignalsContent() {
       if (selectedType !== 'ALL' && sig.type !== selectedType) {
         return false;
       }
+      // Timeframe filter
+      if (selectedTimeframe !== 'ALL' && sig.timeframe.toUpperCase() !== selectedTimeframe.toUpperCase()) {
+        return false;
+      }
       // Search filter
       if (searchTerm.trim()) {
         const term = searchTerm.toLowerCase();
@@ -225,12 +234,13 @@ function TradeSignalsContent() {
           sig.symbol.toLowerCase().includes(term) ||
           sig.company_name.toLowerCase().includes(term) ||
           sig.sector.toLowerCase().includes(term) ||
-          sig.strategy_name.toLowerCase().includes(term);
+          sig.strategy_name.toLowerCase().includes(term) ||
+          sig.timeframe.toLowerCase().includes(term);
         if (!match) return false;
       }
       return true;
     });
-  }, [signals, selectedStrategy, selectedCap, selectedType, searchTerm]);
+  }, [signals, selectedStrategy, selectedCap, selectedType, selectedTimeframe, searchTerm]);
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
@@ -345,8 +355,36 @@ function TradeSignalsContent() {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Action & Auto-Refresh Status Strip */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 14px',
+                borderRadius: '8px',
+                background: 'rgba(16, 185, 129, 0.12)',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                color: '#34d399',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+              }}
+              title="Real-Time Automated Background Synchronization"
+            >
+              <span
+                className="pulse-indicator"
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 10px #10b981'
+                }}
+              />
+              <span>LIVE AUTO-REFRESH ACTIVE ({syncCountdown}s)</span>
+            </div>
+
             <button
               onClick={handleTriggerSimulatedSignal}
               className="btn"
@@ -367,18 +405,7 @@ function TradeSignalsContent() {
               title="Simulate / Trigger a New Real-Time Signal (Tests Toast Notification)"
             >
               <Sparkles size={15} />
-              <span>Simulate New Signal</span>
-            </button>
-
-            <button
-              onClick={() => fetchSignals(true)}
-              disabled={refreshing}
-              className="btn btn-secondary"
-              style={{ padding: '8px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-              title="Refresh trade signals feed"
-            >
-              <RefreshCw size={14} className={refreshing ? 'pulse-indicator' : ''} />
-              <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+              <span>Simulate Signal</span>
             </button>
           </div>
         </div>
@@ -542,6 +569,37 @@ function TradeSignalsContent() {
                       }}
                     >
                       {act.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Timeframe Filter Pills */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                {[
+                  { id: 'ALL', label: 'All Timeframes' },
+                  { id: '5m', label: '5m' },
+                  { id: '15m', label: '15m' },
+                  { id: '1H', label: '1H' },
+                  { id: '1D', label: '1D' },
+                ].map((tf) => {
+                  const isActive = selectedTimeframe === tf.id;
+                  return (
+                    <button
+                      key={tf.id}
+                      onClick={() => setSelectedTimeframe(tf.id)}
+                      style={{
+                        padding: '5px 10px',
+                        borderRadius: '6px',
+                        fontSize: '0.74rem',
+                        fontWeight: isActive ? 800 : 500,
+                        background: isActive ? '#0284c7' : 'transparent',
+                        color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {tf.label}
                     </button>
                   );
                 })}
@@ -712,6 +770,30 @@ function TradeSignalsContent() {
                         >
                           {sig.market_cap_category.replace('_', '-')}
                         </span>
+
+                        {/* Timeframe Pill (Prominently displayed) */}
+                        <span
+                          style={{
+                            background: 'rgba(2, 132, 199, 0.2)',
+                            border: '1px solid rgba(56, 189, 248, 0.45)',
+                            color: '#38bdf8',
+                            fontSize: '0.65rem',
+                            fontWeight: 900,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            letterSpacing: '0.04em',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            boxShadow: '0 0 10px rgba(56, 189, 248, 0.25)'
+                          }}
+                        >
+                          <Clock size={11} color="#38bdf8" />
+                          <span>{sig.timeframe.toUpperCase()}</span>
+                          <span style={{ fontSize: '0.58rem', opacity: 0.85 }}>
+                            {sig.timeframe === '5m' ? 'SCALP' : sig.timeframe === '15m' ? 'INTRADAY' : sig.timeframe === '1H' ? 'HOURLY' : 'SWING'}
+                          </span>
+                        </span>
                       </div>
 
                       {/* Rationale and Execution Advice */}
@@ -770,6 +852,16 @@ function TradeSignalsContent() {
                       </div>
                       <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#fbbf24' }}>
                         {sig.risk_reward}
+                      </div>
+                    </div>
+
+                    {/* Timeframe Metric Column (Requested Feature) */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#38bdf8', textTransform: 'uppercase', fontWeight: 700 }}>
+                        TIMEFRAME
+                      </div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#38bdf8' }}>
+                        {sig.timeframe.toUpperCase()}
                       </div>
                     </div>
 
@@ -888,7 +980,7 @@ function TradeSignalsContent() {
                 {activeToast.symbol} &bull; ₹{activeToast.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                {activeToast.strategy_name} &bull; {activeToast.market_cap_category.replace('_', '-')}
+                {activeToast.strategy_name} &bull; {activeToast.market_cap_category.replace('_', '-')} &bull; <strong style={{ color: '#38bdf8' }}>{activeToast.timeframe.toUpperCase()} TIMEFRAME</strong>
               </div>
             </div>
           </div>
