@@ -1,0 +1,4137 @@
+{
+  "timestamp": "2026-11-13 14:33:32 IST",
+  "routes_audited": 9,
+  "viewports_audited": 9,
+  "results": [
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 6,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2253,
+          "windowWidth": 1920,
+          "text": "NIFTY FINANCIAL SERVICES (FINN"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1945,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1944,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1944,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2204,
+          "windowWidth": 1920,
+          "text": "NIFTY FINANCIAL SERVICES (FINN"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2236,
+          "windowWidth": 1920,
+          "text": "14"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_desktop_1920x1080.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1490,
+          "windowWidth": 1440,
+          "text": "NIFTY PHARMA\n4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1447,
+          "windowWidth": 1440,
+          "text": "NIFTY PHARMA"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1473,
+          "windowWidth": 1440,
+          "text": "4"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1667,
+          "windowWidth": 1440,
+          "text": "NIFTY METAL\n4"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1532,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1530,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1624,
+          "windowWidth": 1440,
+          "text": "NIFTY METAL"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1650,
+          "windowWidth": 1440,
+          "text": "4"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1126,
+          "windowWidth": 1024,
+          "text": "NIFTY ENERGY\n8"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1083,
+          "windowWidth": 1024,
+          "text": "NIFTY ENERGY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1109,
+          "windowWidth": 1024,
+          "text": "8"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1299,
+          "windowWidth": 1024,
+          "text": "NIFTY FMCG\n5"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1168,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1162,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1167,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1164,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 936,
+          "windowWidth": 768,
+          "text": "NIFTY AUTO\n8"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 808,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 807,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 799,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 805,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 893,
+          "windowWidth": 768,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 919,
+          "windowWidth": 768,
+          "text": "8"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1126,
+          "windowWidth": 768,
+          "text": "NIFTY ENERGY\n8"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_tablet_768x1024.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 936,
+          "windowWidth": 834,
+          "text": "NIFTY AUTO\n8"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 893,
+          "windowWidth": 834,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 919,
+          "windowWidth": 834,
+          "text": "8"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1126,
+          "windowWidth": 834,
+          "text": "NIFTY ENERGY\n8"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 978,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 975,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1083,
+          "windowWidth": 834,
+          "text": "NIFTY ENERGY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1109,
+          "windowWidth": 834,
+          "text": "8"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 437,
+          "windowWidth": 430,
+          "text": "SENSEX\n30"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 613,
+          "windowWidth": 430,
+          "text": "NIFTY BANK\n12"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 479,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 478,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 478,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 564,
+          "windowWidth": 430,
+          "text": "NIFTY BANK"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 437,
+          "windowWidth": 390,
+          "text": "SENSEX\n30"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_mobile_390x844.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_desktop_1920x1080.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_tablet_768x1024.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 2,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 7,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_mobile_390x844.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 6,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1958,
+          "windowWidth": 1920,
+          "text": "Power & Utilities"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2128,
+          "windowWidth": 1920,
+          "text": "Construction Materials"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2282,
+          "windowWidth": 1920,
+          "text": "Consumer Durables"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2464,
+          "windowWidth": 1920,
+          "text": "Services & Infrastructure"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2616,
+          "windowWidth": 1920,
+          "text": "Consumer Services"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2736,
+          "windowWidth": 1920,
+          "text": "Capital Goods"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_desktop_1920x1080.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 7,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1589,
+          "windowWidth": 1440,
+          "text": "Construction & Engineering"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1722,
+          "windowWidth": 1440,
+          "text": "Power & Utilities"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1892,
+          "windowWidth": 1440,
+          "text": "Construction Materials"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2046,
+          "windowWidth": 1440,
+          "text": "Consumer Durables"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2228,
+          "windowWidth": 1440,
+          "text": "Services & Infrastructure"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2380,
+          "windowWidth": 1440,
+          "text": "Consumer Services"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2500,
+          "windowWidth": 1440,
+          "text": "Capital Goods"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1107,
+          "windowWidth": 1024,
+          "text": "Healthcare"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1238,
+          "windowWidth": 1024,
+          "text": "Metals & Mining"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1389,
+          "windowWidth": 1024,
+          "text": "Telecommunication"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1589,
+          "windowWidth": 1024,
+          "text": "Construction & Engineering"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1722,
+          "windowWidth": 1024,
+          "text": "Power & Utilities"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1892,
+          "windowWidth": 1024,
+          "text": "Construction Materials"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2046,
+          "windowWidth": 1024,
+          "text": "Consumer Durables"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 2228,
+          "windowWidth": 1024,
+          "text": "Services & Infrastructure"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 902,
+          "windowWidth": 768,
+          "text": "Fast Moving Consumer Goods"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1007,
+          "windowWidth": 768,
+          "text": "Automobile"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1107,
+          "windowWidth": 768,
+          "text": "Healthcare"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1238,
+          "windowWidth": 768,
+          "text": "Metals & Mining"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1389,
+          "windowWidth": 768,
+          "text": "Telecommunication"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1589,
+          "windowWidth": 768,
+          "text": "Construction & Engineering"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1722,
+          "windowWidth": 768,
+          "text": "Power & Utilities"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1892,
+          "windowWidth": 768,
+          "text": "Construction Materials"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_tablet_768x1024.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 902,
+          "windowWidth": 834,
+          "text": "Fast Moving Consumer Goods"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1007,
+          "windowWidth": 834,
+          "text": "Automobile"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1107,
+          "windowWidth": 834,
+          "text": "Healthcare"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1238,
+          "windowWidth": 834,
+          "text": "Metals & Mining"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1389,
+          "windowWidth": 834,
+          "text": "Telecommunication"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1589,
+          "windowWidth": 834,
+          "text": "Construction & Engineering"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1722,
+          "windowWidth": 834,
+          "text": "Power & Utilities"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1892,
+          "windowWidth": 834,
+          "text": "Construction Materials"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 531,
+          "windowWidth": 430,
+          "text": "Information Technology"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 688,
+          "windowWidth": 430,
+          "text": "Energy & Diversified"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 902,
+          "windowWidth": 430,
+          "text": "Fast Moving Consumer Goods"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1007,
+          "windowWidth": 430,
+          "text": "Automobile"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1107,
+          "windowWidth": 430,
+          "text": "Healthcare"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1238,
+          "windowWidth": 430,
+          "text": "Metals & Mining"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 531,
+          "windowWidth": 390,
+          "text": "Information Technology"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_mobile_390x844.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_desktop_1920x1080.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 1,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 840,
+          "windowWidth": 768,
+          "text": "Fixed Income"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_tablet_768x1024.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 1,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 840,
+          "windowWidth": 834,
+          "text": "Fixed Income"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "glass-panel",
+          "right": 484,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 459,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 584,
+          "windowWidth": 430,
+          "text": "\u20b925,149.00\n-152.00 (-0.60%)"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 584,
+          "windowWidth": 430,
+          "text": "\u20b925,149.00"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 584,
+          "windowWidth": 430,
+          "text": "-152.00 (-0.60%)"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 464,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "glass-panel",
+          "right": 484,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_mobile_390x844.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_desktop_1920x1080.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_tablet_768x1024.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 2,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 7,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_mobile_390x844.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "Back to Financial Hub\nDrawer\nF"
+        },
+        {
+          "tag": "button",
+          "className": "btn btn-secondary",
+          "right": 337,
+          "windowWidth": 320,
+          "text": "Drawer"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "FII / DII INSTITUTIONAL TRADIN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "FII / DII INSTITUTIONAL TRADIN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-primary",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "CASH MARKET FEED"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "Real-Time Foreign & Domestic I"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_desktop_1920x1080.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 4,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1257,
+          "windowWidth": 1024,
+          "text": "Trader's Playbook\n5 STRATEGIES"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1026,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1140,
+          "windowWidth": 1024,
+          "text": "Trader's Playbook"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 1241,
+          "windowWidth": 1024,
+          "text": "5 STRATEGIES"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 788,
+          "windowWidth": 768,
+          "text": "Block Deals (\u2265\u20b910 Cr Window)\n9"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 772,
+          "windowWidth": 768,
+          "text": "9"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 988,
+          "windowWidth": 768,
+          "text": "Short Selling Data\n6"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 826,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 822,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 822,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 941,
+          "windowWidth": 768,
+          "text": "Short Selling Data"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 972,
+          "windowWidth": 768,
+          "text": "6"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_tablet_768x1024.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 988,
+          "windowWidth": 834,
+          "text": "Short Selling Data\n6"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 941,
+          "windowWidth": 834,
+          "text": "Short Selling Data"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 972,
+          "windowWidth": 834,
+          "text": "6"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1257,
+          "windowWidth": 834,
+          "text": "Trader's Playbook\n5 STRATEGIES"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1026,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1025,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1140,
+          "windowWidth": 834,
+          "text": "Trader's Playbook"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 1241,
+          "windowWidth": 834,
+          "text": "5 STRATEGIES"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 514,
+          "windowWidth": 430,
+          "text": "Bulk Deals (SEBI \u22650.5%)\n10"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 460,
+          "windowWidth": 430,
+          "text": "Bulk Deals (SEBI \u22650.5%)"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 498,
+          "windowWidth": 430,
+          "text": "10"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 788,
+          "windowWidth": 430,
+          "text": "Block Deals (\u2265\u20b910 Cr Window)\n9"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 552,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 545,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_mobile_390x844.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "h1",
+          "className": "",
+          "right": 345,
+          "windowWidth": 320,
+          "text": "MARKET DEAL"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_desktop_1920x1080.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 2,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1514,
+          "windowWidth": 1440,
+          "text": "Trading Playbook & Opportuniti"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 1498,
+          "windowWidth": 1440,
+          "text": "5 Strategies"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1169,
+          "windowWidth": 1024,
+          "text": "Mid Range Spectrum (25-75%)"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1153,
+          "windowWidth": 1024,
+          "text": "Mid Range Spectrum (25-75%)"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1514,
+          "windowWidth": 1024,
+          "text": "Trading Playbook & Opportuniti"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1207,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1205,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 1196,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1413,
+          "windowWidth": 1024,
+          "text": "Trading Playbook & Opportuniti"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 1498,
+          "windowWidth": 1024,
+          "text": "5 Strategies"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 923,
+          "windowWidth": 768,
+          "text": "Near 52W Low (Support)\n3"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 876,
+          "windowWidth": 768,
+          "text": "Near 52W Low (Support)"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 907,
+          "windowWidth": 768,
+          "text": "3"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1169,
+          "windowWidth": 768,
+          "text": "Mid Range Spectrum (25-75%)"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 961,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 960,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 957,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1153,
+          "windowWidth": 768,
+          "text": "Mid Range Spectrum (25-75%)"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_tablet_768x1024.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "button",
+          "className": "",
+          "right": 923,
+          "windowWidth": 834,
+          "text": "Near 52W Low (Support)\n3"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 876,
+          "windowWidth": 834,
+          "text": "Near 52W Low (Support)"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 907,
+          "windowWidth": 834,
+          "text": "3"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1169,
+          "windowWidth": 834,
+          "text": "Mid Range Spectrum (25-75%)"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 961,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 960,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 957,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1153,
+          "windowWidth": 834,
+          "text": "Mid Range Spectrum (25-75%)"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 460,
+          "windowWidth": 430,
+          "text": "52W Breakouts (\u22642%)\n1"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 444,
+          "windowWidth": 430,
+          "text": "1"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 683,
+          "windowWidth": 430,
+          "text": "Near 52W High (\u22645%)\n8"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 498,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 497,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 497,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 426,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 424,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 460,
+          "windowWidth": 390,
+          "text": "52W Breakouts (\u22642%)\n1"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_mobile_390x844.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "\u2190 Hub\nDrawer\n52-WEEK HIGH & LO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "LIVE BREAKOUTS \u2022 SPECTRUM"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "National Stock Exchange of Ind"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "\u2190 Hub\nDrawer\n52-WEEK HIGH & LO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "LIVE BREAKOUTS \u2022 SPECTRUM"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "National Stock Exchange of Ind"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_desktop_1920x1080.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_tablet_768x1024.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 430,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 390,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_mobile_390x844.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 360,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 370,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "h1",
+          "className": "",
+          "right": 338,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 320,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 370,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1920,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_desktop_1920x1080.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1440,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_tablet_768x1024.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 437,
+          "windowWidth": 430,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 430,
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 540,
+          "windowWidth": 430,
+          "text": "\u2022\n52W H: \u20b91611.80\n\u2022\n52W L: \u20b911"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 437,
+          "windowWidth": 390,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 390,
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 393,
+          "windowWidth": 390,
+          "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_mobile_390x844.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 437,
+          "windowWidth": 360,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 360,
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 393,
+          "windowWidth": 360,
+          "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 437,
+          "windowWidth": 320,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 557,
+          "windowWidth": 320,
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 326,
+          "windowWidth": 320,
+          "text": "-2.30 (-0.17%)"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    }
+  ]
+}

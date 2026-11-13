@@ -281,5 +281,20 @@ a {
   }
 }
 
+/* Accessibility & Scrollbar Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (max-width: 834px) {
+  button, a.btn, [role="button"] {
+    min-height: 34px;
+  }
+}
+
 
 

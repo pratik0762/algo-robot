@@ -531,7 +531,8 @@ export default function NewsPage() {
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
                       style={{
-                        padding: '5px 12px',
+                        padding: '7px 14px',
+                        minHeight: '34px',
                         fontSize: '0.74rem',
                         fontWeight: 700,
                         color: '#38bdf8',
@@ -831,8 +832,9 @@ export default function NewsPage() {
                           gap: '4px',
                           textDecoration: 'none',
                           fontWeight: 700,
-                          padding: '3px 8px',
-                          borderRadius: '4px',
+                          padding: '6px 12px',
+                          minHeight: '34px',
+                          borderRadius: '6px',
                           background: 'rgba(56, 189, 248, 0.1)',
                           border: '1px solid rgba(56, 189, 248, 0.25)',
                         }}

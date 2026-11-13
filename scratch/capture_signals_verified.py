@@ -37,3 +37,4 @@ def capture_screenshot():
 
 if __name__ == "__main__":
     capture_screenshot()
+

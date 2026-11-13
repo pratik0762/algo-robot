@@ -1100,14 +1100,15 @@ export default function FiiDiiPage() {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                fontSize: '0.72rem',
+                fontSize: '0.74rem',
                 fontWeight: 700,
-                padding: '6px 12px',
+                padding: '7px 14px',
+                minHeight: '34px',
                 borderRadius: '8px',
                 background: 'rgba(56, 189, 248, 0.12)',
                 color: '#38bdf8',
                 border: '1px solid rgba(56, 189, 248, 0.25)',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
                 textDecoration: 'none',
@@ -1523,7 +1524,9 @@ export default function FiiDiiPage() {
                             className="btn btn-secondary"
                             style={{
                               fontSize: '0.72rem',
-                              padding: '6px 8px',
+                              padding: '6px 10px',
+                              minWidth: '34px',
+                              minHeight: '34px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',

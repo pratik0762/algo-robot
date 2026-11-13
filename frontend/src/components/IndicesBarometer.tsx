@@ -112,15 +112,16 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
             href="/indices"
             className="btn"
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '5px 12px',
+              padding: '7px 14px',
+              minHeight: '34px',
               borderRadius: '8px',
               background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
               color: '#fff',
               fontWeight: 700,
-              fontSize: '0.72rem',
+              fontSize: '0.74rem',
               border: 'none',
               cursor: 'pointer',
               boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)',
@@ -149,12 +150,14 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
 
       {/* Marquee Ticker of Key Indices with GIFT NIFTY & INDIA VIX Spotlight */}
       <div
+        className="overflow-x-auto no-scrollbar"
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
           overflowX: 'auto',
           scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
           padding: '2px 0',
         }}
       >
@@ -169,10 +172,11 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
               href="/indices"
               style={{
                 textDecoration: 'none',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '4px 10px',
+                padding: '6px 12px',
+                minHeight: '34px',
                 borderRadius: '8px',
                 background: isGift
                   ? 'rgba(236, 72, 153, 0.12)'
@@ -269,22 +273,27 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
         })}
       </div>
 
-      {/* Timestamp */}
+      {/* Timestamp & Refresh Button */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
         <button
           onClick={fetchLiveTicker}
           style={{
-            background: 'none',
-            border: 'none',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             color: 'var(--text-muted)',
             cursor: 'pointer',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            padding: '4px',
+            justifyContent: 'center',
+            width: '34px',
+            height: '34px',
+            minHeight: '34px',
+            borderRadius: '6px',
+            transition: 'all 0.15s ease',
           }}
           title="Refresh live indices feed"
         >
-          <RefreshCw size={12} />
+          <RefreshCw size={13} />
         </button>
       </div>
     </div>

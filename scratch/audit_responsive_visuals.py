@@ -225,8 +225,11 @@ async def run_audit():
         except Exception:
             pass
 
-    out_json = os.path.join(r"D:\Algo Robot\scratch", "responsive_audit_report.json")
+    out_json = os.path.join(r"D:\Algo Robot\scratch", "post_fix_audit_report.json")
     with open(out_json, "w") as f:
+        json.dump(audit_report, f, indent=2)
+    # Also update baseline responsive_audit_report.json
+    with open(os.path.join(r"D:\Algo Robot\scratch", "responsive_audit_report.json"), "w") as f:
         json.dump(audit_report, f, indent=2)
     print(f"\nAudit complete! Saved detailed report to: {out_json}")
 

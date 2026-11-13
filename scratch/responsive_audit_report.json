@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-13 12:44:38 IST",
+  "timestamp": "2026-11-13 14:33:32 IST",
   "routes_audited": 9,
   "viewports_audited": 9,
   "results": [
@@ -11,63 +11,49 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 6,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 2096,
+          "right": 2253,
           "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1960,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1960,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2085,
-          "windowWidth": 1920,
-          "text": "27,962.4\n-0.95%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2023,
-          "windowWidth": 1920,
-          "text": "27,962.4"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2085,
-          "windowWidth": 1920,
-          "text": "-0.95%"
+          "text": "NIFTY FINANCIAL SERVICES (FINN"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 2040,
+          "right": 1945,
           "windowWidth": 1920,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 2040,
+          "right": 1944,
           "windowWidth": 1920,
           "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1944,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2204,
+          "windowWidth": 1920,
+          "text": "NIFTY FINANCIAL SERVICES (FINN"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2236,
+          "windowWidth": 1920,
+          "text": "14"
         }
       ],
       "double_scrollbars_count": 0,
@@ -87,60 +73,60 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1642,
+          "right": 1490,
           "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,029.7\n-0.79%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1508,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
+          "text": "NIFTY PHARMA\n4"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 1508,
+          "right": 1447,
           "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1631,
-          "windowWidth": 1440,
-          "text": "61,029.7\n-0.79%"
+          "text": "NIFTY PHARMA"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 1570,
+          "right": 1473,
           "windowWidth": 1440,
-          "text": "61,029.7"
+          "text": "4"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1631,
+          "right": 1667,
           "windowWidth": 1440,
-          "text": "-0.79%"
+          "text": "NIFTY METAL\n4"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 1587,
+          "right": 1532,
           "windowWidth": 1440,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 1586,
+          "right": 1530,
           "windowWidth": 1440,
           "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1624,
+          "windowWidth": 1440,
+          "text": "NIFTY METAL"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1650,
+          "windowWidth": 1440,
+          "text": "4"
         }
       ],
       "double_scrollbars_count": 0,
@@ -160,58 +146,58 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1196,
+          "right": 1126,
           "windowWidth": 1024,
-          "text": "NIFTY 50\n25,117.35\n-0.72%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1060,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
+          "text": "NIFTY ENERGY\n8"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 1060,
+          "right": 1083,
           "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1185,
-          "windowWidth": 1024,
-          "text": "25,117.35\n-0.72%"
+          "text": "NIFTY ENERGY"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 1124,
+          "right": 1109,
           "windowWidth": 1024,
-          "text": "25,117.35"
+          "text": "8"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1185,
+          "right": 1299,
           "windowWidth": 1024,
-          "text": "-0.72%"
+          "text": "NIFTY FMCG\n5"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 1141,
+          "right": 1168,
           "windowWidth": 1024,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 1140,
+          "right": 1162,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1167,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1164,
           "windowWidth": 1024,
           "text": ""
         }
@@ -233,115 +219,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 980,
+          "right": 936,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 809,
-          "windowWidth": 768,
-          "text": "INDIA VIX"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 969,
-          "windowWidth": 768,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 913,
-          "windowWidth": 768,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 969,
-          "windowWidth": 768,
-          "text": "-3.11%"
+          "text": "NIFTY AUTO\n8"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 930,
+          "right": 808,
           "windowWidth": 768,
           "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 807,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 799,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 805,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 893,
+          "windowWidth": 768,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 919,
+          "windowWidth": 768,
+          "text": "8"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1126,
+          "windowWidth": 768,
+          "text": "NIFTY ENERGY\n8"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_tablet_768x1024.png"
     },
     {
@@ -355,115 +292,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 980,
+          "right": 936,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "NIFTY AUTO\n8"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 883,
+          "right": 893,
           "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 969,
-          "windowWidth": 834,
-          "text": "16.1\n-3.11%"
+          "text": "NIFTY AUTO"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 913,
+          "right": 919,
           "windowWidth": 834,
-          "text": "16.1"
+          "text": "8"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 969,
+          "right": 1126,
           "windowWidth": 834,
-          "text": "-3.11%"
+          "text": "NIFTY ENERGY\n8"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 930,
+          "right": 978,
           "windowWidth": 834,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 929,
+          "right": 975,
           "windowWidth": 834,
           "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1083,
+          "windowWidth": 834,
+          "text": "NIFTY ENERGY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1109,
+          "windowWidth": 834,
+          "text": "8"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -477,115 +365,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,154.5\n-0.58%"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 437,
+          "windowWidth": 430,
+          "text": "SENSEX\n30"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 613,
+          "windowWidth": 430,
+          "text": "NIFTY BANK\n12"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 479,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 478,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 478,
+          "windowWidth": 430,
+          "text": ""
         },
         {
           "tag": "span",
           "className": "",
-          "right": 635,
+          "right": 564,
           "windowWidth": 430,
-          "text": "25,154.5"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 697,
-          "windowWidth": 430,
-          "text": "-0.58%"
+          "text": "NIFTY BANK"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -599,115 +438,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 475,
+          "right": 437,
           "windowWidth": 390,
-          "text": "GIFT NIFTY"
+          "text": "SENSEX\n30"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_mobile_390x844.png"
     },
     {
@@ -723,113 +513,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -845,113 +586,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "button",
-          "text": "Refresh",
-          "w": 96,
-          "h": 29
-        },
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -962,65 +654,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2085,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1949,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1949,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2074,
-          "windowWidth": 1920,
-          "text": "27,962.4\n-0.95%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2012,
-          "windowWidth": 1920,
-          "text": "27,962.4"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2074,
-          "windowWidth": 1920,
-          "text": "-0.95%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2029,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2028,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -1035,65 +670,8 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1631,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,029.7\n-0.79%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1497,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1497,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1620,
-          "windowWidth": 1440,
-          "text": "61,029.7\n-0.79%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1559,
-          "windowWidth": 1440,
-          "text": "61,029.7"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1620,
-          "windowWidth": 1440,
-          "text": "-0.79%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1576,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1575,
-          "windowWidth": 1440,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -1108,65 +686,8 @@
       "height": 768,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1016,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1185,
-          "windowWidth": 1024,
-          "text": "NIFTY 50\n25,117.35\n-0.72%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1049,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1049,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1174,
-          "windowWidth": 1024,
-          "text": "25,117.35\n-0.72%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1113,
-          "windowWidth": 1024,
-          "text": "25,117.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1174,
-          "windowWidth": 1024,
-          "text": "-0.72%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1130,
-          "windowWidth": 1024,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1129,
-          "windowWidth": 1024,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -1181,118 +702,12 @@
       "height": 1024,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 768,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 969,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 872,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 798,
-          "windowWidth": 768,
-          "text": "INDIA VIX"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 872,
-          "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 958,
-          "windowWidth": 768,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 902,
-          "windowWidth": 768,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 958,
-          "windowWidth": 768,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 919,
-          "windowWidth": 768,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_tablet_768x1024.png"
     },
     {
@@ -1303,118 +718,12 @@
       "height": 1194,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 834,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 969,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 872,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 872,
-          "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 958,
-          "windowWidth": 834,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 902,
-          "windowWidth": 834,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 958,
-          "windowWidth": 834,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 919,
-          "windowWidth": 834,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 918,
-          "windowWidth": 834,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -1425,118 +734,27 @@
       "height": 932,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 430,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 2,
       "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 697,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
         {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 686,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,148\n-0.60%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 623,
-          "windowWidth": 430,
-          "text": "25,148"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 686,
-          "windowWidth": 430,
-          "text": "-0.60%"
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -1547,118 +765,62 @@
       "height": 844,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 390,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 7,
       "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 697,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
         {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_mobile_390x844.png"
     },
     {
@@ -1674,113 +836,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 697,
-          "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -1796,113 +909,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 697,
-          "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 319,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -1913,63 +977,49 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 6,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 2097,
+          "right": 1958,
           "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+          "text": "Power & Utilities"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1961,
+          "right": 2128,
           "windowWidth": 1920,
-          "text": "NIFTY AUTO"
+          "text": "Construction Materials"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1961,
+          "right": 2282,
           "windowWidth": 1920,
-          "text": "NIFTY AUTO"
+          "text": "Consumer Durables"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 2086,
+          "right": 2464,
           "windowWidth": 1920,
-          "text": "27,962.4\n-0.95%"
+          "text": "Services & Infrastructure"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 2024,
+          "right": 2616,
           "windowWidth": 1920,
-          "text": "27,962.4"
+          "text": "Consumer Services"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 2086,
+          "right": 2736,
           "windowWidth": 1920,
-          "text": "-0.95%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2041,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2040,
-          "windowWidth": 1920,
-          "text": ""
+          "text": "Capital Goods"
         }
       ],
       "double_scrollbars_count": 0,
@@ -1986,63 +1036,56 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 7,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1643,
+          "right": 1589,
           "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+          "text": "Construction & Engineering"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1509,
+          "right": 1722,
           "windowWidth": 1440,
-          "text": "NIFTY BANK"
+          "text": "Power & Utilities"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1509,
+          "right": 1892,
           "windowWidth": 1440,
-          "text": "NIFTY BANK"
+          "text": "Construction Materials"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1632,
+          "right": 2046,
           "windowWidth": 1440,
-          "text": "61,029.7\n-0.79%"
+          "text": "Consumer Durables"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1571,
+          "right": 2228,
           "windowWidth": 1440,
-          "text": "61,029.7"
+          "text": "Services & Infrastructure"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1632,
+          "right": 2380,
           "windowWidth": 1440,
-          "text": "-0.79%"
+          "text": "Consumer Services"
         },
         {
-          "tag": "svg",
+          "tag": "button",
           "className": "",
-          "right": 1588,
+          "right": 2500,
           "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1587,
-          "windowWidth": 1440,
-          "text": ""
+          "text": "Capital Goods"
         }
       ],
       "double_scrollbars_count": 0,
@@ -2062,60 +1105,60 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1196,
+          "right": 1107,
           "windowWidth": 1024,
-          "text": "NIFTY 50\n25,117.35\n-0.72%"
+          "text": "Healthcare"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1061,
+          "right": 1238,
           "windowWidth": 1024,
-          "text": "NIFTY 50"
+          "text": "Metals & Mining"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1061,
+          "right": 1389,
           "windowWidth": 1024,
-          "text": "NIFTY 50"
+          "text": "Telecommunication"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1185,
+          "right": 1589,
           "windowWidth": 1024,
-          "text": "25,117.35\n-0.72%"
+          "text": "Construction & Engineering"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1124,
+          "right": 1722,
           "windowWidth": 1024,
-          "text": "25,117.35"
+          "text": "Power & Utilities"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 1185,
+          "right": 1892,
           "windowWidth": 1024,
-          "text": "-0.72%"
+          "text": "Construction Materials"
         },
         {
-          "tag": "svg",
+          "tag": "button",
           "className": "",
-          "right": 1141,
+          "right": 2046,
           "windowWidth": 1024,
-          "text": ""
+          "text": "Consumer Durables"
         },
         {
-          "tag": "path",
+          "tag": "button",
           "className": "",
-          "right": 1141,
+          "right": 2228,
           "windowWidth": 1024,
-          "text": ""
+          "text": "Services & Infrastructure"
         }
       ],
       "double_scrollbars_count": 0,
@@ -2135,115 +1178,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 981,
+          "right": 902,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+          "text": "Fast Moving Consumer Goods"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 884,
+          "right": 1007,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Automobile"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 810,
+          "right": 1107,
           "windowWidth": 768,
-          "text": "INDIA VIX"
+          "text": "Healthcare"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 884,
+          "right": 1238,
           "windowWidth": 768,
-          "text": "VOLATILITY"
+          "text": "Metals & Mining"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 970,
+          "right": 1389,
           "windowWidth": 768,
-          "text": "16.1\n-3.11%"
+          "text": "Telecommunication"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 914,
+          "right": 1589,
           "windowWidth": 768,
-          "text": "16.1"
+          "text": "Construction & Engineering"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 970,
+          "right": 1722,
           "windowWidth": 768,
-          "text": "-3.11%"
+          "text": "Power & Utilities"
         },
         {
-          "tag": "svg",
+          "tag": "button",
           "className": "",
-          "right": 931,
+          "right": 1892,
           "windowWidth": 768,
-          "text": ""
+          "text": "Construction Materials"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_tablet_768x1024.png"
     },
     {
@@ -2257,115 +1251,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 981,
+          "right": 902,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+          "text": "Fast Moving Consumer Goods"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 884,
+          "right": 1007,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Automobile"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 884,
+          "right": 1107,
           "windowWidth": 834,
-          "text": "VOLATILITY"
+          "text": "Healthcare"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 970,
+          "right": 1238,
           "windowWidth": 834,
-          "text": "16.1\n-3.11%"
+          "text": "Metals & Mining"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 914,
+          "right": 1389,
           "windowWidth": 834,
-          "text": "16.1"
+          "text": "Telecommunication"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 970,
+          "right": 1589,
           "windowWidth": 834,
-          "text": "-3.11%"
+          "text": "Construction & Engineering"
         },
         {
-          "tag": "svg",
+          "tag": "button",
           "className": "",
-          "right": 931,
+          "right": 1722,
           "windowWidth": 834,
-          "text": ""
+          "text": "Power & Utilities"
         },
         {
-          "tag": "path",
+          "tag": "button",
           "className": "",
-          "right": 930,
+          "right": 1892,
           "windowWidth": 834,
-          "text": ""
+          "text": "Construction Materials"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -2379,115 +1324,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,149.5\n-0.60%"
+          "text": ""
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 635,
+          "right": 531,
           "windowWidth": 430,
-          "text": "25,149.5"
+          "text": "Information Technology"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 688,
           "windowWidth": 430,
-          "text": "-0.60%"
+          "text": "Energy & Diversified"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 902,
+          "windowWidth": 430,
+          "text": "Fast Moving Consumer Goods"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1007,
+          "windowWidth": 430,
+          "text": "Automobile"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1107,
+          "windowWidth": 430,
+          "text": "Healthcare"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 1238,
+          "windowWidth": 430,
+          "text": "Metals & Mining"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -2501,115 +1397,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 475,
+          "right": 531,
           "windowWidth": 390,
-          "text": "GIFT NIFTY"
+          "text": "Information Technology"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_mobile_390x844.png"
     },
     {
@@ -2625,113 +1472,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -2747,113 +1545,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -2864,65 +1613,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2092,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1956,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1956,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2081,
-          "windowWidth": 1920,
-          "text": "27,962.4\n-0.95%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2019,
-          "windowWidth": 1920,
-          "text": "27,962.4"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2081,
-          "windowWidth": 1920,
-          "text": "-0.95%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2036,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2035,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -2937,65 +1629,8 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1638,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,029.7\n-0.79%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1504,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1504,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1627,
-          "windowWidth": 1440,
-          "text": "61,029.7\n-0.79%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1566,
-          "windowWidth": 1440,
-          "text": "61,029.7"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1627,
-          "windowWidth": 1440,
-          "text": "-0.79%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1583,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1582,
-          "windowWidth": 1440,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -3010,65 +1645,8 @@
       "height": 768,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1016,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1192,
-          "windowWidth": 1024,
-          "text": "NIFTY 50\n25,117.35\n-0.72%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1056,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1056,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1181,
-          "windowWidth": 1024,
-          "text": "25,117.35\n-0.72%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1120,
-          "windowWidth": 1024,
-          "text": "25,117.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1181,
-          "windowWidth": 1024,
-          "text": "-0.72%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1137,
-          "windowWidth": 1024,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1136,
-          "windowWidth": 1024,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -3083,118 +1661,20 @@
       "height": 1024,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 768,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 1,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 976,
+          "right": 840,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 879,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 805,
-          "windowWidth": 768,
-          "text": "INDIA VIX"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 879,
-          "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 965,
-          "windowWidth": 768,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 909,
-          "windowWidth": 768,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 965,
-          "windowWidth": 768,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 926,
-          "windowWidth": 768,
-          "text": ""
+          "text": "Fixed Income"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_tablet_768x1024.png"
     },
     {
@@ -3205,118 +1685,20 @@
       "height": 1194,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 834,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 1,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 976,
+          "right": 840,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 879,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 879,
-          "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 965,
-          "windowWidth": 834,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 909,
-          "windowWidth": 834,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 965,
-          "windowWidth": 834,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 926,
-          "windowWidth": 834,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 925,
-          "windowWidth": 834,
-          "text": ""
+          "text": "Fixed Income"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -3330,115 +1712,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 704,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
           "tag": "div",
-          "className": "",
-          "right": 693,
+          "className": "glass-panel",
+          "right": 484,
           "windowWidth": 430,
-          "text": "25,147.5\n-0.61%"
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
         },
         {
-          "tag": "span",
+          "tag": "div",
           "className": "",
-          "right": 633,
+          "right": 459,
           "windowWidth": 430,
-          "text": "25,147.5"
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
         },
         {
-          "tag": "span",
+          "tag": "div",
           "className": "",
-          "right": 693,
+          "right": 584,
           "windowWidth": 430,
-          "text": "-0.61%"
+          "text": "\u20b925,149.00\n-152.00 (-0.60%)"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 584,
+          "windowWidth": 430,
+          "text": "\u20b925,149.00"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 584,
+          "windowWidth": 430,
+          "text": "-152.00 (-0.60%)"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 464,
+          "windowWidth": 430,
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -3452,115 +1785,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 704,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "span",
-          "className": "",
-          "right": 475,
+          "tag": "div",
+          "className": "glass-panel",
+          "right": 484,
           "windowWidth": 390,
-          "text": "GIFT NIFTY"
+          "text": "GIFT NIFTY\nNSE IX GIFT CITY\nLI"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_mobile_390x844.png"
     },
     {
@@ -3576,113 +1860,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 704,
-          "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -3698,113 +1933,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 704,
-          "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 320,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 320,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 325,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -3815,65 +2001,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2097,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1961,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1961,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2086,
-          "windowWidth": 1920,
-          "text": "27,962.4\n-0.95%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2024,
-          "windowWidth": 1920,
-          "text": "27,962.4"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2086,
-          "windowWidth": 1920,
-          "text": "-0.95%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2041,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2040,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -3888,65 +2017,8 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1642,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,029.7\n-0.79%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1509,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1509,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1631,
-          "windowWidth": 1440,
-          "text": "61,029.7\n-0.79%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1570,
-          "windowWidth": 1440,
-          "text": "61,029.7"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1631,
-          "windowWidth": 1440,
-          "text": "-0.79%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1587,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1586,
-          "windowWidth": 1440,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -3961,65 +2033,8 @@
       "height": 768,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1016,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1196,
-          "windowWidth": 1024,
-          "text": "NIFTY 50\n25,117.35\n-0.72%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1060,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1060,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1185,
-          "windowWidth": 1024,
-          "text": "25,117.35\n-0.72%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1124,
-          "windowWidth": 1024,
-          "text": "25,117.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1185,
-          "windowWidth": 1024,
-          "text": "-0.72%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1141,
-          "windowWidth": 1024,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1140,
-          "windowWidth": 1024,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -4034,118 +2049,12 @@
       "height": 1024,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 768,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 980,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 810,
-          "windowWidth": 768,
-          "text": "INDIA VIX"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 969,
-          "windowWidth": 768,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 914,
-          "windowWidth": 768,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 969,
-          "windowWidth": 768,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 931,
-          "windowWidth": 768,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_tablet_768x1024.png"
     },
     {
@@ -4156,118 +2065,12 @@
       "height": 1194,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 834,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 980,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 883,
-          "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 969,
-          "windowWidth": 834,
-          "text": "16.1\n-3.11%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 914,
-          "windowWidth": 834,
-          "text": "16.1"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 969,
-          "windowWidth": 834,
-          "text": "-3.11%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 931,
-          "windowWidth": 834,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 930,
-          "windowWidth": 834,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -4278,118 +2081,27 @@
       "height": 932,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 430,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 2,
       "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
         {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,144.5\n-0.62%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 635,
-          "windowWidth": 430,
-          "text": "25,144.5"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 697,
-          "windowWidth": 430,
-          "text": "-0.62%"
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -4400,118 +2112,62 @@
       "height": 844,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 390,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 7,
       "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
         {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_mobile_390x844.png"
     },
     {
@@ -4527,113 +2183,64 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 360,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 360,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -4691,71 +2298,22 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.1",
-          "w": 258,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,117.35\n-0.72%",
-          "w": 202,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,389.6\n+0.65%",
-          "w": 199,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,029.7\n-0.79",
-          "w": 219,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,965.45\n-0.62%",
-          "w": 205,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,962.4\n-0.95",
-          "w": 221,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -4766,65 +2324,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2116,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1974,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1974,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2105,
-          "windowWidth": 1920,
-          "text": "27,949.95\n-1.00%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2045,
-          "windowWidth": 1920,
-          "text": "27,949.95"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2105,
-          "windowWidth": 1920,
-          "text": "-1.00%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2062,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2061,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -4839,65 +2340,8 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1664,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,014.3\n-0.82%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1531,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1531,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1653,
-          "windowWidth": 1440,
-          "text": "61,014.3\n-0.82%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1591,
-          "windowWidth": 1440,
-          "text": "61,014.3"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1653,
-          "windowWidth": 1440,
-          "text": "-0.82%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1608,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1607,
-          "windowWidth": 1440,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -4912,63 +2356,35 @@
       "height": 768,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1016,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 4,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1210,
+          "right": 1257,
           "windowWidth": 1024,
-          "text": "NIFTY 50\n25,111.35\n-0.74%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1074,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1074,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1199,
-          "windowWidth": 1024,
-          "text": "25,111.35\n-0.74%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1138,
-          "windowWidth": 1024,
-          "text": "25,111.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1199,
-          "windowWidth": 1024,
-          "text": "-0.74%"
+          "text": "Trader's Playbook\n5 STRATEGIES"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 1155,
+          "right": 1026,
           "windowWidth": 1024,
           "text": ""
         },
         {
-          "tag": "path",
+          "tag": "span",
           "className": "",
-          "right": 1154,
+          "right": 1140,
           "windowWidth": 1024,
-          "text": ""
+          "text": "Trader's Playbook"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 1241,
+          "windowWidth": 1024,
+          "text": "5 STRATEGIES"
         }
       ],
       "double_scrollbars_count": 0,
@@ -4988,115 +2404,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 995,
+          "right": 788,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Block Deals (\u2265\u20b910 Cr Window)\n9"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 810,
+          "className": "badge",
+          "right": 772,
           "windowWidth": 768,
-          "text": "INDIA VIX"
+          "text": "9"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 883,
+          "right": 988,
           "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 984,
-          "windowWidth": 768,
-          "text": "16.09\n-3.15%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 925,
-          "windowWidth": 768,
-          "text": "16.09"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 984,
-          "windowWidth": 768,
-          "text": "-3.15%"
+          "text": "Short Selling Data\n6"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 942,
+          "right": 826,
           "windowWidth": 768,
           "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 822,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 822,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 941,
+          "windowWidth": 768,
+          "text": "Short Selling Data"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 972,
+          "windowWidth": 768,
+          "text": "6"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_tablet_768x1024.png"
     },
     {
@@ -5110,115 +2477,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 995,
+          "right": 988,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Short Selling Data\n6"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 883,
+          "right": 941,
           "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 984,
-          "windowWidth": 834,
-          "text": "16.09\n-3.15%"
+          "text": "Short Selling Data"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 925,
+          "className": "badge",
+          "right": 972,
           "windowWidth": 834,
-          "text": "16.09"
+          "text": "6"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 984,
+          "right": 1257,
           "windowWidth": 834,
-          "text": "-3.15%"
+          "text": "Trader's Playbook\n5 STRATEGIES"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 942,
+          "right": 1026,
           "windowWidth": 834,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 942,
+          "right": 1025,
           "windowWidth": 834,
           "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1140,
+          "windowWidth": 834,
+          "text": "Trader's Playbook"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 1241,
+          "windowWidth": 834,
+          "text": "5 STRATEGIES"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -5232,115 +2550,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,143.5\n-0.62%"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 514,
+          "windowWidth": 430,
+          "text": "Bulk Deals (SEBI \u22650.5%)\n10"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 635,
+          "right": 460,
           "windowWidth": 430,
-          "text": "25,143.5"
+          "text": "Bulk Deals (SEBI \u22650.5%)"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 697,
+          "className": "badge",
+          "right": 498,
           "windowWidth": 430,
-          "text": "-0.62%"
+          "text": "10"
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 788,
+          "windowWidth": 430,
+          "text": "Block Deals (\u2265\u20b910 Cr Window)\n9"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 552,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 545,
+          "windowWidth": 430,
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -5389,80 +2658,31 @@
           "text": "Track who is trading which com"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_mobile_390x844.png"
     },
     {
@@ -5513,78 +2733,29 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
+          "tag": "div",
           "className": "",
-          "right": 708,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -5642,71 +2813,22 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -5717,65 +2839,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2116,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1974,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1974,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2105,
-          "windowWidth": 1920,
-          "text": "27,949.95\n-1.00%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2045,
-          "windowWidth": 1920,
-          "text": "27,949.95"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2105,
-          "windowWidth": 1920,
-          "text": "-1.00%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2062,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2061,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -5790,63 +2855,21 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
+      "overflowing_elements_count": 2,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1664,
+          "right": 1514,
           "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,014.3\n-0.82%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1531,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
+          "text": "Trading Playbook & Opportuniti"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 1531,
+          "className": "badge",
+          "right": 1498,
           "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1653,
-          "windowWidth": 1440,
-          "text": "61,014.3\n-0.82%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1591,
-          "windowWidth": 1440,
-          "text": "61,014.3"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1653,
-          "windowWidth": 1440,
-          "text": "-0.82%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1608,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1607,
-          "windowWidth": 1440,
-          "text": ""
+          "text": "5 Strategies"
         }
       ],
       "double_scrollbars_count": 0,
@@ -5866,60 +2889,60 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 1210,
+          "right": 1169,
           "windowWidth": 1024,
-          "text": "NIFTY 50\n25,111.35\n-0.74%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1075,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
+          "text": "Mid Range Spectrum (25-75%)"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 1075,
+          "right": 1153,
           "windowWidth": 1024,
-          "text": "NIFTY 50"
+          "text": "Mid Range Spectrum (25-75%)"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 1199,
+          "right": 1514,
           "windowWidth": 1024,
-          "text": "25,111.35\n-0.74%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1138,
-          "windowWidth": 1024,
-          "text": "25,111.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1199,
-          "windowWidth": 1024,
-          "text": "-0.74%"
+          "text": "Trading Playbook & Opportuniti"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 1155,
+          "right": 1207,
           "windowWidth": 1024,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 1154,
+          "right": 1205,
           "windowWidth": 1024,
           "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 1196,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1413,
+          "windowWidth": 1024,
+          "text": "Trading Playbook & Opportuniti"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 1498,
+          "windowWidth": 1024,
+          "text": "5 Strategies"
         }
       ],
       "double_scrollbars_count": 0,
@@ -5939,115 +2962,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 995,
+          "right": 923,
           "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Near 52W Low (Support)\n3"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 810,
+          "right": 876,
           "windowWidth": 768,
-          "text": "INDIA VIX"
+          "text": "Near 52W Low (Support)"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 883,
+          "className": "badge",
+          "right": 907,
           "windowWidth": 768,
-          "text": "VOLATILITY"
+          "text": "3"
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 984,
+          "right": 1169,
           "windowWidth": 768,
-          "text": "16.09\n-3.15%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 926,
-          "windowWidth": 768,
-          "text": "16.09"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 984,
-          "windowWidth": 768,
-          "text": "-3.15%"
+          "text": "Mid Range Spectrum (25-75%)"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 943,
+          "right": 961,
           "windowWidth": 768,
           "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 960,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 957,
+          "windowWidth": 768,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1153,
+          "windowWidth": 768,
+          "text": "Mid Range Spectrum (25-75%)"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_tablet_768x1024.png"
     },
     {
@@ -6061,115 +3035,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
+          "tag": "button",
           "className": "",
-          "right": 995,
+          "right": 923,
           "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 883,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
+          "text": "Near 52W Low (Support)\n3"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 883,
+          "right": 876,
           "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 984,
-          "windowWidth": 834,
-          "text": "16.09\n-3.15%"
+          "text": "Near 52W Low (Support)"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 926,
+          "className": "badge",
+          "right": 907,
           "windowWidth": 834,
-          "text": "16.09"
+          "text": "3"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 984,
+          "right": 1169,
           "windowWidth": 834,
-          "text": "-3.15%"
+          "text": "Mid Range Spectrum (25-75%)"
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 943,
+          "right": 961,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 960,
           "windowWidth": 834,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 942,
+          "right": 957,
           "windowWidth": 834,
           "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1153,
+          "windowWidth": 834,
+          "text": "Mid Range Spectrum (25-75%)"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -6183,115 +3108,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 475,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 574,
-          "windowWidth": 430,
-          "text": "SESSION 1 LIVE"
-        },
-        {
-          "tag": "span",
-          "className": "pulse-indicator",
-          "right": 492,
+          "right": 436,
           "windowWidth": 430,
           "text": ""
         },
         {
-          "tag": "div",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 436,
           "windowWidth": 430,
-          "text": "25,142.5\n-0.63%"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 460,
+          "windowWidth": 430,
+          "text": "52W Breakouts (\u22642%)\n1"
         },
         {
           "tag": "span",
-          "className": "",
-          "right": 635,
+          "className": "badge",
+          "right": 444,
           "windowWidth": 430,
-          "text": "25,142.5"
+          "text": "1"
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 697,
+          "right": 683,
           "windowWidth": 430,
-          "text": "-0.63%"
+          "text": "Near 52W High (\u22645%)\n8"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 498,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 497,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 497,
+          "windowWidth": 430,
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -6305,115 +3181,66 @@
       "overflowing_elements_count": 8,
       "overflowing_elements": [
         {
-          "tag": "a",
-          "className": "",
-          "right": 708,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         },
         {
           "tag": "svg",
           "className": "",
-          "right": 402,
+          "right": 426,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
           "tag": "path",
           "className": "",
-          "right": 395,
+          "right": 424,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "circle",
+          "tag": "path",
           "className": "",
-          "right": 401,
+          "right": 417,
           "windowWidth": 390,
           "text": ""
         },
         {
-          "tag": "span",
+          "tag": "button",
           "className": "",
-          "right": 475,
+          "right": 460,
           "windowWidth": 390,
-          "text": "GIFT NIFTY"
+          "text": "52W Breakouts (\u22642%)\n1"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_mobile_390x844.png"
     },
     {
@@ -6464,78 +3291,29 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
+          "tag": "div",
           "className": "",
-          "right": 708,
+          "right": 436,
           "windowWidth": 360,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -6586,78 +3364,29 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "LIVE NSE & BSE FEED"
         },
         {
-          "tag": "a",
+          "tag": "div",
           "className": "",
-          "right": 708,
+          "right": 436,
           "windowWidth": 320,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 330,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -6668,65 +3397,8 @@
       "height": 1080,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1912,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 2104,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1962,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1962,
-          "windowWidth": 1920,
-          "text": "NIFTY AUTO"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 2093,
-          "windowWidth": 1920,
-          "text": "27,949.95\n-1.00%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2033,
-          "windowWidth": 1920,
-          "text": "27,949.95"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 2093,
-          "windowWidth": 1920,
-          "text": "-1.00%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 2050,
-          "windowWidth": 1920,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 2049,
-          "windowWidth": 1920,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -6741,65 +3413,8 @@
       "height": 900,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1432,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1652,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK\n61,014.3\n-0.82%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1519,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1519,
-          "windowWidth": 1440,
-          "text": "NIFTY BANK"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1641,
-          "windowWidth": 1440,
-          "text": "61,014.3\n-0.82%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1579,
-          "windowWidth": 1440,
-          "text": "61,014.3"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1641,
-          "windowWidth": 1440,
-          "text": "-0.82%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1596,
-          "windowWidth": 1440,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1595,
-          "windowWidth": 1440,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -6814,65 +3429,8 @@
       "height": 768,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 1016,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 1198,
-          "windowWidth": 1024,
-          "text": "NIFTY 50\n25,111.35\n-0.74%"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1062,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1062,
-          "windowWidth": 1024,
-          "text": "NIFTY 50"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 1187,
-          "windowWidth": 1024,
-          "text": "25,111.35\n-0.74%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1126,
-          "windowWidth": 1024,
-          "text": "25,111.35"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 1187,
-          "windowWidth": 1024,
-          "text": "-0.74%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 1143,
-          "windowWidth": 1024,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 1142,
-          "windowWidth": 1024,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
       "small_touch_targets_count": 0,
@@ -6887,118 +3445,12 @@
       "height": 1024,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 768,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 983,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 871,
-          "windowWidth": 768,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 798,
-          "windowWidth": 768,
-          "text": "INDIA VIX"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 871,
-          "windowWidth": 768,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 972,
-          "windowWidth": 768,
-          "text": "16.09\n-3.15%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 913,
-          "windowWidth": 768,
-          "text": "16.09"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 972,
-          "windowWidth": 768,
-          "text": "-3.15%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 930,
-          "windowWidth": 768,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_tablet_768x1024.png"
     },
     {
@@ -7009,118 +3461,12 @@
       "height": 1194,
       "has_horizontal_overflow": false,
       "doc_scroll_width": 834,
-      "overflowing_elements_count": 8,
-      "overflowing_elements": [
-        {
-          "tag": "a",
-          "className": "",
-          "right": 983,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 871,
-          "windowWidth": 834,
-          "text": "INDIA VIX\nVOLATILITY"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 871,
-          "windowWidth": 834,
-          "text": "VOLATILITY"
-        },
-        {
-          "tag": "div",
-          "className": "",
-          "right": 972,
-          "windowWidth": 834,
-          "text": "16.09\n-3.15%"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 913,
-          "windowWidth": 834,
-          "text": "16.09"
-        },
-        {
-          "tag": "span",
-          "className": "",
-          "right": 972,
-          "windowWidth": 834,
-          "text": "-3.15%"
-        },
-        {
-          "tag": "svg",
-          "className": "",
-          "right": 930,
-          "windowWidth": 834,
-          "text": ""
-        },
-        {
-          "tag": "path",
-          "className": "",
-          "right": 929,
-          "windowWidth": 834,
-          "text": ""
-        }
-      ],
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -7176,73 +3522,24 @@
           "text": "Verified market-moving news, s"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 696,
-          "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 430,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 430,
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -7298,73 +3595,24 @@
           "text": "Verified market-moving news, s"
         },
         {
-          "tag": "a",
-          "className": "",
-          "right": 696,
-          "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
-        },
-        {
           "tag": "div",
           "className": "",
-          "right": 574,
+          "right": 436,
           "windowWidth": 390,
-          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+          "text": ""
+        },
+        {
+          "tag": "button",
+          "className": "",
+          "right": 436,
+          "windowWidth": 390,
+          "text": ""
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_mobile_390x844.png"
     },
     {
@@ -7422,71 +3670,22 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         },
         {
           "tag": "span",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 360,
           "text": "LIVE NSE & BSE FEED"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -7551,64 +3750,15 @@
         {
           "tag": "div",
           "className": "",
-          "right": 362,
+          "right": 370,
           "windowWidth": 320,
           "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
         }
       ],
       "double_scrollbars_count": 0,
       "double_scrollbars": [],
-      "small_touch_targets_count": 8,
-      "small_touch_targets": [
-        {
-          "tag": "a",
-          "text": "ALL 140+ INDICES (PAGE)",
-          "w": 206,
-          "h": 24
-        },
-        {
-          "tag": "a",
-          "text": "GIFT NIFTY\nSESSION 1 LIVE",
-          "w": 318,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "INDIA VIX\nVOLATILITY\n16.0",
-          "w": 273,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY 50\n25,111.35\n-0.74%",
-          "w": 201,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "SENSEX\n83,369.68\n+0.65%",
-          "w": 208,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY BANK\n61,014.3\n-0.82",
-          "w": 218,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY IT\n31,963.3\n-0.62%",
-          "w": 197,
-          "h": 25
-        },
-        {
-          "tag": "a",
-          "text": "NIFTY AUTO\n27,949.95\n-1.0",
-          "w": 227,
-          "h": 25
-        }
-      ],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
       "screenshot": ""
     },
     {
@@ -7704,56 +3854,56 @@
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "span",
           "className": "badge badge-success",
-          "right": 439,
+          "right": 437,
           "windowWidth": 430,
           "text": "ISIN: INE002A01018"
         },
         {
           "tag": "span",
           "className": "badge",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
           "text": "Tickertape Verified"
         },
         {
           "tag": "h2",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
           "text": "Reliance Industries Limited"
         },
         {
           "tag": "p",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
           "text": "Energy & Diversified \u2022 Oil, Ga"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 430,
-          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 544,
+          "right": 540,
           "windowWidth": 430,
           "text": "\u2022\n52W H: \u20b91611.80\n\u2022\n52W L: \u20b911"
         }
@@ -7777,56 +3927,56 @@
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "span",
           "className": "badge badge-success",
-          "right": 439,
+          "right": 437,
           "windowWidth": 390,
           "text": "ISIN: INE002A01018"
         },
         {
           "tag": "span",
           "className": "badge",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
           "text": "Tickertape Verified"
         },
         {
           "tag": "h2",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
           "text": "Reliance Industries Limited"
         },
         {
           "tag": "p",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
           "text": "Energy & Diversified \u2022 Oil, Ga"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 390,
-          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 397,
+          "right": 393,
           "windowWidth": 390,
           "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
         }
@@ -7850,56 +4000,56 @@
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "span",
           "className": "badge badge-success",
-          "right": 439,
+          "right": 437,
           "windowWidth": 360,
           "text": "ISIN: INE002A01018"
         },
         {
           "tag": "span",
           "className": "badge",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
           "text": "Tickertape Verified"
         },
         {
           "tag": "h2",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
           "text": "Reliance Industries Limited"
         },
         {
           "tag": "p",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
           "text": "Energy & Diversified \u2022 Oil, Ga"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 360,
-          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 397,
+          "right": 393,
           "windowWidth": 360,
           "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
         }
@@ -7923,58 +4073,58 @@
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
           "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
         },
         {
           "tag": "span",
           "className": "badge badge-success",
-          "right": 439,
+          "right": 437,
           "windowWidth": 320,
           "text": "ISIN: INE002A01018"
         },
         {
           "tag": "span",
           "className": "badge",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
           "text": "Tickertape Verified"
         },
         {
           "tag": "h2",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
           "text": "Reliance Industries Limited"
         },
         {
           "tag": "p",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
           "text": "Energy & Diversified \u2022 Oil, Ga"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 561,
+          "right": 557,
           "windowWidth": 320,
-          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+          "text": "LIVE NSE PRICE:\n\u20b91,337.40\n-2.3"
         },
         {
           "tag": "div",
           "className": "",
-          "right": 330,
+          "right": 326,
           "windowWidth": 320,
-          "text": "-2.95 (-0.22%)"
+          "text": "-2.30 (-0.17%)"
         }
       ],
       "double_scrollbars_count": 0,

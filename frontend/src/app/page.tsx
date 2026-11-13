@@ -500,7 +500,7 @@ export default function HomePage() {
             <button
               onClick={() => fetchCompanies(activeHub)}
               className="btn btn-secondary"
-              style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+              style={{ padding: '6px 14px', minHeight: '36px', fontSize: '0.8rem' }}
               title="Refresh dataset from backend"
             >
               <RefreshCw size={14} />
