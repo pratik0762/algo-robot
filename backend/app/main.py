@@ -1148,6 +1148,11 @@ async def api_trigger_new_signal():
     new_sig = generate_live_signal_event()
     if new_sig:
         await tick_engine.broadcast_trade_signal(new_sig)
+        try:
+            from app.notification_engine import notification_engine
+            notification_engine.broadcast_signal(new_sig)
+        except Exception:
+            pass
     return {
         "status": "success",
         "signal": new_sig
@@ -1392,6 +1397,115 @@ async def api_reset_paper_trading(payload: Optional[Dict[str, Any]] = None):
     from app.paper_trading_engine import paper_trading_engine
     cap = float(payload.get("initial_capital", 1000000.0)) if payload else 1000000.0
     return paper_trading_engine.reset_portfolio(initial_capital=cap)
+
+
+# =====================================================================
+# Phase 6: Live Broker Integration (Zerodha, Angel One, Dhan, Upstox)
+# =====================================================================
+
+@app.get("/api/brokers/status")
+async def api_get_brokers_status():
+    """Retrieve status, profiles, funds, and active mode for all connected brokers."""
+    from app.broker_connectors.broker_manager import broker_manager
+    return broker_manager.get_status()
+
+
+@app.post("/api/brokers/active")
+async def api_set_active_broker(payload: Dict[str, Any]):
+    """Switch active broker execution target (PAPER_TRADING, ZERODHA, ANGEL_ONE, DHAN, UPSTOX)."""
+    from app.broker_connectors.broker_manager import broker_manager
+    broker_id = payload.get("broker_id", "PAPER_TRADING")
+    try:
+        return broker_manager.set_active_broker(broker_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/brokers/authenticate/{broker_id}")
+async def api_authenticate_broker(broker_id: str, credentials: Dict[str, Any]):
+    """Connect and authenticate credentials for a broker."""
+    from app.broker_connectors.broker_manager import broker_manager
+    try:
+        return broker_manager.authenticate_broker(broker_id, credentials)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/brokers/positions-and-orders")
+async def api_get_active_broker_positions_and_orders():
+    """Retrieve live open positions and order book from the active broker."""
+    from app.broker_connectors.broker_manager import broker_manager
+    return broker_manager.get_active_orders_and_positions()
+
+
+@app.post("/api/brokers/order")
+async def api_route_broker_order(payload: Dict[str, Any]):
+    """Submit an order to the active broker or paper trading engine."""
+    from app.broker_connectors.broker_manager import broker_manager
+    try:
+        return broker_manager.route_order(
+            symbol=payload["symbol"],
+            side=payload["side"],
+            quantity=int(payload.get("quantity", 1)),
+            instrument_type=payload.get("instrument_type", "EQUITY"),
+            order_type=payload.get("order_type", "MARKET"),
+            price=payload.get("price"),
+            tag=payload.get("tag", "ALGO_ROBOT")
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# =====================================================================
+# Phase 7: Real-Time Alerts & Notification Engine
+# =====================================================================
+
+@app.get("/api/notifications/config")
+async def api_get_notifications_config():
+    """Get active alert channels and notification rules."""
+    from app.notification_engine import notification_engine
+    return notification_engine.get_config()
+
+
+@app.post("/api/notifications/config")
+async def api_update_notifications_config(payload: Dict[str, Any]):
+    """Update notification channel credentials and alert rules."""
+    from app.notification_engine import notification_engine
+    return notification_engine.update_config(payload)
+
+
+@app.get("/api/notifications/logs")
+async def api_get_notifications_logs(limit: int = 50):
+    """Retrieve recent alert delivery ledger."""
+    from app.notification_engine import notification_engine
+    return {"logs": notification_engine.get_log(limit=limit)}
+
+
+@app.post("/api/notifications/test-telegram")
+async def api_test_telegram_alert(payload: Optional[Dict[str, Any]] = None):
+    """Dispatch a test alert to verify Telegram bot connectivity."""
+    from app.notification_engine import notification_engine
+    msg = payload.get("message", "🧪 *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n✅ Bot connection verified. Real-time signal broadcasting is active.") if payload else "🧪 *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n✅ Bot connection verified."
+    bot_token = payload.get("bot_token") if payload else None
+    chat_id = payload.get("chat_id") if payload else None
+    return notification_engine.send_telegram(msg, bot_token=bot_token, chat_id=chat_id)
+
+
+@app.post("/api/notifications/test-webhook")
+async def api_test_webhook_alert(payload: Optional[Dict[str, Any]] = None):
+    """Dispatch a test payload to verify external webhook endpoint."""
+    from app.notification_engine import notification_engine
+    test_body = payload.get("payload", {"event": "TEST_WEBHOOK_PING", "message": "Algo Robot Webhook Connection Verified", "timestamp": datetime.now(timezone.utc).isoformat()}) if payload else {"event": "TEST_WEBHOOK_PING"}
+    url = payload.get("webhook_url") if payload else None
+    return notification_engine.send_webhook(test_body, webhook_url=url)
+
+
+@app.post("/api/notifications/broadcast-signal")
+async def api_broadcast_signal_notification(signal: Dict[str, Any]):
+    """Broadcast an algorithmic signal to Telegram and Webhooks."""
+    from app.notification_engine import notification_engine
+    return notification_engine.broadcast_signal(signal)
+
 
 
 

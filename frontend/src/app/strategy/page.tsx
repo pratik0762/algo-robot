@@ -29,7 +29,8 @@ import {
   FileText,
   Clock,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Bell
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
@@ -39,6 +40,8 @@ import BacktestModal from '@/components/BacktestModal';
 import MultiLegOptionsDesk from '@/components/MultiLegOptionsDesk';
 import StrategyOptimizerDesk from '@/components/StrategyOptimizerDesk';
 import PaperTradingDesk from '@/components/PaperTradingDesk';
+import LiveBrokerDesk from '@/components/LiveBrokerDesk';
+import AlertsNotificationDesk from '@/components/AlertsNotificationDesk';
 
 const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
   ssr: false,
@@ -57,7 +60,7 @@ interface StrategyStats {
 export default function StrategyPage() {
   const router = useRouter();
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING'>('REPOSITORY');
+  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING' | 'BROKER' | 'NOTIFICATIONS'>('REPOSITORY');
 
   // Stats & Strategies State
   const [stats, setStats] = useState<StrategyStats>({
@@ -854,6 +857,48 @@ export default function StrategyPage() {
           >
             <Activity size={16} color={activeTab === 'PAPERTRADING' ? '#10b981' : undefined} />
             <span>Live Paper Trading Desk</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('BROKER')}
+            style={{
+              background: activeTab === 'BROKER' ? 'rgba(239, 68, 68, 0.2)' : 'transparent',
+              border: activeTab === 'BROKER' ? '1px solid #ef4444' : '1px solid transparent',
+              color: activeTab === 'BROKER' ? '#ffffff' : 'var(--text-secondary)',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <ShieldCheck size={16} color={activeTab === 'BROKER' ? '#f87171' : undefined} />
+            <span>Live Broker Connect</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('NOTIFICATIONS')}
+            style={{
+              background: activeTab === 'NOTIFICATIONS' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+              border: activeTab === 'NOTIFICATIONS' ? '1px solid #38bdf8' : '1px solid transparent',
+              color: activeTab === 'NOTIFICATIONS' ? '#ffffff' : 'var(--text-secondary)',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <Bell size={16} color={activeTab === 'NOTIFICATIONS' ? '#38bdf8' : undefined} />
+            <span>Real-Time Alerts &amp; Bot</span>
           </button>
         </div>
 
@@ -1731,6 +1776,16 @@ export default function StrategyPage() {
         {/* TAB 6: LIVE PAPER TRADING DESK                                 */}
         {/* ============================================================== */}
         {activeTab === 'PAPERTRADING' && <PaperTradingDesk />}
+
+        {/* ============================================================== */}
+        {/* TAB 7: LIVE BROKER INTEGRATION HUB                             */}
+        {/* ============================================================== */}
+        {activeTab === 'BROKER' && <LiveBrokerDesk />}
+
+        {/* ============================================================== */}
+        {/* TAB 8: REAL-TIME ALERTS & NOTIFICATION ENGINE                  */}
+        {/* ============================================================== */}
+        {activeTab === 'NOTIFICATIONS' && <AlertsNotificationDesk />}
       </div>
 
       {/* Navigation Drawer */}
