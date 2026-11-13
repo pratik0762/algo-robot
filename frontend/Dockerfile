@@ -16,7 +16,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=production
+    NODE_ENV=production \
+    BUILD_STANDALONE=true
 
 RUN npm run build
 
@@ -46,3 +47,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 CMD ["node", "server.js"]
+

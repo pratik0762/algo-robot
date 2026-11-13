@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: "standalone",
+  output: process.env.BUILD_STANDALONE === "true" || process.env.DOCKER_BUILD === "1" ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,
   async rewrites() {
