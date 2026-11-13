@@ -26,6 +26,9 @@ def compute_sma(prices: np.ndarray, period: int) -> np.ndarray:
 
 def compute_atr(high: np.ndarray, low: np.ndarray, close: np.ndarray, period: int = 10) -> np.ndarray:
     """Compute True Range (TR) and Average True Range (ATR) using Wilder's smoothing."""
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
     n = len(close)
     if n == 0:
         return np.array([])
@@ -55,6 +58,9 @@ def compute_supertrend(
         supertrend: np.ndarray of trend support/resistance values
         direction: np.ndarray of 1 (Bullish/Up) or -1 (Bearish/Down)
     """
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
     n = len(close)
     if n == 0:
         return np.array([]), np.array([])
@@ -109,6 +115,7 @@ def compute_supertrend(
 
 def compute_rsi(close: np.ndarray, period: int = 14) -> np.ndarray:
     """Compute Wilder's Relative Strength Index (RSI)."""
+    close = np.asarray(close, dtype=np.float64)
     n = len(close)
     if n < 2:
         return np.full(n, 50.0)
