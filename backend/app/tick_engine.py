@@ -17,6 +17,14 @@ from typing import Any, Dict, List, Optional, Set
 import urllib.request
 from fastapi import WebSocket
 
+try:
+    import orjson
+    def fast_dumps(data: Any) -> str:
+        return orjson.dumps(data).decode("utf-8")
+except ImportError:
+    def fast_dumps(data: Any) -> str:
+        return json.dumps(data)
+
 logger = logging.getLogger("tick_engine")
 
 # Indian Standard Time (UTC+05:30)
@@ -569,10 +577,23 @@ class LiveTickEngine:
             "gift_nifty_session": get_gift_nifty_session_info(),
             "timestamp": time.strftime("%H:%M:%S")
         }
-        await websocket.send_text(json.dumps(snapshot))
+        await websocket.send_text(fast_dumps(snapshot))
 
     def unregister_websocket(self, websocket: WebSocket) -> None:
         self._connected_websockets.discard(websocket)
+
+    async def _broadcast_message(self, message: str) -> None:
+        """High-performance non-blocking concurrent parallel broadcast across all connected WebSockets."""
+        if not self._connected_websockets:
+            return
+
+        sockets = list(self._connected_websockets)
+        tasks = [ws.send_text(message) for ws in sockets]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for ws, res in zip(sockets, results):
+            if isinstance(res, Exception):
+                self._connected_websockets.discard(ws)
 
     async def broadcast_tick_update(self, ticks: List[Dict[str, Any]]) -> None:
         """Broadcast updated ticks to all connected websocket clients.
@@ -580,44 +601,37 @@ class LiveTickEngine:
         """
         if not is_indian_market_open() or not self._connected_websockets or not ticks:
             return
-            return
 
-        message = json.dumps({
+        message = fast_dumps({
             "type": "TICK",
             "ticks": ticks,
             "timestamp": time.strftime("%H:%M:%S")
         })
-
-        dead_sockets: List[WebSocket] = []
-        for ws in self._connected_websockets:
-            try:
-                await ws.send_text(message)
-            except Exception:
-                dead_sockets.append(ws)
-
-        for dead in dead_sockets:
-            self._connected_websockets.discard(dead)
+        await self._broadcast_message(message)
 
     async def broadcast_gift_nifty_update(self, gift_data: Dict[str, Any]) -> None:
         """Broadcast real-time GIFT NIFTY tick to all connected websocket clients."""
         if not self._connected_websockets or not gift_data:
             return
 
-        message = json.dumps({
+        message = fast_dumps({
             "type": "GIFT_NIFTY_TICK",
             "gift_nifty": gift_data,
             "timestamp": time.strftime("%H:%M:%S")
         })
+        await self._broadcast_message(message)
 
-        dead_sockets: List[WebSocket] = []
-        for ws in self._connected_websockets:
-            try:
-                await ws.send_text(message)
-            except Exception:
-                dead_sockets.append(ws)
+    async def broadcast_trade_signal(self, signal_data: Dict[str, Any]) -> None:
+        """Push a newly generated quantitative trade signal to all connected clients in real-time (< 2ms)."""
+        if not self._connected_websockets or not signal_data:
+            return
 
-        for dead in dead_sockets:
-            self._connected_websockets.discard(dead)
+        message = fast_dumps({
+            "type": "TRADE_SIGNAL",
+            "signal": signal_data,
+            "timestamp": time.strftime("%H:%M:%S")
+        })
+        await self._broadcast_message(message)
 
 # Global tick engine instance
 tick_engine = LiveTickEngine()

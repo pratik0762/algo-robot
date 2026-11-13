@@ -123,12 +123,62 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
     }
   }, [playAudioChime]);
 
-  // Global background sync loop (runs on EVERY page)
+  // Global background sync loop & real-time WebSocket subscriber (runs on EVERY page)
   useEffect(() => {
     fetchSignals();
+
+    let ws: WebSocket | null = null;
+    let reconnectTimer: any = null;
+    let isDisposed = false;
+
+    function initWebSocket() {
+      if (typeof window === 'undefined' || isDisposed) return;
+      try {
+        const apiBase = getApiBase();
+        const wsProto = apiBase.startsWith('https') ? 'wss:' : 'ws:';
+        const wsHost = apiBase.replace(/^https?:\/\//, '');
+        ws = new WebSocket(`${wsProto}//${wsHost}/ws/live-ticks`);
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'TRADE_SIGNAL' && data.signal) {
+              const sig = data.signal as TradeSignalItem;
+              if (sig && sig.id && !seenSignalIds.current.has(sig.id)) {
+                seenSignalIds.current.add(sig.id);
+                setSignals((prev) => [sig, ...prev.filter((item) => item.id !== sig.id)]);
+                setToastQueue((prev) => [...prev, sig]);
+                playAudioChime();
+              }
+            }
+          } catch (_) {}
+        };
+
+        ws.onclose = () => {
+          if (!isDisposed) {
+            reconnectTimer = setTimeout(initWebSocket, 4000);
+          }
+        };
+
+        ws.onerror = () => {
+          ws?.close();
+        };
+      } catch (_) {}
+    }
+
+    initWebSocket();
     const interval = setInterval(fetchSignals, 6000);
-    return () => clearInterval(interval);
-  }, [fetchSignals]);
+
+    return () => {
+      isDisposed = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws) {
+        ws.onclose = null;
+        ws.close();
+      }
+      clearInterval(interval);
+    };
+  }, [fetchSignals, playAudioChime]);
 
   // Acknowledge single toast
   const acknowledgeToast = useCallback(() => {

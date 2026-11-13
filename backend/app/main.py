@@ -8,7 +8,7 @@ import json
 import logging
 import time
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Query, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse, ORJSONResponse
@@ -161,6 +161,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Latency and observability middleware: tracks execution duration on every response
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - start_time) * 1000.0
+    response.headers["X-Response-Time"] = f"{duration_ms:.2f}ms"
+    response.headers["X-Platform"] = "AlgoRobot-HighPerformance"
+    return response
 
 nse_client = NseClient()
 
@@ -599,8 +609,9 @@ async def get_short_selling_deals_only(
     return deals_engine.get_all_deals(deal_type="SHORT_SELLING", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/strategies")
-async def get_deals_trading_strategies():
+async def get_deals_trading_strategies(response: Response):
     """Retrieve comprehensive institutional trading strategies for utilizing bulk and block deals."""
+    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
     return {
         "status": "success",
         "title": "Trader's Playbook: How to Profitably Trade Bulk & Block Deals",
@@ -758,8 +769,9 @@ def sync_nse_live(symbol: str):
     }
 
 @app.get("/api/sectors")
-async def list_sectors():
+async def list_sectors(response: Response):
     """List all sectors represented in Nifty 50 with company counts."""
+    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
     sectors_map: Dict[str, int] = {}
     for comp in NIFTY_50_REGISTRY:
         sec = comp["sector"]
@@ -840,8 +852,9 @@ async def api_get_trade_signals(
     )
 
 @app.get("/api/trade-signals/strategies")
-async def api_get_trade_strategies():
+async def api_get_trade_strategies(response: Response):
     """Available algorithmic strategies and configuration models."""
+    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
     return {
         "status": "success",
         "strategies": AVAILABLE_STRATEGIES
@@ -849,8 +862,9 @@ async def api_get_trade_strategies():
 
 @app.post("/api/trade-signals/trigger")
 async def api_trigger_new_signal():
-    """Generates a fresh real-time trade signal event."""
+    """Generates a fresh real-time trade signal event and immediately broadcasts to connected clients."""
     new_sig = generate_live_signal_event()
+    await tick_engine.broadcast_trade_signal(new_sig)
     return {
         "status": "success",
         "signal": new_sig
