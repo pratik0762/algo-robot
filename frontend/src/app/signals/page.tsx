@@ -27,12 +27,17 @@ import {
   Volume2,
   BarChart2
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
-import NavigationDrawer from '@/components/NavigationDrawer';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 import { useTradeSignals, TradeSignalItem } from '@/context/TradeSignalsContext';
+
+const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
+  ssr: false,
+  loading: () => null
+});
 
 export type { TradeSignalItem };
 

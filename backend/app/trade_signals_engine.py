@@ -258,7 +258,40 @@ def build_signal_object(
     }
 
 # 3. In-Memory Persistent Signals Store
+# In-memory cached signals and precomputed summary
 _SIGNALS_CACHE: List[Dict[str, Any]] = []
+_SUMMARY_CACHE: Optional[Dict[str, Any]] = None
+
+def _compute_summary(signals: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Single-pass O(N) precomputation of summary metrics across all signals."""
+    buy_count = 0
+    sell_count = 0
+    large_cap_count = 0
+    mid_cap_count = 0
+    small_cap_count = 0
+    for s in signals:
+        stype = s.get("type")
+        if stype == "BUY":
+            buy_count += 1
+        elif stype == "SELL":
+            sell_count += 1
+            
+        mcap = s.get("market_cap_category")
+        if mcap == "LARGE_CAP":
+            large_cap_count += 1
+        elif mcap == "MID_CAP":
+            mid_cap_count += 1
+        elif mcap == "SMALL_CAP":
+            small_cap_count += 1
+
+    return {
+        "buy_count": buy_count,
+        "sell_count": sell_count,
+        "large_cap_count": large_cap_count,
+        "mid_cap_count": mid_cap_count,
+        "small_cap_count": small_cap_count,
+        "latest_timestamp": signals[0]["issued_at"] if signals else ""
+    }
 
 def initialize_trade_signals() -> List[Dict[str, Any]]:
     """Populates an authentic baseline list of trade signals spanning all caps and strategies."""
@@ -309,6 +342,8 @@ def initialize_trade_signals() -> List[Dict[str, Any]]:
     # Sort newest first by timestamp_ms
     signals.sort(key=lambda s: s["timestamp_ms"], reverse=True)
     _SIGNALS_CACHE = signals
+    global _SUMMARY_CACHE
+    _SUMMARY_CACHE = _compute_summary(_SIGNALS_CACHE)
     return _SIGNALS_CACHE
 
 def get_trade_signals(
@@ -318,7 +353,8 @@ def get_trade_signals(
     timeframe: Optional[str] = None,
     search: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Retrieve and filter trade signals."""
+    """Retrieve and filter trade signals with single-pass filtering and precomputed summary metrics."""
+    global _SUMMARY_CACHE
     all_signals = initialize_trade_signals()
     
     # Recalculate dynamic elapsed string relative to current wall time
@@ -334,26 +370,34 @@ def get_trade_signals(
         else:
             sig["time_elapsed"] = f"{diff_sec // 86400}d ago"
 
-    filtered = list(all_signals)
+    # Normalize filter parameters for zero-allocation single-pass loop
+    strat_filter = strategy_id if (strategy_id and strategy_id.lower() != "all") else None
+    cap_filter = market_cap.upper() if (market_cap and market_cap.upper() != "ALL") else None
+    type_filter = signal_type.upper() if (signal_type and signal_type.upper() != "ALL") else None
+    tf_filter = timeframe.upper() if (timeframe and timeframe.upper() != "ALL") else None
+    search_term = search.strip().lower() if (search and search.strip()) else None
 
-    if strategy_id and strategy_id.lower() != "all":
-        filtered = [s for s in filtered if s["strategy_id"] == strategy_id]
+    # Single-pass filter loop
+    filtered: List[Dict[str, Any]] = []
+    for s in all_signals:
+        if strat_filter and s.get("strategy_id") != strat_filter:
+            continue
+        if cap_filter and s.get("market_cap_category") != cap_filter:
+            continue
+        if type_filter and s.get("type") != type_filter:
+            continue
+        if tf_filter and s.get("timeframe", "").upper() != tf_filter:
+            continue
+        if search_term:
+            sym = s.get("symbol", "").lower()
+            cname = s.get("company_name", "").lower()
+            sec = s.get("sector", "").lower()
+            if search_term not in sym and search_term not in cname and search_term not in sec:
+                continue
+        filtered.append(s)
 
-    if market_cap and market_cap.upper() != "ALL":
-        filtered = [s for s in filtered if s["market_cap_category"] == market_cap.upper()]
-
-    if signal_type and signal_type.upper() != "ALL":
-        filtered = [s for s in filtered if s["type"] == signal_type.upper()]
-
-    if timeframe and timeframe.upper() != "ALL":
-        filtered = [s for s in filtered if s["timeframe"].upper() == timeframe.upper()]
-
-    if search and search.strip():
-        term = search.strip().lower()
-        filtered = [
-            s for s in filtered
-            if term in s["symbol"].lower() or term in s["company_name"].lower() or term in s["sector"].lower()
-        ]
+    if _SUMMARY_CACHE is None:
+        _SUMMARY_CACHE = _compute_summary(all_signals)
 
     return {
         "status": "success",
@@ -361,19 +405,12 @@ def get_trade_signals(
         "filtered_count": len(filtered),
         "available_strategies": AVAILABLE_STRATEGIES,
         "signals": filtered,
-        "summary": {
-            "buy_count": sum(1 for s in all_signals if s["type"] == "BUY"),
-            "sell_count": sum(1 for s in all_signals if s["type"] == "SELL"),
-            "large_cap_count": sum(1 for s in all_signals if s["market_cap_category"] == "LARGE_CAP"),
-            "mid_cap_count": sum(1 for s in all_signals if s["market_cap_category"] == "MID_CAP"),
-            "small_cap_count": sum(1 for s in all_signals if s["market_cap_category"] == "SMALL_CAP"),
-            "latest_timestamp": all_signals[0]["issued_at"] if all_signals else ""
-        }
+        "summary": _SUMMARY_CACHE
     }
 
 def generate_live_signal_event() -> Dict[str, Any]:
-    """Generates a fresh real-time signal and prepends it to the signals cache."""
-    global _SIGNALS_CACHE
+    """Generates a fresh real-time signal, prepends it to the signals cache, and updates precomputed summary."""
+    global _SIGNALS_CACHE, _SUMMARY_CACHE
     if not _SIGNALS_CACHE:
         initialize_trade_signals()
 
@@ -388,6 +425,9 @@ def generate_live_signal_event() -> Dict[str, Any]:
     # Keep up to 60 most recent signals
     if len(_SIGNALS_CACHE) > 60:
         _SIGNALS_CACHE = _SIGNALS_CACHE[:60]
+
+    # Invalidate / recompute summary
+    _SUMMARY_CACHE = _compute_summary(_SIGNALS_CACHE)
         
     return new_sig
 

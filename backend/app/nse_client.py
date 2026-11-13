@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from typing import Any, Dict, List, Optional
 from curl_cffi import requests
@@ -19,10 +20,12 @@ class NseClient:
         self.session: Optional[requests.Session] = None
         self._indices_cache: Optional[Dict[str, Any]] = None
         self._indices_cache_time: float = 0.0
+        self._indices_refreshing: bool = False
         self._futures_cache: Optional[Dict[str, Any]] = None
         self._futures_cache_time: float = 0.0
         self._fii_dii_cache: Optional[Dict[str, Any]] = None
         self._fii_dii_cache_time: float = 0.0
+        self._fii_dii_refreshing: bool = False
         # Initialize session lazily on first external request to keep startup instantaneous
 
     def _init_session(self) -> None:
@@ -97,12 +100,31 @@ class NseClient:
         return []
 
     def fetch_all_indices(self, force_refresh: bool = False) -> Dict[str, Any]:
-        """Fetch all 139+ official indices from NSE India with caching and BSE SENSEX integration."""
+        """Fetch all 139+ official indices from NSE India with Stale-While-Revalidate caching."""
         now = time.time()
-        # High-speed in-memory cache: return instantly in < 0.1ms if cache exists and fresh
-        if not force_refresh and self._indices_cache and (now - self._indices_cache_time < 45.0):
+        # High-speed in-memory SWR cache: return instantly in < 0.1ms if cache exists
+        if not force_refresh and self._indices_cache:
+            if now - self._indices_cache_time < 45.0:
+                return self._indices_cache
+            # Stale-While-Revalidate: serve stale immediately, refresh asynchronously in background
+            if not self._indices_refreshing:
+                self._indices_refreshing = True
+                threading.Thread(target=self._background_refresh_indices, daemon=True).start()
             return self._indices_cache
 
+        return self._do_fetch_all_indices()
+
+    def _background_refresh_indices(self) -> None:
+        try:
+            self._do_fetch_all_indices()
+        except Exception as e:
+            logger.debug("Background indices refresh note: %s", e)
+        finally:
+            self._indices_refreshing = False
+
+    def _do_fetch_all_indices(self) -> Dict[str, Any]:
+        """Performs actual network fetch and transformation of all indices."""
+        now = time.time()
         url = f"{self.BASE_URL}/api/allIndices"
         raw_items: List[Dict[str, Any]] = []
 
@@ -344,12 +366,31 @@ class NseClient:
         }
 
     def fetch_fii_dii_data(self) -> Dict[str, Any]:
-        """Fetch official FII/DII institutional trading activity from NSE and compute market impact with high-speed in-memory caching."""
+        """Fetch official FII/DII institutional trading activity from NSE with Stale-While-Revalidate caching."""
         now = time.time()
-        # High-speed in-memory cache: if queried within last 60 seconds, return immediately in < 0.1ms
-        if self._fii_dii_cache and (now - self._fii_dii_cache_time < 60.0):
+        # High-speed in-memory SWR cache: return immediately in < 0.1ms if cache exists
+        if self._fii_dii_cache:
+            if now - self._fii_dii_cache_time < 60.0:
+                return self._fii_dii_cache
+            # Stale-While-Revalidate: return stale data instantly, refresh in background
+            if not self._fii_dii_refreshing:
+                self._fii_dii_refreshing = True
+                threading.Thread(target=self._background_refresh_fii_dii, daemon=True).start()
             return self._fii_dii_cache
 
+        return self._do_fetch_fii_dii()
+
+    def _background_refresh_fii_dii(self) -> None:
+        try:
+            self._do_fetch_fii_dii()
+        except Exception as e:
+            logger.debug("Background FII/DII refresh note: %s", e)
+        finally:
+            self._fii_dii_refreshing = False
+
+    def _do_fetch_fii_dii(self) -> Dict[str, Any]:
+        """Performs actual network fetch and transformation of FII/DII institutional flows."""
+        now = time.time()
         url = f"{self.BASE_URL}/api/fiidiiTradeReact"
         live_raw = None
 

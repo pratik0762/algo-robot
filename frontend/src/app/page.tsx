@@ -33,8 +33,18 @@ import {
   Globe2,
   ArrowLeftRight
 } from 'lucide-react';
-import NavigationDrawer, { NAV_HUBS } from '@/components/NavigationDrawer';
-import CompanyDetailModal from '@/components/CompanyDetailModal';
+import dynamic from 'next/dynamic';
+import { NAV_HUBS } from '@/components/NavigationDrawer';
+
+// Dynamic lazy imports: heavily reduces initial bundle size and accelerates First Contentful Paint
+const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
+  ssr: false,
+  loading: () => null
+});
+const CompanyDetailModal = dynamic(() => import('@/components/CompanyDetailModal'), {
+  ssr: false,
+  loading: () => null
+});
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';

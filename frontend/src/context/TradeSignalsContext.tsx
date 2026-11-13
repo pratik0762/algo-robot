@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -12,7 +13,12 @@ import {
   Clock
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
-import NseChartSignalModal from '@/components/NseChartSignalModal';
+
+// Dynamic lazy import: loads heavy TradingView chart workstation on-demand only when opened
+const NseChartSignalModal = dynamic(() => import('@/components/NseChartSignalModal'), {
+  ssr: false,
+  loading: () => null
+});
 
 export interface TradeSignalItem {
   id: string;
@@ -124,14 +130,6 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
     return () => clearInterval(interval);
   }, [fetchSignals]);
 
-  // Countdown timer for next sync
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSyncCountdown((prev) => (prev <= 1 ? 6 : prev - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   // Acknowledge single toast
   const acknowledgeToast = useCallback(() => {
     setToastQueue((prev) => prev.slice(1));
@@ -175,20 +173,33 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
     return null;
   }, [playAudioChime]);
 
+  // Memoized context value: prevents unnecessary tree re-renders across all consumer pages
+  const contextValue = useMemo<TradeSignalsContextType>(
+    () => ({
+      signals,
+      toastQueue,
+      acknowledgeToast,
+      clearAllToasts,
+      openChartModal,
+      closeChartModal,
+      triggerSimulatedSignal,
+      syncCountdown: 6,
+      refreshSignals: fetchSignals
+    }),
+    [
+      signals,
+      toastQueue,
+      acknowledgeToast,
+      clearAllToasts,
+      openChartModal,
+      closeChartModal,
+      triggerSimulatedSignal,
+      fetchSignals
+    ]
+  );
+
   return (
-    <TradeSignalsContext.Provider
-      value={{
-        signals,
-        toastQueue,
-        acknowledgeToast,
-        clearAllToasts,
-        openChartModal,
-        closeChartModal,
-        triggerSimulatedSignal,
-        syncCountdown,
-        refreshSignals: fetchSignals
-      }}
-    >
+    <TradeSignalsContext.Provider value={contextValue}>
       {children}
 
       {/* ========================================================================= */}

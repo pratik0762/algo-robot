@@ -10,7 +10,8 @@ import time
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse, ORJSONResponse
 
 from app.models import (
     CompanySummary,
@@ -139,8 +140,12 @@ app = FastAPI(
     title="Nifty 50 & Indian Indices Financial Platform (NSE India)",
     description="Official financial statements, all 139+ NSE/BSE indices, GIFT NIFTY, INDIA VIX, and Live Stock Ticks.",
     version="1.2.0",
+    default_response_class=ORJSONResponse,
     lifespan=lifespan
 )
+
+# High-Performance Compression: Compresses large JSON payloads by 80%+ (cuts network bandwidth and latency)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Enable CORS for Next.js frontend running on localhost:3000 / 127.0.0.1:3000
 app.add_middleware(
@@ -271,12 +276,12 @@ async def sse_ticks_stream():
     )
 
 @app.get("/api/market-status")
-def get_market_status_endpoint():
+async def get_market_status_endpoint():
     """Return comprehensive Indian Stock Market (NSE & BSE) status, session, and specific closure reasons."""
     return get_indian_market_status()
 
 @app.get("/api/stocks/live-ticks")
-def get_all_live_stock_ticks():
+async def get_all_live_stock_ticks():
     """Retrieve current snapshot of live tick prices, LTP, Day High/Low, volume, and GIFT Nifty."""
     market_info = get_indian_market_status()
     gift_info = get_gift_nifty_session_info()
@@ -297,7 +302,7 @@ def get_all_live_stock_ticks():
 # =========================================================================
 
 @app.get("/api/indices")
-def get_all_indices(
+async def get_all_indices(
     category: Optional[str] = Query(None, description="Filter by category: broad, sectoral, thematic, strategy, derivatives, fixed_income"),
     search: Optional[str] = Query(None, description="Search index by name or symbol"),
     sort_by: Optional[str] = Query("default", description="Sort by: change_desc, change_asc, name_asc, price_desc"),
@@ -454,18 +459,18 @@ def get_live_ticker_indices():
     }
 
 @app.get("/api/indices/gift-nifty")
-def get_gift_nifty_detail():
+async def get_gift_nifty_detail():
     """Direct standalone endpoint for GIFT NIFTY live data sourced from TradingView across Session 1 and Session 2."""
     return tick_engine.get_gift_nifty()
 
 @app.get("/api/indices/india-vix")
-def get_india_vix_detail():
+async def get_india_vix_detail():
     """Direct standalone endpoint for INDIA VIX live data."""
     feed = nse_client.fetch_all_indices(force_refresh=False)
     return feed.get("india_vix", {})
 
 @app.get("/api/indices/{index_name}")
-def get_single_index(index_name: str):
+async def get_single_index(index_name: str):
     """Retrieve full detail on any single index among all 139+ indices."""
     target = index_name.upper().strip()
     if target in ("GIFT NIFTY", "GIFTNIFTY"):
@@ -485,7 +490,7 @@ def get_single_index(index_name: str):
 # =========================================================================
 
 @app.get("/api/fii-dii")
-def get_fii_dii_report():
+async def get_fii_dii_report():
     """Retrieve official FII/DII institutional cash market trading data from NSE and computed market impact."""
     try:
         report = nse_client.fetch_fii_dii_data()
@@ -495,7 +500,7 @@ def get_fii_dii_report():
         raise HTTPException(status_code=500, detail="Failed to fetch FII/DII institutional trading data")
 
 @app.get("/api/institutional-holdings")
-def get_company_institutional_investments(
+async def get_company_institutional_investments(
     search: Optional[str] = Query(None, description="Search by symbol or company name"),
     sector: Optional[str] = Query(None, description="Filter by sector"),
     sort_by: Optional[str] = Query("fii_amount_desc", description="Sort by: fii_amount_desc, dii_amount_desc, total_institutional_desc, fii_pct_desc, dii_pct_desc, market_cap_desc"),
@@ -518,7 +523,7 @@ def get_company_institutional_investments(
 # =========================================================================
 
 @app.get("/api/news")
-def get_market_and_company_news(
+async def get_market_and_company_news(
     symbol: Optional[str] = Query(None, description="Filter by company symbol (e.g. RELIANCE, TCS, HDFCBANK)"),
     sentiment: Optional[str] = Query(None, description="Filter by sentiment: bullish, bearish, volatile, neutral"),
     impact: Optional[str] = Query(None, description="Filter by impact level: high, medium, low"),
@@ -541,7 +546,7 @@ def get_market_and_company_news(
 # =========================================================================
 
 @app.get("/api/deals", response_model=DealsResponse)
-def get_bulk_and_block_deals(
+async def get_bulk_and_block_deals(
     deal_type: Optional[str] = Query("all", description="Filter deal type: all, bulk, block, short_selling"),
     action: Optional[str] = Query("all", description="Filter trade action: all, BUY, SELL"),
     category: Optional[str] = Query("all", description="Filter client category: all, FII, DII, MUTUAL_FUND, PROMOTER, HNI, PROP_DESK"),
@@ -570,7 +575,7 @@ def get_bulk_and_block_deals(
         raise HTTPException(status_code=500, detail="Failed to retrieve deals data")
 
 @app.get("/api/deals/bulk")
-def get_bulk_deals_only(
+async def get_bulk_deals_only(
     time_range: Optional[str] = Query(None),
     limit: int = Query(100, description="Max bulk deals")
 ):
@@ -578,7 +583,7 @@ def get_bulk_deals_only(
     return deals_engine.get_all_deals(deal_type="BULK", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/block")
-def get_block_deals_only(
+async def get_block_deals_only(
     time_range: Optional[str] = Query(None),
     limit: int = Query(100, description="Max block deals")
 ):
@@ -586,7 +591,7 @@ def get_block_deals_only(
     return deals_engine.get_all_deals(deal_type="BLOCK", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/short-selling")
-def get_short_selling_deals_only(
+async def get_short_selling_deals_only(
     time_range: Optional[str] = Query(None),
     limit: int = Query(100, description="Max short selling deals")
 ):
@@ -594,7 +599,7 @@ def get_short_selling_deals_only(
     return deals_engine.get_all_deals(deal_type="SHORT_SELLING", time_range=time_range, limit=limit)
 
 @app.get("/api/deals/strategies")
-def get_deals_trading_strategies():
+async def get_deals_trading_strategies():
     """Retrieve comprehensive institutional trading strategies for utilizing bulk and block deals."""
     return {
         "status": "success",
@@ -608,7 +613,7 @@ def get_deals_trading_strategies():
 
 @app.get("/api/52-week", response_model=Week52Response)
 @app.get("/api/week-52", response_model=Week52Response)
-def get_52_week_data(
+async def get_52_week_data(
     filter_type: Optional[str] = Query("ALL", description="Filter by: ALL, NEAR_HIGH, NEAR_LOW, BREAKOUT, MID_RANGE"),
     sector: Optional[str] = Query(None, description="Filter by sector name"),
     search: Optional[str] = Query(None, description="Search by symbol or company name"),
@@ -629,7 +634,7 @@ def get_52_week_data(
 # =========================================================================
 
 @app.get("/api/companies", response_model=List[CompanySummary])
-def list_companies(
+async def list_companies(
     index: Optional[str] = Query("all", description="Filter by index: nifty50, sensex, bank, it, auto, energy, fmcg, pharma, metal, financial"),
     sector: Optional[str] = Query(None, description="Filter by sector name"),
     search: Optional[str] = Query(None, description="Search by symbol or company name")
@@ -662,7 +667,7 @@ def list_companies(
     return companies
 
 @app.get("/api/companies/{symbol}", response_model=CompanyDetail)
-def get_company(symbol: str):
+async def get_company(symbol: str):
     """Retrieve in-depth financial reports for an individual Nifty 50 company."""
     detail = get_company_full_detail(symbol)
     if not detail:
@@ -753,7 +758,7 @@ def sync_nse_live(symbol: str):
     }
 
 @app.get("/api/sectors")
-def list_sectors():
+async def list_sectors():
     """List all sectors represented in Nifty 50 with company counts."""
     sectors_map: Dict[str, int] = {}
     for comp in NIFTY_50_REGISTRY:
@@ -762,7 +767,7 @@ def list_sectors():
     return [{"sector": k, "count": v} for k, v in sorted(sectors_map.items(), key=lambda x: -x[1])]
 
 @app.get("/api/market-overview")
-def market_overview():
+async def market_overview():
     """Aggregate statistics across all 50 Nifty constituents."""
     companies = get_all_companies_summary()
     total_market_cap = sum(c["market_cap_cr"] for c in companies)
@@ -788,17 +793,17 @@ def market_overview():
     }
 
 @app.get("/api/heatmap")
-def get_nse_heatmap():
+async def get_nse_heatmap():
     """Official NSE Nifty 50 Heat Map data grouped by sectors with live color grading."""
     return signals_heatmap_engine.get_nse_heatmap()
 
 @app.get("/api/chart-data/{symbol}")
-def get_chart_data(symbol: str, timeframe: str = "1D", candle_count: int = 40):
+async def get_chart_data(symbol: str, timeframe: str = "1D", candle_count: int = 40):
     """OHLCV candlestick series with EMA 9/21, Supertrend, RSI, and Algorithmic Buy/Sell Signals."""
     return signals_heatmap_engine.get_chart_with_signals(symbol=symbol, timeframe=timeframe, candle_count=candle_count)
 
 @app.get("/api/signals")
-def get_all_signals():
+async def get_all_signals():
     """Retrieve active technical Buy/Sell algorithmic signals across all Nifty 50 stocks."""
     companies = get_all_companies_summary()
     signals_list = []
@@ -818,7 +823,7 @@ def get_all_signals():
     }
 
 @app.get("/api/trade-signals")
-def api_get_trade_signals(
+async def api_get_trade_signals(
     strategy: Optional[str] = None,
     market_cap: Optional[str] = None,
     type: Optional[str] = None,
@@ -835,7 +840,7 @@ def api_get_trade_signals(
     )
 
 @app.get("/api/trade-signals/strategies")
-def api_get_trade_strategies():
+async def api_get_trade_strategies():
     """Available algorithmic strategies and configuration models."""
     return {
         "status": "success",
@@ -843,7 +848,7 @@ def api_get_trade_strategies():
     }
 
 @app.post("/api/trade-signals/trigger")
-def api_trigger_new_signal():
+async def api_trigger_new_signal():
     """Generates a fresh real-time trade signal event."""
     new_sig = generate_live_signal_event()
     return {

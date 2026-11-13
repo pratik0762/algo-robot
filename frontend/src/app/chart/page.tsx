@@ -25,11 +25,16 @@ import {
   ArrowDownRight,
   Sliders
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
-import NavigationDrawer from '@/components/NavigationDrawer';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
+
+const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
+  ssr: false,
+  loading: () => null
+});
 
 export interface HeatmapStock {
   symbol: string;
