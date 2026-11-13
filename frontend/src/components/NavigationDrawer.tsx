@@ -845,6 +845,8 @@ export default function NavigationDrawer({
 
           {/* Option 8: STRATEGY (Create & Backtest Strategies) */}
           <div
+            id="nav-strategy"
+            data-nav-item="strategy"
             onClick={handleSelectStrategy}
             onMouseEnter={prefetchStrategy}
             style={{
