@@ -46,8 +46,13 @@ export interface TradeSignalItem {
   timeframe: string;
   confidence_score?: number;
   nse_verified?: boolean;
-  status?: 'ACTIVE' | 'TARGET_1_HIT' | 'TARGET_2_HIT' | 'STOP_LOSS_HIT';
+  status?: 'ACTIVE' | 'TARGET_1_HIT' | 'TARGET_2_HIT' | 'STOP_LOSS_HIT' | 'EXPIRED';
   offset_seconds?: number;
+  multi_timeframe_aligned?: boolean;
+  htf_trend?: string;
+  pnl_percent?: string;
+  exit_price?: number;
+  time_to_target?: string;
 }
 
 interface TradeSignalsContextType {

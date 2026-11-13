@@ -79,6 +79,10 @@ async def tick_background_loop():
                 new_sig = generate_live_signal_event()
                 if new_sig:
                     await tick_engine.broadcast_trade_signal(new_sig)
+                # Phase 5: Process signal lifecycle outcomes against live ticks
+                from app.signal_tracker import signal_tracker
+                from app.trade_signals_engine import initialize_trade_signals
+                signal_tracker.process_all_signals_lifecycle(initialize_trade_signals(), tick_engine.stocks)
                 last_signal_gen = now
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
@@ -860,6 +864,17 @@ async def api_get_trade_strategies(response: Response):
     return {
         "status": "success",
         "strategies": AVAILABLE_STRATEGIES
+    }
+
+@app.get("/api/trade-signals/analytics")
+async def api_get_trade_signals_analytics():
+    """Quantitative lifecycle performance analytics: win rate, active count, target hits, stop loss hits."""
+    from app.signal_tracker import signal_tracker
+    from app.trade_signals_engine import initialize_trade_signals
+    all_signals = initialize_trade_signals()
+    return {
+        "status": "success",
+        "analytics": signal_tracker.get_performance_analytics(all_signals)
     }
 
 @app.post("/api/trade-signals/trigger")

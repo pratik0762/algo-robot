@@ -164,6 +164,10 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
             if not candles or len(candles) < 22:
                 continue
 
+            # Phase 4: Fetch higher timeframe candles for multi-timeframe confluence
+            htf = "1H" if tf == "15m" else ("1D" if tf == "1H" else None)
+            htf_candles = market_data_service.get_candles(sym, timeframe=htf, limit=40) if htf else None
+
             for strat_id in strategies_to_test:
                 key = f"{sym}_{strat_id}_{tf}"
                 if key in seen_keys:
@@ -175,7 +179,8 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
                     company_info=comp,
                     candles=candles,
                     timeframe=tf,
-                    quote=quote
+                    quote=quote,
+                    higher_tf_candles=htf_candles
                 )
                 if sig:
                     seen_keys.add(key)
@@ -267,13 +272,27 @@ def get_trade_signals(
     if _SUMMARY_CACHE is None:
         _SUMMARY_CACHE = _compute_summary(all_signals)
 
+    from app.signal_tracker import signal_tracker
+    quotes_dict = {}
+    if os.path.exists(market_data_service.quotes_cache_path):
+        try:
+            with open(market_data_service.quotes_cache_path, "r", encoding="utf-8") as f:
+                quotes_dict = json.load(f)
+        except Exception:
+            pass
+
+    # Phase 5: Signal Lifecycle & Outcome Tracking
+    signal_tracker.process_all_signals_lifecycle(all_signals, quotes_dict)
+    analytics = signal_tracker.get_performance_analytics(all_signals)
+
     return {
         "status": "success",
         "total_signals": len(all_signals),
         "filtered_count": len(filtered),
         "available_strategies": AVAILABLE_STRATEGIES,
         "signals": filtered,
-        "summary": _SUMMARY_CACHE
+        "summary": _SUMMARY_CACHE,
+        "analytics": analytics
     }
 
 def generate_live_signal_event() -> Optional[Dict[str, Any]]:
@@ -297,6 +316,9 @@ def generate_live_signal_event() -> Optional[Dict[str, Any]]:
             if not candles or len(candles) < 22:
                 continue
 
+            htf = "1H" if tf == "15m" else "1D"
+            htf_candles = market_data_service.get_candles(sym, timeframe=htf, limit=40)
+
             for strat_id in strategies_to_test:
                 key = (sym, strat_id, tf)
                 if key in existing_keys:
@@ -308,7 +330,8 @@ def generate_live_signal_event() -> Optional[Dict[str, Any]]:
                     company_info=comp,
                     candles=candles,
                     timeframe=tf,
-                    quote=quote
+                    quote=quote,
+                    higher_tf_candles=htf_candles
                 )
                 if sig:
                     _SIGNALS_CACHE.insert(0, sig)

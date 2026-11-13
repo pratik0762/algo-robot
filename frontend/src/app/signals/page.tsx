@@ -866,6 +866,79 @@ function TradeSignalsContent() {
                             {sig.timeframe === '5m' ? 'SCALP' : sig.timeframe === '15m' ? 'INTRADAY' : sig.timeframe === '1H' ? 'HOURLY' : 'SWING'}
                           </span>
                         </span>
+
+                        {/* Phase 5: Dynamic Signal Lifecycle Status Badge */}
+                        {sig.status === 'TARGET_2_HIT' ? (
+                          <span
+                            style={{
+                              background: 'rgba(16, 185, 129, 0.25)',
+                              border: '1px solid #10b981',
+                              color: '#34d399',
+                              fontSize: '0.64rem',
+                              fontWeight: 900,
+                              padding: '2px 8px',
+                              borderRadius: '6px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              boxShadow: '0 0 10px rgba(16, 185, 129, 0.35)'
+                            }}
+                          >
+                            <span>TARGET 2 HIT {sig.pnl_percent || ''}</span>
+                          </span>
+                        ) : sig.status === 'TARGET_1_HIT' ? (
+                          <span
+                            style={{
+                              background: 'rgba(16, 185, 129, 0.2)',
+                              border: '1px solid rgba(52, 211, 153, 0.6)',
+                              color: '#34d399',
+                              fontSize: '0.64rem',
+                              fontWeight: 900,
+                              padding: '2px 8px',
+                              borderRadius: '6px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <span>TARGET 1 HIT {sig.pnl_percent || ''}</span>
+                          </span>
+                        ) : sig.status === 'STOP_LOSS_HIT' ? (
+                          <span
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.2)',
+                              border: '1px solid rgba(248, 113, 113, 0.6)',
+                              color: '#f87171',
+                              fontSize: '0.64rem',
+                              fontWeight: 900,
+                              padding: '2px 8px',
+                              borderRadius: '6px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <span>STOP LOSS HIT {sig.pnl_percent || ''}</span>
+                          </span>
+                        ) : null}
+
+                        {/* Phase 4: Multi-Timeframe Alignment Indicator */}
+                        {sig.multi_timeframe_aligned && (
+                          <span
+                            style={{
+                              background: 'rgba(129, 140, 248, 0.15)',
+                              border: '1px solid rgba(129, 140, 248, 0.4)',
+                              color: '#a5b4fc',
+                              fontSize: '0.62rem',
+                              fontWeight: 800,
+                              padding: '2px 7px',
+                              borderRadius: '6px'
+                            }}
+                            title="Higher timeframe trend alignment confirmed on closed candle"
+                          >
+                            <span>HTF CONFLUENCE</span>
+                          </span>
+                        )}
                       </div>
 
                       {/* Rationale and Execution Advice */}

@@ -75,9 +75,10 @@ class StrategyEngine:
         company_info: Dict[str, Any],
         candles: List[Dict[str, Any]],
         timeframe: str = "15m",
-        quote: Optional[Dict[str, Any]] = None
+        quote: Optional[Dict[str, Any]] = None,
+        higher_tf_candles: Optional[List[Dict[str, Any]]] = None
     ) -> Optional[Dict[str, Any]]:
-        """Evaluates a specific strategy against authentic closed candles."""
+        """Evaluates a specific strategy against authentic closed candles with multi-timeframe confirmation."""
         if not candles or len(candles) < 22:
             return None
 
@@ -221,6 +222,27 @@ class StrategyEngine:
         if not sig_type:
             return None
 
+        # Phase 4: Multi-Timeframe Confluence Confirmation
+        htf_aligned = False
+        htf_desc = "Neutral"
+        if higher_tf_candles and len(higher_tf_candles) >= 15:
+            _, _, _, htf_closes, _ = self._extract_arrays(higher_tf_candles)
+            htf_ema21 = compute_ema(htf_closes, 21)
+            if sig_type == "BUY":
+                if htf_closes[-1] >= htf_ema21[-1]:
+                    htf_aligned = True
+                    htf_desc = "Bullish Alignment (Above HTF 21-EMA)"
+                    confidence = min(98, confidence + 4)
+                else:
+                    confidence = max(80, confidence - 2)
+            elif sig_type == "SELL":
+                if htf_closes[-1] <= htf_ema21[-1]:
+                    htf_aligned = True
+                    htf_desc = "Bearish Alignment (Below HTF 21-EMA)"
+                    confidence = min(98, confidence + 4)
+                else:
+                    confidence = max(80, confidence - 2)
+
         # Calculate exact price levels
         entry, sl, t1, t2, rr = self.calculate_trade_levels(sig_type, cur_close, highs, lows, cur_atr)
 
@@ -271,6 +293,8 @@ class StrategyEngine:
             "status": "ACTIVE",
             "timeframe": timeframe,
             "confidence_score": confidence,
+            "multi_timeframe_aligned": htf_aligned,
+            "htf_trend": htf_desc,
             "nse_verified": True,
             "data_source": "Official NSE Live Market Feed",
             "risk_control_rating": "CAPPED RISK (1:2 R:R)",
@@ -279,3 +303,4 @@ class StrategyEngine:
 
 # Global Singleton
 strategy_engine = StrategyEngine()
+
