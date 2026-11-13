@@ -27,11 +27,11 @@ class StrategyEngine:
 
     @staticmethod
     def _extract_arrays(candles: List[Dict[str, Any]]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        opens = np.array([float(c["open"]) for c in candles], dtype=np.float64)
-        highs = np.array([float(c["high"]) for c in candles], dtype=np.float64)
-        lows = np.array([float(c["low"]) for c in candles], dtype=np.float64)
-        closes = np.array([float(c["close"]) for c in candles], dtype=np.float64)
-        volumes = np.array([float(c.get("volume", 0)) for c in candles], dtype=np.float64)
+        opens = np.ascontiguousarray([float(c["open"]) for c in candles], dtype=np.float64)
+        highs = np.ascontiguousarray([float(c["high"]) for c in candles], dtype=np.float64)
+        lows = np.ascontiguousarray([float(c["low"]) for c in candles], dtype=np.float64)
+        closes = np.ascontiguousarray([float(c["close"]) for c in candles], dtype=np.float64)
+        volumes = np.ascontiguousarray([float(c.get("volume", 0)) for c in candles], dtype=np.float64)
         return opens, highs, lows, closes, volumes
 
     @staticmethod
@@ -68,6 +68,22 @@ class StrategyEngine:
         risk_reward = "1 : 2.0"
         return entry, sl, t1, t2, risk_reward
 
+    def prepare_candle_context(self, candles: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Precomputes contiguous C-arrays and base volatility once per candle series for SIMD performance."""
+        opens, highs, lows, closes, volumes = self._extract_arrays(candles)
+        atrs = compute_atr(highs, lows, closes, period=10)
+        cur_close = closes[-1] if len(closes) > 0 else 1000.0
+        cur_atr = atrs[-1] if len(atrs) > 0 else cur_close * 0.015
+        return {
+            "opens": opens,
+            "highs": highs,
+            "lows": lows,
+            "closes": closes,
+            "volumes": volumes,
+            "cur_atr": cur_atr,
+            "atrs": atrs
+        }
+
     def evaluate_strategy(
         self,
         strategy_id: str,
@@ -76,17 +92,28 @@ class StrategyEngine:
         candles: List[Dict[str, Any]],
         timeframe: str = "15m",
         quote: Optional[Dict[str, Any]] = None,
-        higher_tf_candles: Optional[List[Dict[str, Any]]] = None
+        higher_tf_candles: Optional[List[Dict[str, Any]]] = None,
+        precomputed: Optional[Dict[str, Any]] = None
     ) -> Optional[Dict[str, Any]]:
         """Evaluates a specific strategy against authentic closed candles with multi-timeframe confirmation."""
         if not candles or len(candles) < 22:
             return None
 
-        opens, highs, lows, closes, volumes = self._extract_arrays(candles)
+        if precomputed:
+            opens = precomputed["opens"]
+            highs = precomputed["highs"]
+            lows = precomputed["lows"]
+            closes = precomputed["closes"]
+            volumes = precomputed["volumes"]
+            cur_atr = precomputed["cur_atr"]
+        else:
+            opens, highs, lows, closes, volumes = self._extract_arrays(candles)
+            cur_close = closes[-1]
+            atrs = compute_atr(highs, lows, closes, period=10)
+            cur_atr = atrs[-1] if len(atrs) > 0 else cur_close * 0.015
+
         n = len(closes)
         cur_close = closes[-1]
-        atrs = compute_atr(highs, lows, closes, period=10)
-        cur_atr = atrs[-1] if len(atrs) > 0 else cur_close * 0.015
 
         sig_type: Optional[str] = None
         strength: str = "CONFIRMED"

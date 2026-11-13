@@ -12,5 +12,3855 @@
     "pnl_percent": "-1.49%",
     "time_to_target": "5m 0s",
     "outcome_time": "13-Nov-2026 01:58:26 PM IST"
+  },
+  "BENCH_TEST_0": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_1": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_2": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_3": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_4": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_5": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_6": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_7": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_8": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_9": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_10": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_11": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_12": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_13": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_14": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_15": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_16": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_17": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_18": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_19": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_20": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_21": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_22": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_23": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_24": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_25": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_26": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_27": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_28": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_29": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_30": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_31": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_32": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_33": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_34": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_35": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_36": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_37": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_38": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_39": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_40": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_41": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_42": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_43": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_44": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_45": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_46": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_47": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_48": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "BENCH_TEST_49": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 02:59:13 PM IST"
+  },
+  "PHASE14_TEST_0": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_1": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_2": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_3": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_4": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_5": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_6": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_7": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_8": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_9": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_10": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_11": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_12": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_13": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_14": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_15": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_16": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_17": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_18": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_19": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_20": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_21": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_22": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_23": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_24": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_25": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_26": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_27": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_28": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_29": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_30": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_31": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_32": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_33": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_34": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_35": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_36": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_37": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_38": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_39": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_40": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_41": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_42": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_43": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_44": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_45": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_46": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_47": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_48": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_49": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_50": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_51": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_52": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_53": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_54": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_55": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_56": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_57": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_58": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_59": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_60": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_61": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_62": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_63": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_64": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_65": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_66": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_67": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_68": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_69": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_70": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_71": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_72": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_73": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_74": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_75": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_76": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_77": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_78": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_79": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_80": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_81": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_82": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_83": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_84": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_85": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_86": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_87": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_88": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_89": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_90": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_91": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_92": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_93": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_94": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_95": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_96": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_97": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_98": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_99": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_100": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_101": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_102": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_103": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_104": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_105": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_106": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_107": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_108": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_109": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_110": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_111": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_112": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_113": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_114": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_115": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_116": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_117": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_118": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_119": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_120": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_121": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_122": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_123": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_124": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_125": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_126": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_127": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_128": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_129": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_130": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_131": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_132": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_133": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_134": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_135": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_136": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_137": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_138": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_139": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_140": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_141": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_142": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_143": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_144": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_145": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_146": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_147": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_148": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_149": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_150": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_151": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_152": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_153": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_154": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_155": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_156": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_157": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_158": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_159": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_160": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_161": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_162": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_163": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_164": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_165": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_166": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_167": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_168": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_169": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_170": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_171": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_172": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_173": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_174": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_175": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_176": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_177": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_178": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_179": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_180": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_181": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_182": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_183": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_184": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_185": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_186": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_187": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_188": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_189": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_190": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_191": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_192": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_193": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_194": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_195": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_196": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_197": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_198": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_199": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_200": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_201": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_202": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_203": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_204": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_205": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_206": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_207": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_208": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_209": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_210": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_211": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_212": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_213": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_214": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_215": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_216": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_217": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_218": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_219": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_220": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_221": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_222": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_223": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_224": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_225": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_226": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_227": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_228": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_229": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_230": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_231": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_232": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_233": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_234": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_235": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_236": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_237": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_238": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_239": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_240": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_241": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_242": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_243": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_244": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_245": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_246": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_247": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_248": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_249": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_250": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_251": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_252": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_253": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_254": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_255": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_256": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_257": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_258": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_259": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_260": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_261": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_262": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_263": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_264": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_265": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_266": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_267": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_268": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_269": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_270": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_271": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_272": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_273": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_274": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_275": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_276": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_277": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_278": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_279": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_280": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_281": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_282": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_283": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_284": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_285": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_286": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_287": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_288": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_289": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_290": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_291": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_292": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_293": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_294": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_295": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_296": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_297": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_298": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_299": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_300": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_301": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_302": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_303": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_304": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_305": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_306": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_307": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_308": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_309": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_310": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_311": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_312": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_313": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_314": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_315": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_316": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_317": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_318": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_319": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_320": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_321": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_322": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_323": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_324": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_325": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_326": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_327": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_328": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_329": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_330": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_331": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_332": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_333": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_334": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_335": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_336": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_337": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_338": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_339": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_340": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_341": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_342": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_343": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_344": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_345": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_346": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_347": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_348": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_349": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_350": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_351": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_352": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_353": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_354": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_355": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_356": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_357": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_358": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_359": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_360": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_361": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_362": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_363": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_364": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_365": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_366": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_367": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_368": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_369": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_370": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_371": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_372": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_373": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_374": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_375": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_376": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_377": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_378": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_379": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_380": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_381": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_382": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_383": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_384": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_385": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_386": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_387": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_388": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_389": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_390": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_391": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_392": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_393": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_394": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_395": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_396": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_397": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_398": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_399": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_400": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_401": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_402": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_403": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_404": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_405": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_406": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_407": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_408": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_409": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_410": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_411": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_412": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_413": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_414": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_415": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_416": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_417": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_418": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_419": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_420": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_421": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_422": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_423": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_424": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_425": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_426": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_427": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_428": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_429": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_430": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_431": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_432": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_433": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_434": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_435": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_436": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_437": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_438": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_439": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_440": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_441": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_442": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_443": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_444": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_445": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_446": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_447": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_448": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_449": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_450": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_451": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_452": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_453": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_454": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_455": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_456": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_457": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_458": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_459": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_460": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_461": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_462": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_463": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_464": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_465": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_466": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_467": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_468": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_469": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_470": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_471": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_472": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_473": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_474": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_475": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_476": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_477": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_478": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_479": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_480": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_481": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_482": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_483": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_484": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_485": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_486": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_487": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_488": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_489": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_490": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_491": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_492": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_493": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_494": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_495": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_496": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_497": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_498": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "PHASE14_TEST_499": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "1s",
+    "outcome_time": "13-Nov-2026 03:05:10 PM IST"
   }
 }

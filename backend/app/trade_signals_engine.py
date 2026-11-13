@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any
 
@@ -145,8 +146,45 @@ def _compute_summary(signals: List[Dict[str, Any]]) -> Dict[str, Any]:
         "latest_timestamp": signals[0]["issued_at"] if signals else ""
     }
 
+def _evaluate_single_symbol(
+    comp: Dict[str, Any],
+    strategies_to_test: List[str],
+    timeframes: List[str]
+) -> List[Dict[str, Any]]:
+    """Evaluates multi-timeframe strategies for a single company in worker thread."""
+    sym = comp["symbol"]
+    quote = market_data_service.get_live_quote(sym)
+    results: List[Dict[str, Any]] = []
+
+    for tf in timeframes:
+        candles = market_data_service.get_candles(sym, timeframe=tf, limit=60)
+        if not candles or len(candles) < 22:
+            continue
+
+        # Higher timeframe candles for multi-timeframe confluence
+        htf = "1H" if tf == "15m" else ("1D" if tf == "1H" else None)
+        htf_candles = market_data_service.get_candles(sym, timeframe=htf, limit=40) if htf else None
+
+        precomputed = strategy_engine.prepare_candle_context(candles)
+
+        for strat_id in strategies_to_test:
+            sig = strategy_engine.evaluate_strategy(
+                strategy_id=strat_id,
+                symbol=sym,
+                company_info=comp,
+                candles=candles,
+                timeframe=tf,
+                quote=quote,
+                higher_tf_candles=htf_candles,
+                precomputed=precomputed
+            )
+            if sig:
+                results.append(sig)
+
+    return results
+
 def scan_market_for_signals() -> List[Dict[str, Any]]:
-    """Evaluates all 8 strategies across all universe symbols and multi-timeframe candles."""
+    """High-Performance Multi-Worker Parallel Market Scanner across all 32 universe symbols and multi-timeframe candles."""
     detected_signals: List[Dict[str, Any]] = []
     strategies_to_test = [s["id"] for s in AVAILABLE_STRATEGIES if s["id"] != "all"]
     timeframes = ["15m", "1H", "1D"]
@@ -155,38 +193,18 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
     stagger_offset = 60
     seen_keys = set()
 
-    for comp in COMPANIES_UNIVERSE:
-        sym = comp["symbol"]
-        quote = market_data_service.get_live_quote(sym)
-        
-        for tf in timeframes:
-            candles = market_data_service.get_candles(sym, timeframe=tf, limit=60)
-            if not candles or len(candles) < 22:
-                continue
-
-            # Phase 4: Fetch higher timeframe candles for multi-timeframe confluence
-            htf = "1H" if tf == "15m" else ("1D" if tf == "1H" else None)
-            htf_candles = market_data_service.get_candles(sym, timeframe=htf, limit=40) if htf else None
-
-            for strat_id in strategies_to_test:
-                key = f"{sym}_{strat_id}_{tf}"
-                if key in seen_keys:
-                    continue
-
-                sig = strategy_engine.evaluate_strategy(
-                    strategy_id=strat_id,
-                    symbol=sym,
-                    company_info=comp,
-                    candles=candles,
-                    timeframe=tf,
-                    quote=quote,
-                    higher_tf_candles=htf_candles
-                )
-                if sig:
+    worker_count = min(16, (os.cpu_count() or 4) * 2)
+    with ThreadPoolExecutor(max_workers=worker_count, thread_name_prefix="quant_scanner") as executor:
+        futures = [executor.submit(_evaluate_single_symbol, comp, strategies_to_test, timeframes) for comp in COMPANIES_UNIVERSE]
+        for f in futures:
+            try:
+                sym_signals = f.result()
+                for sig in sym_signals:
+                    key = f"{sig['symbol']}_{sig['strategy_id']}_{sig['timeframe']}"
+                    if key in seen_keys:
+                        continue
                     seen_keys.add(key)
-                    stagger_offset += 120
-                    # Apply staggered timestamps for natural feed display
-                    stagger_offset += 180
+                    stagger_offset += 300
                     issued_dt = datetime.now(IST) - timedelta(seconds=stagger_offset)
                     sig["offset_seconds"] = stagger_offset
                     sig["timestamp_ms"] = int(issued_dt.timestamp() * 1000)
@@ -202,6 +220,8 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
                         sig["time_elapsed"] = f"{diff_sec // 86400}d ago"
 
                     detected_signals.append(sig)
+            except Exception as e:
+                logger.error("Error evaluating symbol signals: %s", e)
 
     # Sort newest first
     detected_signals.sort(key=lambda s: s["timestamp_ms"], reverse=True)

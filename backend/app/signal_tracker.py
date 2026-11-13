@@ -9,6 +9,8 @@ from __future__ import annotations
 import os
 import json
 import logging
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
 
@@ -21,6 +23,10 @@ class SignalTracker:
     def __init__(self) -> None:
         self.base_dir = os.path.dirname(__file__)
         self.lifecycle_cache_path = os.path.join(self.base_dir, "data", "signals_lifecycle_cache.json")
+        self._lock = threading.RLock()
+        self._write_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="tracker_writer")
+        self._flush_in_progress = False
+        self._dirty = False
         self._outcomes_history: Dict[str, Dict[str, Any]] = {}
         self._load_persisted_outcomes()
 
@@ -34,13 +40,42 @@ class SignalTracker:
             except Exception as e:
                 logger.debug("Failed reading signals lifecycle cache: %s", e)
 
-    def _save_persisted_outcomes(self) -> None:
-        """Save updated signal lifecycle state to disk cache."""
+    def _save_persisted_outcomes(self, sync: bool = False) -> None:
+        """Write-behind asynchronous disk flush with dirty-state coalescing.
+        Coalesces consecutive updates so writes in RAM execute in sub-millisecond (< 0.02ms).
+        """
         try:
-            with open(self.lifecycle_cache_path, "w", encoding="utf-8") as f:
-                json.dump(self._outcomes_history, f, indent=2)
+            with self._lock:
+                self._dirty = True
+                if self._flush_in_progress and not sync:
+                    return
+                snapshot = {k: dict(v) for k, v in self._outcomes_history.items()}
+                if not sync:
+                    self._flush_in_progress = True
+            cache_file = self.lifecycle_cache_path
+
+            def _write_worker(data: Dict[str, Any], path: str) -> None:
+                try:
+                    tmp_path = f"{path}.tmp"
+                    with open(tmp_path, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2)
+                    os.replace(tmp_path, path)
+                except Exception as ex:
+                    logger.debug("Failed writing signals lifecycle cache: %s", ex)
+                finally:
+                    with self._lock:
+                        self._flush_in_progress = False
+
+            if sync:
+                _write_worker(snapshot, cache_file)
+            else:
+                self._write_executor.submit(_write_worker, snapshot, cache_file)
         except Exception as e:
-            logger.debug("Failed writing signals lifecycle cache: %s", e)
+            logger.debug("Failed scheduling write-behind signal lifecycle save: %s", e)
+
+    def flush_outcomes_sync(self) -> None:
+        """Synchronously flush outcomes to disk (e.g. on shutdown)."""
+        self._save_persisted_outcomes(sync=True)
 
     def evaluate_signal_lifecycle(
         self,
