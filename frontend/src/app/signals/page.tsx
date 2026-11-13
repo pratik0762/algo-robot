@@ -35,6 +35,7 @@ import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
 import StrategyLogicCard, { StrategyLogicDetail } from '@/components/StrategyLogicCard';
 import StrategyBuilderModal from '@/components/StrategyBuilderModal';
+import BacktestModal from '@/components/BacktestModal';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 import { useTradeSignals, TradeSignalItem } from '@/context/TradeSignalsContext';
 
@@ -131,6 +132,21 @@ function TradeSignalsContent() {
     setBuilderInitialData(strategy);
     setIsBuilderOpen(true);
   }, []);
+
+  // Phase 8: Backtest Strategy Modal state and opener
+  const [isBacktestOpen, setIsBacktestOpen] = useState<boolean>(false);
+  const [backtestStrategyId, setBacktestStrategyId] = useState<string>('ema_cross');
+
+  const handleOpenBacktest = useCallback((strategyId?: string) => {
+    if (strategyId && strategyId !== 'all') {
+      setBacktestStrategyId(strategyId);
+    } else if (selectedStrategy !== 'all') {
+      setBacktestStrategyId(selectedStrategy);
+    } else {
+      setBacktestStrategyId('ema_cross');
+    }
+    setIsBacktestOpen(true);
+  }, [selectedStrategy]);
 
   const handleDuplicateStrategy = useCallback(async (strategyId: string) => {
     try {
@@ -777,6 +793,29 @@ function TradeSignalsContent() {
                 </span>
                 <button
                   type="button"
+                  onClick={() => handleOpenBacktest()}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    color: '#ffffff',
+                    border: '1px solid #818cf8',
+                    borderRadius: '8px',
+                    padding: '5px 14px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    boxShadow: '0 0 14px rgba(99, 102, 241, 0.4)',
+                    transition: 'all 0.15s ease'
+                  }}
+                  title="Run historical backtesting simulation with zero lookahead bias"
+                >
+                  <BarChart2 size={13} />
+                  <span>Backtest Strategy</span>
+                </button>
+                <button
+                  type="button"
                   onClick={handleCreateNewStrategy}
                   style={{
                     display: 'inline-flex',
@@ -872,6 +911,7 @@ function TradeSignalsContent() {
               onDuplicateStrategy={handleDuplicateStrategy}
               onDeleteStrategy={handleDeleteStrategy}
               onToggleStatus={handleToggleStatus}
+              onBacktestStrategy={handleOpenBacktest}
             />
           </div>
 
@@ -1641,6 +1681,13 @@ function TradeSignalsContent() {
           onClose={() => setIsBuilderOpen(false)}
           onSuccess={handleBuilderSuccess}
           initialData={builderInitialData}
+        />
+
+        {/* Phase 8: Backtest Strategy Modal */}
+        <BacktestModal
+          isOpen={isBacktestOpen}
+          onClose={() => setIsBacktestOpen(false)}
+          initialStrategyId={backtestStrategyId}
         />
       </div>
     </div>

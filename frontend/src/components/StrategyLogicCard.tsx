@@ -78,6 +78,7 @@ interface StrategyLogicCardProps {
   onDuplicateStrategy?: (strategyId: string) => void;
   onDeleteStrategy?: (strategyId: string) => void;
   onToggleStatus?: (strategyId: string, currentEnabled: boolean) => void;
+  onBacktestStrategy?: (strategyId: string) => void;
 }
 
 export default function StrategyLogicCard({
@@ -88,7 +89,8 @@ export default function StrategyLogicCard({
   onEditStrategy,
   onDuplicateStrategy,
   onDeleteStrategy,
-  onToggleStatus
+  onToggleStatus,
+  onBacktestStrategy
 }: StrategyLogicCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
@@ -258,6 +260,31 @@ export default function StrategyLogicCard({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }} onClick={(e) => e.stopPropagation()}>
+          {onBacktestStrategy && (
+            <button
+              type="button"
+              onClick={() => onBacktestStrategy(strategy.id)}
+              style={{
+                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                border: '1px solid #818cf8',
+                color: '#ffffff',
+                borderRadius: '6px',
+                padding: '4px 12px',
+                fontSize: '0.68rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                boxShadow: '0 0 10px rgba(99, 102, 241, 0.35)',
+                transition: 'all 0.15s ease'
+              }}
+              title={`Run Backtest simulation on ${strategy.name}`}
+            >
+              <span>⚡ Backtest Strategy</span>
+            </button>
+          )}
+
           {strategy.is_custom && onEditStrategy && (
             <button
               type="button"
