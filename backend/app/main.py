@@ -1259,4 +1259,140 @@ async def api_get_backtest_config():
     }
 
 
+# =====================================================================
+# Phase 5: Advanced Strategy Capabilities (Multi-Leg, Optimizer, Paper Trading)
+# =====================================================================
+
+@app.post("/api/strategies/multi-leg/calculate")
+async def api_calculate_multi_leg_spread(payload: Dict[str, Any]):
+    """Calculate multi-leg options spread strikes, net premium, Greeks, and payoff profile."""
+    from app.multi_leg_options_engine import multi_leg_engine
+    strategy_key = payload.get("strategy_key", "BULL_CALL_SPREAD")
+    symbol = payload.get("symbol", "NIFTY")
+    spot_price = float(payload.get("spot_price", 24500.0))
+    days_to_expiry = float(payload.get("days_to_expiry", 7.0))
+    iv = float(payload.get("iv", 0.15))
+    lots = int(payload.get("lots", 1))
+
+    try:
+        spread = multi_leg_engine.build_spread(
+            strategy_key=strategy_key,
+            symbol=symbol,
+            spot_price=spot_price,
+            days_to_expiry=days_to_expiry,
+            iv=iv,
+            lots=lots
+        )
+        return {"status": "success", "spread": spread}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/strategies/multi-leg/backtest")
+async def api_backtest_multi_leg_spread(payload: Dict[str, Any]):
+    """Backtest multi-leg spread across historical candle data."""
+    from app.multi_leg_options_engine import multi_leg_engine
+    from app.backtesting_engine import backtesting_engine
+    strategy_key = payload.get("strategy_key", "BULL_CALL_SPREAD")
+    symbol = payload.get("symbol", "NIFTY")
+    timeframe = payload.get("timeframe", "15m")
+    lots = int(payload.get("lots", 1))
+
+    candles = backtesting_engine.load_historical_candles(symbol, timeframe)
+    if not candles:
+        # Fallback to RELIANCE or default if index candles not yet cached
+        candles = backtesting_engine.load_historical_candles("RELIANCE", timeframe)
+
+    res = multi_leg_engine.backtest_multi_leg_spread(
+        strategy_key=strategy_key,
+        symbol=symbol,
+        ohlcv_candles=candles,
+        lots=lots
+    )
+    return res
+
+
+@app.get("/api/strategies/optimize/config")
+async def api_get_optimizer_config(strategy_id: str = "ema_cross"):
+    """Get tunable parameter grid defaults for strategy."""
+    from app.strategy_optimizer import strategy_optimizer
+    return {
+        "status": "success",
+        "strategy_id": strategy_id,
+        "grid": strategy_optimizer.get_tunable_parameters(strategy_id)
+    }
+
+
+@app.post("/api/strategies/optimize")
+async def api_run_strategy_optimizer(payload: Dict[str, Any]):
+    """Run parameter sweep and sensitivity heatmap optimization."""
+    from app.strategy_optimizer import strategy_optimizer
+    strategy_id = payload.get("strategy_id", "ema_cross")
+    symbol = payload.get("symbol", "RELIANCE")
+    timeframe = payload.get("timeframe", "5m")
+    param_grid = payload.get("param_grid")
+    objective = payload.get("objective", "sharpe_ratio")
+
+    try:
+        opt_res = strategy_optimizer.run_optimization(
+            strategy_id=strategy_id,
+            symbol=symbol,
+            timeframe=timeframe,
+            param_grid=param_grid,
+            objective=objective
+        )
+        return opt_res
+    except Exception as e:
+        logger.error(f"Optimization error: {e}")
+        raise HTTPException(status_code=500, detail=f"Optimization failed: {str(e)}")
+
+
+@app.get("/api/paper-trading/portfolio")
+async def api_get_paper_portfolio():
+    """Retrieve virtual trading desk portfolio state and live unrealized MTM."""
+    from app.paper_trading_engine import paper_trading_engine
+    return paper_trading_engine.get_portfolio()
+
+
+@app.post("/api/paper-trading/order")
+async def api_place_paper_order(payload: Dict[str, Any]):
+    """Execute virtual paper trading order."""
+    from app.paper_trading_engine import paper_trading_engine
+    try:
+        order_res = paper_trading_engine.place_order(
+            symbol=payload["symbol"],
+            side=payload["side"],
+            quantity=int(payload.get("quantity", 1)),
+            instrument_type=payload.get("instrument_type", "EQUITY"),
+            order_type=payload.get("order_type", "MARKET"),
+            price=payload.get("price"),
+            stop_loss=payload.get("stop_loss"),
+            target=payload.get("target"),
+            strategy_name=payload.get("strategy_name", "Manual Paper Trade")
+        )
+        return order_res
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/paper-trading/close/{position_id}")
+async def api_close_paper_position(position_id: str):
+    """Close virtual paper position at current market price."""
+    from app.paper_trading_engine import paper_trading_engine
+    try:
+        close_res = paper_trading_engine.close_position(position_id)
+        return close_res
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/paper-trading/reset")
+async def api_reset_paper_trading(payload: Optional[Dict[str, Any]] = None):
+    """Reset virtual trading desk balance."""
+    from app.paper_trading_engine import paper_trading_engine
+    cap = float(payload.get("initial_capital", 1000000.0)) if payload else 1000000.0
+    return paper_trading_engine.reset_portfolio(initial_capital=cap)
+
+
+
 

@@ -36,6 +36,9 @@ import IndicesBarometer from '@/components/IndicesBarometer';
 import StrategyLogicCard, { StrategyLogicDetail } from '@/components/StrategyLogicCard';
 import StrategyBuilderModal from '@/components/StrategyBuilderModal';
 import BacktestModal from '@/components/BacktestModal';
+import MultiLegOptionsDesk from '@/components/MultiLegOptionsDesk';
+import StrategyOptimizerDesk from '@/components/StrategyOptimizerDesk';
+import PaperTradingDesk from '@/components/PaperTradingDesk';
 
 const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
   ssr: false,
@@ -54,7 +57,7 @@ interface StrategyStats {
 export default function StrategyPage() {
   const router = useRouter();
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST'>('REPOSITORY');
+  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING'>('REPOSITORY');
 
   // Stats & Strategies State
   const [stats, setStats] = useState<StrategyStats>({
@@ -788,6 +791,69 @@ export default function StrategyPage() {
           >
             <Play size={16} color={activeTab === 'BACKTEST' ? '#34d399' : undefined} />
             <span>Backtest Strategy</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('MULTILEG')}
+            style={{
+              background: activeTab === 'MULTILEG' ? 'rgba(168, 85, 247, 0.2)' : 'transparent',
+              border: activeTab === 'MULTILEG' ? '1px solid #a855f7' : '1px solid transparent',
+              color: activeTab === 'MULTILEG' ? '#ffffff' : 'var(--text-secondary)',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <Layers size={16} color={activeTab === 'MULTILEG' ? '#c084fc' : undefined} />
+            <span>Multi-Leg Options Spreads</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('OPTIMIZER')}
+            style={{
+              background: activeTab === 'OPTIMIZER' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+              border: activeTab === 'OPTIMIZER' ? '1px solid #38bdf8' : '1px solid transparent',
+              color: activeTab === 'OPTIMIZER' ? '#ffffff' : 'var(--text-secondary)',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <Cpu size={16} color={activeTab === 'OPTIMIZER' ? '#38bdf8' : undefined} />
+            <span>Parameter Optimizer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('PAPERTRADING')}
+            style={{
+              background: activeTab === 'PAPERTRADING' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+              border: activeTab === 'PAPERTRADING' ? '1px solid #10b981' : '1px solid transparent',
+              color: activeTab === 'PAPERTRADING' ? '#ffffff' : 'var(--text-secondary)',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <Activity size={16} color={activeTab === 'PAPERTRADING' ? '#10b981' : undefined} />
+            <span>Live Paper Trading Desk</span>
           </button>
         </div>
 
@@ -1650,6 +1716,21 @@ export default function StrategyPage() {
             )}
           </div>
         )}
+
+        {/* ============================================================== */}
+        {/* TAB 4: MULTI-LEG OPTIONS SPREADS                               */}
+        {/* ============================================================== */}
+        {activeTab === 'MULTILEG' && <MultiLegOptionsDesk />}
+
+        {/* ============================================================== */}
+        {/* TAB 5: STRATEGY PARAMETER OPTIMIZER                            */}
+        {/* ============================================================== */}
+        {activeTab === 'OPTIMIZER' && <StrategyOptimizerDesk />}
+
+        {/* ============================================================== */}
+        {/* TAB 6: LIVE PAPER TRADING DESK                                 */}
+        {/* ============================================================== */}
+        {activeTab === 'PAPERTRADING' && <PaperTradingDesk />}
       </div>
 
       {/* Navigation Drawer */}
