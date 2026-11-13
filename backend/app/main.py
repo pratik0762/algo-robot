@@ -74,9 +74,11 @@ async def tick_background_loop():
                 await asyncio.to_thread(nse_client.fetch_all_indices)
                 last_indices_sync = now
 
-            # Auto-generate fresh real-time algorithmic trade signals every 25s
-            if now - last_signal_gen >= 25.0:
-                generate_live_signal_event()
+            # Scan and evaluate genuine quantitative trade signals every 30s
+            if now - last_signal_gen >= 30.0:
+                new_sig = generate_live_signal_event()
+                if new_sig:
+                    await tick_engine.broadcast_trade_signal(new_sig)
                 last_signal_gen = now
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
@@ -862,9 +864,10 @@ async def api_get_trade_strategies(response: Response):
 
 @app.post("/api/trade-signals/trigger")
 async def api_trigger_new_signal():
-    """Generates a fresh real-time trade signal event and immediately broadcasts to connected clients."""
+    """Evaluates genuine quantitative strategies on latest market data and broadcasts if triggered."""
     new_sig = generate_live_signal_event()
-    await tick_engine.broadcast_trade_signal(new_sig)
+    if new_sig:
+        await tick_engine.broadcast_trade_signal(new_sig)
     return {
         "status": "success",
         "signal": new_sig

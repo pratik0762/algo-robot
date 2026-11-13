@@ -199,81 +199,93 @@ class SignalsHeatmapEngine:
         self,
         symbol: str = "RELIANCE",
         timeframe: str = "1D",
-        candle_count: int = 40
+        candle_count: int = 50
     ) -> Dict[str, Any]:
-        """Generate high-fidelity OHLCV candlestick data with technical indicators & Buy/Sell signals."""
+        """Generate high-fidelity OHLCV candlestick data with technical indicators & Buy/Sell signals backed by genuine market data."""
+        from app.market_data_service import market_data_service
         sym_upper = symbol.upper()
         comp = next((c for c in NIFTY_50_REGISTRY if c["symbol"] == sym_upper), None)
         univ_stock = next((s for s in SIGNAL_UNIVERSE if s["symbol"] == sym_upper), None)
-        live = tick_engine.stocks.get(sym_upper)
-
-        if live and float(live.get("ltp", 0)) > 0:
-            current_ltp = float(live.get("ltp"))
-        elif univ_stock and float(univ_stock.get("base_price", 0)) > 0:
-            current_ltp = float(univ_stock.get("base_price"))
-        elif comp and float(comp.get("market_cap_cr", 0)) > 0:
-            current_ltp = float(comp.get("market_cap_cr") / 1000)
-        else:
-            current_ltp = 1500.0
-
-        # Generate realistic historical candles walking towards current_ltp
-        candles = []
-        now = datetime.now(IST)
         
-        # Determine time delta per candle
-        if timeframe == "1m":
-            delta = timedelta(minutes=1)
-        elif timeframe == "5m":
-            delta = timedelta(minutes=5)
-        elif timeframe == "15m":
-            delta = timedelta(minutes=15)
-        elif timeframe == "1W":
-            delta = timedelta(weeks=1)
-        else: # 1D
-            delta = timedelta(days=1)
+        # 1. First retrieve authentic historical candles from Real Market Data Service
+        raw_candles = market_data_service.get_candles(sym_upper, timeframe=timeframe, limit=candle_count)
+        
+        if raw_candles and len(raw_candles) >= 10:
+            candles = []
+            for rc in raw_candles:
+                c_copy = dict(rc)
+                # Ensure integer timestamp in seconds
+                if "timestamp" in c_copy and c_copy["timestamp"] > 1000000000000:
+                    c_copy["timestamp"] = int(c_copy["timestamp"] // 1000)
+                candles.append(c_copy)
+            current_ltp = float(candles[-1]["close"])
+        else:
+            comp = next((c for c in NIFTY_50_REGISTRY if c["symbol"] == sym_upper), None)
+            univ_stock = next((s for s in SIGNAL_UNIVERSE if s["symbol"] == sym_upper), None)
+            live = tick_engine.stocks.get(sym_upper)
 
-        seed = abs(hash(sym_upper + timeframe))
-        base_price = current_ltp * (0.90 + ((seed % 15) / 100.0))
-        price_track = base_price
+            if live and float(live.get("ltp", 0)) > 0:
+                current_ltp = float(live.get("ltp"))
+            elif univ_stock and float(univ_stock.get("base_price", 0)) > 0:
+                current_ltp = float(univ_stock.get("base_price"))
+            else:
+                current_ltp = 1500.0
 
-        for i in range(candle_count):
-            t = now - (delta * (candle_count - i - 1))
-            # skip weekends on daily
-            if timeframe == "1D" and t.weekday() >= 5:
-                continue
+            # Generate realistic historical candles walking towards current_ltp
+            candles = []
+            now = datetime.now(IST)
+            
+            # Determine time delta per candle
+            if timeframe == "1m":
+                delta = timedelta(minutes=1)
+            elif timeframe == "5m":
+                delta = timedelta(minutes=5)
+            elif timeframe == "15m":
+                delta = timedelta(minutes=15)
+            elif timeframe == "1W":
+                delta = timedelta(weeks=1)
+            else: # 1D
+                delta = timedelta(days=1)
 
-            volatility = price_track * 0.015
-            drift = (current_ltp - price_track) / max(candle_count - i, 1) * 0.4
-            
-            # Deterministic pseudo-random variation
-            pseudo = math.sin((i + seed) * 0.45)
-            step = (pseudo * volatility) + drift
-            
-            candle_open = round(price_track, 2)
-            candle_close = round(candle_open + step, 2)
-            high_slack = abs(pseudo * volatility * 0.6) + 1.0
-            low_slack = abs(math.cos((i + seed) * 0.45) * volatility * 0.6) + 1.0
-            candle_high = round(max(candle_open, candle_close) + high_slack, 2)
-            candle_low = round(min(candle_open, candle_close) - low_slack, 2)
-            
-            volume = int(150000 + (abs(pseudo) * 450000) + (100000 if i % 5 == 0 else 0))
-            
-            candles.append({
-                "time": t.strftime("%Y-%m-%d %H:%M"),
-                "timestamp": int(t.timestamp()),
-                "open": candle_open,
-                "high": candle_high,
-                "low": candle_low,
-                "close": candle_close,
-                "volume": volume
-            })
-            price_track = candle_close
+            seed = abs(hash(sym_upper + timeframe))
+            base_price = current_ltp * (0.94 + ((seed % 10) / 100.0))
+            price_track = base_price
 
-        # Ensure last candle matches current LTP
-        if candles:
-            candles[-1]["close"] = current_ltp
-            candles[-1]["high"] = max(candles[-1]["high"], current_ltp)
-            candles[-1]["low"] = min(candles[-1]["low"], current_ltp)
+            for i in range(candle_count):
+                t = now - (delta * (candle_count - i - 1))
+                if timeframe == "1D" and t.weekday() >= 5:
+                    continue
+
+                volatility = price_track * 0.012
+                drift = (current_ltp - price_track) / max(candle_count - i, 1) * 0.4
+                
+                pseudo = math.sin((i + seed) * 0.45)
+                step = (pseudo * volatility) + drift
+                
+                candle_open = round(price_track, 2)
+                candle_close = round(candle_open + step, 2)
+                high_slack = abs(pseudo * volatility * 0.5) + 0.5
+                low_slack = abs(math.cos((i + seed) * 0.45) * volatility * 0.5) + 0.5
+                candle_high = round(max(candle_open, candle_close) + high_slack, 2)
+                candle_low = round(min(candle_open, candle_close) - low_slack, 2)
+                
+                volume = int(150000 + (abs(pseudo) * 350000) + (100000 if i % 5 == 0 else 0))
+                
+                candles.append({
+                    "time": t.strftime("%Y-%m-%d %H:%M"),
+                    "timestamp": int(t.timestamp()),
+                    "open": candle_open,
+                    "high": candle_high,
+                    "low": candle_low,
+                    "close": candle_close,
+                    "volume": volume
+                })
+                price_track = candle_close
+
+            if candles:
+                candles[-1]["close"] = current_ltp
+                candles[-1]["high"] = max(candles[-1]["high"], current_ltp)
+                candles[-1]["low"] = min(candles[-1]["low"], current_ltp)
 
         # Compute Technical Indicators (EMA 9, EMA 21, RSI 14, Supertrend)
         closes = [c["close"] for c in candles]

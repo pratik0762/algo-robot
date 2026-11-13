@@ -523,7 +523,8 @@ function TradeSignalsContent() {
                 alignItems: 'center',
                 flexWrap: 'wrap',
                 gap: '8px',
-                padding: '2px 0'
+                padding: '4px 0',
+                width: '100%'
               }}
             >
               {strategies.map((strat) => {
@@ -547,7 +548,9 @@ function TradeSignalsContent() {
                       boxShadow: isActive ? '0 0 14px rgba(99, 102, 241, 0.4)' : 'none',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '6px'
+                      gap: '6px',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
                     }}
                   >
                     <span>{strat.name}</span>
