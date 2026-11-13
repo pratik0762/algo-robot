@@ -265,3 +265,4 @@ class TradeLedger:
 
 # Singleton Instance
 trade_ledger = TradeLedger()
+

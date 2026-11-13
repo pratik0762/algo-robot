@@ -1132,6 +1132,7 @@ async def api_trigger_new_signal():
 async def api_run_backtest(payload: Dict[str, Any]):
     """Run realistic backtest simulation with zero lookahead bias and authentic transaction costs."""
     from app.backtesting_engine import backtesting_engine
+    from app.backtest_storage import backtest_storage
     strategy_id = payload.get("strategy_id", "ema_cross")
     symbols = payload.get("symbols", ["RELIANCE", "TCS", "HDFCBANK", "INFY"])
     timeframe = payload.get("timeframe", "15m")
@@ -1154,10 +1155,48 @@ async def api_run_backtest(payload: Dict[str, Any]):
             start_date=start_date,
             end_date=end_date
         )
+        # Phase 9: Persist backtest run into storage
+        run_id = backtest_storage.save_run(result)
+        result["backtest_id"] = run_id
         return result
     except Exception as e:
         logger.error("Backtest execution failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/backtest/history")
+async def api_list_backtest_history(limit: int = 50):
+    """Retrieve list of saved past backtest executions."""
+    from app.backtest_storage import backtest_storage
+    runs = backtest_storage.list_runs(limit=limit)
+    return {
+        "status": "success",
+        "count": len(runs),
+        "history": runs
+    }
+
+@app.get("/api/backtest/history/{backtest_id}")
+async def api_get_backtest_run_details(backtest_id: str):
+    """Retrieve full results, metrics, equity curve and trade log for a specific saved backtest run."""
+    from app.backtest_storage import backtest_storage
+    run_data = backtest_storage.get_run(backtest_id)
+    if not run_data:
+        raise HTTPException(status_code=404, detail=f"Backtest run '{backtest_id}' not found.")
+    return {
+        "status": "success",
+        "backtest": run_data
+    }
+
+@app.delete("/api/backtest/history/{backtest_id}")
+async def api_delete_backtest_run(backtest_id: str):
+    """Delete a saved historical backtest run."""
+    from app.backtest_storage import backtest_storage
+    deleted = backtest_storage.delete_run(backtest_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Backtest run '{backtest_id}' not found.")
+    return {
+        "status": "success",
+        "message": f"Backtest '{backtest_id}' successfully deleted."
+    }
 
 @app.get("/api/backtest/config")
 async def api_get_backtest_config():

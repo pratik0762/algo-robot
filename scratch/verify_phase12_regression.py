@@ -58,19 +58,12 @@ async def test_websocket_stream():
     try:
         async with websockets.connect(ws_url, open_timeout=5.0) as ws:
             print(f"  [CONNECTED] Successfully connected to {ws_url}")
-            frames_received = 0
-            t_end = time.time() + 4.0
-            
-            while time.time() < t_end and frames_received < 3:
-                raw_msg = await asyncio.wait_for(ws.recv(), timeout=4.0)
-                frame = json.loads(raw_msg)
-                event_type = frame.get("type", "UNKNOWN")
-                data = frame.get("data", {})
-                frames_received += 1
-                print(f"  [FRAME {frames_received}] Type: {event_type:20} | Keys: {list(data.keys())[:5]}")
-                
-            assert frames_received > 0, "No WebSocket frames received"
-            print(f"\nWebSocket Result: Passed ({frames_received} live frames validated).")
+            raw_msg = await asyncio.wait_for(ws.recv(), timeout=5.0)
+            frame = json.loads(raw_msg)
+            event_type = frame.get("type", "UNKNOWN")
+            print(f"  [FRAME 1] Type: {event_type:20} | Stocks: {len(frame.get('stocks', []))}")
+            assert event_type in ("SNAPSHOT", "TICK_BATCH"), f"Unexpected event type: {event_type}"
+            print(f"\nWebSocket Result: Passed (live stream connected and validated).")
             return True
     except Exception as e:
         print(f"  [FAIL] WebSocket streaming error: {e}")

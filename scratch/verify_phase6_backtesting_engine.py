@@ -131,3 +131,4 @@ if __name__ == "__main__":
     assert test_backtesting_engine_direct(), "Direct engine tests failed!"
     assert test_backtesting_api(), "API endpoint tests failed!"
     print("\n✓ ALL PHASE 6 BACKTESTING ENGINE TESTS PASSED SUCCESSFULLY!")
+

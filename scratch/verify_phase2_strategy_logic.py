@@ -3,7 +3,7 @@ Tests:
 1. Backend REST API: /api/trade-signals/strategies & /api/trade-signals/strategies/{strategy_id}
 2. All 10 required strategy logic fields present and mathematically accurate
 3. Frontend Next.js SSR /signals route (200 OK)
-4. Chrome CDP Browser capture of expanded Strategy Logic section
+4. Chrome Headless Browser capture of expanded Strategy Logic section
 """
 
 import os
@@ -11,19 +11,8 @@ import sys
 import time
 import json
 import asyncio
-import base64
-import subprocess
 import urllib.request
-import websockets
-
-ARTIFACT_DIR = r"C:\Users\prtik\.gemini\antigravity\brain\a3bb74d3-8f77-42ca-b724-69ed032fbcc5"
-SCREENSHOT_DIR = os.path.join(ARTIFACT_DIR, "audit_screenshots")
-os.makedirs(SCREENSHOT_DIR, exist_ok=True)
-
-CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-if not os.path.exists(CHROME_PATH):
-    CHROME_PATH = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-
+from playwright.async_api import async_playwright
 
 def test_backend_strategy_logic():
     print("=" * 70)
@@ -83,100 +72,41 @@ def test_backend_strategy_logic():
         print(f"  [PASS] Frontend /signals: HTTP 200 OK | {lat:.2f} ms | {len(html):,} bytes")
         assert "FILTER BY QUANT STRATEGY" in html
 
-
 async def capture_browser_screenshots():
-    print("\n[TEST 3] Capturing Chrome Browser Visual Screenshots of Strategy Logic via CDP...")
-    port = 9322
-    user_data = os.path.join(os.environ.get("TEMP", r"C:\tmp"), "chrome_strat_profile")
-    os.makedirs(user_data, exist_ok=True)
+    print("\n[TEST 3] Capturing Chrome Browser Visual Screenshots of Strategy Logic...")
+    out_dir = r"C:\Users\prtik\.gemini\antigravity\brain\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\audit_screenshots"
+    os.makedirs(out_dir, exist_ok=True)
 
-    cmd = [
-        CHROME_PATH,
-        f"--remote-debugging-port={port}",
-        "--headless=new",
-        "--disable-gpu",
-        f"--user-data-dir={user_data}",
-        "--window-size=1920,1080",
-        "about:blank"
-    ]
-    proc = subprocess.Popen(cmd)
-    await asyncio.sleep(2.5)
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(viewport={"width": 1440, "height": 900})
+        page = await context.new_page()
 
-    try:
-        req = urllib.request.urlopen(f"http://127.0.0.1:{port}/json/list")
-        tabs = json.loads(req.read().decode())
-        ws_url = next(t["webSocketDebuggerUrl"] for t in tabs if t.get("type") == "page")
+        print("  -> Navigating to http://localhost:3000/signals ...")
+        await page.goto("http://localhost:3000/signals", wait_until="networkidle")
+        await asyncio.sleep(2.0)
 
-        async with websockets.connect(ws_url, max_size=50_000_000) as ws:
-            msg_id = 1
+        # 1. Click EMA 9/21 Trend Crossover
+        print("  -> Clicking 'EMA 9/21 Trend Crossover' pill button...")
+        ema_btn = page.locator("button:has-text('EMA 9/21 Trend Crossover')").first
+        await ema_btn.click()
+        await asyncio.sleep(1.0)
 
-            async def send(method, params=None):
-                nonlocal msg_id
-                cid = msg_id
-                msg_id += 1
-                await ws.send(json.dumps({"id": cid, "method": method, "params": params or {}}))
-                while True:
-                    resp = json.loads(await ws.recv())
-                    if resp.get("id") == cid:
-                        return resp.get("result", {})
+        ema_shot_path = os.path.join(out_dir, "phase2_ema_cross_logic.png")
+        await page.screenshot(path=ema_shot_path, full_page=False)
+        print(f"  [CAPTURED] Saved: {ema_shot_path}")
 
-            await send("Page.enable")
-            print("  -> Navigating to http://localhost:3000/signals ...")
-            await send("Page.navigate", {"url": "http://localhost:3000/signals"})
-            await asyncio.sleep(4.0)
+        # 2. Click Supertrend (10, 3) Breakout
+        print("  -> Clicking 'Supertrend (10, 3) Breakout' pill button...")
+        st_btn = page.locator("button:has-text('Supertrend (10, 3) Breakout')").first
+        await st_btn.click()
+        await asyncio.sleep(1.0)
 
-            # 1. Click EMA 9/21 Trend Crossover
-            click_ema = """
-            (() => {
-                const buttons = Array.from(document.querySelectorAll('button'));
-                const btn = buttons.find(b => b.textContent && b.textContent.includes('EMA 9/21'));
-                if (btn) {
-                    btn.click();
-                    return { clicked: true, text: btn.textContent };
-                }
-                return { clicked: false };
-            })()
-            """
-            res = await send("Runtime.evaluate", {"expression": click_ema, "returnByValue": True})
-            print(f"  -> Clicked EMA 9/21 button: {res.get('value')}")
-            await asyncio.sleep(1.5)
+        st_shot_path = os.path.join(out_dir, "phase2_supertrend_logic.png")
+        await page.screenshot(path=st_shot_path, full_page=False)
+        print(f"  [CAPTURED] Saved: {st_shot_path}")
 
-            # Capture screenshot
-            ss = await send("Page.captureScreenshot", {"format": "png"})
-            ema_shot_path = os.path.join(SCREENSHOT_DIR, "phase2_ema_cross_logic.png")
-            with open(ema_shot_path, "wb") as f:
-                f.write(base64.b64decode(ss.get("data", "")))
-            print(f"  [CAPTURED] Saved EMA 9/21 Strategy Logic: {ema_shot_path} ({os.path.getsize(ema_shot_path):,} bytes)")
-
-            # 2. Click Supertrend (10, 3) Breakout
-            click_st = """
-            (() => {
-                const buttons = Array.from(document.querySelectorAll('button'));
-                const btn = buttons.find(b => b.textContent && b.textContent.includes('Supertrend'));
-                if (btn) {
-                    btn.click();
-                    return { clicked: true, text: btn.textContent };
-                }
-                return { clicked: false };
-            })()
-            """
-            res2 = await send("Runtime.evaluate", {"expression": click_st, "returnByValue": True})
-            print(f"  -> Clicked Supertrend button: {res2.get('value')}")
-            await asyncio.sleep(1.5)
-
-            ss2 = await send("Page.captureScreenshot", {"format": "png"})
-            st_shot_path = os.path.join(SCREENSHOT_DIR, "phase2_supertrend_logic.png")
-            with open(st_shot_path, "wb") as f:
-                f.write(base64.b64decode(ss2.get("data", "")))
-            print(f"  [CAPTURED] Saved Supertrend Strategy Logic: {st_shot_path} ({os.path.getsize(st_shot_path):,} bytes)")
-
-    finally:
-        try:
-            proc.terminate()
-            proc.wait(timeout=2.0)
-        except Exception:
-            pass
-
+        await browser.close()
 
 if __name__ == "__main__":
     test_backend_strategy_logic()
@@ -184,3 +114,4 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("PHASE 2 COMPLETE: ALL 10 STRATEGY LOGIC ITEMS VERIFIED & SCREENSHOTS SAVED")
     print("=" * 70)
+

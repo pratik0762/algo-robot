@@ -151,3 +151,4 @@ if __name__ == "__main__":
     assert test_backend_ledger_api(), "Backend Ledger API tests failed!"
     asyncio.run(capture_cdp_screenshots())
     print("\n✓ PHASE 5 VERIFICATION COMPLETED SUCCESSFULLY!")
+
