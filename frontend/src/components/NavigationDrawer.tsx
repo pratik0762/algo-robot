@@ -308,6 +308,17 @@ export default function NavigationDrawer({
     router.push('/strategy');
   };
 
+  const prefetchBroker = () => {
+    try {
+      fetch(`${getApiBase()}/api/brokers/status`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectBroker = () => {
+    onClose();
+    router.push('/broker');
+  };
+
   return (
     <div
       className="drawer-backdrop"
@@ -906,6 +917,71 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#818cf8" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 9: BROKER (Live Broker Connect & Account OMS) */}
+          <div
+            id="nav-broker"
+            data-nav-item="broker"
+            onClick={handleSelectBroker}
+            onMouseEnter={prefetchBroker}
+            style={{
+              background: pathname === '/broker'
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.06) 100%)',
+              border: pathname === '/broker' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/broker' ? '0 4px 20px -2px rgba(16, 185, 129, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(16, 185, 129, 0.4)',
+                }}
+              >
+                <ShieldCheck size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                BROKER
+              </span>
+
+              {pathname === '/broker' && (
+                <span className="badge badge-success" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800 }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#10b981" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

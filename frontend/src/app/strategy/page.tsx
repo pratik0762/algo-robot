@@ -40,7 +40,6 @@ import BacktestModal from '@/components/BacktestModal';
 import MultiLegOptionsDesk from '@/components/MultiLegOptionsDesk';
 import StrategyOptimizerDesk from '@/components/StrategyOptimizerDesk';
 import PaperTradingDesk from '@/components/PaperTradingDesk';
-import LiveBrokerDesk from '@/components/LiveBrokerDesk';
 import AlertsNotificationDesk from '@/components/AlertsNotificationDesk';
 
 const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
@@ -60,7 +59,7 @@ interface StrategyStats {
 export default function StrategyPage() {
   const router = useRouter();
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING' | 'BROKER' | 'NOTIFICATIONS'>('REPOSITORY');
+  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING' | 'NOTIFICATIONS'>('REPOSITORY');
 
   // Stats & Strategies State
   const [stats, setStats] = useState<StrategyStats>({
@@ -888,32 +887,6 @@ export default function StrategyPage() {
           >
             <Activity size={19} style={{ flexShrink: 0 }} color={activeTab === 'PAPERTRADING' ? '#10b981' : undefined} />
             <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Live Paper Trading Desk</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('BROKER')}
-            style={{
-              background: activeTab === 'BROKER' ? 'rgba(239, 68, 68, 0.2)' : 'transparent',
-              border: activeTab === 'BROKER' ? '1px solid #ef4444' : '1px solid transparent',
-              color: activeTab === 'BROKER' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '8px 10px',
-              borderRadius: 'var(--radius-md)',
-              fontWeight: 700,
-              fontSize: '0.81rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              gap: '8px',
-              textAlign: 'left',
-              lineHeight: 1.25,
-              flex: '1 1 0',
-              minWidth: 0,
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <ShieldCheck size={19} style={{ flexShrink: 0 }} color={activeTab === 'BROKER' ? '#f87171' : undefined} />
-            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Live Broker Connect</span>
           </button>
 
           <button
@@ -1819,12 +1792,7 @@ export default function StrategyPage() {
         {activeTab === 'PAPERTRADING' && <PaperTradingDesk />}
 
         {/* ============================================================== */}
-        {/* TAB 7: LIVE BROKER INTEGRATION HUB                             */}
-        {/* ============================================================== */}
-        {activeTab === 'BROKER' && <LiveBrokerDesk />}
-
-        {/* ============================================================== */}
-        {/* TAB 8: REAL-TIME ALERTS & NOTIFICATION ENGINE                  */}
+        {/* TAB 7: REAL-TIME ALERTS & NOTIFICATION ENGINE                  */}
         {/* ============================================================== */}
         {activeTab === 'NOTIFICATIONS' && <AlertsNotificationDesk />}
       </div>
