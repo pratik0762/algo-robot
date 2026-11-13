@@ -59,6 +59,37 @@ export interface TradeSignalItem {
   target_1_gain_inr?: number;
   target_2_gain_inr?: number;
   position_sizing_model?: string;
+  // Phase 4: F&O Derivative Contract Specifications & Greeks
+  instrument_type?: 'EQUITY' | 'FUTURES' | 'OPTIONS';
+  contract_symbol?: string;
+  lot_size?: number;
+  basis?: number;
+  basis_pct?: number;
+  cost_of_carry_annualized_pct?: number;
+  strike_price?: number;
+  option_type?: 'CE' | 'PE';
+  moneyness?: 'ATM' | 'OTM' | 'ITM';
+  greeks?: {
+    delta: number;
+    gamma: number;
+    theta: number;
+    vega: number;
+    iv: number;
+  };
+  iv?: number;
+  delta?: number;
+  theta?: number;
+  gamma?: number;
+  vega?: number;
+  bid?: number;
+  ask?: number;
+  spread?: number;
+  total_cost?: number;
+  open_interest?: number;
+  expiry_date?: string;
+  days_to_expiry?: number;
+  contract_value?: number;
+  approx_margin_required?: number;
 }
 
 interface TradeSignalsContextType {

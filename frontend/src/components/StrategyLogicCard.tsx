@@ -36,6 +36,13 @@ export interface StrategyLogicDetail {
   win_rate?: string;
   version?: string;
   is_custom?: boolean;
+  instrument_compatibility?: {
+    equity: boolean;
+    futures: boolean;
+    options: boolean;
+    options_usage?: string;
+    compatibility_note?: string;
+  };
   description: string;
   trading_objective: string;
   supported_instruments: string[];
@@ -424,6 +431,38 @@ export default function StrategyLogicCard({
                   </span>
                 ))}
               </div>
+            </div>
+
+            {/* Phase 4: Multi-Asset Instrument Compatibility Matrix */}
+            <div style={{ marginTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', paddingTop: '10px' }}>
+              <div style={{ fontSize: '0.70rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '8px' }}>
+                Multi-Asset Compatibility & Derivative Contract Specs
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px' }}>
+                <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '8px 12px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.66rem', color: '#94a3b8' }}>Equity Stocks</div>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: strategy.instrument_compatibility?.equity !== false ? '#34d399' : '#f87171' }}>
+                    {strategy.instrument_compatibility?.equity !== false ? '✓ Supported' : '✕ Incompatible'}
+                  </div>
+                </div>
+                <div style={{ background: 'rgba(234, 179, 8, 0.08)', border: '1px solid rgba(234, 179, 8, 0.2)', padding: '8px 12px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.66rem', color: '#94a3b8' }}>Futures Contracts</div>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: strategy.instrument_compatibility?.futures !== false ? '#34d399' : '#f87171' }}>
+                    {strategy.instrument_compatibility?.futures !== false ? '✓ Supported (Basis & Carry)' : '✕ Incompatible'}
+                  </div>
+                </div>
+                <div style={{ background: 'rgba(168, 85, 247, 0.08)', border: '1px solid rgba(168, 85, 247, 0.2)', padding: '8px 12px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.66rem', color: '#94a3b8' }}>Options Contracts</div>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: strategy.instrument_compatibility?.options ? '#34d399' : '#f87171' }}>
+                    {strategy.instrument_compatibility?.options ? '✓ Supported (Greeks & Vol)' : '✕ Not Recommended'}
+                  </div>
+                </div>
+              </div>
+              {strategy.instrument_compatibility?.options_usage && (
+                <div style={{ fontSize: '0.70rem', color: '#a5b4fc', marginTop: '8px', lineHeight: 1.4 }}>
+                  <strong>Options Methodology:</strong> {strategy.instrument_compatibility.options_usage}
+                </div>
+              )}
             </div>
           </div>
 

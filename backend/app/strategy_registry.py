@@ -484,6 +484,8 @@ STRATEGY_REGISTRY: Dict[str, Dict[str, Any]] = {
 
 def get_all_registered_strategies() -> List[Dict[str, Any]]:
     """Return all strategies (built-in + user-created custom strategies) with full logic specifications for UI and engine."""
+    from app.instrument_adapters import STRATEGY_COMPATIBILITY_MATRIX
+
     strategies_list = [
         {
             "id": "all",
@@ -491,17 +493,39 @@ def get_all_registered_strategies() -> List[Dict[str, Any]]:
             "badge": "COMPREHENSIVE",
             "category": "All Categories",
             "win_rate": "71%",
-            "description": "Comprehensive portfolio aggregation of all quantitative trading models."
+            "description": "Comprehensive portfolio aggregation of all quantitative trading models across Equity, Futures, and Options.",
+            "instrument_compatibility": {
+                "equity": True,
+                "futures": True,
+                "options": True,
+                "compatibility_note": "Universal multi-asset quantitative engine."
+            }
         }
     ]
-    for strat in STRATEGY_REGISTRY.values():
-        strategies_list.append(strat)
+    for strat_id, strat in STRATEGY_REGISTRY.items():
+        s_copy = dict(strat)
+        if "instrument_compatibility" not in s_copy:
+            s_copy["instrument_compatibility"] = STRATEGY_COMPATIBILITY_MATRIX.get(strat_id, {
+                "equity": True,
+                "futures": True,
+                "options": True,
+                "compatibility_note": "Standard multi-asset quantitative model."
+            })
+        strategies_list.append(s_copy)
 
     try:
         from app.custom_strategies_manager import list_custom_strategies
         custom_strats = list_custom_strategies(include_archived=False)
         for cs in custom_strats:
-            strategies_list.append(cs)
+            c_copy = dict(cs)
+            if "instrument_compatibility" not in c_copy:
+                c_copy["instrument_compatibility"] = {
+                    "equity": "Equity Stocks" in cs.get("supported_instruments", []),
+                    "futures": any("Futures" in inst for inst in cs.get("supported_instruments", [])),
+                    "options": any("Options" in inst for inst in cs.get("supported_instruments", [])),
+                    "compatibility_note": f"Custom strategy configured for {', '.join(cs.get('supported_instruments', ['Equities']))}"
+                }
+            strategies_list.append(c_copy)
     except Exception as e:
         print(f"[WARN] Failed to load custom strategies: {e}")
 
@@ -509,18 +533,35 @@ def get_all_registered_strategies() -> List[Dict[str, Any]]:
 
 def get_strategy_logic(strategy_id: str) -> Optional[Dict[str, Any]]:
     """Retrieve full mathematical logic for a specific strategy (built-in or custom)."""
+    from app.instrument_adapters import STRATEGY_COMPATIBILITY_MATRIX
+
     strat = STRATEGY_REGISTRY.get(strategy_id)
     if strat:
         strat_copy = dict(strat)
         strat_copy["status"] = dict(strat["status"])
         strat_copy["status"]["last_evaluated"] = datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST")
+        if "instrument_compatibility" not in strat_copy:
+            strat_copy["instrument_compatibility"] = STRATEGY_COMPATIBILITY_MATRIX.get(strategy_id, {
+                "equity": True,
+                "futures": True,
+                "options": True,
+                "compatibility_note": "Standard multi-asset quantitative model."
+            })
         return strat_copy
 
     try:
         from app.custom_strategies_manager import get_custom_strategy
         cs = get_custom_strategy(strategy_id)
         if cs:
-            return cs
+            c_copy = dict(cs)
+            if "instrument_compatibility" not in c_copy:
+                c_copy["instrument_compatibility"] = {
+                    "equity": "Equity Stocks" in cs.get("supported_instruments", []),
+                    "futures": any("Futures" in inst for inst in cs.get("supported_instruments", [])),
+                    "options": any("Options" in inst for inst in cs.get("supported_instruments", [])),
+                    "compatibility_note": f"Custom strategy configured for {', '.join(cs.get('supported_instruments', ['Equities']))}"
+                }
+            return c_copy
     except Exception as e:
         print(f"[WARN] Failed to load custom strategy logic for {strategy_id}: {e}")
 

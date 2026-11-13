@@ -851,16 +851,82 @@ async def api_get_trade_signals(
     market_cap: Optional[str] = None,
     type: Optional[str] = None,
     timeframe: Optional[str] = None,
+    instrument: Optional[str] = None,
     search: Optional[str] = None
 ):
-    """Multi-Strategy Quantitative Trade Signals across Large-Cap, Mid-Cap, and Small-Cap equities."""
+    """Multi-Strategy Quantitative Trade Signals across Equities, Index & Stock Futures, and Options."""
     return get_trade_signals(
         strategy_id=strategy,
         market_cap=market_cap,
         signal_type=type,
         timeframe=timeframe,
+        instrument_type=instrument,
         search=search
     )
+
+@app.get("/api/fo/specifications")
+async def api_get_fo_specifications():
+    """Master contract specifications, lot sizes, expiry dates, and strategy compatibility matrix."""
+    from app.instrument_adapters import (
+        NSE_FO_LOT_SIZES,
+        STRATEGY_COMPATIBILITY_MATRIX,
+        get_current_expiry_dates
+    )
+    monthly_exp, weekly_exp, dte = get_current_expiry_dates()
+    return {
+        "status": "success",
+        "lot_sizes": NSE_FO_LOT_SIZES,
+        "strategy_compatibility": STRATEGY_COMPATIBILITY_MATRIX,
+        "expiry_info": {
+            "current_monthly_expiry": monthly_exp,
+            "next_weekly_expiry": weekly_exp,
+            "days_to_monthly_expiry": dte
+        }
+    }
+
+@app.get("/api/fo/greeks")
+async def api_calculate_fo_greeks(
+    spot: float,
+    strike: float,
+    dte_days: float = 14.0,
+    iv: float = 0.22,
+    option_type: str = "CE"
+):
+    """Calculate Black-Scholes theoretical premium and Greeks: Delta, Gamma, Theta, Vega, IV."""
+    from app.instrument_adapters import calculate_black_scholes_greeks
+    t_years = max(0.001, dte_days / 365.0)
+    greeks = calculate_black_scholes_greeks(
+        spot=spot,
+        strike=strike,
+        time_to_expiry_years=t_years,
+        volatility=iv,
+        option_type=option_type
+    )
+    return {
+        "status": "success",
+        "inputs": {
+            "spot": spot,
+            "strike": strike,
+            "dte_days": dte_days,
+            "iv": iv,
+            "option_type": option_type.upper()
+        },
+        "greeks": greeks
+    }
+
+@app.get("/api/fo/basis")
+async def api_calculate_futures_basis(
+    symbol: str,
+    spot_price: float,
+    dte_days: Optional[float] = None
+):
+    """Calculate Futures basis, fair value, lot size, and annualized cost of carry."""
+    from app.instrument_adapters import adapt_futures_contract
+    fut_data = adapt_futures_contract(symbol=symbol, spot_price=spot_price, days_to_expiry=dte_days)
+    return {
+        "status": "success",
+        "futures_data": fut_data
+    }
 
 @app.get("/api/trade-signals/strategies")
 async def api_get_trade_strategies(response: Response):

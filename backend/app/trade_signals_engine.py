@@ -15,6 +15,12 @@ from typing import Dict, List, Optional, Any
 from app.market_data_service import market_data_service, DEFAULT_UNIVERSE_SYMBOLS
 from app.strategy_engine import strategy_engine
 from app.strategy_registry import get_all_registered_strategies, get_strategy_logic, STRATEGY_REGISTRY
+from app.instrument_adapters import (
+    adapt_futures_contract,
+    adapt_options_contract,
+    validate_instrument_for_strategy,
+    NSE_FO_LOT_SIZES
+)
 
 logger = logging.getLogger("trade_signals")
 IST = timezone(timedelta(hours=5, minutes=30))
@@ -22,9 +28,13 @@ IST = timezone(timedelta(hours=5, minutes=30))
 # 1. Extensible Strategy Registry (Canonical Single Source of Truth)
 AVAILABLE_STRATEGIES = get_all_registered_strategies()
 
-# 2. Master Universe of Equities with updated live market caps & verified prices
+# 2. Master Universe of Equities and Benchmark Indices with live market caps & verified prices
 COMPANIES_UNIVERSE = [
-    # Large-Cap
+    # Benchmark Indices (F&O Primary Assets)
+    {"symbol": "NIFTY", "name": "NIFTY 50 Benchmark Index", "sector": "Benchmark Index", "cap": "LARGE_CAP", "mcap_cr": 24000000, "base_price": 24100.00},
+    {"symbol": "BANKNIFTY", "name": "NIFTY Bank Banking Index", "sector": "Banking & Financials", "cap": "LARGE_CAP", "mcap_cr": 12500000, "base_price": 51800.00},
+
+    # Large-Cap Equities
     {"symbol": "RELIANCE", "name": "Reliance Industries Ltd", "sector": "Energy & Diversified", "cap": "LARGE_CAP", "mcap_cr": 1948500, "base_price": 1340.00},
     {"symbol": "TCS", "name": "Tata Consultancy Services", "sector": "Information Technology", "cap": "LARGE_CAP", "mcap_cr": 1465200, "base_price": 2410.30},
     {"symbol": "HDFCBANK", "name": "HDFC Bank Limited", "sector": "Financial Services", "cap": "LARGE_CAP", "mcap_cr": 1289400, "base_price": 800.40},
@@ -74,6 +84,9 @@ def _compute_summary(signals: List[Dict[str, Any]]) -> Dict[str, Any]:
     large_cap_count = sum(1 for s in signals if s.get("market_cap_category") == "LARGE_CAP")
     mid_cap_count = sum(1 for s in signals if s.get("market_cap_category") == "MID_CAP")
     small_cap_count = sum(1 for s in signals if s.get("market_cap_category") == "SMALL_CAP")
+    equity_count = sum(1 for s in signals if s.get("instrument_type") == "EQUITY")
+    futures_count = sum(1 for s in signals if s.get("instrument_type") == "FUTURES")
+    options_count = sum(1 for s in signals if s.get("instrument_type") == "OPTIONS")
 
     return {
         "buy_count": buy_count,
@@ -81,6 +94,9 @@ def _compute_summary(signals: List[Dict[str, Any]]) -> Dict[str, Any]:
         "large_cap_count": large_cap_count,
         "mid_cap_count": mid_cap_count,
         "small_cap_count": small_cap_count,
+        "equity_count": equity_count,
+        "futures_count": futures_count,
+        "options_count": options_count,
         "latest_timestamp": signals[0]["issued_at"] if signals else ""
     }
 
@@ -89,7 +105,7 @@ def _evaluate_single_symbol(
     strategies_to_test: List[str],
     timeframes: List[str]
 ) -> List[Dict[str, Any]]:
-    """Evaluates multi-timeframe strategies for a single company in worker thread."""
+    """Evaluates multi-timeframe strategies for a single company in worker thread across Equities, Futures, and Options."""
     sym = comp["symbol"]
     quote = market_data_service.get_live_quote(sym)
     results: List[Dict[str, Any]] = []
@@ -117,7 +133,78 @@ def _evaluate_single_symbol(
                 precomputed=precomputed
             )
             if sig:
+                # 1. Base Cash Equity / Spot Signal
+                sig["instrument_type"] = "EQUITY"
+                sig["contract_symbol"] = sym
+                sig["lot_size"] = 1
+                sig["position_value"] = sig["entry_price"]
                 results.append(sig)
+
+                # 2. Derivative Contract Adapters (Futures & Options)
+                if sym in NSE_FO_LOT_SIZES:
+                    # Check Futures compatibility
+                    is_fut_ok, _ = validate_instrument_for_strategy(strat_id, "FUTURES")
+                    if is_fut_ok:
+                        fut_data = adapt_futures_contract(sym, sig["entry_price"])
+                        fut_sig = dict(sig)
+                        fut_sig["id"] = f"{sig['id']}_FUT"
+                        fut_sig["symbol"] = f"{sym} FUT"
+                        fut_sig["contract_symbol"] = fut_data["contract_symbol"]
+                        fut_sig["instrument_type"] = "FUTURES"
+                        fut_sig["lot_size"] = fut_data["lot_size"]
+                        fut_sig["entry_price"] = fut_data["futures_price"]
+                        basis_diff = fut_data["basis"]
+                        fut_sig["stop_loss"] = round(sig["stop_loss"] + basis_diff, 2)
+                        fut_sig["target_1"] = round(sig["target_1"] + basis_diff, 2)
+                        fut_sig["target_2"] = round(sig["target_2"] + basis_diff, 2)
+                        fut_sig["basis"] = fut_data["basis"]
+                        fut_sig["basis_pct"] = fut_data["basis_pct"]
+                        fut_sig["cost_of_carry_annualized_pct"] = fut_data["cost_of_carry_annualized_pct"]
+                        fut_sig["open_interest"] = fut_data["open_interest"]
+                        fut_sig["expiry_date"] = fut_data["expiry_date"]
+                        fut_sig["days_to_expiry"] = fut_data["days_to_expiry"]
+                        fut_sig["contract_value"] = fut_data["contract_value"]
+                        fut_sig["approx_margin_required"] = fut_data["approx_margin_required"]
+                        results.append(fut_sig)
+
+                    # Check Options compatibility
+                    is_opt_ok, _ = validate_instrument_for_strategy(strat_id, "OPTIONS")
+                    if is_opt_ok:
+                        opt_data = adapt_options_contract(
+                            sym,
+                            spot_price=sig["entry_price"],
+                            sig_direction=sig["type"],
+                            strike_offset_steps=0
+                        )
+                        opt_sig = dict(sig)
+                        opt_sig["id"] = f"{sig['id']}_OPT"
+                        opt_sig["symbol"] = f"{sym} {int(opt_data['strike_price'])}{opt_data['option_type']}"
+                        opt_sig["contract_symbol"] = opt_data["contract_symbol"]
+                        opt_sig["instrument_type"] = "OPTIONS"
+                        opt_sig["lot_size"] = opt_data["lot_size"]
+                        # Selected option contract has its own entry, SL, targets and outcome tracking!
+                        opt_sig["entry_price"] = opt_data["option_entry"]
+                        opt_sig["stop_loss"] = opt_data["option_stop_loss"]
+                        opt_sig["target_1"] = opt_data["option_target_1"]
+                        opt_sig["target_2"] = opt_data["option_target_2"]
+                        opt_sig["risk_reward"] = opt_data["option_risk_reward"]
+                        opt_sig["strike_price"] = opt_data["strike_price"]
+                        opt_sig["option_type"] = opt_data["option_type"]
+                        opt_sig["moneyness"] = opt_data["moneyness"]
+                        opt_sig["greeks"] = opt_data["greeks"]
+                        opt_sig["iv"] = opt_data["greeks"]["iv"]
+                        opt_sig["delta"] = opt_data["greeks"]["delta"]
+                        opt_sig["theta"] = opt_data["greeks"]["theta"]
+                        opt_sig["gamma"] = opt_data["greeks"]["gamma"]
+                        opt_sig["vega"] = opt_data["greeks"]["vega"]
+                        opt_sig["bid"] = opt_data["bid"]
+                        opt_sig["ask"] = opt_data["ask"]
+                        opt_sig["spread"] = opt_data["spread"]
+                        opt_sig["total_cost"] = opt_data["total_cost"]
+                        opt_sig["open_interest"] = opt_data["open_interest"]
+                        opt_sig["expiry_date"] = opt_data["expiry_date"]
+                        opt_sig["days_to_expiry"] = opt_data["days_to_expiry"]
+                        results.append(opt_sig)
 
     return results
 
@@ -182,6 +269,7 @@ def get_trade_signals(
     market_cap: Optional[str] = None,
     signal_type: Optional[str] = None,
     timeframe: Optional[str] = None,
+    instrument_type: Optional[str] = None,
     search: Optional[str] = None
 ) -> Dict[str, Any]:
     """Retrieve and filter genuine trade signals with single-pass filtering and precomputed summary."""
@@ -206,6 +294,7 @@ def get_trade_signals(
     cap_filter = market_cap.upper() if (market_cap and market_cap.upper() != "ALL") else None
     type_filter = signal_type.upper() if (signal_type and signal_type.upper() != "ALL") else None
     tf_filter = timeframe.upper() if (timeframe and timeframe.upper() != "ALL") else None
+    inst_filter = instrument_type.upper() if (instrument_type and instrument_type.upper() != "ALL") else None
     search_term = search.strip().lower() if (search and search.strip()) else None
 
     # Single-pass filter loop
@@ -219,11 +308,14 @@ def get_trade_signals(
             continue
         if tf_filter and s.get("timeframe", "").upper() != tf_filter:
             continue
+        if inst_filter and s.get("instrument_type") != inst_filter:
+            continue
         if search_term:
             sym = s.get("symbol", "").lower()
             cname = s.get("company_name", "").lower()
             sec = s.get("sector", "").lower()
-            if search_term not in sym and search_term not in cname and search_term not in sec:
+            csym = s.get("contract_symbol", "").lower()
+            if search_term not in sym and search_term not in cname and search_term not in sec and search_term not in csym:
                 continue
         filtered.append(s)
 
