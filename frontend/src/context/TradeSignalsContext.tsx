@@ -53,6 +53,12 @@ export interface TradeSignalItem {
   pnl_percent?: string;
   exit_price?: number;
   time_to_target?: string;
+  position_size_shares?: number;
+  trade_capital_inr?: number;
+  max_risk_inr?: number;
+  target_1_gain_inr?: number;
+  target_2_gain_inr?: number;
+  position_sizing_model?: string;
 }
 
 interface TradeSignalsContextType {

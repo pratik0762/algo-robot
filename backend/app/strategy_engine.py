@@ -273,6 +273,17 @@ class StrategyEngine:
         # Calculate exact price levels
         entry, sl, t1, t2, rr = self.calculate_trade_levels(sig_type, cur_close, highs, lows, cur_atr)
 
+        # Institutional capital risk model (Standard ₹5,00,000 Portfolio, 1.0% Max Risk per Trade = ₹5,000)
+        account_capital = 500000.0
+        risk_per_trade_pct = 0.01
+        max_risk_amount = account_capital * risk_per_trade_pct  # ₹5,000
+        per_share_risk = max(0.05, abs(entry - sl))
+        suggested_qty = max(1, int(max_risk_amount / per_share_risk))
+        trade_capital = round(suggested_qty * entry, 2)
+        actual_risk = round(suggested_qty * per_share_risk, 2)
+        t1_gain = round(suggested_qty * abs(t1 - entry), 2)
+        t2_gain = round(suggested_qty * abs(t2 - entry), 2)
+
         advice = (
             f"Long at ₹{entry}. Place Stop Loss at ₹{sl}. Book 50% at ₹{t1}, trail remainder to ₹{t2}."
             if sig_type == "BUY"
@@ -320,6 +331,12 @@ class StrategyEngine:
             "status": "ACTIVE",
             "timeframe": timeframe,
             "confidence_score": int(confidence),
+            "position_size_shares": suggested_qty,
+            "trade_capital_inr": trade_capital,
+            "max_risk_inr": actual_risk,
+            "target_1_gain_inr": t1_gain,
+            "target_2_gain_inr": t2_gain,
+            "position_sizing_model": "1.0% Fixed Fractional Risk (₹5L Capital)",
             "multi_timeframe_aligned": htf_aligned,
             "htf_trend": htf_desc,
             "nse_verified": True,

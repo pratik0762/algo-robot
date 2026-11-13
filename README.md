@@ -389,6 +389,11 @@ Executed comprehensive architectural upgrades across the hot paths in `tick_engi
   - Vectorized True Range (Wilder's ATR) using SIMD `np.maximum`, Supertrend bands, Wilder's smoothed RSI, zero-line MACD histogram, and rolling standard deviation Bollinger Bands.
   - Implemented Multi-Worker Batch Parallel Scanner in `trade_signals_engine.py` using `ThreadPoolExecutor(max_workers=16)`, scanning all 32 universe equities across 3 timeframes and 7 strategies concurrently.
 
+- **Phase 16 (Institutional Risk Sizing & Zero-Main-Thread RAF Streaming Micro-Batcher)**:
+  - **Dynamic Capital Risk Model**: Implemented institutional position sizing (`suggested_quantity`, `trade_capital_inr`, `max_risk_inr`, `target_1_gain_inr`, `target_2_gain_inr`) based on a 1.0% portfolio risk allocation rule (₹5,000 risk cap on ₹5,00,000 standard capital).
+  - **Zero-Main-Thread RAF Streaming Batcher**: Integrated `requestAnimationFrame` coalescing in `useLiveStockTicks.ts` to buffer incoming WebSocket tick bursts and flush visual updates synchronized to the 60 FPS display refresh rate, eliminating UI thread jitter.
+  - **TradingView Workstation & Signals Desk Alignment**: Surfaced institutional position size and risk allocation directly in the trade signal cards and workstation modal header.
+
 #### Phase 14 & 15 Performance Verification & Benchmark:
 
 | Component / Execution Path | Baseline Metric | Optimized (Phase 14 & 15) | Acceleration Factor | Verification Status |

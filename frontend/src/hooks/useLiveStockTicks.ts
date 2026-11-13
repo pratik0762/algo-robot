@@ -90,6 +90,8 @@ export function useLiveStockTicks() {
   const flashTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
   const giftFlashTimeout = useRef<NodeJS.Timeout | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const pendingTicksRef = useRef<StockTickData[]>([]);
+  const rafIdRef = useRef<number | null>(null);
 
   const handleIncomingTicks = useCallback((updatedList: StockTickData[]) => {
     // If the Indian stock market is closed, strictly prevent any price updates or visual flashes
@@ -135,6 +137,23 @@ export function useLiveStockTicks() {
     setTickCount((prev) => prev + updatedList.length);
     setLastTickTime(new Date().toLocaleTimeString());
   }, []);
+
+  // RequestAnimationFrame (RAF) Micro-Batcher (Zero main-thread blocking, 60 FPS synchronized)
+  const scheduleBatchFlush = useCallback((ticks: StockTickData[]) => {
+    if (!isMarketOpenRef.current || !ticks || ticks.length === 0) return;
+    pendingTicksRef.current.push(...ticks);
+
+    if (rafIdRef.current === null && typeof window !== 'undefined') {
+      rafIdRef.current = window.requestAnimationFrame(() => {
+        rafIdRef.current = null;
+        const currentBatch = pendingTicksRef.current;
+        pendingTicksRef.current = [];
+        if (currentBatch.length > 0 && isMarketOpenRef.current) {
+          handleIncomingTicks(currentBatch);
+        }
+      });
+    }
+  }, [handleIncomingTicks]);
 
   useEffect(() => {
     let sse: EventSource | null = null;
@@ -213,7 +232,7 @@ export function useLiveStockTicks() {
               }
             } else if (data.type === 'TICK' && data.ticks) {
               if (isMarketOpenRef.current) {
-                handleIncomingTicks(data.ticks);
+                scheduleBatchFlush(data.ticks);
               }
             } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
               const g = data.gift_nifty;
@@ -281,7 +300,7 @@ export function useLiveStockTicks() {
               }
             } else if (data.type === 'TICK' && data.ticks) {
               if (isMarketOpenRef.current) {
-                handleIncomingTicks(data.ticks);
+                scheduleBatchFlush(data.ticks);
               }
             } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
               const g = data.gift_nifty;
@@ -330,13 +349,17 @@ export function useLiveStockTicks() {
     connectWebSocket();
 
     return () => {
+      if (rafIdRef.current !== null && typeof window !== 'undefined') {
+        window.cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
       if (wsRef.current) wsRef.current.close();
       if (sse) sse.close();
       if (pollInterval) clearInterval(pollInterval);
       if (giftFlashTimeout.current) clearTimeout(giftFlashTimeout.current);
       Object.values(flashTimeouts.current).forEach(clearTimeout);
     };
-  }, [handleIncomingTicks]);
+  }, [handleIncomingTicks, scheduleBatchFlush]);
 
   return {
     ticks,

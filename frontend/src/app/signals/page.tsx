@@ -944,6 +944,11 @@ function TradeSignalsContent() {
                       {/* Rationale and Execution Advice */}
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
                         Rationale: <strong style={{ color: '#38bdf8' }}>{sig.indicator_reason}</strong> &bull; {sig.execution_advice}
+                        {sig.position_size_shares ? (
+                          <span style={{ marginLeft: '6px', color: 'var(--text-muted)' }}>
+                            &bull; Size: <strong style={{ color: '#fbbf24' }}>{sig.position_size_shares.toLocaleString()} Shares</strong> (Capital: ₹{Math.round(sig.trade_capital_inr || 0).toLocaleString()})
+                          </span>
+                        ) : null}
                       </div>
                     </div>
                   </div>

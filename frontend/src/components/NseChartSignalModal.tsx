@@ -56,6 +56,9 @@ export interface SignalModalProps {
     issued_at: string;
     timeframe: string;
     confidence_score?: number;
+    position_size_shares?: number;
+    trade_capital_inr?: number;
+    max_risk_inr?: number;
   } | null;
 }
 
@@ -569,6 +572,11 @@ export default function NseChartSignalModal({ isOpen, onClose, signal }: SignalM
               <strong style={{ color: '#f23645' }}>₹{signal.stop_loss}</strong> &bull; Target:{' '}
               <strong style={{ color: '#089981' }}>₹{signal.target_2}</strong> &bull; R:R:{' '}
               <strong style={{ color: '#fbbf24' }}>{signal.risk_reward}</strong>
+              {signal.position_size_shares ? (
+                <span>
+                  {' '}&bull; Size: <strong style={{ color: '#fbbf24' }}>{signal.position_size_shares.toLocaleString()} Qty</strong> (Risk: ₹{Math.round(signal.max_risk_inr || 0).toLocaleString()})
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
