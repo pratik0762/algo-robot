@@ -184,3 +184,4 @@ def detect_swing_levels(
     recent_high = float(np.max(high[-lb:]))
     recent_low = float(np.min(low[-lb:]))
     return recent_high, recent_low
+

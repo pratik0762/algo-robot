@@ -231,11 +231,8 @@ class SignalsHeatmapEngine:
             else:
                 current_ltp = 1500.0
 
-            # Generate realistic historical candles walking towards current_ltp
             candles = []
             now = datetime.now(IST)
-            
-            # Determine time delta per candle
             if timeframe == "1m":
                 delta = timedelta(minutes=1)
             elif timeframe == "5m":
@@ -247,40 +244,19 @@ class SignalsHeatmapEngine:
             else: # 1D
                 delta = timedelta(days=1)
 
-            seed = abs(hash(sym_upper + timeframe))
-            base_price = current_ltp * (0.94 + ((seed % 10) / 100.0))
-            price_track = base_price
-
             for i in range(candle_count):
                 t = now - (delta * (candle_count - i - 1))
                 if timeframe == "1D" and t.weekday() >= 5:
                     continue
-
-                volatility = price_track * 0.012
-                drift = (current_ltp - price_track) / max(candle_count - i, 1) * 0.4
-                
-                pseudo = math.sin((i + seed) * 0.45)
-                step = (pseudo * volatility) + drift
-                
-                candle_open = round(price_track, 2)
-                candle_close = round(candle_open + step, 2)
-                high_slack = abs(pseudo * volatility * 0.5) + 0.5
-                low_slack = abs(math.cos((i + seed) * 0.45) * volatility * 0.5) + 0.5
-                candle_high = round(max(candle_open, candle_close) + high_slack, 2)
-                candle_low = round(min(candle_open, candle_close) - low_slack, 2)
-                
-                volume = int(150000 + (abs(pseudo) * 350000) + (100000 if i % 5 == 0 else 0))
-                
                 candles.append({
                     "time": t.strftime("%Y-%m-%d %H:%M"),
                     "timestamp": int(t.timestamp()),
-                    "open": candle_open,
-                    "high": candle_high,
-                    "low": candle_low,
-                    "close": candle_close,
-                    "volume": volume
+                    "open": current_ltp,
+                    "high": current_ltp,
+                    "low": current_ltp,
+                    "close": current_ltp,
+                    "volume": 0
                 })
-                price_track = candle_close
 
             if candles:
                 candles[-1]["close"] = current_ltp

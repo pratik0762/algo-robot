@@ -1,0 +1,7987 @@
+{
+  "timestamp": "2026-11-13 12:44:38 IST",
+  "routes_audited": 9,
+  "viewports_audited": 9,
+  "results": [
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2096,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1960,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1960,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2085,
+          "windowWidth": 1920,
+          "text": "27,962.4\n-0.95%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2023,
+          "windowWidth": 1920,
+          "text": "27,962.4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2085,
+          "windowWidth": 1920,
+          "text": "-0.95%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2040,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2040,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_desktop_1920x1080.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1642,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1508,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1508,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1631,
+          "windowWidth": 1440,
+          "text": "61,029.7\n-0.79%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1570,
+          "windowWidth": 1440,
+          "text": "61,029.7"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1631,
+          "windowWidth": 1440,
+          "text": "-0.79%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1587,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1586,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1196,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,117.35\n-0.72%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1060,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1060,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "25,117.35\n-0.72%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1124,
+          "windowWidth": 1024,
+          "text": "25,117.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "-0.72%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1141,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1140,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 980,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 809,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 969,
+          "windowWidth": 768,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 913,
+          "windowWidth": 768,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 969,
+          "windowWidth": 768,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 930,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_tablet_768x1024.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 980,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 969,
+          "windowWidth": 834,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 913,
+          "windowWidth": 834,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 969,
+          "windowWidth": 834,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 930,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 929,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "25,154.5\n-0.58%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 635,
+          "windowWidth": 430,
+          "text": "25,154.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "-0.58%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\home_mobile_390x844.png"
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "home",
+      "url": "http://localhost:3000/",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "button",
+          "text": "Refresh",
+          "w": 96,
+          "h": 29
+        },
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2085,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1949,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1949,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2074,
+          "windowWidth": 1920,
+          "text": "27,962.4\n-0.95%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2012,
+          "windowWidth": 1920,
+          "text": "27,962.4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2074,
+          "windowWidth": 1920,
+          "text": "-0.95%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2029,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2028,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_desktop_1920x1080.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1631,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1497,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1497,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1620,
+          "windowWidth": 1440,
+          "text": "61,029.7\n-0.79%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1559,
+          "windowWidth": 1440,
+          "text": "61,029.7"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1620,
+          "windowWidth": 1440,
+          "text": "-0.79%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1576,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1575,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,117.35\n-0.72%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1049,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1049,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1174,
+          "windowWidth": 1024,
+          "text": "25,117.35\n-0.72%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1113,
+          "windowWidth": 1024,
+          "text": "25,117.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1174,
+          "windowWidth": 1024,
+          "text": "-0.72%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1130,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1129,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 969,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 872,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 798,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 872,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 958,
+          "windowWidth": 768,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 902,
+          "windowWidth": 768,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 958,
+          "windowWidth": 768,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 919,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_tablet_768x1024.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 969,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 872,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 872,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 958,
+          "windowWidth": 834,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 902,
+          "windowWidth": 834,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 958,
+          "windowWidth": 834,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 919,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 918,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 686,
+          "windowWidth": 430,
+          "text": "25,148\n-0.60%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 623,
+          "windowWidth": 430,
+          "text": "25,148"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 686,
+          "windowWidth": 430,
+          "text": "-0.60%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 697,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\signals_mobile_390x844.png"
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 697,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "signals",
+      "url": "http://localhost:3000/signals",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 697,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 319,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2097,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1961,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1961,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2086,
+          "windowWidth": 1920,
+          "text": "27,962.4\n-0.95%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2024,
+          "windowWidth": 1920,
+          "text": "27,962.4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2086,
+          "windowWidth": 1920,
+          "text": "-0.95%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2041,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2040,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_desktop_1920x1080.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1643,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1509,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1509,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1632,
+          "windowWidth": 1440,
+          "text": "61,029.7\n-0.79%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1571,
+          "windowWidth": 1440,
+          "text": "61,029.7"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1632,
+          "windowWidth": 1440,
+          "text": "-0.79%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1588,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1587,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1196,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,117.35\n-0.72%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1061,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1061,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "25,117.35\n-0.72%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1124,
+          "windowWidth": 1024,
+          "text": "25,117.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "-0.72%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1141,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1141,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 981,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 884,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 810,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 884,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 970,
+          "windowWidth": 768,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 914,
+          "windowWidth": 768,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 970,
+          "windowWidth": 768,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 931,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_tablet_768x1024.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 981,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 884,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 884,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 970,
+          "windowWidth": 834,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 914,
+          "windowWidth": 834,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 970,
+          "windowWidth": 834,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 931,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 930,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "25,149.5\n-0.60%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 635,
+          "windowWidth": 430,
+          "text": "25,149.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "-0.60%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\chart_mobile_390x844.png"
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "chart",
+      "url": "http://localhost:3000/chart",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2092,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1956,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1956,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2081,
+          "windowWidth": 1920,
+          "text": "27,962.4\n-0.95%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2019,
+          "windowWidth": 1920,
+          "text": "27,962.4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2081,
+          "windowWidth": 1920,
+          "text": "-0.95%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2036,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2035,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_desktop_1920x1080.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1638,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1504,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1504,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1627,
+          "windowWidth": 1440,
+          "text": "61,029.7\n-0.79%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1566,
+          "windowWidth": 1440,
+          "text": "61,029.7"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1627,
+          "windowWidth": 1440,
+          "text": "-0.79%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1583,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1582,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1192,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,117.35\n-0.72%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1056,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1056,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1181,
+          "windowWidth": 1024,
+          "text": "25,117.35\n-0.72%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1120,
+          "windowWidth": 1024,
+          "text": "25,117.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1181,
+          "windowWidth": 1024,
+          "text": "-0.72%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1137,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1136,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 976,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 879,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 805,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 879,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 965,
+          "windowWidth": 768,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 909,
+          "windowWidth": 768,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 965,
+          "windowWidth": 768,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 926,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_tablet_768x1024.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 976,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 879,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 879,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 965,
+          "windowWidth": 834,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 909,
+          "windowWidth": 834,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 965,
+          "windowWidth": 834,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 926,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 925,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 704,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 693,
+          "windowWidth": 430,
+          "text": "25,147.5\n-0.61%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 633,
+          "windowWidth": 430,
+          "text": "25,147.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 693,
+          "windowWidth": 430,
+          "text": "-0.61%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 704,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\indices_mobile_390x844.png"
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 704,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "indices",
+      "url": "http://localhost:3000/indices",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 704,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 320,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 320,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 325,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2097,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,962.4\n-0.95%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1961,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1961,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2086,
+          "windowWidth": 1920,
+          "text": "27,962.4\n-0.95%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2024,
+          "windowWidth": 1920,
+          "text": "27,962.4"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2086,
+          "windowWidth": 1920,
+          "text": "-0.95%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2041,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2040,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_desktop_1920x1080.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1642,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,029.7\n-0.79%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1509,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1509,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1631,
+          "windowWidth": 1440,
+          "text": "61,029.7\n-0.79%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1570,
+          "windowWidth": 1440,
+          "text": "61,029.7"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1631,
+          "windowWidth": 1440,
+          "text": "-0.79%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1587,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1586,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1196,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,117.35\n-0.72%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1060,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1060,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "25,117.35\n-0.72%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1124,
+          "windowWidth": 1024,
+          "text": "25,117.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1185,
+          "windowWidth": 1024,
+          "text": "-0.72%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1141,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1140,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 980,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 810,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 969,
+          "windowWidth": 768,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 914,
+          "windowWidth": 768,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 969,
+          "windowWidth": 768,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 931,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_tablet_768x1024.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 980,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.1\n-3.1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 969,
+          "windowWidth": 834,
+          "text": "16.1\n-3.11%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 914,
+          "windowWidth": 834,
+          "text": "16.1"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 969,
+          "windowWidth": 834,
+          "text": "-3.11%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 931,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 930,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "25,144.5\n-0.62%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 635,
+          "windowWidth": 430,
+          "text": "25,144.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "-0.62%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\fii_dii_mobile_390x844.png"
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 360,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 360,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "fii_dii",
+      "url": "http://localhost:3000/fii-dii",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "Back to Financial Hub\nDrawer\nF"
+        },
+        {
+          "tag": "button",
+          "className": "btn btn-secondary",
+          "right": 337,
+          "windowWidth": 320,
+          "text": "Drawer"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "FII / DII INSTITUTIONAL TRADIN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "FII / DII INSTITUTIONAL TRADIN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-primary",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "CASH MARKET FEED"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 350,
+          "windowWidth": 320,
+          "text": "Real-Time Foreign & Domestic I"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.1",
+          "w": 258,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,117.35\n-0.72%",
+          "w": 202,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,389.6\n+0.65%",
+          "w": 199,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,029.7\n-0.79",
+          "w": 219,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,965.45\n-0.62%",
+          "w": 205,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,962.4\n-0.95",
+          "w": 221,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2116,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1974,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1974,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2105,
+          "windowWidth": 1920,
+          "text": "27,949.95\n-1.00%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2045,
+          "windowWidth": 1920,
+          "text": "27,949.95"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2105,
+          "windowWidth": 1920,
+          "text": "-1.00%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2062,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2061,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_desktop_1920x1080.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1664,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,014.3\n-0.82%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1531,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1531,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1653,
+          "windowWidth": 1440,
+          "text": "61,014.3\n-0.82%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1591,
+          "windowWidth": 1440,
+          "text": "61,014.3"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1653,
+          "windowWidth": 1440,
+          "text": "-0.82%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1608,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1607,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1210,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,111.35\n-0.74%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1074,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1074,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1199,
+          "windowWidth": 1024,
+          "text": "25,111.35\n-0.74%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1138,
+          "windowWidth": 1024,
+          "text": "25,111.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1199,
+          "windowWidth": 1024,
+          "text": "-0.74%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1155,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1154,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 995,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 810,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 984,
+          "windowWidth": 768,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 925,
+          "windowWidth": 768,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 984,
+          "windowWidth": 768,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 942,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_tablet_768x1024.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 995,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 984,
+          "windowWidth": 834,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 925,
+          "windowWidth": 834,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 984,
+          "windowWidth": 834,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 942,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 942,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "25,143.5\n-0.62%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 635,
+          "windowWidth": 430,
+          "text": "25,143.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "-0.62%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 390,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\deals_mobile_390x844.png"
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 360,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "deals",
+      "url": "http://localhost:3000/deals",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "Dashboard\nMarket Hubs\nMARKET D"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "MARKET DEAL\nBULK \u2022 BLOCK \u2022 SHO"
+        },
+        {
+          "tag": "h1",
+          "className": "",
+          "right": 345,
+          "windowWidth": 320,
+          "text": "MARKET DEAL"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "BULK \u2022 BLOCK \u2022 SHORT SELLING"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 417,
+          "windowWidth": 320,
+          "text": "Track who is trading which com"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2116,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1974,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1974,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2105,
+          "windowWidth": 1920,
+          "text": "27,949.95\n-1.00%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2045,
+          "windowWidth": 1920,
+          "text": "27,949.95"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2105,
+          "windowWidth": 1920,
+          "text": "-1.00%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2062,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2061,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_desktop_1920x1080.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1664,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,014.3\n-0.82%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1531,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1531,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1653,
+          "windowWidth": 1440,
+          "text": "61,014.3\n-0.82%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1591,
+          "windowWidth": 1440,
+          "text": "61,014.3"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1653,
+          "windowWidth": 1440,
+          "text": "-0.82%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1608,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1607,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1210,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,111.35\n-0.74%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1075,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1075,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1199,
+          "windowWidth": 1024,
+          "text": "25,111.35\n-0.74%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1138,
+          "windowWidth": 1024,
+          "text": "25,111.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1199,
+          "windowWidth": 1024,
+          "text": "-0.74%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1155,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1154,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 995,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 810,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 984,
+          "windowWidth": 768,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 926,
+          "windowWidth": 768,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 984,
+          "windowWidth": 768,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 943,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_tablet_768x1024.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 995,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 883,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 984,
+          "windowWidth": 834,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 926,
+          "windowWidth": 834,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 984,
+          "windowWidth": 834,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 943,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 942,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "SESSION 1 LIVE"
+        },
+        {
+          "tag": "span",
+          "className": "pulse-indicator",
+          "right": 492,
+          "windowWidth": 430,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "25,142.5\n-0.63%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 635,
+          "windowWidth": 430,
+          "text": "25,142.5"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 697,
+          "windowWidth": 430,
+          "text": "-0.63%"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 402,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 395,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "className": "",
+          "right": 401,
+          "windowWidth": 390,
+          "text": ""
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 475,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\week52_mobile_390x844.png"
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "\u2190 Hub\nDrawer\n52-WEEK HIGH & LO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "LIVE BREAKOUTS \u2022 SPECTRUM"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 378,
+          "windowWidth": 360,
+          "text": "National Stock Exchange of Ind"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 360,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "week52",
+      "url": "http://localhost:3000/52-week",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "\u2190 Hub\nDrawer\n52-WEEK HIGH & LO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "52-WEEK HIGH & LOW RADAR\nLIVE"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "LIVE BREAKOUTS \u2022 SPECTRUM"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 378,
+          "windowWidth": 320,
+          "text": "National Stock Exchange of Ind"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "LIVE NSE & BSE FEED"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 708,
+          "windowWidth": 320,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 330,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1912,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 2104,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO\n27,949.95\n-1.00%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1962,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1962,
+          "windowWidth": 1920,
+          "text": "NIFTY AUTO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 2093,
+          "windowWidth": 1920,
+          "text": "27,949.95\n-1.00%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2033,
+          "windowWidth": 1920,
+          "text": "27,949.95"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 2093,
+          "windowWidth": 1920,
+          "text": "-1.00%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 2050,
+          "windowWidth": 1920,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 2049,
+          "windowWidth": 1920,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_desktop_1920x1080.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1432,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1652,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK\n61,014.3\n-0.82%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1519,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1519,
+          "windowWidth": 1440,
+          "text": "NIFTY BANK"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1641,
+          "windowWidth": 1440,
+          "text": "61,014.3\n-0.82%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1579,
+          "windowWidth": 1440,
+          "text": "61,014.3"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1641,
+          "windowWidth": 1440,
+          "text": "-0.82%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1596,
+          "windowWidth": 1440,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1595,
+          "windowWidth": 1440,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 1198,
+          "windowWidth": 1024,
+          "text": "NIFTY 50\n25,111.35\n-0.74%"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1062,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1062,
+          "windowWidth": 1024,
+          "text": "NIFTY 50"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 1187,
+          "windowWidth": 1024,
+          "text": "25,111.35\n-0.74%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1126,
+          "windowWidth": 1024,
+          "text": "25,111.35"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 1187,
+          "windowWidth": 1024,
+          "text": "-0.74%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 1143,
+          "windowWidth": 1024,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 1142,
+          "windowWidth": 1024,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 983,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 871,
+          "windowWidth": 768,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 798,
+          "windowWidth": 768,
+          "text": "INDIA VIX"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 871,
+          "windowWidth": 768,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 972,
+          "windowWidth": 768,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 913,
+          "windowWidth": 768,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 972,
+          "windowWidth": 768,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 930,
+          "windowWidth": 768,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_tablet_768x1024.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "a",
+          "className": "",
+          "right": 983,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY\n16.09\n-3."
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 871,
+          "windowWidth": 834,
+          "text": "INDIA VIX\nVOLATILITY"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 871,
+          "windowWidth": 834,
+          "text": "VOLATILITY"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 972,
+          "windowWidth": 834,
+          "text": "16.09\n-3.15%"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 913,
+          "windowWidth": 834,
+          "text": "16.09"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 972,
+          "windowWidth": 834,
+          "text": "-3.15%"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 930,
+          "windowWidth": 834,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 929,
+          "windowWidth": 834,
+          "text": ""
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 430,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 430,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 696,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 430,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 390,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 390,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "a",
+          "className": "",
+          "right": 696,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE\n25,1"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 574,
+          "windowWidth": 390,
+          "text": "GIFT NIFTY\nSESSION 1 LIVE"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\news_mobile_390x844.png"
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 360,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 360,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        },
+        {
+          "tag": "span",
+          "className": "",
+          "right": 362,
+          "windowWidth": 360,
+          "text": "LIVE NSE & BSE FEED"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "news",
+      "url": "http://localhost:3000/news",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "Back to Hub\nDrawer\nMARKET & CO"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS\nOFFICIAL"
+        },
+        {
+          "tag": "h1",
+          "className": "",
+          "right": 338,
+          "windowWidth": 320,
+          "text": "MARKET & COMPANY NEWS"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 447,
+          "windowWidth": 320,
+          "text": "OFFICIAL NSE INDIA DISCLOSURES"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "REAL-TIME IMPACT ENGINE"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 521,
+          "windowWidth": 320,
+          "text": "Verified market-moving news, s"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 362,
+          "windowWidth": 320,
+          "text": "ALL 140+ INDICES (PAGE)\nLIVE N"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 8,
+      "small_touch_targets": [
+        {
+          "tag": "a",
+          "text": "ALL 140+ INDICES (PAGE)",
+          "w": 206,
+          "h": 24
+        },
+        {
+          "tag": "a",
+          "text": "GIFT NIFTY\nSESSION 1 LIVE",
+          "w": 318,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "INDIA VIX\nVOLATILITY\n16.0",
+          "w": 273,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY 50\n25,111.35\n-0.74%",
+          "w": 201,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "SENSEX\n83,369.68\n+0.65%",
+          "w": 208,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY BANK\n61,014.3\n-0.82",
+          "w": 218,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY IT\n31,963.3\n-0.62%",
+          "w": 197,
+          "h": 25
+        },
+        {
+          "tag": "a",
+          "text": "NIFTY AUTO\n27,949.95\n-1.0",
+          "w": 227,
+          "h": 25
+        }
+      ],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "desktop_1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1920,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_desktop_1920x1080.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "desktop_1440x900",
+      "width": 1440,
+      "height": 900,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1440,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "laptop_1024x768",
+      "width": 1024,
+      "height": 768,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 1016,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "tablet_768x1024",
+      "width": 768,
+      "height": 1024,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 768,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_tablet_768x1024.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "tablet_834x1194",
+      "width": 834,
+      "height": 1194,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 834,
+      "overflowing_elements_count": 0,
+      "overflowing_elements": [],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_430x932",
+      "width": 430,
+      "height": 932,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 430,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 439,
+          "windowWidth": 430,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 430,
+          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 544,
+          "windowWidth": 430,
+          "text": "\u2022\n52W H: \u20b91611.80\n\u2022\n52W L: \u20b911"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_390x844",
+      "width": 390,
+      "height": 844,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 390,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 439,
+          "windowWidth": 390,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 390,
+          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 397,
+          "windowWidth": 390,
+          "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": "C:\\Users\\prtik\\.gemini\\antigravity\\brain\\a3bb74d3-8f77-42ca-b724-69ed032fbcc5\\audit_screenshots\\company_mobile_390x844.png"
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_360x800",
+      "width": 360,
+      "height": 800,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 360,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 439,
+          "windowWidth": 360,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 360,
+          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 397,
+          "windowWidth": 360,
+          "text": "Day H: \u20b91350.70 \u2022 Day L: \u20b91324"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    },
+    {
+      "route": "company",
+      "url": "http://localhost:3000/company/RELIANCE",
+      "viewport": "mobile_320x740",
+      "width": 320,
+      "height": 740,
+      "has_horizontal_overflow": false,
+      "doc_scroll_width": 320,
+      "overflowing_elements_count": 8,
+      "overflowing_elements": [
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "RELIANCE\nNSE NIFTY 50\nISIN: IN"
+        },
+        {
+          "tag": "span",
+          "className": "badge badge-success",
+          "right": 439,
+          "windowWidth": 320,
+          "text": "ISIN: INE002A01018"
+        },
+        {
+          "tag": "span",
+          "className": "badge",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "Tickertape Verified"
+        },
+        {
+          "tag": "h2",
+          "className": "",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "Reliance Industries Limited"
+        },
+        {
+          "tag": "p",
+          "className": "",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "Energy & Diversified \u2022 Oil, Ga"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 561,
+          "windowWidth": 320,
+          "text": "LIVE NSE PRICE:\n\u20b91,336.75\n-2.9"
+        },
+        {
+          "tag": "div",
+          "className": "",
+          "right": 330,
+          "windowWidth": 320,
+          "text": "-2.95 (-0.22%)"
+        }
+      ],
+      "double_scrollbars_count": 0,
+      "double_scrollbars": [],
+      "small_touch_targets_count": 0,
+      "small_touch_targets": [],
+      "screenshot": ""
+    }
+  ]
+}

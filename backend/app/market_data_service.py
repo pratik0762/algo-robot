@@ -208,3 +208,4 @@ class MarketDataService:
 
 # Global Singleton
 market_data_service = MarketDataService()
+

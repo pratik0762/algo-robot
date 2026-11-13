@@ -1,0 +1,16 @@
+{
+  "TEST-SIG-001": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1380.0,
+    "pnl_percent": "+2.99%",
+    "time_to_target": "5m 0s",
+    "outcome_time": "13-Nov-2026 01:57:41 PM IST"
+  },
+  "TEST-SIG-002": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1320.0,
+    "pnl_percent": "-1.49%",
+    "time_to_target": "5m 0s",
+    "outcome_time": "13-Nov-2026 01:58:26 PM IST"
+  }
+}
