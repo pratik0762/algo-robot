@@ -73,6 +73,7 @@ interface StrategyLogicCardProps {
   strategy: StrategyLogicDetail | null;
   selectedStrategyId: string;
   allStrategies: any[];
+  defaultExpanded?: boolean;
   onSelectStrategy: (stratId: string) => void;
   onEditStrategy?: (strategy: any) => void;
   onDuplicateStrategy?: (strategyId: string) => void;
@@ -85,6 +86,7 @@ export default function StrategyLogicCard({
   strategy,
   selectedStrategyId,
   allStrategies,
+  defaultExpanded = false,
   onSelectStrategy,
   onEditStrategy,
   onDuplicateStrategy,
@@ -92,7 +94,7 @@ export default function StrategyLogicCard({
   onToggleStatus,
   onBacktestStrategy
 }: StrategyLogicCardProps) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
 
   if (!strategy || selectedStrategyId === 'all') {
     return (

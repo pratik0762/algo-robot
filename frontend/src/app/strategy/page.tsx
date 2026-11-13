@@ -78,7 +78,6 @@ export default function StrategyPage() {
   // Active Strategy Logic detail
   const [selectedStrategyId, setSelectedStrategyId] = useState<string>('ema_cross');
   const [activeStrategyLogic, setActiveStrategyLogic] = useState<StrategyLogicDetail | null>(null);
-  const [logicExpanded, setLogicExpanded] = useState<boolean>(true);
 
   // Modal triggers
   const [builderModalOpen, setBuilderModalOpen] = useState<boolean>(false);
