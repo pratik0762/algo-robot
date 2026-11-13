@@ -1102,6 +1102,35 @@ async def api_validate_strategy(payload: Dict[str, Any]):
         "errors": errors
     }
 
+@app.get("/api/strategies/stats")
+async def api_get_strategies_stats():
+    """Aggregate statistics for the dedicated Strategy Management and Backtesting page."""
+    from app.strategy_registry import get_all_registered_strategies
+    from app.custom_strategies_manager import list_custom_strategies
+    from app.backtest_storage import backtest_storage
+
+    all_strats = [s for s in get_all_registered_strategies() if s.get("id") != "all"]
+    custom_strats = list_custom_strategies(include_archived=False)
+    saved_runs = backtest_storage.list_runs()
+
+    active_count = sum(1 for s in all_strats if s.get("status", {}).get("is_enabled", True))
+    
+    return {
+        "status": "success",
+        "total_strategies": len(all_strats),
+        "active_strategies": active_count,
+        "custom_strategies": len(custom_strats),
+        "builtin_strategies": len(all_strats) - len(custom_strats),
+        "backtested_runs": len(saved_runs),
+        "supported_asset_classes": [
+            "Cash Equities (NSE)",
+            "Index Futures",
+            "Stock Futures",
+            "Index Options (CE/PE)",
+            "Stock Options"
+        ]
+    }
+
 @app.get("/api/trade-signals/analytics")
 async def api_get_trade_signals_analytics():
     """Quantitative lifecycle performance analytics: win rate, active count, target hits, stop loss hits."""
