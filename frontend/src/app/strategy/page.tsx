@@ -726,13 +726,12 @@ export default function StrategyPage() {
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
+            alignItems: 'stretch',
+            gap: '6px',
             borderBottom: '1px solid var(--border-subtle)',
             marginBottom: '24px',
-            paddingBottom: '10px',
-            overflowX: 'auto',
-            scrollbarWidth: 'none'
+            paddingBottom: '12px',
+            width: '100%'
           }}
         >
           <button
@@ -741,22 +740,24 @@ export default function StrategyPage() {
               background: activeTab === 'REPOSITORY' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
               border: activeTab === 'REPOSITORY' ? '1px solid #6366f1' : '1px solid transparent',
               color: activeTab === 'REPOSITORY' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Layers size={20} style={{ flexShrink: 0 }} color={activeTab === 'REPOSITORY' ? '#818cf8' : undefined} />
-            <span>Strategy Repository ({filteredStrategies.length})</span>
+            <Layers size={19} style={{ flexShrink: 0 }} color={activeTab === 'REPOSITORY' ? '#818cf8' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Strategy Repository ({filteredStrategies.length})</span>
           </button>
 
           <button
@@ -765,22 +766,24 @@ export default function StrategyPage() {
               background: activeTab === 'BUILDER' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
               border: activeTab === 'BUILDER' ? '1px solid #6366f1' : '1px solid transparent',
               color: activeTab === 'BUILDER' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <PlusCircle size={20} style={{ flexShrink: 0 }} color={activeTab === 'BUILDER' ? '#818cf8' : undefined} />
-            <span>Create Strategy</span>
+            <PlusCircle size={19} style={{ flexShrink: 0 }} color={activeTab === 'BUILDER' ? '#818cf8' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Create Strategy</span>
           </button>
 
           <button
@@ -789,22 +792,24 @@ export default function StrategyPage() {
               background: activeTab === 'BACKTEST' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
               border: activeTab === 'BACKTEST' ? '1px solid #10b981' : '1px solid transparent',
               color: activeTab === 'BACKTEST' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Play size={20} style={{ flexShrink: 0 }} color={activeTab === 'BACKTEST' ? '#34d399' : undefined} />
-            <span>Backtest Strategy</span>
+            <Play size={19} style={{ flexShrink: 0 }} color={activeTab === 'BACKTEST' ? '#34d399' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Backtest Strategy</span>
           </button>
 
           <button
@@ -813,22 +818,24 @@ export default function StrategyPage() {
               background: activeTab === 'MULTILEG' ? 'rgba(168, 85, 247, 0.2)' : 'transparent',
               border: activeTab === 'MULTILEG' ? '1px solid #a855f7' : '1px solid transparent',
               color: activeTab === 'MULTILEG' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Layers size={20} style={{ flexShrink: 0 }} color={activeTab === 'MULTILEG' ? '#c084fc' : undefined} />
-            <span>Multi-Leg Options Spreads</span>
+            <Layers size={19} style={{ flexShrink: 0 }} color={activeTab === 'MULTILEG' ? '#c084fc' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Multi-Leg Options Spreads</span>
           </button>
 
           <button
@@ -837,22 +844,24 @@ export default function StrategyPage() {
               background: activeTab === 'OPTIMIZER' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
               border: activeTab === 'OPTIMIZER' ? '1px solid #38bdf8' : '1px solid transparent',
               color: activeTab === 'OPTIMIZER' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Cpu size={20} style={{ flexShrink: 0 }} color={activeTab === 'OPTIMIZER' ? '#38bdf8' : undefined} />
-            <span>Parameter Optimizer</span>
+            <Cpu size={19} style={{ flexShrink: 0 }} color={activeTab === 'OPTIMIZER' ? '#38bdf8' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Parameter Optimizer</span>
           </button>
 
           <button
@@ -861,22 +870,24 @@ export default function StrategyPage() {
               background: activeTab === 'PAPERTRADING' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
               border: activeTab === 'PAPERTRADING' ? '1px solid #10b981' : '1px solid transparent',
               color: activeTab === 'PAPERTRADING' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Activity size={20} style={{ flexShrink: 0 }} color={activeTab === 'PAPERTRADING' ? '#10b981' : undefined} />
-            <span>Live Paper Trading Desk</span>
+            <Activity size={19} style={{ flexShrink: 0 }} color={activeTab === 'PAPERTRADING' ? '#10b981' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Live Paper Trading Desk</span>
           </button>
 
           <button
@@ -885,22 +896,24 @@ export default function StrategyPage() {
               background: activeTab === 'BROKER' ? 'rgba(239, 68, 68, 0.2)' : 'transparent',
               border: activeTab === 'BROKER' ? '1px solid #ef4444' : '1px solid transparent',
               color: activeTab === 'BROKER' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <ShieldCheck size={20} style={{ flexShrink: 0 }} color={activeTab === 'BROKER' ? '#f87171' : undefined} />
-            <span>Live Broker Connect</span>
+            <ShieldCheck size={19} style={{ flexShrink: 0 }} color={activeTab === 'BROKER' ? '#f87171' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Live Broker Connect</span>
           </button>
 
           <button
@@ -909,22 +922,24 @@ export default function StrategyPage() {
               background: activeTab === 'NOTIFICATIONS' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
               border: activeTab === 'NOTIFICATIONS' ? '1px solid #38bdf8' : '1px solid transparent',
               color: activeTab === 'NOTIFICATIONS' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '10px 18px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
               fontWeight: 700,
-              fontSize: '0.86rem',
+              fontSize: '0.81rem',
               cursor: 'pointer',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              whiteSpace: 'nowrap',
+              justifyContent: 'flex-start',
+              gap: '8px',
               textAlign: 'left',
-              lineHeight: 1,
+              lineHeight: 1.25,
+              flex: '1 1 0',
+              minWidth: 0,
               transition: 'all 0.15s ease'
             }}
           >
-            <Bell size={20} style={{ flexShrink: 0 }} color={activeTab === 'NOTIFICATIONS' ? '#38bdf8' : undefined} />
-            <span>Real-Time Alerts &amp; Bot</span>
+            <Bell size={19} style={{ flexShrink: 0 }} color={activeTab === 'NOTIFICATIONS' ? '#38bdf8' : undefined} />
+            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>Real-Time Alerts &amp; Bot</span>
           </button>
         </div>
 
