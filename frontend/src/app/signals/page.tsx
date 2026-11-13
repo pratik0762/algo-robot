@@ -24,42 +24,17 @@ import {
   Info,
   SlidersHorizontal,
   Flame,
-  Volume2
+  Volume2,
+  BarChart2
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
 import NavigationDrawer from '@/components/NavigationDrawer';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
+import { useTradeSignals, TradeSignalItem } from '@/context/TradeSignalsContext';
 
-export interface TradeSignalItem {
-  id: string;
-  symbol: string;
-  company_name: string;
-  sector: string;
-  market_cap_category: 'LARGE_CAP' | 'MID_CAP' | 'SMALL_CAP';
-  market_cap_cr: number;
-  type: 'BUY' | 'SELL';
-  strength: string;
-  strategy_id: string;
-  strategy_name: string;
-  strategy_badge?: string;
-  current_price: number;
-  entry_price: number;
-  stop_loss: number;
-  target_1: number;
-  target_2: number;
-  risk_reward: string;
-  indicator_reason: string;
-  execution_advice: string;
-  issued_at: string;
-  timestamp_ms: number;
-  time_elapsed: string;
-  offset_seconds?: number;
-  status: 'ACTIVE' | 'TARGET_1_HIT' | 'TARGET_2_HIT' | 'STOP_LOSS_HIT';
-  timeframe: string;
-  confidence_score?: number;
-}
+export type { TradeSignalItem };
 
 export interface StrategyItem {
   id: string;
@@ -99,6 +74,7 @@ const DEFAULT_STRATEGIES: StrategyItem[] = [
 ];
 
 function TradeSignalsContent() {
+  const { openChartModal, triggerSimulatedSignal } = useTradeSignals();
   const [signals, setSignals] = useState<TradeSignalItem[]>([]);
   const [strategies, setStrategies] = useState<StrategyItem[]>(DEFAULT_STRATEGIES);
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,9 +87,6 @@ function TradeSignalsContent() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
   const [summary, setSummary] = useState<any>(null);
   const [syncCountdown, setSyncCountdown] = useState<number>(6);
-
-  // Persistent Toast Queue (Must remain visible until user clicks 'OK')
-  const [toastQueue, setToastQueue] = useState<TradeSignalItem[]>([]);
   const seenSignalIds = useRef<Set<string>>(new Set());
 
   // Web Audio Synth chime when a new signal triggers
@@ -179,20 +152,6 @@ function TradeSignalsContent() {
           setStrategies(data.available_strategies);
         }
         setSummary(data.summary);
-
-        // Populate seen IDs on first load
-        if (seenSignalIds.current.size === 0) {
-          data.signals.forEach(s => seenSignalIds.current.add(s.id));
-        } else {
-          // Check for any newly arrived signals that were not seen before
-          const newSignals = data.signals.filter(s => !seenSignalIds.current.has(s.id));
-          if (newSignals.length > 0) {
-            newSignals.forEach(s => seenSignalIds.current.add(s.id));
-            // Queue persistent toast notifications in bottom-left corner
-            setToastQueue(prev => [...prev, ...newSignals]);
-            playAudioChime();
-          }
-        }
       }
     } catch (err) {
       console.error('Failed to fetch trade signals:', err);
@@ -201,7 +160,7 @@ function TradeSignalsContent() {
       setRefreshing(false);
       setSyncCountdown(6);
     }
-  }, [playAudioChime]);
+  }, []);
 
   // Automatic real-time background sync loop (every 6 seconds - no manual refresh needed)
   useEffect(() => {
@@ -215,18 +174,9 @@ function TradeSignalsContent() {
   // Manual Trigger to simulate a new live signal event for testing
   const handleTriggerSimulatedSignal = async () => {
     try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/trade-signals/trigger`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        const newSig: TradeSignalItem = data.signal;
-        if (newSig) {
-          seenSignalIds.current.add(newSig.id);
-          setSignals(prev => [newSig, ...prev]);
-          // Add to persistent toast queue
-          setToastQueue(prev => [newSig, ...prev]);
-          playAudioChime();
-        }
+      const newSig = await triggerSimulatedSignal();
+      if (newSig) {
+        setSignals(prev => [newSig, ...prev.filter(s => s.id !== newSig.id)]);
       }
     } catch (err) {
       console.error('Failed to trigger simulated signal:', err);
@@ -1008,6 +958,34 @@ function TradeSignalsContent() {
                         <span>{elapsedDisplay}</span>
                       </div>
                     </div>
+
+                    {/* Chart Icon Button (Requested Feature: opens NSE chart directly with Long/Short indicator) */}
+                    <div style={{ paddingLeft: '8px', display: 'flex', alignItems: 'center' }}>
+                      <button
+                        onClick={() => openChartModal(sig)}
+                        className="btn"
+                        style={{
+                          background: isBuy ? 'rgba(16, 185, 129, 0.16)' : 'rgba(239, 68, 68, 0.16)',
+                          border: isBuy ? '1.5px solid #10b981' : '1.5px solid #ef4444',
+                          color: isBuy ? '#34d399' : '#f87171',
+                          padding: '7px 12px',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          fontSize: '0.78rem',
+                          fontWeight: 800,
+                          boxShadow: isBuy ? '0 0 10px rgba(16, 185, 129, 0.25)' : '0 0 10px rgba(239, 68, 68, 0.25)',
+                          whiteSpace: 'nowrap',
+                          transition: 'all 0.15s ease'
+                        }}
+                        title={`Open NSE Chart for ${sig.symbol} with ${isBuy ? 'LONG' : 'SHORT'} indicator`}
+                      >
+                        <BarChart2 size={16} />
+                        <span>NSE Chart</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -1018,165 +996,6 @@ function TradeSignalsContent() {
         {/* Navigation Hub Drawer */}
         <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
       </div>
-
-      {/* ========================================================================= */}
-      {/* PERSISTENT TOAST NOTIFICATION (BOTTOM-LEFT CORNER)                         */}
-      {/* Must remain visible until user explicitly clicks the 'OK' button          */}
-      {/* ========================================================================= */}
-      {toastQueue.length > 0 && (() => {
-        const activeToast = toastQueue[0];
-        const pendingCount = toastQueue.length;
-        return (
-          <div
-            role="alert"
-            aria-live="assertive"
-            style={{
-              position: 'fixed',
-              bottom: '24px',
-              left: '24px',
-              zIndex: 999999,
-              maxWidth: '440px',
-              width: 'calc(100vw - 48px)',
-              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(20, 28, 48, 0.98) 100%)',
-              backdropFilter: 'blur(20px)',
-              border: activeToast.type === 'BUY' ? '2px solid #10b981' : '2px solid #ef4444',
-              borderRadius: '16px',
-              padding: '18px 20px',
-              boxShadow: activeToast.type === 'BUY'
-                ? '0 16px 50px -4px rgba(16, 185, 129, 0.5), 0 0 30px rgba(16, 185, 129, 0.3)'
-                : '0 16px 50px -4px rgba(239, 68, 68, 0.5), 0 0 30px rgba(239, 68, 68, 0.3)',
-              animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-              boxSizing: 'border-box',
-            }}
-          >
-            {/* Toast Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span
-                  className="pulse-indicator"
-                  style={{
-                    width: '9px',
-                    height: '9px',
-                    borderRadius: '50%',
-                    background: activeToast.type === 'BUY' ? '#10b981' : '#ef4444',
-                    boxShadow: activeToast.type === 'BUY' ? '0 0 12px #10b981' : '0 0 12px #ef4444'
-                  }}
-                />
-                <span style={{ fontSize: '0.74rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', color: activeToast.type === 'BUY' ? '#34d399' : '#f87171' }}>
-                  NEW TRADE SIGNAL DETECTED
-                </span>
-                {pendingCount > 1 && (
-                  <span style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#ffffff', fontSize: '0.62rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
-                    1 of {pendingCount}
-                  </span>
-                )}
-              </div>
-
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                {activeToast.issued_at}
-              </span>
-            </div>
-
-            {/* Toast Body */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <div
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  background: activeToast.type === 'BUY' ? '#10b981' : '#ef4444',
-                  color: '#ffffff',
-                  fontWeight: 900,
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  flexShrink: 0,
-                  boxShadow: activeToast.type === 'BUY' ? '0 0 14px rgba(16, 185, 129, 0.4)' : '0 0 14px rgba(239, 68, 68, 0.4)'
-                }}
-              >
-                {activeToast.type === 'BUY' ? <ArrowUpRight size={18} /> : <ArrowDownRight size={18} />}
-                <span>{activeToast.type}</span>
-              </div>
-
-              <div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff' }}>
-                  {activeToast.symbol} &bull; ₹{activeToast.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                  {activeToast.strategy_name} &bull; {activeToast.market_cap_category.replace('_', '-')} &bull; <strong style={{ color: '#38bdf8' }}>{activeToast.timeframe.toUpperCase()} TIMEFRAME</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Strategy Details Strip */}
-            <div
-              style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                borderRadius: '8px',
-                padding: '8px 12px',
-                fontSize: '0.72rem',
-                color: '#e2e8f0',
-                marginBottom: '14px',
-                lineHeight: 1.4,
-                border: '1px solid rgba(255, 255, 255, 0.08)'
-              }}
-            >
-              <strong style={{ color: '#38bdf8' }}>{activeToast.indicator_reason}</strong>
-              <br />
-              Entry: <strong>₹{activeToast.entry_price}</strong> &bull; SL: <span style={{ color: '#f87171' }}>₹{activeToast.stop_loss}</span> &bull; T1: <span style={{ color: '#34d399' }}>₹{activeToast.target_1}</span>
-            </div>
-
-            {/* Toast Footer with Prominent 'OK' Button */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-              <div style={{ fontSize: '0.68rem', color: '#cbd5e1', fontWeight: 600 }}>
-                📌 Stays until you click OK
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {pendingCount > 1 && (
-                  <button
-                    onClick={() => setToastQueue([])}
-                    className="btn btn-secondary"
-                    style={{
-                      fontSize: '0.74rem',
-                      padding: '6px 12px',
-                      color: 'var(--text-muted)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)'
-                    }}
-                    title="Dismiss all queued alerts"
-                  >
-                    Clear All
-                  </button>
-                )}
-                <button
-                  onClick={() => setToastQueue(prev => prev.slice(1))}
-                  className="btn"
-                  style={{
-                    background: activeToast.type === 'BUY'
-                      ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
-                      : 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 26px',
-                    fontWeight: 900,
-                    fontSize: '0.84rem',
-                    cursor: 'pointer',
-                    letterSpacing: '0.04em',
-                    boxShadow: activeToast.type === 'BUY'
-                      ? '0 0 16px rgba(16, 185, 129, 0.5)'
-                      : '0 0 16px rgba(239, 68, 68, 0.5)',
-                    transition: 'transform 0.1s ease',
-                  }}
-                  title="Acknowledge and dismiss this notification"
-                >
-                  {pendingCount > 1 ? 'OK (Next)' : 'OK'}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
     </div>
   );
 }

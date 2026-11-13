@@ -77,3 +77,4 @@ async def test_auto_signals():
 
 if __name__ == "__main__":
     asyncio.run(test_auto_signals())
+

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { TradeSignalsProvider } from '@/context/TradeSignalsContext';
 
 export const metadata: Metadata = {
   title: 'Nifty 50 Financial Reports | National Stock Exchange of India (NSE)',
@@ -16,7 +17,11 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <TradeSignalsProvider>
+          {children}
+        </TradeSignalsProvider>
+      </body>
     </html>
   );
 }
