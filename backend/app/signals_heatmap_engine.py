@@ -11,9 +11,14 @@ from typing import Dict, List, Any, Optional
 try:
     from app.companies_data import NIFTY_50_REGISTRY, get_all_companies_summary
     from app.tick_engine import tick_engine
+    from app.trade_signals_engine import SIGNAL_UNIVERSE
 except ImportError:
     from backend.app.companies_data import NIFTY_50_REGISTRY, get_all_companies_summary
     from backend.app.tick_engine import tick_engine
+    try:
+        from backend.app.trade_signals_engine import SIGNAL_UNIVERSE
+    except ImportError:
+        SIGNAL_UNIVERSE = []
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
@@ -198,11 +203,17 @@ class SignalsHeatmapEngine:
     ) -> Dict[str, Any]:
         """Generate high-fidelity OHLCV candlestick data with technical indicators & Buy/Sell signals."""
         sym_upper = symbol.upper()
-        comp = next((c for c in NIFTY_50_REGISTRY if c["symbol"] == sym_upper), NIFTY_50_REGISTRY[0])
+        comp = next((c for c in NIFTY_50_REGISTRY if c["symbol"] == sym_upper), None)
+        univ_stock = next((s for s in SIGNAL_UNIVERSE if s["symbol"] == sym_upper), None)
         live = tick_engine.stocks.get(sym_upper)
 
-        current_ltp = float(live.get("ltp") if live else comp.get("market_cap_cr", 100000) / 1000)
-        if current_ltp <= 0:
+        if live and float(live.get("ltp", 0)) > 0:
+            current_ltp = float(live.get("ltp"))
+        elif univ_stock and float(univ_stock.get("base_price", 0)) > 0:
+            current_ltp = float(univ_stock.get("base_price"))
+        elif comp and float(comp.get("market_cap_cr", 0)) > 0:
+            current_ltp = float(comp.get("market_cap_cr") / 1000)
+        else:
             current_ltp = 1500.0
 
         # Generate realistic historical candles walking towards current_ltp
@@ -353,8 +364,8 @@ class SignalsHeatmapEngine:
         return {
             "status": "success",
             "symbol": sym_upper,
-            "company_name": comp["company_name"],
-            "sector": comp["sector"],
+            "company_name": comp["company_name"] if comp else (univ_stock["name"] if univ_stock else sym_upper),
+            "sector": comp["sector"] if comp else (univ_stock["sector"] if univ_stock else "Equity"),
             "timeframe": timeframe,
             "current_price": current_ltp,
             "latest_signal": latest_signal,

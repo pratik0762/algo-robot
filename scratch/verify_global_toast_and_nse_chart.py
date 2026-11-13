@@ -131,3 +131,4 @@ async def test_global_toast_and_nse_chart():
 
 if __name__ == "__main__":
     asyncio.run(test_global_toast_and_nse_chart())
+
