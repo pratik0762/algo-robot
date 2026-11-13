@@ -285,7 +285,7 @@ export default function StrategyLogicCard({
             </button>
           )}
 
-          {strategy.is_custom && onEditStrategy && (
+          {onEditStrategy && (
             <button
               type="button"
               onClick={() => onEditStrategy(strategy)}
@@ -325,7 +325,7 @@ export default function StrategyLogicCard({
             </button>
           )}
 
-          {strategy.is_custom && onToggleStatus && (
+          {onToggleStatus && (
             <button
               type="button"
               onClick={() => onToggleStatus(strategy.id, strategy.status?.is_enabled ?? true)}
@@ -344,19 +344,20 @@ export default function StrategyLogicCard({
             </button>
           )}
 
-          {strategy.is_custom && onDeleteStrategy && (
+          {onDeleteStrategy && (
             <button
               type="button"
               onClick={() => onDeleteStrategy(strategy.id)}
               style={{
                 background: 'rgba(239, 68, 68, 0.12)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
                 color: '#f87171',
                 borderRadius: '6px',
                 padding: '4px 10px',
                 fontSize: '0.68rem',
                 fontWeight: 700,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
               }}
             >
               🗑 Delete

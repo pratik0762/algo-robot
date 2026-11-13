@@ -86,6 +86,12 @@ export default function StrategyPage() {
   const [backtestModalOpen, setBacktestModalOpen] = useState<boolean>(false);
   const [backtestStrategyId, setBacktestStrategyId] = useState<string>('ema_cross');
 
+  // Delete Confirmation State
+  const [strategyToDelete, setStrategyToDelete] = useState<any | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccessMsg, setDeleteSuccessMsg] = useState<string | null>(null);
+
   // Inline Builder State
   const [bName, setBName] = useState<string>('');
   const [bCategory, setBCategory] = useState<string>('Momentum');
@@ -234,24 +240,66 @@ export default function StrategyPage() {
     }
   };
 
-  // Strategy Action: Delete
-  const handleDelete = async (stratId: string) => {
-    if (!window.confirm(`Are you sure you want to permanently delete this custom strategy?`)) {
-      return;
-    }
+  // Strategy Action: Edit
+  const handleEdit = async (strat: any) => {
     try {
       const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/strategies/custom/${stratId}`, {
+      const res = await fetch(`${apiBase}/api/trade-signals/strategies/${strat.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEditingStrategy(data.strategy || strat);
+      } else {
+        setEditingStrategy(strat);
+      }
+    } catch (e) {
+      setEditingStrategy(strat);
+    }
+    setBuilderModalOpen(true);
+  };
+
+  // Strategy Action: Open Safe Delete Confirmation
+  const handleOpenDelete = (strat: any) => {
+    setStrategyToDelete(strat);
+    setDeleteError(null);
+    setDeleteSuccessMsg(null);
+  };
+
+  // Strategy Action: Confirm Safe Deletion / Archival
+  const handleConfirmDelete = async () => {
+    if (!strategyToDelete) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/strategies/custom/${strategyToDelete.id}`, {
         method: 'DELETE'
       });
-      if (res.ok) {
-        fetchData();
-        if (selectedStrategyId === stratId && strategies.length > 0) {
-          setSelectedStrategyId(strategies[0].id);
-        }
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail || data.message || 'Failed to delete strategy.');
       }
-    } catch (e: any) {
-      alert(`Error deleting strategy: ${e.message}`);
+      setDeleteSuccessMsg(data.message || `Strategy '${strategyToDelete.name}' processed successfully.`);
+      setTimeout(() => {
+        setStrategyToDelete(null);
+        setDeleteSuccessMsg(null);
+        fetchData();
+        if (selectedStrategyId === strategyToDelete.id && strategies.length > 1) {
+          const remaining = strategies.filter((s: any) => s.id !== strategyToDelete.id);
+          if (remaining.length > 0) setSelectedStrategyId(remaining[0].id);
+        }
+      }, 1000);
+    } catch (err: any) {
+      setDeleteError(err.message || 'An error occurred while deleting the strategy.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Strategy Action: Delete (from logic card)
+  const handleDelete = (stratId: string) => {
+    const strat = strategies.find((s) => s.id === stratId) || activeStrategyLogic;
+    if (strat) {
+      handleOpenDelete(strat);
     }
   };
 
@@ -1078,33 +1126,93 @@ export default function StrategyPage() {
                       </p>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '12px', flexWrap: 'wrap', gap: '8px' }}>
                       <span style={{ fontSize: '0.7rem', color: '#818cf8', fontWeight: 700 }}>
                         {strat.supported_instruments ? strat.supported_instruments.join(', ') : 'Stocks & F&O'}
                       </span>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLaunchBacktest(strat.id);
-                        }}
-                        style={{
-                          background: 'rgba(16, 185, 129, 0.15)',
-                          border: '1px solid rgba(16, 185, 129, 0.4)',
-                          color: '#34d399',
-                          padding: '4px 10px',
-                          borderRadius: 'var(--radius-sm)',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}
-                      >
-                        <Play size={12} />
-                        <span>Backtest</span>
-                      </button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {/* Edit Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(strat);
+                          }}
+                          title={`Edit ${strat.name}`}
+                          style={{
+                            background: 'rgba(99, 102, 241, 0.14)',
+                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            color: '#a5b4fc',
+                            padding: '4px 9px',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <Edit3 size={11} />
+                          <span>Edit</span>
+                        </button>
+
+                        {/* Delete Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenDelete(strat);
+                          }}
+                          title={`Delete ${strat.name}`}
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.12)',
+                            border: '1px solid rgba(239, 68, 68, 0.32)',
+                            color: '#f87171',
+                            padding: '4px 9px',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <Trash2 size={11} />
+                          <span>Delete</span>
+                        </button>
+
+                        {/* Backtest Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLaunchBacktest(strat.id);
+                          }}
+                          title={`Backtest ${strat.name}`}
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            border: '1px solid rgba(16, 185, 129, 0.4)',
+                            color: '#34d399',
+                            padding: '4px 10px',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <Play size={11} />
+                          <span>Backtest</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -1816,6 +1924,203 @@ export default function StrategyPage() {
         onClose={() => setBacktestModalOpen(false)}
         initialStrategyId={backtestStrategyId}
       />
+
+      {/* Delete Strategy Confirmation Modal */}
+      {strategyToDelete && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10000,
+            background: 'rgba(5, 7, 15, 0.85)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            animation: 'fadeIn 0.15s ease-out'
+          }}
+          onClick={() => {
+            if (!deleteLoading) setStrategyToDelete(null);
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              background: 'linear-gradient(180deg, #131a2e 0%, #0c101d 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(239, 68, 68, 0.15)',
+              color: '#ffffff'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.35)',
+                  color: '#f87171',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}
+              >
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#ffffff' }}>
+                  Delete Strategy
+                </h3>
+                <span style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
+                  Safe archive and referential integrity check
+                </span>
+              </div>
+            </div>
+
+            {/* Strategy Card Preview */}
+            <div
+              style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '10px',
+                padding: '14px 16px',
+                marginBottom: '16px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span
+                  style={{
+                    background: 'rgba(99, 102, 241, 0.2)',
+                    color: '#a5b4fc',
+                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontSize: '0.64rem',
+                    fontWeight: 800
+                  }}
+                >
+                  {strategyToDelete.badge || strategyToDelete.category || 'QUANT'}
+                </span>
+                <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>
+                  v{strategyToDelete.version || '1.0.0'}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.96rem', fontWeight: 800, color: '#f8fafc', marginBottom: '4px' }}>
+                {strategyToDelete.name}
+              </div>
+              <div style={{ fontSize: '0.74rem', color: '#94a3b8', lineHeight: 1.4 }}>
+                {strategyToDelete.description || 'Algorithmic trading strategy configuration.'}
+              </div>
+            </div>
+
+            {/* Advisory Notice */}
+            <div
+              style={{
+                background: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.25)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                marginBottom: '16px',
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'flex-start'
+              }}
+            >
+              <AlertTriangle size={18} color="#f59e0b" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <div style={{ fontSize: '0.74rem', color: '#fcd34d', lineHeight: 1.45 }}>
+                Historical signals and backtest simulations linked to this strategy will be safely preserved in database ledgers.
+                If open paper trading positions exist, deletion will be blocked until positions are closed.
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {deleteError && (
+              <div
+                style={{
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.35)',
+                  borderRadius: '8px',
+                  padding: '10px 14px',
+                  marginBottom: '16px',
+                  fontSize: '0.76rem',
+                  color: '#fca5a5'
+                }}
+              >
+                ⚠️ {deleteError}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {deleteSuccessMsg && (
+              <div
+                style={{
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  borderRadius: '8px',
+                  padding: '10px 14px',
+                  marginBottom: '16px',
+                  fontSize: '0.76rem',
+                  color: '#6ee7b7'
+                }}
+              >
+                ✓ {deleteSuccessMsg}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setStrategyToDelete(null)}
+                disabled={deleteLoading}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid #334155',
+                  color: '#94a3b8',
+                  borderRadius: '8px',
+                  padding: '8px 16px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: deleteLoading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={deleteLoading}
+                style={{
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  border: '1px solid #f87171',
+                  color: '#ffffff',
+                  borderRadius: '8px',
+                  padding: '8px 20px',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: deleteLoading ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 0 16px rgba(239, 68, 68, 0.35)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Trash2 size={13} />
+                <span>{deleteLoading ? 'Processing...' : 'Confirm Delete / Archive'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

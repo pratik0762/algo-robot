@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { AlertTriangle, RotateCcw, Check, Sparkles, X } from 'lucide-react';
 
 export interface StrategyIndicatorConfig {
   name: string;
@@ -177,62 +178,145 @@ export default function StrategyBuilderModal({
   const [selectedIndType, setSelectedIndType] = useState<string>('EMA (Exponential Moving Average)');
   const [indPeriod, setIndPeriod] = useState<number>(14);
 
-  // Load initial data if editing
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        id: initialData.id,
-        name: initialData.name || '',
-        description: initialData.description || '',
-        category: initialData.category || 'Custom Strategy',
-        trading_objective: initialData.trading_objective || '',
-        supported_instruments: initialData.supported_instruments || ['Equity Stocks'],
-        supported_timeframes: initialData.supported_timeframes || ['15m'],
-        indicators: initialData.indicators || [],
-        buy_conditions: initialData.buy_conditions || [],
-        sell_conditions: initialData.sell_conditions || [],
-        buy_condition_rows: (initialData.buy_conditions || []).map((c: string, idx: number) => ({
-          id: String(idx + 1),
-          leftOperand: c.split(' ')[0] || 'Indicator',
-          operator: '>',
-          rightOperand: 'Value',
-          conjunction: 'AND'
-        })),
-        sell_condition_rows: (initialData.sell_conditions || []).map((c: string, idx: number) => ({
-          id: String(idx + 1),
-          leftOperand: c.split(' ')[0] || 'Indicator',
-          operator: '<',
-          rightOperand: 'Value',
-          conjunction: 'AND'
-        })),
-        risk_management: {
-          entry_type: 'Market on Candle Close',
-          stop_loss_type: 'ATR Multiplier (1.5x)',
-          stop_loss_multiplier: 1.5,
-          target_1_ratio: 1.5,
-          target_2_ratio: 2.5,
-          target_3_ratio: 4.0,
-          risk_reward_ratio: '1 : 2.0',
-          max_risk_per_trade_pct: 1.5,
-          signal_validity_bars: 3,
-          ...(initialData.risk_management || {})
-        },
-        advanced_settings: {
-          higher_timeframe_confirmation: true,
-          volume_filter: true,
-          volume_filter_multiplier: 1.5,
-          candle_close_confirmation: true,
-          trading_session_start: '09:30',
-          trading_session_end: '15:15',
-          cooldown_bars: 3,
-          duplicate_signal_prevention: true,
-          ...(initialData.advanced_settings || {})
-        },
-        is_enabled: initialData.status?.is_enabled ?? initialData.is_enabled ?? true,
-        version: initialData.version
-      });
+  // Unsaved changes & dirty state tracking
+  const initialSnapshotRef = useRef<string>('');
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState<boolean>(false);
+  const [resetToast, setResetToast] = useState<boolean>(false);
+
+  // Helper to normalize and deep-extract strategy configuration
+  const parseStrategyData = (strat: any): CustomStrategyFormData => {
+    let t1 = 1.5;
+    let t2 = 2.5;
+    let t3 = 4.0;
+    let slType = 'ATR Multiplier (1.5x)';
+    let slMult = 1.5;
+    let rrRatio = '1 : 2.0';
+    let maxRisk = 1.5;
+
+    if (strat.risk_management) {
+      t1 = strat.risk_management.target_1_ratio ?? 1.5;
+      t2 = strat.risk_management.target_2_ratio ?? 2.5;
+      t3 = strat.risk_management.target_3_ratio ?? 4.0;
+      slType = strat.risk_management.stop_loss_type ?? slType;
+      slMult = strat.risk_management.stop_loss_multiplier ?? 1.5;
+      rrRatio = strat.risk_management.risk_reward_ratio ?? `1 : ${Number(t1).toFixed(1)}`;
+      maxRisk = strat.risk_management.max_risk_per_trade_pct ?? 1.5;
+    } else {
+      if (strat.target_calculation) {
+        const m1 = String(strat.target_calculation.target_1 || '').match(/Risk\s*\*\s*([\d.]+)/i);
+        if (m1) t1 = parseFloat(m1[1]);
+        const m2 = String(strat.target_calculation.target_2 || '').match(/Risk\s*\*\s*([\d.]+)/i);
+        if (m2) t2 = parseFloat(m2[1]);
+        const m3 = String(strat.target_calculation.target_3 || '').match(/Risk\s*\*\s*([\d.]+)/i);
+        if (m3) t3 = parseFloat(m3[1]);
+      }
+      if (strat.risk_reward) {
+        rrRatio = strat.risk_reward.split('(')[0].trim();
+      }
+      if (strat.stop_loss_logic) {
+        slType = strat.stop_loss_logic.slice(0, 36) + '...';
+      }
     }
-  }, [initialData]);
+
+    const buyConds: string[] = strat.buy_conditions || [];
+    const sellConds: string[] = strat.sell_conditions || [];
+
+    return {
+      id: strat.id,
+      name: strat.name || '',
+      description: strat.description || '',
+      category: strat.category || 'Custom Strategy',
+      trading_objective: strat.trading_objective || '',
+      supported_instruments: strat.supported_instruments || ['Equity Stocks'],
+      supported_timeframes: strat.supported_timeframes || ['15m'],
+      indicators: (strat.indicators || []).map((ind: any) => ({
+        name: typeof ind === 'string' ? ind : (ind.name || 'Technical Indicator'),
+        symbol: typeof ind === 'string' ? ind.split(' ')[0] : (ind.symbol || (ind.name ? ind.name.split(' ')[0] : 'IND')),
+        parameters: typeof ind === 'string' ? {} : (ind.parameters || {}),
+        purpose: typeof ind === 'string' ? 'Technical indicator filter' : (ind.purpose || 'Technical indicator filter')
+      })),
+      buy_conditions: buyConds,
+      sell_conditions: sellConds,
+      buy_condition_rows: buyConds.map((c: string, idx: number) => ({
+        id: String(idx + 1),
+        leftOperand: c.split(' ')[0] || 'Indicator',
+        operator: c.includes('<') ? '<' : c.includes('crosses_below') ? 'crosses_below' : '>',
+        rightOperand: 'Value',
+        conjunction: 'AND'
+      })),
+      sell_condition_rows: sellConds.map((c: string, idx: number) => ({
+        id: String(idx + 1),
+        leftOperand: c.split(' ')[0] || 'Indicator',
+        operator: c.includes('>') ? '>' : c.includes('crosses_above') ? 'crosses_above' : '<',
+        rightOperand: 'Value',
+        conjunction: 'AND'
+      })),
+      risk_management: {
+        entry_type: strat.risk_management?.entry_type || 'Market on Candle Close',
+        stop_loss_type: slType,
+        stop_loss_multiplier: slMult,
+        target_1_ratio: t1,
+        target_2_ratio: t2,
+        target_3_ratio: t3,
+        risk_reward_ratio: rrRatio,
+        max_risk_per_trade_pct: maxRisk,
+        signal_validity_bars: strat.risk_management?.signal_validity_bars || 3
+      },
+      advanced_settings: {
+        higher_timeframe_confirmation: strat.advanced_settings?.higher_timeframe_confirmation ?? true,
+        volume_filter: strat.advanced_settings?.volume_filter ?? true,
+        volume_filter_multiplier: strat.advanced_settings?.volume_filter_multiplier ?? 1.5,
+        candle_close_confirmation: strat.advanced_settings?.candle_close_confirmation ?? true,
+        trading_session_start: strat.advanced_settings?.trading_session_start || '09:30',
+        trading_session_end: strat.advanced_settings?.trading_session_end || '15:15',
+        cooldown_bars: strat.advanced_settings?.cooldown_bars || 3,
+        duplicate_signal_prevention: strat.advanced_settings?.duplicate_signal_prevention ?? true
+      },
+      is_enabled: strat.status?.is_enabled ?? strat.is_enabled ?? true,
+      version: strat.version
+    };
+  };
+
+  // Load initial data if editing or reset
+  useEffect(() => {
+    if (initialData && isOpen) {
+      const parsed = parseStrategyData(initialData);
+      setFormData(parsed);
+      initialSnapshotRef.current = JSON.stringify(parsed);
+    } else if (isOpen) {
+      // Default blank/new template snapshot
+      initialSnapshotRef.current = JSON.stringify(formData);
+    }
+  }, [initialData, isOpen]);
+
+  // Is dirty calculation
+  const isDirty = useMemo(() => {
+    if (!initialSnapshotRef.current) return false;
+    return JSON.stringify(formData) !== initialSnapshotRef.current;
+  }, [formData]);
+
+  // Attempt safe close with unsaved changes guard
+  const handleAttemptClose = () => {
+    if (isDirty) {
+      setShowDiscardConfirm(true);
+    } else {
+      onClose();
+    }
+  };
+
+  // Reset changes to original snapshot
+  const handleResetChanges = () => {
+    if (initialSnapshotRef.current) {
+      try {
+        const original = JSON.parse(initialSnapshotRef.current);
+        setFormData(original);
+        setResetToast(true);
+        setTimeout(() => setResetToast(false), 2200);
+      } catch (e) {
+        console.error('Failed to reset form data', e);
+      }
+    }
+  };
 
   // Real-time validation checks
   const validationErrors = useMemo(() => {
@@ -507,7 +591,7 @@ export default function StrategyBuilderModal({
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleAttemptClose}
             style={{
               background: 'transparent',
               border: 'none',
@@ -1491,28 +1575,69 @@ export default function StrategyBuilderModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'rgba(255, 255, 255, 0.02)'
+            background: 'rgba(255, 255, 255, 0.02)',
+            flexWrap: 'wrap',
+            gap: '12px'
           }}
         >
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-            style={{
-              background: 'transparent',
-              border: '1px solid #334155',
-              color: '#94a3b8',
-              borderRadius: '8px',
-              padding: '9px 18px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              cursor: 'pointer'
-            }}
-          >
-            Cancel
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button
+              type="button"
+              onClick={handleAttemptClose}
+              disabled={isSubmitting}
+              style={{
+                background: 'transparent',
+                border: '1px solid #334155',
+                color: '#94a3b8',
+                borderRadius: '8px',
+                padding: '9px 18px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+
+            {isDirty && (
+              <button
+                type="button"
+                onClick={handleResetChanges}
+                disabled={isSubmitting}
+                style={{
+                  background: 'rgba(234, 179, 8, 0.1)',
+                  border: '1px solid rgba(234, 179, 8, 0.3)',
+                  color: '#facc15',
+                  borderRadius: '8px',
+                  padding: '9px 16px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                title="Revert form values to initial state"
+              >
+                <RotateCcw size={13} />
+                <span>Reset Changes</span>
+              </button>
+            )}
+
+            {resetToast && (
+              <span style={{ fontSize: '0.72rem', color: '#facc15', fontWeight: 600 }}>
+                ✓ Changes reset to original configuration
+              </span>
+            )}
+          </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {isDirty && (
+              <span style={{ fontSize: '0.72rem', color: '#a5b4fc', fontWeight: 600, marginRight: '4px' }}>
+                ● Unsaved changes
+              </span>
+            )}
+
             <button
               type="button"
               disabled={isSubmitting}
@@ -1555,6 +1680,104 @@ export default function StrategyBuilderModal({
           </div>
         </div>
       </div>
+
+      {/* Unsaved Changes Confirmation Modal */}
+      {showDiscardConfirm && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10005,
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            style={{
+              background: '#0f172a',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              borderRadius: '14px',
+              padding: '24px',
+              maxWidth: '440px',
+              width: '100%',
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.15)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+              <div
+                style={{
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#f87171',
+                  padding: '8px',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <AlertTriangle size={22} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#ffffff' }}>
+                  Unsaved Changes
+                </h3>
+                <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                  Modifications have not been saved to database
+                </span>
+              </div>
+            </div>
+
+            <p style={{ margin: '0 0 20px 0', fontSize: '0.82rem', color: '#cbd5e1', lineHeight: 1.5 }}>
+              You have unsaved changes in this strategy configuration. Are you sure you want to discard your edits and leave?
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setShowDiscardConfirm(false)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#ffffff',
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                Keep Editing
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDiscardConfirm(false);
+                  initialSnapshotRef.current = '';
+                  onClose();
+                }}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.2)',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  color: '#f87171',
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                Discard Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

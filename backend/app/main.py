@@ -1082,15 +1082,21 @@ async def api_patch_strategy_status(strategy_id: str, payload: Dict[str, Any]):
 
 @app.delete("/api/strategies/custom/{strategy_id}")
 async def api_delete_custom_strategy(strategy_id: str):
-    """Permanently delete a custom strategy."""
+    """Safely archive or delete a strategy with active trade checks and historical integrity preservation."""
     from app.custom_strategies_manager import delete_custom_strategy
-    success = delete_custom_strategy(strategy_id)
-    if not success:
-        raise HTTPException(status_code=404, detail=f"Custom strategy '{strategy_id}' not found")
-    return {
-        "status": "success",
-        "message": f"Strategy '{strategy_id}' successfully deleted."
-    }
+    try:
+        res = delete_custom_strategy(strategy_id)
+        return {
+            "status": "success",
+            "message": res.get("message", f"Strategy '{strategy_id}' processed successfully."),
+            "result": res
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete/archive strategy: {e}")
 
 @app.post("/api/strategies/validate")
 async def api_validate_strategy(payload: Dict[str, Any]):

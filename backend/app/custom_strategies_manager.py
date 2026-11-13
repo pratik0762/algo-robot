@@ -292,11 +292,31 @@ def get_custom_strategy(strategy_id: str) -> Optional[Dict[str, Any]]:
 
 
 def update_custom_strategy(strategy_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
-    """Update custom strategy with automatic version increment to preserve historical integrity."""
+    """Update custom strategy with automatic version increment to preserve historical integrity.
+    If strategy_id belongs to a baseline strategy, it creates a custom persistent override.
+    """
     strategies = _load_all_raw()
     idx = next((i for i, s in enumerate(strategies) if s.get("id") == strategy_id), None)
+    
     if idx is None:
-        raise KeyError(f"Strategy '{strategy_id}' not found.")
+        # Check if updating a built-in strategy
+        from app.strategy_registry import STRATEGY_REGISTRY
+        if strategy_id in STRATEGY_REGISTRY:
+            base = STRATEGY_REGISTRY[strategy_id]
+            curr = dict(base)
+            curr["id"] = strategy_id
+            curr["is_custom"] = True
+            curr["version_history"] = [
+                {
+                    "version": base.get("version", "1.0.0"),
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "notes": "Baseline model customized by user"
+                }
+            ]
+            strategies.append(curr)
+            idx = len(strategies) - 1
+        else:
+            raise KeyError(f"Strategy '{strategy_id}' not found.")
 
     curr = strategies[idx]
     want_active = data.get("is_enabled", curr.get("is_enabled", False))
@@ -328,17 +348,18 @@ def update_custom_strategy(strategy_id: str, data: Dict[str, Any]) -> Dict[str, 
         "category": data.get("category", curr["category"]),
         "badge": f"CUSTOM {data.get('category', curr['category']).upper()[:12]}",
         "description": data.get("description", curr["description"]),
-        "trading_objective": data.get("trading_objective", curr["trading_objective"]),
-        "supported_instruments": data.get("supported_instruments", curr["supported_instruments"]),
-        "supported_timeframes": data.get("supported_timeframes", curr["supported_timeframes"]),
-        "indicators": data.get("indicators", curr["indicators"]),
-        "buy_conditions": data.get("buy_conditions", curr["buy_conditions"]),
-        "sell_conditions": data.get("sell_conditions", curr["sell_conditions"]),
+        "trading_objective": data.get("trading_objective", curr.get("trading_objective", "")),
+        "supported_instruments": data.get("supported_instruments", curr.get("supported_instruments", ["Equity Stocks"])),
+        "supported_timeframes": data.get("supported_timeframes", curr.get("supported_timeframes", ["15m"])),
+        "indicators": data.get("indicators", curr.get("indicators", [])),
+        "buy_conditions": data.get("buy_conditions", curr.get("buy_conditions", [])),
+        "sell_conditions": data.get("sell_conditions", curr.get("sell_conditions", [])),
         "condition_rules": data.get("condition_rules", curr.get("condition_rules", {})),
-        "risk_management": data.get("risk_management", curr["risk_management"]),
-        "advanced_settings": data.get("advanced_settings", curr["advanced_settings"]),
+        "risk_management": data.get("risk_management", curr.get("risk_management", {})),
+        "advanced_settings": data.get("advanced_settings", curr.get("advanced_settings", {})),
         "is_enabled": want_active and is_valid,
         "is_draft": not want_active or not is_valid,
+        "is_custom": True,
         "version": new_version,
         "version_history": history,
         "updated_at": now_iso
@@ -399,13 +420,125 @@ def patch_strategy_status(strategy_id: str, is_enabled: Optional[bool] = None, i
     return format_strategy_for_display(strat)
 
 
-def delete_custom_strategy(strategy_id: str) -> bool:
-    """Delete a custom strategy permanently after confirmation."""
+def delete_custom_strategy(strategy_id: str) -> Dict[str, Any]:
+    """Safely delete or archive a strategy with comprehensive referential integrity protection.
+    
+    1. Prevents deletion if open positions currently exist in Paper Trading.
+    2. If historical trade signals or backtest records exist, performs a safe soft-delete (archives),
+       preserving past performance records and audit trails.
+    3. If strategy is a baseline model, archives it to hide it from active views.
+    4. If strategy is a draft custom model with zero historical references, permanently removes it.
+    """
+    # 1. Check for active open positions in Paper Trading Desk
+    portfolio_file = os.path.join(DATA_DIR, "paper_trading_portfolio.json")
+    if os.path.exists(portfolio_file):
+        try:
+            with open(portfolio_file, "r", encoding="utf-8") as f:
+                pdata = json.load(f)
+                open_pos = pdata.get("open_positions", [])
+                active_matches = [
+                    pos for pos in open_pos
+                    if pos.get("strategy_id") == strategy_id or
+                       pos.get("strategy_name", "").lower() == strategy_id.lower()
+                ]
+                if active_matches:
+                    symbols = ", ".join([p.get("symbol", "N/A") for p in active_matches])
+                    raise ValueError(
+                        f"Cannot delete strategy: {len(active_matches)} active position(s) ({symbols}) "
+                        "are currently open in Paper Trading. Please square off positions first."
+                    )
+        except ValueError:
+            raise
+        except Exception as e:
+            print(f"[WARN] Failed to verify paper trading positions for deletion: {e}")
+
+    # 2. Check for historical records in Trade Signals and Backtest ledgers
+    signals_file = os.path.join(DATA_DIR, "trade_signals_ledger.json")
+    backtests_file = os.path.join(DATA_DIR, "backtest_results_ledger.json")
+    has_history = False
+    signal_count = 0
+    backtest_count = 0
+
+    if os.path.exists(signals_file):
+        try:
+            with open(signals_file, "r", encoding="utf-8") as f:
+                signals = json.load(f)
+                matches = [s for s in signals if s.get("strategy_id") == strategy_id]
+                signal_count = len(matches)
+                if signal_count > 0:
+                    has_history = True
+        except Exception:
+            pass
+
+    if os.path.exists(backtests_file):
+        try:
+            with open(backtests_file, "r", encoding="utf-8") as f:
+                bdata = json.load(f)
+                backtests = bdata if isinstance(bdata, list) else bdata.get("history", [])
+                matches = [b for b in backtests if b.get("strategy_id") == strategy_id]
+                backtest_count = len(matches)
+                if backtest_count > 0:
+                    has_history = True
+        except Exception:
+            pass
+
     strategies = _load_all_raw()
-    initial_len = len(strategies)
-    filtered = [s for s in strategies if s.get("id") != strategy_id]
-    if len(filtered) == initial_len:
-        return False
-    _save_all_raw(filtered)
-    return True
+    idx = next((i for i, s in enumerate(strategies) if s.get("id") == strategy_id), None)
+
+    # 3. Handle baseline strategy archiving
+    if idx is None:
+        from app.strategy_registry import STRATEGY_REGISTRY
+        if strategy_id in STRATEGY_REGISTRY:
+            base = STRATEGY_REGISTRY[strategy_id]
+            archived_record = dict(base)
+            archived_record["id"] = strategy_id
+            archived_record["is_archived"] = True
+            archived_record["is_enabled"] = False
+            archived_record["updated_at"] = datetime.now(timezone.utc).isoformat()
+            strategies.append(archived_record)
+            _save_all_raw(strategies)
+            return {
+                "success": True,
+                "action": "archived",
+                "strategy_id": strategy_id,
+                "message": f"Baseline strategy '{base.get('name', strategy_id)}' safely archived from active repository.",
+                "signal_count": signal_count,
+                "backtest_count": backtest_count,
+                "has_history": has_history
+            }
+        else:
+            raise KeyError(f"Strategy '{strategy_id}' not found.")
+
+    curr = strategies[idx]
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # 4. Soft-delete / Archive if history exists
+    if has_history:
+        curr["is_archived"] = True
+        curr["is_enabled"] = False
+        curr["updated_at"] = now_iso
+        strategies[idx] = curr
+        _save_all_raw(strategies)
+        return {
+            "success": True,
+            "action": "archived",
+            "strategy_id": strategy_id,
+            "message": f"Strategy '{curr.get('name', strategy_id)}' archived to preserve {signal_count} signal(s) and {backtest_count} backtest report(s).",
+            "signal_count": signal_count,
+            "backtest_count": backtest_count,
+            "has_history": True
+        }
+
+    # 5. Permanent deletion if no historical records exist
+    strategies.pop(idx)
+    _save_all_raw(strategies)
+    return {
+        "success": True,
+        "action": "deleted",
+        "strategy_id": strategy_id,
+        "message": f"Strategy '{curr.get('name', strategy_id)}' permanently deleted.",
+        "signal_count": 0,
+        "backtest_count": 0,
+        "has_history": False
+    }
 
