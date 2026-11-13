@@ -193,3 +193,4 @@ class ZerodhaAdapter(BaseBrokerClient):
             "order_id": order_id,
             "message": f"Zerodha order #{order_id} cancelled successfully."
         }
+

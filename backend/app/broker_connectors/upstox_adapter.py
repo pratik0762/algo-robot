@@ -141,3 +141,4 @@ class UpstoxAdapter(BaseBrokerClient):
             "order_id": order_id,
             "message": f"Upstox order #{order_id} cancelled."
         }
+

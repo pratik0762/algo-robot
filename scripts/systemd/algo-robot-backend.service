@@ -1,0 +1,27 @@
+[Unit]
+Description=Algo Robot Quantitative Trading Engine (FastAPI Backend)
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=algouser
+Group=algouser
+WorkingDirectory=/opt/algo-robot/backend
+Environment="PATH=/opt/algo-robot/.venv/bin:/usr/local/bin:/usr/bin"
+Environment="PYTHONPATH=/opt/algo-robot/backend"
+Environment="PORT=8000"
+
+ExecStart=/opt/algo-robot/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+
+Restart=always
+RestartSec=5s
+LimitNOFILE=65536
+LimitNPROC=4096
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=algo-robot-backend
+
+[Install]
+WantedBy=multi-user.target

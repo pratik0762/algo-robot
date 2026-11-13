@@ -1,0 +1,6 @@
+[Unit]
+Description=Algo Robot Production Services
+Wants=algo-robot-backend.service algo-robot-frontend.service nginx.service
+
+[Install]
+WantedBy=multi-user.target

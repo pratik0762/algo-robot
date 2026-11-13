@@ -185,3 +185,4 @@ class AngelOneAdapter(BaseBrokerClient):
             "order_id": order_id,
             "message": f"Angel One order #{order_id} cancelled."
         }
+

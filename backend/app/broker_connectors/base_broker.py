@@ -68,3 +68,4 @@ class BaseBrokerClient(ABC):
     def cancel_order(self, order_id: str) -> Dict[str, Any]:
         """Cancel an open pending order."""
         pass
+

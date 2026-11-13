@@ -254,3 +254,4 @@ class PaperTradingEngine:
         return {"status": "success", "message": f"Paper trading account reset to ₹{initial_capital:,.2f}"}
 
 paper_trading_engine = PaperTradingEngine()
+

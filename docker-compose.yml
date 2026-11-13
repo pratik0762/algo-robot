@@ -1,0 +1,91 @@
+version: '3.8'
+
+# =====================================================================
+# Algo Robot - Production Container Orchestration
+# =====================================================================
+
+networks:
+  algo-network:
+    driver: bridge
+    name: algo-network
+
+volumes:
+  algo-data:
+    driver: local
+
+services:
+  # -------------------------------------------------------------------
+  # 1. FastAPI Quantitative Backend Service
+  # -------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: algo-robot-backend:latest
+    container_name: algo-robot-backend
+    restart: always
+    environment:
+      - PORT=8000
+      - PYTHONPATH=/app
+      - WORKERS=4
+      - LOG_LEVEL=info
+    volumes:
+      - ./backend/app/data:/app/app/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - algo-network
+
+  # -------------------------------------------------------------------
+  # 2. Next.js 16 Production Frontend Service
+  # -------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: algo-robot-frontend:latest
+    container_name: algo-robot-frontend
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - algo-network
+
+  # -------------------------------------------------------------------
+  # 3. Nginx Reverse Proxy & Load Balancer
+  # -------------------------------------------------------------------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: algo-robot-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - algo-network
