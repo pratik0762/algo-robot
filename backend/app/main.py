@@ -864,11 +864,13 @@ async def api_get_trade_signals(
 
 @app.get("/api/trade-signals/strategies")
 async def api_get_trade_strategies(response: Response):
-    """Available algorithmic strategies and configuration models."""
-    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
+    """Available algorithmic strategies and configuration models (including user-created custom strategies)."""
+    from app.strategy_registry import get_all_registered_strategies
+    strategies = get_all_registered_strategies()
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return {
         "status": "success",
-        "strategies": AVAILABLE_STRATEGIES
+        "strategies": strategies
     }
 
 @app.get("/api/trade-signals/strategies/{strategy_id}")
@@ -878,10 +880,129 @@ async def api_get_trade_strategy_detail(strategy_id: str, response: Response):
     logic = get_strategy_logic(strategy_id)
     if not logic:
         raise HTTPException(status_code=404, detail=f"Strategy '{strategy_id}' not found")
-    response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return {
         "status": "success",
         "strategy": logic
+    }
+
+# =====================================================================
+# Phase 3: Custom Strategy Builder & Management REST API
+# =====================================================================
+
+@app.post("/api/strategies/custom", status_code=201)
+async def api_create_custom_strategy(payload: Dict[str, Any]):
+    """Create a new custom quantitative strategy with versioning and validation."""
+    from app.custom_strategies_manager import create_custom_strategy
+    try:
+        new_strat = create_custom_strategy(payload)
+        return {
+            "status": "success",
+            "message": f"Strategy '{new_strat['name']}' created successfully (v{new_strat['version']}).",
+            "strategy": new_strat
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create strategy: {e}")
+
+@app.get("/api/strategies/custom")
+async def api_list_custom_strategies(include_archived: bool = False):
+    """List all custom strategies."""
+    from app.custom_strategies_manager import list_custom_strategies
+    strategies = list_custom_strategies(include_archived=include_archived)
+    return {
+        "status": "success",
+        "count": len(strategies),
+        "strategies": strategies
+    }
+
+@app.get("/api/strategies/custom/{strategy_id}")
+async def api_get_custom_strategy(strategy_id: str):
+    """Get single custom strategy details."""
+    from app.custom_strategies_manager import get_custom_strategy
+    strat = get_custom_strategy(strategy_id)
+    if not strat:
+        raise HTTPException(status_code=404, detail=f"Custom strategy '{strategy_id}' not found")
+    return {
+        "status": "success",
+        "strategy": strat
+    }
+
+@app.put("/api/strategies/custom/{strategy_id}")
+async def api_update_custom_strategy(strategy_id: str, payload: Dict[str, Any]):
+    """Update custom strategy with automatic minor version increment."""
+    from app.custom_strategies_manager import update_custom_strategy
+    try:
+        updated = update_custom_strategy(strategy_id, payload)
+        return {
+            "status": "success",
+            "message": f"Strategy '{updated['name']}' updated to v{updated['version']}.",
+            "strategy": updated
+        }
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update strategy: {e}")
+
+@app.post("/api/strategies/custom/{strategy_id}/duplicate")
+async def api_duplicate_custom_strategy(strategy_id: str):
+    """Clone an existing strategy into a new draft custom strategy."""
+    from app.custom_strategies_manager import duplicate_custom_strategy
+    try:
+        cloned = duplicate_custom_strategy(strategy_id)
+        return {
+            "status": "success",
+            "message": f"Strategy '{cloned['name']}' duplicated as draft.",
+            "strategy": cloned
+        }
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to duplicate strategy: {e}")
+
+@app.patch("/api/strategies/custom/{strategy_id}/status")
+async def api_patch_strategy_status(strategy_id: str, payload: Dict[str, Any]):
+    """Toggle strategy activation, disable, or archive."""
+    from app.custom_strategies_manager import patch_strategy_status
+    try:
+        is_enabled = payload.get("is_enabled")
+        is_archived = payload.get("is_archived")
+        patched = patch_strategy_status(strategy_id, is_enabled=is_enabled, is_archived=is_archived)
+        return {
+            "status": "success",
+            "message": f"Strategy '{patched['name']}' status updated.",
+            "strategy": patched
+        }
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update status: {e}")
+
+@app.delete("/api/strategies/custom/{strategy_id}")
+async def api_delete_custom_strategy(strategy_id: str):
+    """Permanently delete a custom strategy."""
+    from app.custom_strategies_manager import delete_custom_strategy
+    success = delete_custom_strategy(strategy_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Custom strategy '{strategy_id}' not found")
+    return {
+        "status": "success",
+        "message": f"Strategy '{strategy_id}' successfully deleted."
+    }
+
+@app.post("/api/strategies/validate")
+async def api_validate_strategy(payload: Dict[str, Any]):
+    """Validate strategy configuration rules before saving."""
+    from app.custom_strategies_manager import validate_strategy_for_activation
+    is_valid, errors = validate_strategy_for_activation(payload)
+    return {
+        "is_valid": is_valid,
+        "errors": errors
     }
 
 @app.get("/api/trade-signals/analytics")

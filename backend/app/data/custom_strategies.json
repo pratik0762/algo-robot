@@ -1,0 +1,90 @@
+[
+  {
+    "id": "custom_nifty_mean_reversion_alpha_0e96a1",
+    "name": "Nifty Mean Reversion Alpha",
+    "category": "Mean Reversion",
+    "badge": "CUSTOM MEAN REVERSI",
+    "win_rate": "65%",
+    "version": "1.1.0",
+    "version_history": [
+      {
+        "version": "1.0.0",
+        "created_at": "2026-11-13T10:53:17.329165+00:00",
+        "notes": "Initial custom strategy creation"
+      },
+      {
+        "version": "1.1.0",
+        "created_at": "2026-11-13T10:53:17.446009+00:00",
+        "notes": "Enhanced risk management buffer."
+      }
+    ],
+    "is_custom": true,
+    "is_enabled": true,
+    "is_draft": false,
+    "is_archived": false,
+    "description": "Updated institutional mean reversion model with improved stop loss.",
+    "trading_objective": "Capture statistical reversion to the 20-period moving average with tight risk.",
+    "supported_instruments": [
+      "Equity Stocks",
+      "Index Futures",
+      "Index Options"
+    ],
+    "supported_timeframes": [
+      "5m",
+      "15m",
+      "1H"
+    ],
+    "indicators": [
+      {
+        "name": "RSI 14 (Relative Strength Index)",
+        "symbol": "RSI14",
+        "parameters": {
+          "period": 14,
+          "oversold": 30,
+          "overbought": 70
+        },
+        "purpose": "Oversold exhaustion detection"
+      },
+      {
+        "name": "SMA 20 (Baseline Mean)",
+        "symbol": "SMA20",
+        "parameters": {
+          "period": 20
+        },
+        "purpose": "Mean reversion target"
+      }
+    ],
+    "buy_conditions": [
+      "RSI(14) crosses below 30 and hooks back up on confirmed closed bar",
+      "Price closes above 8-period low support band"
+    ],
+    "sell_conditions": [
+      "RSI(14) crosses above 70 and hooks down on confirmed closed bar",
+      "Price rejects from upper volatility band"
+    ],
+    "condition_rules": {},
+    "risk_management": {
+      "entry_type": "Market on Candle Close",
+      "stop_loss_type": "Swing Low / High Invalidation",
+      "stop_loss_multiplier": 1.5,
+      "target_1_ratio": 1.5,
+      "target_2_ratio": 2.5,
+      "target_3_ratio": 4.0,
+      "risk_reward_ratio": "1 : 2.0",
+      "max_risk_per_trade_pct": 1.5,
+      "signal_validity_bars": 3
+    },
+    "advanced_settings": {
+      "higher_timeframe_confirmation": true,
+      "volume_filter": true,
+      "volume_filter_multiplier": 1.5,
+      "candle_close_confirmation": true,
+      "trading_session_start": "09:30",
+      "trading_session_end": "15:15",
+      "cooldown_bars": 3,
+      "duplicate_signal_prevention": true
+    },
+    "created_at": "2026-11-13T10:53:17.329165+00:00",
+    "updated_at": "2026-11-13T10:53:17.505698+00:00"
+  }
+]

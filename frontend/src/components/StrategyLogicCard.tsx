@@ -35,6 +35,7 @@ export interface StrategyLogicDetail {
   badge: string;
   win_rate?: string;
   version?: string;
+  is_custom?: boolean;
   description: string;
   trading_objective: string;
   supported_instruments: string[];
@@ -66,13 +67,21 @@ interface StrategyLogicCardProps {
   selectedStrategyId: string;
   allStrategies: any[];
   onSelectStrategy: (stratId: string) => void;
+  onEditStrategy?: (strategy: any) => void;
+  onDuplicateStrategy?: (strategyId: string) => void;
+  onDeleteStrategy?: (strategyId: string) => void;
+  onToggleStatus?: (strategyId: string, currentEnabled: boolean) => void;
 }
 
 export default function StrategyLogicCard({
   strategy,
   selectedStrategyId,
   allStrategies,
-  onSelectStrategy
+  onSelectStrategy,
+  onEditStrategy,
+  onDuplicateStrategy,
+  onDeleteStrategy,
+  onToggleStatus
 }: StrategyLogicCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
@@ -241,23 +250,106 @@ export default function StrategyLogicCard({
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700 }}>
-            {isExpanded ? 'Hide Strategy Logic' : 'View Strategy Logic'}
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }} onClick={(e) => e.stopPropagation()}>
+          {strategy.is_custom && onEditStrategy && (
+            <button
+              type="button"
+              onClick={() => onEditStrategy(strategy)}
+              style={{
+                background: 'rgba(99, 102, 241, 0.15)',
+                border: '1px solid rgba(99, 102, 241, 0.35)',
+                color: '#a5b4fc',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              ✎ Edit Strategy
+            </button>
+          )}
+
+          {onDuplicateStrategy && (
+            <button
+              type="button"
+              onClick={() => onDuplicateStrategy(strategy.id)}
+              style={{
+                background: 'rgba(56, 189, 248, 0.12)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                color: '#38bdf8',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              ⎘ Duplicate
+            </button>
+          )}
+
+          {strategy.is_custom && onToggleStatus && (
+            <button
+              type="button"
+              onClick={() => onToggleStatus(strategy.id, strategy.status?.is_enabled ?? true)}
+              style={{
+                background: strategy.status?.is_enabled ? 'rgba(234, 179, 8, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                border: strategy.status?.is_enabled ? '1px solid rgba(234, 179, 8, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+                color: strategy.status?.is_enabled ? '#facc15' : '#34d399',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              {strategy.status?.is_enabled ? '⏸ Disable' : '▶ Activate'}
+            </button>
+          )}
+
+          {strategy.is_custom && onDeleteStrategy && (
+            <button
+              type="button"
+              onClick={() => onDeleteStrategy(strategy.id)}
+              style={{
+                background: 'rgba(239, 68, 68, 0.12)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#f87171',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              🗑 Delete
+            </button>
+          )}
+
           <div
-            style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '6px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#818cf8'
-            }}
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', paddingLeft: '4px' }}
           >
-            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700 }}>
+              {isExpanded ? 'Hide Strategy Logic' : 'View Strategy Logic'}
+            </span>
+            <div
+              style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '6px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#818cf8'
+              }}
+            >
+              {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </div>
           </div>
         </div>
       </div>
@@ -610,3 +702,4 @@ export default function StrategyLogicCard({
     </div>
   );
 }
+

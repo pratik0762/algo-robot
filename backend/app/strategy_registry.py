@@ -483,7 +483,7 @@ STRATEGY_REGISTRY: Dict[str, Dict[str, Any]] = {
 }
 
 def get_all_registered_strategies() -> List[Dict[str, Any]]:
-    """Return all strategies with full logic specifications for UI and engine."""
+    """Return all strategies (built-in + user-created custom strategies) with full logic specifications for UI and engine."""
     strategies_list = [
         {
             "id": "all",
@@ -491,20 +491,38 @@ def get_all_registered_strategies() -> List[Dict[str, Any]]:
             "badge": "COMPREHENSIVE",
             "category": "All Categories",
             "win_rate": "71%",
-            "description": "Comprehensive portfolio aggregation of all 7 quantitative trading models."
+            "description": "Comprehensive portfolio aggregation of all quantitative trading models."
         }
     ]
     for strat in STRATEGY_REGISTRY.values():
         strategies_list.append(strat)
+
+    try:
+        from app.custom_strategies_manager import list_custom_strategies
+        custom_strats = list_custom_strategies(include_archived=False)
+        for cs in custom_strats:
+            strategies_list.append(cs)
+    except Exception as e:
+        print(f"[WARN] Failed to load custom strategies: {e}")
+
     return strategies_list
 
 def get_strategy_logic(strategy_id: str) -> Optional[Dict[str, Any]]:
-    """Retrieve full mathematical logic for a specific strategy."""
+    """Retrieve full mathematical logic for a specific strategy (built-in or custom)."""
     strat = STRATEGY_REGISTRY.get(strategy_id)
     if strat:
-        # Dynamic timestamps for status block
         strat_copy = dict(strat)
         strat_copy["status"] = dict(strat["status"])
         strat_copy["status"]["last_evaluated"] = datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST")
         return strat_copy
+
+    try:
+        from app.custom_strategies_manager import get_custom_strategy
+        cs = get_custom_strategy(strategy_id)
+        if cs:
+            return cs
+    except Exception as e:
+        print(f"[WARN] Failed to load custom strategy logic for {strategy_id}: {e}")
+
     return None
+
