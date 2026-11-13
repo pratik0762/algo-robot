@@ -90,6 +90,15 @@ export interface TradeSignalItem {
   days_to_expiry?: number;
   contract_value?: number;
   approx_margin_required?: number;
+  // Phase 5: Historical Ledger & Audit Fields
+  mfe_pct?: number;
+  mae_pct?: number;
+  pnl_points?: number;
+  date?: string;
+  is_closed?: boolean;
+  is_archived?: boolean;
+  strategy_version?: string;
+  outcome_time?: string;
 }
 
 interface TradeSignalsContextType {

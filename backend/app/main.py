@@ -864,6 +864,37 @@ async def api_get_trade_signals(
         search=search
     )
 
+@app.get("/api/trade-signals/ledger")
+async def api_get_trade_signals_ledger(
+    view: str = "ACTIVE",
+    date_range: str = "today",
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    strategy: Optional[str] = None,
+    instrument: Optional[str] = None,
+    status: Optional[str] = None,
+    search: Optional[str] = None
+):
+    """Immutable Trade Signal Ledger & Historical Audit Trail.
+    Hides closed signals by default (view=ACTIVE) to keep the live desk clean,
+    and provides full historical audit retrieval on view=ALL or view=ARCHIVED.
+    """
+    from app.trade_ledger import trade_ledger
+    from app.trade_signals_engine import initialize_trade_signals
+    all_signals = initialize_trade_signals()
+    trade_ledger.sync_signals(all_signals)
+
+    return trade_ledger.query_ledger(
+        view=view,
+        date_range=date_range,
+        start_date=start_date,
+        end_date=end_date,
+        strategy_id=strategy,
+        instrument_type=instrument,
+        status=status,
+        search=search
+    )
+
 @app.get("/api/fo/specifications")
 async def api_get_fo_specifications():
     """Master contract specifications, lot sizes, expiry dates, and strategy compatibility matrix."""

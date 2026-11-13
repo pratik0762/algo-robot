@@ -253,7 +253,7 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
     return detected_signals
 
 def initialize_trade_signals() -> List[Dict[str, Any]]:
-    """Initializes trade signals strictly from genuine market scans."""
+    """Initializes trade signals strictly from genuine market scans and syncs to immutable ledger."""
     global _SIGNALS_CACHE, _SUMMARY_CACHE
     if _SIGNALS_CACHE:
         return _SIGNALS_CACHE
@@ -261,6 +261,11 @@ def initialize_trade_signals() -> List[Dict[str, Any]]:
     genuine_signals = scan_market_for_signals()
     _SIGNALS_CACHE = genuine_signals
     _SUMMARY_CACHE = _compute_summary(_SIGNALS_CACHE)
+
+    # Sync to immutable ledger
+    from app.trade_ledger import trade_ledger
+    trade_ledger.sync_signals(_SIGNALS_CACHE)
+
     logger.info("Initialized %d genuine, data-driven trade signals across NSE universe.", len(_SIGNALS_CACHE))
     return _SIGNALS_CACHE
 

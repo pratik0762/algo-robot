@@ -206,6 +206,11 @@ class SignalTracker:
             signal.update(hit_event)
             self._outcomes_history[sig_id] = hit_event
             self._save_persisted_outcomes()
+            try:
+                from app.trade_ledger import trade_ledger
+                trade_ledger.record_signal(signal)
+            except Exception as ex:
+                logger.debug("Failed syncing signal outcome into trade ledger: %s", ex)
             logger.info("Signal outcome recorded: [%s] %s -> %s (%s)", signal["type"], signal["symbol"], hit_event["status"], hit_event["pnl_percent"])
 
         return signal

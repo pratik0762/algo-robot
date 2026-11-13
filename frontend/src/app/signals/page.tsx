@@ -25,7 +25,9 @@ import {
   SlidersHorizontal,
   Flame,
   Volume2,
-  BarChart2
+  BarChart2,
+  FileText,
+  Archive
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { getApiBase } from '@/config/api';
@@ -91,6 +93,10 @@ function TradeSignalsContent() {
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('ALL');
   const [selectedInstrument, setSelectedInstrument] = useState<string>('ALL');
+  // Phase 5: Trade Ledger View Modes & Date Range
+  const [viewMode, setViewMode] = useState<'ACTIVE' | 'ALL' | 'ARCHIVED'>('ACTIVE');
+  const [dateRange, setDateRange] = useState<string>('today');
+  const [outcomeFilter, setOutcomeFilter] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
   const [summary, setSummary] = useState<any>(null);
@@ -268,14 +274,21 @@ function TradeSignalsContent() {
     if (isManual) setRefreshing(true);
     try {
       const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/trade-signals`);
+      const ledgerUrl = `${apiBase}/api/trade-signals/ledger?view=${viewMode}&date_range=${dateRange}`;
+      const res = await fetch(ledgerUrl);
       if (res.ok) {
-        const data: TradeSignalsResponse = await res.json();
+        const data = await res.json();
         setSignals(data.signals || []);
-        if (data.available_strategies && data.available_strategies.length > 0) {
-          setStrategies(data.available_strategies);
+      } else {
+        const fallbackRes = await fetch(`${apiBase}/api/trade-signals`);
+        if (fallbackRes.ok) {
+          const fbData = await fallbackRes.json();
+          setSignals(fbData.signals || []);
+          if (fbData.available_strategies && fbData.available_strategies.length > 0) {
+            setStrategies(fbData.available_strategies);
+          }
+          setSummary(fbData.summary);
         }
-        setSummary(data.summary);
       }
     } catch (err) {
       console.error('Failed to fetch trade signals:', err);
@@ -284,7 +297,7 @@ function TradeSignalsContent() {
       setRefreshing(false);
       setSyncCountdown(6);
     }
-  }, []);
+  }, [viewMode, dateRange]);
 
   // Automatic real-time background sync loop (every 6 seconds - no manual refresh needed)
   useEffect(() => {
@@ -310,6 +323,23 @@ function TradeSignalsContent() {
   // Filter signals locally for instantaneous 0ms response
   const filteredSignals = useMemo(() => {
     return signals.filter(sig => {
+      // Phase 5: Ledger View Mode (ACTIVE hides closed/expired signals; ALL shows full trade history)
+      const isClosed = Boolean(sig.is_closed || ['TARGET_1_HIT', 'TARGET_2_HIT', 'STOP_LOSS_HIT', 'EXPIRED'].includes(sig.status || ''));
+      if (viewMode === 'ACTIVE' && isClosed) {
+        return false;
+      }
+      if (viewMode === 'ARCHIVED' && !sig.is_archived && !isClosed) {
+        return false;
+      }
+
+      // Phase 5: Outcome / Status Filter
+      if (outcomeFilter !== 'ALL') {
+        const sigStatus = (sig.status || 'ACTIVE').toUpperCase();
+        if (sigStatus !== outcomeFilter) {
+          return false;
+        }
+      }
+
       // Strategy filter
       if (selectedStrategy !== 'all' && sig.strategy_id !== selectedStrategy) {
         return false;
@@ -348,7 +378,7 @@ function TradeSignalsContent() {
       }
       return true;
     });
-  }, [signals, selectedStrategy, selectedCap, selectedType, selectedTimeframe, selectedInstrument, searchTerm]);
+  }, [signals, viewMode, outcomeFilter, selectedStrategy, selectedCap, selectedType, selectedTimeframe, selectedInstrument, searchTerm]);
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
@@ -625,6 +655,106 @@ function TradeSignalsContent() {
           </div>
         </div>
 
+        {/* Phase 5: View Mode Switcher (Active Live Desk vs Trade History & Ledger vs Archived) */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px',
+            marginBottom: '16px',
+            background: 'rgba(15, 23, 42, 0.75)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '12px',
+            padding: '10px 16px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setViewMode('ACTIVE')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: viewMode === 'ACTIVE' ? 800 : 600,
+                background: viewMode === 'ACTIVE' ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' : 'rgba(255, 255, 255, 0.04)',
+                border: viewMode === 'ACTIVE' ? '1px solid #34d399' : '1px solid rgba(255, 255, 255, 0.08)',
+                color: viewMode === 'ACTIVE' ? '#ffffff' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                boxShadow: viewMode === 'ACTIVE' ? '0 0 14px rgba(16, 185, 129, 0.35)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34d399', boxShadow: '0 0 8px #34d399' }} />
+              <span>Active Signals (Live Desk)</span>
+            </button>
+
+            <button
+              onClick={() => setViewMode('ALL')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: viewMode === 'ALL' ? 800 : 600,
+                background: viewMode === 'ALL' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'rgba(255, 255, 255, 0.04)',
+                border: viewMode === 'ALL' ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                color: viewMode === 'ALL' ? '#ffffff' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                boxShadow: viewMode === 'ALL' ? '0 0 14px rgba(99, 102, 241, 0.35)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <FileText size={15} />
+              <span>Trade History &amp; Ledger</span>
+            </button>
+
+            <button
+              onClick={() => setViewMode('ARCHIVED')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: viewMode === 'ARCHIVED' ? 800 : 600,
+                background: viewMode === 'ARCHIVED' ? 'linear-gradient(135deg, #475569 0%, #64748b 100%)' : 'rgba(255, 255, 255, 0.04)',
+                border: viewMode === 'ARCHIVED' ? '1px solid #94a3b8' : '1px solid rgba(255, 255, 255, 0.08)',
+                color: viewMode === 'ARCHIVED' ? '#ffffff' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                boxShadow: viewMode === 'ARCHIVED' ? '0 0 14px rgba(148, 163, 184, 0.35)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <Archive size={15} />
+              <span>Archived Signals</span>
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.74rem' }}>
+            {viewMode === 'ACTIVE' ? (
+              <span style={{ color: '#34d399', fontWeight: 700 }}>
+                ⚡ Focused Live Desk &bull; Old, closed &amp; expired setups hidden by default
+              </span>
+            ) : viewMode === 'ALL' ? (
+              <span style={{ color: '#818cf8', fontWeight: 700 }}>
+                📜 Immutable Signal Ledger &bull; Full historical audit trail with MFE/MAE excursions
+              </span>
+            ) : (
+              <span style={{ color: '#94a3b8', fontWeight: 700 }}>
+                🗄️ Past session archived signals &bull; Preserved indefinitely
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Filter Controls Panel */}
         <div
           style={{
@@ -877,6 +1007,80 @@ function TradeSignalsContent() {
                   );
                 })}
               </div>
+
+              {/* Phase 5: Date Range Filter (Visible in Trade History / Archived views) */}
+              {viewMode !== 'ACTIVE' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', paddingLeft: '4px', fontWeight: 700 }}>DATE:</span>
+                  {[
+                    { id: 'today', label: 'Today' },
+                    { id: 'yesterday', label: 'Yesterday' },
+                    { id: 'this_week', label: 'This Week' },
+                    { id: 'this_month', label: 'This Month' },
+                    { id: 'all', label: 'All Time' },
+                  ].map((dr) => {
+                    const isActive = dateRange === dr.id;
+                    return (
+                      <button
+                        key={dr.id}
+                        onClick={() => setDateRange(dr.id)}
+                        style={{
+                          padding: '5px 10px',
+                          borderRadius: '6px',
+                          fontSize: '0.74rem',
+                          fontWeight: isActive ? 800 : 500,
+                          background: isActive ? '#6366f1' : 'transparent',
+                          color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {dr.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Phase 5: Outcome / Status Filter (Visible in Trade History / Archived views) */}
+              {viewMode !== 'ACTIVE' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', paddingLeft: '4px', fontWeight: 700 }}>OUTCOME:</span>
+                  {[
+                    { id: 'ALL', label: 'All Outcomes' },
+                    { id: 'TARGET_1_HIT', label: 'Target 1 Hit' },
+                    { id: 'TARGET_2_HIT', label: 'Target 2 Hit' },
+                    { id: 'STOP_LOSS_HIT', label: 'Stop-Loss Hit' },
+                    { id: 'EXPIRED', label: 'Expired' },
+                    { id: 'ACTIVE', label: 'Still Active' },
+                  ].map((out) => {
+                    const isActive = outcomeFilter === out.id;
+                    let activeBg = '#6366f1';
+                    if (out.id.includes('TARGET')) activeBg = '#059669';
+                    if (out.id === 'STOP_LOSS_HIT') activeBg = '#dc2626';
+                    if (out.id === 'EXPIRED') activeBg = '#64748b';
+
+                    return (
+                      <button
+                        key={out.id}
+                        onClick={() => setOutcomeFilter(out.id)}
+                        style={{
+                          padding: '5px 10px',
+                          borderRadius: '6px',
+                          fontSize: '0.74rem',
+                          fontWeight: isActive ? 800 : 500,
+                          background: isActive ? activeBg : 'transparent',
+                          color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {out.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Search Input */}
@@ -906,9 +1110,11 @@ function TradeSignalsContent() {
         {/* Header Results Count Strip */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
           <div>
-            Showing <strong style={{ color: '#ffffff' }}>{filteredSignals.length}</strong> active trade setups
+            Showing <strong style={{ color: '#ffffff' }}>{filteredSignals.length}</strong> {viewMode === 'ACTIVE' ? 'active live setups (closed hidden)' : viewMode === 'ALL' ? 'historical ledger signals' : 'archived signals'}
             {selectedStrategy !== 'all' && <span> for <strong>{strategies.find(s => s.id === selectedStrategy)?.name}</strong></span>}
             {selectedCap !== 'ALL' && <span> in <strong>{selectedCap.replace('_', ' ')}</strong></span>}
+            {viewMode !== 'ACTIVE' && <span> &bull; Date: <strong>{dateRange.replace('_', ' ').toUpperCase()}</strong></span>}
+            {outcomeFilter !== 'ALL' && <span> &bull; Outcome: <strong>{outcomeFilter.replace('_', ' ')}</strong></span>}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Clock size={13} color="#818cf8" />
@@ -1191,6 +1397,22 @@ function TradeSignalsContent() {
                             <span>HTF CONFLUENCE</span>
                           </span>
                         )}
+
+                        {/* Phase 5: Strategy Version Badge */}
+                        <span
+                          style={{
+                            background: 'rgba(99, 102, 241, 0.15)',
+                            border: '1px solid rgba(99, 102, 241, 0.4)',
+                            color: '#a5b4fc',
+                            fontSize: '0.62rem',
+                            fontWeight: 800,
+                            padding: '2px 7px',
+                            borderRadius: '6px'
+                          }}
+                          title="Immutable strategy version and rules parameters ledger record"
+                        >
+                          <span>v{sig.strategy_version || '1.0.0'}</span>
+                        </span>
                       </div>
 
                       {/* Rationale, Contract Specs and Execution Advice */}
@@ -1225,6 +1447,61 @@ function TradeSignalsContent() {
                             &bull; Size: <strong style={{ color: '#fbbf24' }}>{sig.position_size_shares.toLocaleString()} Shares</strong> (Capital: ₹{Math.round(sig.trade_capital_inr || 0).toLocaleString()})
                           </span>
                         ) : null}
+                      </div>
+
+                      {/* Phase 5: Historical Ledger Metrics Strip (MFE, MAE, P&L, Outcome) */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
+                        <span
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.12)',
+                            border: '1px solid rgba(16, 185, 129, 0.35)',
+                            color: '#34d399',
+                            fontSize: '0.66rem',
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            borderRadius: '6px'
+                          }}
+                          title="Maximum Favorable Excursion (peak unrealized gain during setup lifetime)"
+                        >
+                          MFE: +{(sig.mfe_pct || 0).toFixed(2)}%
+                        </span>
+
+                        <span
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.12)',
+                            border: '1px solid rgba(239, 68, 68, 0.35)',
+                            color: '#f87171',
+                            fontSize: '0.66rem',
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            borderRadius: '6px'
+                          }}
+                          title="Maximum Adverse Excursion (worst unrealized drawdown during setup lifetime)"
+                        >
+                          MAE: {(sig.mae_pct || 0).toFixed(2)}%
+                        </span>
+
+                        {sig.is_closed && (
+                          <span
+                            style={{
+                              background: (sig.pnl_points || 0) >= 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                              border: (sig.pnl_points || 0) >= 0 ? '1px solid rgba(52, 211, 153, 0.5)' : '1px solid rgba(248, 113, 113, 0.5)',
+                              color: (sig.pnl_points || 0) >= 0 ? '#34d399' : '#f87171',
+                              fontSize: '0.66rem',
+                              fontWeight: 900,
+                              padding: '2px 8px',
+                              borderRadius: '6px'
+                            }}
+                          >
+                            P&amp;L: {(sig.pnl_points || 0) >= 0 ? '+' : ''}{sig.pnl_points} pts ({sig.pnl_percent || '0%'})
+                          </span>
+                        )}
+
+                        {sig.outcome_time && (
+                          <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                            Exit: {sig.outcome_time}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
