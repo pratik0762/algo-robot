@@ -1124,4 +1124,71 @@ async def api_trigger_new_signal():
         "signal": new_sig
     }
 
+# =====================================================================
+# Phase 6 & 7: Quantitative Backtesting Engine Endpoints
+# =====================================================================
+
+@app.post("/api/backtest/run")
+async def api_run_backtest(payload: Dict[str, Any]):
+    """Run realistic backtest simulation with zero lookahead bias and authentic transaction costs."""
+    from app.backtesting_engine import backtesting_engine
+    strategy_id = payload.get("strategy_id", "ema_cross")
+    symbols = payload.get("symbols", ["RELIANCE", "TCS", "HDFCBANK", "INFY"])
+    timeframe = payload.get("timeframe", "15m")
+    instrument_type = payload.get("instrument_type", "EQUITY")
+    initial_capital = float(payload.get("initial_capital", 500000.0))
+    risk_per_trade_pct = float(payload.get("risk_per_trade_pct", 1.5))
+    slippage_pct = float(payload.get("slippage_pct", 0.0005))
+    start_date = payload.get("start_date")
+    end_date = payload.get("end_date")
+
+    try:
+        result = backtesting_engine.run_backtest(
+            strategy_id=strategy_id,
+            symbols=symbols,
+            timeframe=timeframe,
+            instrument_type=instrument_type,
+            initial_capital=initial_capital,
+            risk_per_trade_pct=risk_per_trade_pct,
+            slippage_pct=slippage_pct,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return result
+    except Exception as e:
+        logger.error("Backtest execution failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/backtest/config")
+async def api_get_backtest_config():
+    """Returns available strategies, instruments, timeframes, and universe for backtesting."""
+    from app.trade_signals_engine import AVAILABLE_STRATEGIES, COMPANIES_UNIVERSE
+    from app.custom_strategies_manager import list_custom_strategies
+    from app.instrument_adapters import NSE_FO_LOT_SIZES, STRATEGY_COMPATIBILITY_MATRIX
+
+    custom_strats = list_custom_strategies(include_archived=False)
+    all_strategies = [s for s in AVAILABLE_STRATEGIES if s["id"] != "all"] + [
+        {"id": cs["id"], "name": cs["name"], "badge": cs.get("badge", "CUSTOM"), "is_custom": True}
+        for cs in custom_strats
+    ]
+
+    symbols_list = [
+        {"symbol": c["symbol"], "name": c["name"], "cap": c["cap"], "lot_size": NSE_FO_LOT_SIZES.get(c["symbol"], 1)}
+        for c in COMPANIES_UNIVERSE
+    ]
+
+    return {
+        "status": "success",
+        "strategies": all_strategies,
+        "symbols": symbols_list,
+        "timeframes": ["5m", "15m", "1H", "1D"],
+        "instruments": [
+            {"id": "EQUITY", "label": "Cash Equities (NSE)"},
+            {"id": "FUTURES", "label": "Index & Stock Futures"},
+            {"id": "OPTIONS", "label": "Index & Stock Options (CE/PE)"}
+        ],
+        "compatibility_matrix": STRATEGY_COMPATIBILITY_MATRIX
+    }
+
+
 
