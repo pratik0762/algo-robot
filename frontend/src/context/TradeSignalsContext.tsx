@@ -155,6 +155,11 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
                 setToastQueue((prev) => [...prev, sig]);
                 playAudioChime();
               }
+            } else if (data.type === 'SIGNAL_LIFECYCLE_UPDATE' && data.signal) {
+              const updated = data.signal as TradeSignalItem;
+              setSignals((prev) =>
+                prev.map((item) => (item.id === updated.id ? { ...item, ...updated } : item))
+              );
             }
           } catch (_) {}
         };

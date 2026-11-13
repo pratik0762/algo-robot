@@ -79,10 +79,15 @@ async def tick_background_loop():
                 new_sig = generate_live_signal_event()
                 if new_sig:
                     await tick_engine.broadcast_trade_signal(new_sig)
-                # Phase 5: Process signal lifecycle outcomes against live ticks
+                # Phase 5 & 6: Process signal lifecycle outcomes and broadcast updates over WebSocket
                 from app.signal_tracker import signal_tracker
                 from app.trade_signals_engine import initialize_trade_signals
-                signal_tracker.process_all_signals_lifecycle(initialize_trade_signals(), tick_engine.stocks)
+                all_sigs = initialize_trade_signals()
+                updated_sigs = signal_tracker.process_all_signals_lifecycle(all_sigs, tick_engine.stocks)
+                for sig in updated_sigs:
+                    if sig.get("status") in ("TARGET_1_HIT", "TARGET_2_HIT", "STOP_LOSS_HIT") and not sig.get("outcome_broadcasted"):
+                        sig["outcome_broadcasted"] = True
+                        await tick_engine.broadcast_signal_lifecycle_update(sig)
                 last_signal_gen = now
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)

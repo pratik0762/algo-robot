@@ -20,7 +20,7 @@ from fastapi import WebSocket
 try:
     import orjson
     def fast_dumps(data: Any) -> str:
-        return orjson.dumps(data).decode("utf-8")
+        return orjson.dumps(data, option=orjson.OPT_SERIALIZE_NUMPY).decode("utf-8")
 except ImportError:
     def fast_dumps(data: Any) -> str:
         return json.dumps(data)
@@ -628,6 +628,18 @@ class LiveTickEngine:
 
         message = fast_dumps({
             "type": "TRADE_SIGNAL",
+            "signal": signal_data,
+            "timestamp": time.strftime("%H:%M:%S")
+        })
+        await self._broadcast_message(message)
+
+    async def broadcast_signal_lifecycle_update(self, signal_data: Dict[str, Any]) -> None:
+        """Push an updated signal lifecycle state (e.g. TARGET_1_HIT, STOP_LOSS_HIT) to all clients."""
+        if not self._connected_websockets or not signal_data:
+            return
+
+        message = fast_dumps({
+            "type": "SIGNAL_LIFECYCLE_UPDATE",
             "signal": signal_data,
             "timestamp": time.strftime("%H:%M:%S")
         })
