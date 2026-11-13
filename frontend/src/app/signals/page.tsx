@@ -31,6 +31,7 @@ import dynamic from 'next/dynamic';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
+import StrategyLogicCard, { StrategyLogicDetail } from '@/components/StrategyLogicCard';
 import { useLiveStockTicks } from '@/hooks/useLiveStockTicks';
 import { useTradeSignals, TradeSignalItem } from '@/context/TradeSignalsContext';
 
@@ -92,6 +93,7 @@ function TradeSignalsContent() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
   const [summary, setSummary] = useState<any>(null);
   const [syncCountdown, setSyncCountdown] = useState<number>(6);
+  const [activeStrategyLogic, setActiveStrategyLogic] = useState<StrategyLogicDetail | null>(null);
   const seenSignalIds = useRef<Set<string>>(new Set());
 
   // Web Audio Synth chime when a new signal triggers
@@ -143,6 +145,30 @@ function TradeSignalsContent() {
     }
     return `${Math.floor(diffSec / 86400)}d ago`;
   }, [currentTimeMs]);
+
+  // Phase 2: Fetch and sync complete strategy logic whenever a specific strategy is selected
+  useEffect(() => {
+    if (selectedStrategy === 'all') {
+      setActiveStrategyLogic(null);
+      return;
+    }
+    // Check if strategy object already contains full logic
+    const found = strategies.find((s) => s.id === selectedStrategy);
+    if (found && (found as any).indicators && (found as any).buy_conditions) {
+      setActiveStrategyLogic(found as unknown as StrategyLogicDetail);
+      return;
+    }
+    // Fetch directly from API
+    const apiBase = getApiBase();
+    fetch(`${apiBase}/api/trade-signals/strategies/${selectedStrategy}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.strategy) {
+          setActiveStrategyLogic(data.strategy);
+        }
+      })
+      .catch((err) => console.error('Error fetching strategy logic:', err));
+  }, [selectedStrategy, strategies]);
 
   // Fetch Signals from backend (silent background sync; zero flickering)
   const fetchSignals = useCallback(async (isManual: boolean = false) => {
@@ -558,6 +584,14 @@ function TradeSignalsContent() {
                 );
               })}
             </div>
+
+            {/* Phase 2: Complete Strategy Logic Display (Overview, Indicators, BUY/SELL Rules, SL/TP, R:R, Confirmation & Status) */}
+            <StrategyLogicCard
+              strategy={activeStrategyLogic}
+              selectedStrategyId={selectedStrategy}
+              allStrategies={strategies}
+              onSelectStrategy={(id) => setSelectedStrategy(id)}
+            />
           </div>
 
           {/* Secondary Filter Row: Market Cap, Direction & Search */}

@@ -14,75 +14,13 @@ from typing import Dict, List, Optional, Any
 
 from app.market_data_service import market_data_service, DEFAULT_UNIVERSE_SYMBOLS
 from app.strategy_engine import strategy_engine
+from app.strategy_registry import get_all_registered_strategies, get_strategy_logic, STRATEGY_REGISTRY
 
 logger = logging.getLogger("trade_signals")
 IST = timezone(timedelta(hours=5, minutes=30))
 
-# 1. Extensible Strategy Registry
-AVAILABLE_STRATEGIES = [
-    {
-        "id": "all",
-        "name": "All Strategies",
-        "badge": "COMPREHENSIVE",
-        "description": "All algorithmic quant models combined"
-    },
-    {
-        "id": "ema_cross",
-        "name": "EMA 9/21 Trend Crossover",
-        "badge": "TREND FOLLOWING",
-        "category": "Moving Averages",
-        "win_rate": "68%",
-        "description": "Fast 9 EMA crosses 21 EMA on closed candle with momentum confirmation"
-    },
-    {
-        "id": "supertrend",
-        "name": "Supertrend (10, 3) Breakout",
-        "badge": "VOLATILITY BAND",
-        "category": "Trend & ATR",
-        "win_rate": "72%",
-        "description": "ATR trailing stop flip on closed candle confirming institutional direction"
-    },
-    {
-        "id": "breakout_52w",
-        "name": "52-Week Breakout & Reversal",
-        "badge": "MOMENTUM / S&R",
-        "category": "Price Action",
-        "win_rate": "74%",
-        "description": "High volume clearance within <=2% of 52-week extremes"
-    },
-    {
-        "id": "rsi_reversal",
-        "name": "RSI Mean Reversion",
-        "badge": "OSCILLATOR",
-        "category": "Momentum Oscillator",
-        "win_rate": "65%",
-        "description": "RSI extreme oversold (<32) bounce or overbought (>68) exhaust"
-    },
-    {
-        "id": "volume_momentum",
-        "name": "Volume Spike & Order Block",
-        "badge": "INSTITUTIONAL FLOW",
-        "category": "Smart Money Concepts",
-        "win_rate": "76%",
-        "description": "Unusual volume surge (>=1.8x 20-SMA) over structural order blocks"
-    },
-    {
-        "id": "macd_cross",
-        "name": "MACD Histogram Expansion",
-        "badge": "MOMENTUM ACCELERATION",
-        "category": "Moving Average Convergence",
-        "win_rate": "67%",
-        "description": "MACD zero-line crossover with expanding positive/negative histogram"
-    },
-    {
-        "id": "bollinger_squeeze",
-        "name": "Bollinger Bands Squeeze",
-        "badge": "VOLATILITY EXPANSION",
-        "category": "Volatility Channels",
-        "win_rate": "70%",
-        "description": "Band contraction breakout signalling impending explosive move"
-    }
-]
+# 1. Extensible Strategy Registry (Canonical Single Source of Truth)
+AVAILABLE_STRATEGIES = get_all_registered_strategies()
 
 # 2. Master Universe of Equities with updated live market caps & verified prices
 COMPANIES_UNIVERSE = [

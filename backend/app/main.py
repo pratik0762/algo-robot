@@ -871,6 +871,19 @@ async def api_get_trade_strategies(response: Response):
         "strategies": AVAILABLE_STRATEGIES
     }
 
+@app.get("/api/trade-signals/strategies/{strategy_id}")
+async def api_get_trade_strategy_detail(strategy_id: str, response: Response):
+    """Detailed mathematical logic, indicator parameters, and execution rules for a specific strategy."""
+    from app.strategy_registry import get_strategy_logic
+    logic = get_strategy_logic(strategy_id)
+    if not logic:
+        raise HTTPException(status_code=404, detail=f"Strategy '{strategy_id}' not found")
+    response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
+    return {
+        "status": "success",
+        "strategy": logic
+    }
+
 @app.get("/api/trade-signals/analytics")
 async def api_get_trade_signals_analytics():
     """Quantitative lifecycle performance analytics: win rate, active count, target hits, stop loss hits."""
