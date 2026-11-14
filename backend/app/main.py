@@ -820,6 +820,91 @@ async def get_nse_heatmap():
     """Official NSE Nifty 50 Heat Map data grouped by sectors with live color grading."""
     return signals_heatmap_engine.get_nse_heatmap()
 
+# ==============================================================================
+# INDIAN STOCK MARKET HEATMAP & ADVANCED SCANNER (NSE & BSE)
+# ==============================================================================
+
+@app.get("/api/heatmap/data")
+async def get_market_heatmap_data(
+    exchange: str = "ALL",
+    index: str = "ALL",
+    sector: str = "ALL",
+    cap_category: str = "ALL",
+    mode: str = "daily",
+    group_by: str = "sector",
+    size_by: str = "market_cap",
+    search: str = "",
+    limit: int = 500
+):
+    """Comprehensive Indian Stock Market Heatmap dataset with multi-timeframe performance, volume, RS, and sector grouping."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    return market_heatmap_engine.get_heatmap_dataset(
+        exchange=exchange,
+        index_filter=index,
+        sector_filter=sector,
+        cap_category=cap_category,
+        mode=mode,
+        group_by=group_by,
+        size_by=size_by,
+        search_query=search,
+        limit=limit
+    )
+
+@app.get("/api/heatmap/sectors")
+async def get_market_heatmap_sectors():
+    """Sector-level market performance summary with Mcap-weighted vs Equal-weighted returns."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    return market_heatmap_engine.get_sector_summary()
+
+@app.get("/api/heatmap/indices")
+async def get_market_heatmap_indices():
+    """Discoverable broad-market, sectoral, and thematic indices master."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    return {
+        "status": "success",
+        "count": len(market_heatmap_engine._indices),
+        "indices": market_heatmap_engine._indices
+    }
+
+@app.get("/api/heatmap/index/{index_symbol}")
+async def get_index_points_contribution(index_symbol: str):
+    """True mathematical points contribution calculation of constituents to index movement."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    return market_heatmap_engine.get_index_contribution(index_symbol)
+
+@app.get("/api/heatmap/smart-candidates")
+async def get_heatmap_smart_candidates():
+    """Automated discovery screener for Bullish Breakouts, Bearish Breakdowns, and Volume Surges."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    return market_heatmap_engine.get_smart_discovery_candidates()
+
+@app.get("/api/heatmap/stock/{symbol}")
+async def get_heatmap_stock_profile(symbol: str):
+    """Detailed technical and market statistics profile for a specific stock."""
+    try:
+        from app.market_heatmap_engine import market_heatmap_engine
+    except ImportError:
+        from backend.app.market_heatmap_engine import market_heatmap_engine
+    detail = market_heatmap_engine.get_stock_detail(symbol)
+    if not detail:
+        raise HTTPException(status_code=404, detail=f"Stock {symbol} not found")
+    return detail
+
 @app.get("/api/chart-data/{symbol}")
 async def get_chart_data(symbol: str, timeframe: str = "1D", candle_count: int = 40):
     """OHLCV candlestick series with EMA 9/21, Supertrend, RSI, and Algorithmic Buy/Sell Signals."""

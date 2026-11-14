@@ -330,6 +330,17 @@ export default function NavigationDrawer({
     router.push('/option-chain');
   };
 
+  const prefetchHeatmap = () => {
+    try {
+      fetch(`${getApiBase()}/api/heatmap/data?exchange=ALL&limit=100`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectHeatmap = () => {
+    onClose();
+    router.push('/heatmap');
+  };
+
   return (
     <div
       className="drawer-backdrop"
@@ -1058,6 +1069,71 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#a855f7" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 11: MARKET HEATMAP (Real-time Indian Equity Treemap & Sector Scanner) */}
+          <div
+            id="nav-heatmap"
+            data-nav-item="heatmap"
+            onClick={handleSelectHeatmap}
+            onMouseEnter={prefetchHeatmap}
+            style={{
+              background: pathname === '/heatmap'
+                ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.24) 0%, rgba(14, 165, 233, 0.20) 100%)'
+                : 'linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(14, 165, 233, 0.06) 100%)',
+              border: pathname === '/heatmap' ? '1px solid #06b6d4' : '1px solid rgba(6, 182, 212, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/heatmap' ? '0 4px 20px -2px rgba(6, 182, 212, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(6, 182, 212, 0.4)',
+                }}
+              >
+                <Grid size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                MARKET HEATMAP
+              </span>
+
+              {pathname === '/heatmap' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#06b6d4', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#06b6d4" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

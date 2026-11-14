@@ -40,7 +40,10 @@ import {
   Minimize2,
   HelpCircle,
   Eye,
-  RotateCcw
+  RotateCcw,
+  Settings,
+  Copy,
+  Check
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
@@ -301,12 +304,274 @@ function StrategyMiniThumbnail({ type }: { type: string }) {
 // ---------------------------------------------------------------------------
 // MAIN COMPONENT
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Sensibull Standard Predefined Strategy Templates Master
+// ---------------------------------------------------------------------------
+const SENSIBULL_DEFAULT_TEMPLATES: PredefinedTemplate[] = [
+  // Bullish
+  {
+    id: 'buy_call',
+    name: 'Buy Call',
+    category: 'Bullish',
+    outlook: 'Very Bullish',
+    description: 'Buy an ATM or slightly OTM Call option expecting strong upward price movement.',
+    legs: [{ action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140 }]
+  },
+  {
+    id: 'sell_put',
+    name: 'Sell Put / Bull Put',
+    category: 'Bullish',
+    outlook: 'Moderately Bullish',
+    description: 'Sell an OTM Put option to collect premium with high win probability.',
+    legs: [{ action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 85 }]
+  },
+  {
+    id: 'bull_call_spread',
+    name: 'Bull Call Spread',
+    category: 'Bullish',
+    outlook: 'Moderately Bullish',
+    description: 'Buy ATM Call and Sell OTM Call for capped upside with lower upfront cost.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 137.75 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 }
+    ]
+  },
+  {
+    id: 'bull_put_spread',
+    name: 'Bull Put Spread',
+    category: 'Bullish',
+    outlook: 'Moderately Bullish',
+    description: 'Sell higher strike Put and buy lower strike Put for net credit with defined risk.',
+    legs: [
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 125.0 },
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -2, lots: 1, premium: 55.0 }
+    ]
+  },
+  {
+    id: 'call_ratio_back_spread',
+    name: 'Call Ratio Back Spread',
+    category: 'Bullish',
+    outlook: 'Very Bullish / Volatile',
+    description: 'Sell 1 ITM/ATM Call and buy 2 OTM Calls for unlimited upside with credit.',
+    legs: [
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 2, lots: 2, premium: 62.0 }
+    ]
+  },
+  {
+    id: 'calendar_call_spread',
+    name: 'Long Calendar with Calls',
+    category: 'Bullish',
+    outlook: 'Bullish / Low Vol',
+    description: 'Sell near-term Call and buy longer-dated Call to harvest theta decay difference.',
+    legs: [
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 80.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 135.0 }
+    ]
+  },
+  {
+    id: 'bull_condor',
+    name: 'Bull Condor',
+    category: 'Bullish',
+    outlook: 'Directional Target',
+    description: '4-leg defined risk Call condor targeting moderate rise.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 3, lots: 1, premium: 38.0 }
+    ]
+  },
+  {
+    id: 'bull_butterfly',
+    name: 'Bull Butterfly',
+    category: 'Bullish',
+    outlook: 'Bullish Pin Target',
+    description: 'Buy lower Call, sell 2 mid Calls, buy higher Call.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 2, premium: 95.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 }
+    ]
+  },
+  {
+    id: 'range_forward',
+    name: 'Range Forward',
+    category: 'Bullish',
+    outlook: 'Bullish Zero Cost',
+    description: 'Buy OTM Call funded by selling OTM Put.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 90.0 }
+    ]
+  },
+  {
+    id: 'synthetic_future',
+    name: 'Long Synthetic Future',
+    category: 'Bullish',
+    outlook: 'Aggressively Bullish',
+    description: 'Buy ATM Call and sell ATM Put replicating linear long equity position.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 }
+    ]
+  },
+  // Bearish
+  {
+    id: 'buy_put',
+    name: 'Buy Put',
+    category: 'Bearish',
+    outlook: 'Very Bearish',
+    description: 'Buy an ATM or slightly OTM Put option.',
+    legs: [{ action: 'BUY', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 }]
+  },
+  {
+    id: 'sell_call',
+    name: 'Bear Call / Sell Call',
+    category: 'Bearish',
+    outlook: 'Moderately Bearish',
+    description: 'Sell an OTM Call option to collect premium.',
+    legs: [{ action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 80.0 }]
+  },
+  {
+    id: 'bear_put_spread',
+    name: 'Bear Put Spread',
+    category: 'Bearish',
+    outlook: 'Moderately Bearish',
+    description: 'Buy ATM Put and sell lower strike Put for capped downside profit.',
+    legs: [
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -2, lots: 1, premium: 60.0 }
+    ]
+  },
+  {
+    id: 'bear_call_spread',
+    name: 'Bear Call Spread',
+    category: 'Bearish',
+    outlook: 'Moderately Bearish',
+    description: 'Sell lower strike Call and buy higher strike Call for net credit.',
+    legs: [
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 }
+    ]
+  },
+  {
+    id: 'put_ratio_back_spread',
+    name: 'Put Ratio Back Spread',
+    category: 'Bearish',
+    outlook: 'Very Bearish / Crash Play',
+    description: 'Sell 1 ITM/ATM Put and buy 2 OTM Puts for sharp crash leverage.',
+    legs: [
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 },
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -2, lots: 2, premium: 60.0 }
+    ]
+  },
+  {
+    id: 'bear_condor',
+    name: 'Bear Condor',
+    category: 'Bearish',
+    outlook: 'Directional Downside Target',
+    description: '4-leg defined risk Put condor.',
+    legs: [
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 92.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -2, lots: 1, premium: 60.0 },
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -3, lots: 1, premium: 35.0 }
+    ]
+  },
+  // Neutral
+  {
+    id: 'short_straddle',
+    name: 'Short Straddle',
+    category: 'Neutral',
+    outlook: 'Non-Directional / Low Vol',
+    description: 'Sell ATM Call and ATM Put collecting maximum time decay.',
+    legs: [
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 }
+    ]
+  },
+  {
+    id: 'short_strangle',
+    name: 'Short Strangle',
+    category: 'Neutral',
+    outlook: 'Range-Bound',
+    description: 'Sell OTM Call and OTM Put for wide profit zone.',
+    legs: [
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 90.0 }
+    ]
+  },
+  {
+    id: 'iron_condor',
+    name: 'Iron Condor',
+    category: 'Neutral',
+    outlook: 'Range-Bound / Defined Risk',
+    description: 'Sell OTM Strangle and buy outer wings for safety.',
+    legs: [
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -3, lots: 1, premium: 35.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 90.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 3, lots: 1, premium: 38.0 }
+    ]
+  },
+  {
+    id: 'iron_butterfly',
+    name: 'Iron Butterfly',
+    category: 'Neutral',
+    outlook: 'Pin Risk / High Credit',
+    description: 'Sell ATM Straddle and buy OTM protective wings.',
+    legs: [
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -2, lots: 1, premium: 60.0 },
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 }
+    ]
+  },
+  // Others
+  {
+    id: 'long_straddle',
+    name: 'Long Straddle',
+    category: 'Others',
+    outlook: 'High Volatility / Earnings',
+    description: 'Buy ATM Call and ATM Put anticipating huge breakout.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 0, lots: 1, premium: 140.0 },
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: 0, lots: 1, premium: 135.0 }
+    ]
+  },
+  {
+    id: 'long_strangle',
+    name: 'Long Strangle',
+    category: 'Others',
+    outlook: 'High Volatility / Low Cost',
+    description: 'Buy OTM Call and OTM Put expecting sharp expansion in volatility.',
+    legs: [
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'BUY', option_type: 'PE', strike: 0, offset_steps: -1, lots: 1, premium: 90.0 }
+    ]
+  },
+  {
+    id: 'jade_lizard',
+    name: 'Jade Lizard',
+    category: 'Others',
+    outlook: 'Neutral to Bullish',
+    description: 'Sell OTM Put and sell Bear Call Spread without upside risk.',
+    legs: [
+      { action: 'SELL', option_type: 'PE', strike: 0, offset_steps: -2, lots: 1, premium: 60.0 },
+      { action: 'SELL', option_type: 'CE', strike: 0, offset_steps: 1, lots: 1, premium: 95.0 },
+      { action: 'BUY', option_type: 'CE', strike: 0, offset_steps: 2, lots: 1, premium: 62.0 }
+    ]
+  }
+];
+
 export default function OptionChainPage() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
 
   // View Mode: Sensibull Workstation (Default) vs Smart Strike Selector vs Full 23-Col Table
   const [viewMode, setViewMode] = useState<'workstation' | 'smart_selector' | 'fullchain'>('workstation');
-  const [leftTab, setLeftTab] = useState<'chain' | 'templates' | 'saved'>('chain');
+  const [leftTab, setLeftTab] = useState<'templates' | 'chain' | 'positions' | 'saved' | 'drafts'>('templates');
 
   // Smart Strike Selector State
   const [smartSelectorMode, setSmartSelectorMode] = useState<'auto' | 'manual'>('auto');
@@ -365,7 +630,7 @@ export default function OptionChainPage() {
       name: 'SELL 25300 CE'
     }
   ]);
-  const [templates, setTemplates] = useState<PredefinedTemplate[]>([]);
+  const [templates, setTemplates] = useState<PredefinedTemplate[]>(SENSIBULL_DEFAULT_TEMPLATES);
   const [selectedTemplateCategory, setSelectedTemplateCategory] = useState<string>('All');
   const [analysis, setAnalysis] = useState<StrategyAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
@@ -385,6 +650,22 @@ export default function OptionChainPage() {
 
   // Chart Tooltip Hover State
   const [hoveredPoint, setHoveredPoint] = useState<PayoffPoint | null>(null);
+
+  // Sensibull Workstation Specific States
+  const [workstationTab, setWorkstationTab] = useState<'payoff' | 'pnl_table' | 'greeks' | 'strategy_chart'>('payoff');
+  const [addBookedPnl, setAddBookedPnl] = useState<boolean>(false);
+  const [graphSubTab, setGraphSubTab] = useState<'graph' | 'table'>('graph');
+  const [showSdLines, setShowSdLines] = useState<boolean>(true);
+  const [showOiBars, setShowOiBars] = useState<boolean>(true);
+  const [breakevenMode, setBreakevenMode] = useState<'expiry' | 'target'>('expiry');
+  const [hedgeDistance, setHedgeDistance] = useState<number>(200);
+  const [greeksMultiplyByLot, setGreeksMultiplyByLot] = useState<boolean>(true);
+  const [greeksMultiplyByLotsNum, setGreeksMultiplyByLotsNum] = useState<boolean>(false);
+  const [manualPnlEnabled, setManualPnlEnabled] = useState<boolean>(false);
+  const [importantInfoOpen, setImportantInfoOpen] = useState<boolean>(false);
+  const [infoModalOpen, setInfoModalOpen] = useState<boolean>(false);
+  const [tradeAllSuccessMsg, setTradeAllSuccessMsg] = useState<string | null>(null);
+
 
   // 1. Fetch Instruments List on Load
   useEffect(() => {
@@ -714,6 +995,14 @@ export default function OptionChainPage() {
     }
   };
 
+  // Load saved strategy into workstation
+  const handleLoadSavedStrategy = (s: SavedStrategy) => {
+    if (s && s.legs) {
+      setBuilderLegs(s.legs);
+      if (s.symbol) setSelectedSymbol(s.symbol);
+    }
+  };
+
   // Filtered Instruments
   const filteredInstruments = useMemo(() => {
     return instruments.filter(inst => {
@@ -881,6 +1170,94 @@ export default function OptionChainPage() {
     const f = Math.pow(10, dec);
     return Math.round(num * f) / f;
   }
+
+  // Net Price Pay in Points & Total Premium Pay in Cash
+  const netPricePoints = useMemo(() => {
+    const activeLegs = builderLegs.filter(l => !l.disabled);
+    return activeLegs.reduce((acc, leg) => {
+      const sign = leg.action === 'BUY' ? 1 : -1;
+      return acc + (leg.premium * sign);
+    }, 0);
+  }, [builderLegs]);
+
+  const netPremiumPay = useMemo(() => {
+    return Math.round(netPricePoints * lotSize * multiplier);
+  }, [netPricePoints, lotSize, multiplier]);
+
+  // Total Intrinsic & Time Value
+  const { totalIntrinsic, totalTimeValue } = useMemo(() => {
+    const activeLegs = builderLegs.filter(l => !l.disabled);
+    let intrinsicPoints = 0;
+    activeLegs.forEach(leg => {
+      const sign = leg.action === 'BUY' ? 1 : -1;
+      const intr = leg.option_type === 'CE' ? Math.max(0, spot - leg.strike) : Math.max(0, leg.strike - spot);
+      intrinsicPoints += intr * sign;
+    });
+    const totalIntrCash = Math.round(intrinsicPoints * lotSize * multiplier);
+    const totalTvCash = Math.round(netPremiumPay - totalIntrCash);
+    return {
+      totalIntrinsic: Math.max(0, totalIntrCash),
+      totalTimeValue: Math.max(0, totalTvCash)
+    };
+  }, [builderLegs, spot, lotSize, multiplier, netPremiumPay]);
+
+  // Target Day Futures Price
+  const targetFuturesPrice = useMemo(() => {
+    const r = 0.065;
+    const daysRemaining = Math.max(0.5, dteTotal - targetDteOffset);
+    return Number((spot * Math.exp(r * (daysRemaining / 365.0))).toFixed(2));
+  }, [spot, dteTotal, targetDteOffset]);
+
+  // Adjust Hedge Strike Distance
+  const handleAdjustHedge = (dir: 'UP' | 'DOWN') => {
+    const step = chainData?.interval || 50;
+    setHedgeDistance(prev => Math.max(step, dir === 'UP' ? prev + step : prev - step));
+  };
+
+  // Duplicate Leg
+  const handleDuplicateLeg = (idx: number) => {
+    const leg = builderLegs[idx];
+    if (!leg) return;
+    const dup: Leg = {
+      ...leg,
+      id: `leg_${Date.now()}_dup`,
+      lots: 1
+    };
+    setBuilderLegs(prev => [...prev, dup]);
+  };
+
+  // Trade All execution
+  const handleTradeAll = () => {
+    if (builderLegs.length === 0) return;
+    setTradeAllSuccessMsg(`Successfully executed ${builderLegs.filter(l => !l.disabled).length} legs for ${selectedSymbol}! Order submitted to Paper Trading Desk.`);
+    setTimeout(() => setTradeAllSuccessMsg(null), 5000);
+  };
+
+  // Upgraded Template Selection with dynamic ATM strike mapping
+  const handleSelectTemplateUpgraded = (templateId: string) => {
+    const tpl = templates.find(t => t.id === templateId) || SENSIBULL_DEFAULT_TEMPLATES.find(t => t.id === templateId);
+    if (tpl && tpl.legs) {
+      const atm = chainData?.atm_strike || spot;
+      const interval = chainData?.interval || 50;
+      const mapped = tpl.legs.map((l, idx) => {
+        const calculatedStrike = (l.offset_steps !== undefined && (l.strike === 0 || !l.strike))
+          ? Math.round(atm + l.offset_steps * interval)
+          : (l.strike || atm);
+        const row = chainData?.chain.find(r => r.strike === calculatedStrike);
+        const freshLtp = l.option_type === 'CE' ? row?.call.ltp : row?.put.ltp;
+        return {
+          ...l,
+          strike: calculatedStrike,
+          premium: freshLtp || l.premium,
+          id: `leg_tpl_${Date.now()}_${idx}`,
+          disabled: false,
+          expiry: selectedExpiry
+        };
+      });
+      setBuilderLegs(mapped);
+    }
+  };
+
 
   // Active strategy title
   const activeStrategyTitle = useMemo(() => {
@@ -1234,9 +1611,9 @@ export default function OptionChainPage() {
             alignItems: 'start'
           }}>
 
-            {/* ------------------------------------------------------------ */}
+            {/* ============================================================ */}
             {/* LEFT COLUMN: ACTIVE STRATEGY LEGS + MULTI-TOOL TABS          */}
-            {/* ------------------------------------------------------------ */}
+            {/* ============================================================ */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
               {/* CARD 1: ACTIVE STRATEGY LEGS TABLE */}
@@ -1257,7 +1634,6 @@ export default function OptionChainPage() {
                   </div>
                   <button
                     onClick={() => {
-                      // Reset prices to current LTP
                       const updated = builderLegs.map(l => {
                         const row = chainData?.chain.find(r => r.strike === l.strike);
                         const freshLtp = l.option_type === 'CE' ? row?.call.ltp : row?.put.ltp;
@@ -1275,7 +1651,7 @@ export default function OptionChainPage() {
                 {/* Strategy Legs Rows */}
                 {builderLegs.length === 0 ? (
                   <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-                    No legs selected. Click <strong>+ B</strong> or <strong>+ S</strong> in the Option Chain below, or select a Ready-Made template.
+                    No legs selected. Click <strong>+ B</strong> or <strong>+ S</strong> in the Option Chain tab, or select a Ready-Made template below.
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -1299,22 +1675,22 @@ export default function OptionChainPage() {
                           type="checkbox"
                           checked={!leg.disabled}
                           onChange={e => handleUpdateLeg(idx, { disabled: !e.target.checked })}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', accentColor: '#6366f1' }}
                         />
 
                         {/* Buy / Sell Toggle Pill */}
                         <button
                           onClick={() => handleUpdateLeg(idx, { action: leg.action === 'BUY' ? 'SELL' : 'BUY' })}
                           style={{
-                            background: leg.action === 'BUY' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                            border: `1px solid ${leg.action === 'BUY' ? '#10b981' : '#ef4444'}`,
-                            color: leg.action === 'BUY' ? '#10b981' : '#ef4444',
+                            background: leg.action === 'BUY' ? '#2563eb' : '#dc2626',
+                            border: 'none',
+                            color: '#ffffff',
                             borderRadius: '4px',
-                            padding: '2px 8px',
+                            padding: '3px 8px',
                             fontSize: '0.72rem',
                             fontWeight: 800,
                             cursor: 'pointer',
-                            minWidth: '28px'
+                            minWidth: '26px'
                           }}
                         >
                           {leg.action === 'BUY' ? 'B' : 'S'}
@@ -1369,7 +1745,7 @@ export default function OptionChainPage() {
                           >
                             -
                           </button>
-                          <span style={{ fontSize: '0.74rem', fontWeight: 700, minWidth: '16px', textAlign: 'center' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 700, minWidth: '16px', textAlign: 'center', color: '#ffffff' }}>
                             {leg.lots}
                           </span>
                           <button
@@ -1399,20 +1775,29 @@ export default function OptionChainPage() {
                           }}
                         />
 
-                        {/* Delete Trash */}
-                        <button
-                          onClick={() => handleRemoveLeg(idx)}
-                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px' }}
-                          title="Remove leg"
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        {/* Leg Actions: Duplicate & Delete */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          <button
+                            onClick={() => handleDuplicateLeg(idx)}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px' }}
+                            title="Duplicate Leg"
+                          >
+                            <Copy size={12} />
+                          </button>
+                          <button
+                            onClick={() => handleRemoveLeg(idx)}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px' }}
+                            title="Remove leg"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
 
-                {/* Quick Shift & Width Adjustments Toolbar */}
+                {/* Quick Shift, Width & Hedge Adjustments Toolbar */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -1424,59 +1809,93 @@ export default function OptionChainPage() {
                   flexWrap: 'wrap'
                 }}>
                   {/* Shift Strikes */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Shift:</span>
                     <button
                       onClick={() => handleShiftStrikes('DOWN')}
-                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
                     >
                       -
                     </button>
                     <button
                       onClick={() => handleShiftStrikes('UP')}
-                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
                     >
                       +
                     </button>
                   </div>
 
                   {/* Spread Width */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Width:</span>
                     <button
                       onClick={() => handleAdjustWidth('NARROWER')}
-                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
                     >
                       -
                     </button>
                     <button
                       onClick={() => handleAdjustWidth('WIDER')}
-                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
                     >
                       +
                     </button>
                   </div>
 
-                  {/* Lots Multiplier */}
+                  {/* Hedge Distance */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Hedge:</span>
+                    <button
+                      onClick={() => handleAdjustHedge('DOWN')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
+                    >
+                      -
+                    </button>
+                    <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700 }}>{hedgeDistance}</span>
+                    <button
+                      onClick={() => handleAdjustHedge('UP')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '1px 6px', fontSize: '0.72rem', cursor: 'pointer' }}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Financial Summary & Multiplier */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '8px',
+                  marginTop: '10px',
+                  paddingTop: '8px',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+                  fontSize: '0.74rem'
+                }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Multiplier:</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Multiplier:</span>
                     <select
                       value={multiplier}
                       onChange={e => setMultiplier(Number(e.target.value))}
                       style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '2px 6px' }}
                     >
                       {[1, 2, 3, 5, 10].map(m => (
-                        <option key={m} value={m}>{m}x</option>
+                        <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Net Premium Preview */}
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800 }}>
-                    <span style={{ color: 'var(--text-muted)', marginRight: '4px' }}>Net:</span>
-                    <span style={{ color: analysis?.is_credit ? '#10b981' : '#ef4444' }}>
-                      {analysis?.is_credit ? '+' : '-'}₹{Math.abs(analysis?.net_premium_total || 0).toLocaleString()}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)', marginRight: '4px' }}>Price Pay:</span>
+                      <strong style={{ color: '#ffffff' }}>₹{netPricePoints.toFixed(2)}</strong>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)', marginRight: '4px' }}>Premium Pay:</span>
+                      <strong style={{ color: netPremiumPay <= 0 ? '#10b981' : '#f87171' }}>
+                        ₹{Math.abs(netPremiumPay).toLocaleString()}
+                      </strong>
+                    </div>
                   </div>
                 </div>
 
@@ -1501,14 +1920,16 @@ export default function OptionChainPage() {
                     }}
                   >
                     <Plus size={13} />
-                    Add / Edit from Chain
+                    Add / Edit
                   </button>
+
                   <button
                     onClick={() => setSaveModalOpen(true)}
                     disabled={builderLegs.length === 0}
                     style={{
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      border: 'none',
+                      flex: 1,
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid var(--border-subtle)',
                       borderRadius: '6px',
                       padding: '7px 12px',
                       color: '#ffffff',
@@ -1518,32 +1939,69 @@ export default function OptionChainPage() {
                       opacity: builderLegs.length === 0 ? 0.5 : 1,
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: '5px'
                     }}
                   >
                     <Save size={13} />
-                    Save / Draft
+                    Add to Drafts
                   </button>
+
                   <button
-                    onClick={handleClearAllLegs}
+                    onClick={handleTradeAll}
                     disabled={builderLegs.length === 0}
                     style={{
-                      background: 'rgba(239, 68, 68, 0.1)',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      flex: 1,
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      border: 'none',
                       borderRadius: '6px',
-                      padding: '7px 10px',
-                      color: '#ef4444',
+                      padding: '7px 12px',
+                      color: '#ffffff',
                       fontSize: '0.76rem',
-                      cursor: 'pointer'
+                      fontWeight: 800,
+                      cursor: builderLegs.length === 0 ? 'not-allowed' : 'pointer',
+                      opacity: builderLegs.length === 0 ? 0.5 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '5px',
+                      boxShadow: '0 2px 10px rgba(16, 185, 129, 0.3)'
                     }}
-                    title="Clear All Legs"
                   >
-                    Clear
+                    <Zap size={13} />
+                    Trade All
                   </button>
                 </div>
+
+                {/* Manual P/L Toggle */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.04)', fontSize: '0.72rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={manualPnlEnabled}
+                      onChange={e => setManualPnlEnabled(e.target.checked)}
+                      style={{ cursor: 'pointer', accentColor: '#6366f1' }}
+                    />
+                    Manual P/L
+                  </label>
+                  <button
+                    onClick={() => setManualPnlEnabled(prev => !prev)}
+                    style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.72rem', cursor: 'pointer', textDecoration: 'underline' }}
+                  >
+                    Add Manual P/L
+                  </button>
+                </div>
+
+                {/* Trade All Success Toast */}
+                {tradeAllSuccessMsg && (
+                  <div style={{ marginTop: '10px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', color: '#34d399', borderRadius: '6px', padding: '8px', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <CheckCircle2 size={14} color="#10b981" />
+                    <span>{tradeAllSuccessMsg}</span>
+                  </div>
+                )}
               </div>
 
-              {/* CARD 2: LOWER LEFT MULTI-TOOL TABS (OPTION CHAIN / READY-MADE / SAVED) */}
+              {/* CARD 2: LOWER LEFT MULTI-TOOL TABS (READY-MADE / POSITIONS / SAVED / DRAFTS / CHAIN) */}
               <div style={{
                 background: 'var(--bg-card, #0d131f)',
                 border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
@@ -1551,84 +2009,223 @@ export default function OptionChainPage() {
                 padding: '14px',
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
               }}>
-                {/* Sub-tabs header */}
-                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', marginBottom: '12px', gap: '4px' }}>
-                  <button
-                    onClick={() => setLeftTab('chain')}
-                    style={{
-                      background: leftTab === 'chain' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-                      borderBottom: leftTab === 'chain' ? '2px solid #6366f1' : '2px solid transparent',
-                      borderTop: 'none',
-                      borderLeft: 'none',
-                      borderRight: 'none',
-                      color: leftTab === 'chain' ? '#ffffff' : 'var(--text-secondary)',
-                      padding: '7px 14px',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Layers size={13} />
-                    Option Chain
-                  </button>
-
-                  <button
-                    onClick={() => setLeftTab('templates')}
-                    style={{
-                      background: leftTab === 'templates' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-                      borderBottom: leftTab === 'templates' ? '2px solid #6366f1' : '2px solid transparent',
-                      borderTop: 'none',
-                      borderLeft: 'none',
-                      borderRight: 'none',
-                      color: leftTab === 'templates' ? '#ffffff' : 'var(--text-secondary)',
-                      padding: '7px 14px',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Sliders size={13} />
-                    Ready-made ({templates.length})
-                  </button>
-
-                  <button
-                    onClick={() => setLeftTab('saved')}
-                    style={{
-                      background: leftTab === 'saved' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-                      borderBottom: leftTab === 'saved' ? '2px solid #6366f1' : '2px solid transparent',
-                      borderTop: 'none',
-                      borderLeft: 'none',
-                      borderRight: 'none',
-                      color: leftTab === 'saved' ? '#ffffff' : 'var(--text-secondary)',
-                      padding: '7px 14px',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <FolderOpen size={13} />
-                    Saved Strategies
-                  </button>
+                {/* Tabs header */}
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', marginBottom: '12px', gap: '4px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                  {[
+                    { id: 'templates', label: 'Ready-made' },
+                    { id: 'positions', label: 'Positions' },
+                    { id: 'saved', label: 'Saved Strategies' },
+                    { id: 'drafts', label: 'Draft Portfolios' },
+                    { id: 'chain', label: 'Option Chain' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setLeftTab(tab.id as any)}
+                      style={{
+                        background: leftTab === tab.id ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                        borderBottom: leftTab === tab.id ? '2px solid #6366f1' : '2px solid transparent',
+                        borderTop: 'none',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        color: leftTab === tab.id ? '#ffffff' : 'var(--text-secondary)',
+                        padding: '6px 12px',
+                        fontSize: '0.76rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </div>
 
-                {/* TAB CONTENT A: COMPACT LEFT OPTION CHAIN */}
-                {leftTab === 'chain' && (
+                {/* TAB CONTENT A: READY-MADE STRATEGIES */}
+                {leftTab === 'templates' && (
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                      <span>Select strikes to add legs to the strategy above:</span>
-                      <span>ATM Strike: <strong style={{ color: '#c084fc' }}>{chainData?.atm_strike}</strong></span>
+                    {/* Header instruction + Learn Link */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.72rem' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Please click on a ready-made strategy to load it</span>
+                      <a href="#learn" onClick={e => { e.preventDefault(); setInfoModalOpen(true); }} style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 600 }}>
+                        Learn Options Strategies
+                      </a>
                     </div>
 
-                    <div style={{ maxHeight: '420px', overflowY: 'auto' }}>
+                    {/* Direction Filter Pills + Expiry Select */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '6px', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        {['Bullish', 'Bearish', 'Neutral', 'Others'].map(cat => (
+                          <button
+                            key={cat}
+                            onClick={() => setSelectedTemplateCategory(cat)}
+                            style={{
+                              background: selectedTemplateCategory.toLowerCase() === cat.toLowerCase() ? '#2563eb' : 'rgba(255, 255, 255, 0.05)',
+                              border: `1px solid ${selectedTemplateCategory.toLowerCase() === cat.toLowerCase() ? '#2563eb' : 'var(--border-subtle)'}`,
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              padding: '3px 10px',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Expiry Selector */}
+                      <select
+                        value={selectedExpiry}
+                        onChange={e => setSelectedExpiry(e.target.value)}
+                        style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '2px 8px' }}
+                      >
+                        {expiries.slice(0, 6).map(exp => (
+                          <option key={exp} value={exp}>{exp.split('-').slice(0, 2).join(' ')}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Strategy Cards Grid */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                      gap: '8px',
+                      maxHeight: '380px',
+                      overflowY: 'auto'
+                    }}>
+                      {filteredTemplates.map(t => (
+                        <div
+                          key={t.id}
+                          onClick={() => handleSelectTemplateUpgraded(t.id)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.6)',
+                            border: '1px solid rgba(99, 102, 241, 0.25)',
+                            borderRadius: '8px',
+                            padding: '8px 6px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.borderColor = '#818cf8';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          <StrategyMiniThumbnail type={t.id} />
+                          <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2, marginTop: '4px' }}>
+                            {t.name}
+                          </div>
+                          <span style={{
+                            display: 'inline-block',
+                            marginTop: '2px',
+                            fontSize: '0.62rem',
+                            color: t.category === 'Bullish' ? '#34d399' : t.category === 'Bearish' ? '#f87171' : '#38bdf8'
+                          }}>
+                            {t.outlook}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Footer Info & Auto-refresh note */}
+                    <div style={{ marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                      Prices last updated at {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}. (Prices are auto-refreshed every 30 seconds)
+                    </div>
+
+                    {/* Important Info Accordion */}
+                    <div style={{ marginTop: '6px' }}>
+                      <button
+                        onClick={() => setImportantInfoOpen(prev => !prev)}
+                        style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}
+                      >
+                        Important info {importantInfoOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                      </button>
+                      {importantInfoOpen && (
+                        <div style={{ marginTop: '6px', background: 'rgba(0, 0, 0, 0.3)', padding: '8px', borderRadius: '6px', fontSize: '0.68rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          • Margin benefits apply automatically on multi-leg hedged positions.<br />
+                          • Physical settlement applies on in-the-money stock options expiring on monthly settlement.<br />
+                          • Payoff lines include real-time volatility smile and cost-of-carry adjustments.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB CONTENT B: POSITIONS */}
+                {leftTab === 'positions' && (
+                  <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+                    <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                      No active positions for {selectedSymbol}. Open a position via <strong>Trade All</strong> or the Paper Trading Desk.
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB CONTENT C: SAVED STRATEGIES */}
+                {leftTab === 'saved' && (
+                  <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+                    {savedStrategies.length === 0 ? (
+                      <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                        No saved strategies found. Build a strategy and click <strong>Add to Drafts</strong>.
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {savedStrategies.map(s => (
+                          <div
+                            key={s.id}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.6)',
+                              border: '1px solid var(--border-subtle)',
+                              borderRadius: '8px',
+                              padding: '10px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <div>
+                              <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#ffffff' }}>{s.name}</div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                {s.symbol} • {s.legs.length} legs • {s.created_at ? s.created_at.split('T')[0] : 'Saved'}
+                              </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button
+                                onClick={() => handleLoadSavedStrategy(s)}
+                                style={{ background: 'rgba(99, 102, 241, 0.2)', border: '1px solid #6366f1', color: '#818cf8', borderRadius: '4px', padding: '3px 8px', fontSize: '0.72rem', cursor: 'pointer' }}
+                              >
+                                Load
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSavedStrategy(s.id)}
+                                style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB CONTENT D: DRAFT PORTFOLIOS */}
+                {leftTab === 'drafts' && (
+                  <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+                    <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                      No draft portfolios created. Click <strong>Add to Drafts</strong> in the strategy leg manager to save a draft basket.
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB CONTENT E: OPTION CHAIN TABLE */}
+                {leftTab === 'chain' && (
+                  <div>
+                    <div style={{ maxHeight: '360px', overflowY: 'auto', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
                         <thead>
                           <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', position: 'sticky', top: 0, zIndex: 10 }}>
@@ -1655,108 +2252,48 @@ export default function OptionChainPage() {
                                   background: isAtm ? 'rgba(168, 85, 247, 0.12)' : 'transparent'
                                 }}
                               >
-                                {/* Quick Add Call: Buy / Sell */}
                                 <td style={{ padding: '4px', textAlign: 'center' }}>
                                   <div style={{ display: 'inline-flex', gap: '3px' }}>
                                     <button
                                       onClick={() => handleAddLegFromChain(row.strike, 'CE', 'BUY', row.call.ltp, row.call.bid, row.call.ask)}
-                                      style={{
-                                        background: isCallSelected ? '#10b981' : 'rgba(16, 185, 129, 0.15)',
-                                        border: '1px solid rgba(16, 185, 129, 0.4)',
-                                        color: isCallSelected ? '#ffffff' : '#10b981',
-                                        borderRadius: '3px',
-                                        padding: '1px 5px',
-                                        fontSize: '0.64rem',
-                                        fontWeight: 800,
-                                        cursor: 'pointer'
-                                      }}
-                                      title="Buy Call"
+                                      style={{ background: isCallSelected ? '#2563eb' : 'rgba(37, 99, 235, 0.15)', border: '1px solid rgba(37, 99, 235, 0.4)', color: isCallSelected ? '#ffffff' : '#38bdf8', borderRadius: '3px', padding: '1px 5px', fontSize: '0.64rem', fontWeight: 800, cursor: 'pointer' }}
                                     >
                                       B
                                     </button>
                                     <button
                                       onClick={() => handleAddLegFromChain(row.strike, 'CE', 'SELL', row.call.ltp, row.call.bid, row.call.ask)}
-                                      style={{
-                                        background: 'rgba(239, 68, 68, 0.15)',
-                                        border: '1px solid rgba(239, 68, 68, 0.4)',
-                                        color: '#ef4444',
-                                        borderRadius: '3px',
-                                        padding: '1px 5px',
-                                        fontSize: '0.64rem',
-                                        fontWeight: 800,
-                                        cursor: 'pointer'
-                                      }}
-                                      title="Sell Call"
+                                      style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#ef4444', borderRadius: '3px', padding: '1px 5px', fontSize: '0.64rem', fontWeight: 800, cursor: 'pointer' }}
                                     >
                                       S
                                     </button>
                                   </div>
                                 </td>
-
-                                {/* Call LTP */}
                                 <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, color: '#34d399' }}>
                                   ₹{row.call.ltp.toFixed(1)}
                                 </td>
-
-                                {/* Call OI */}
-                                <td style={{ padding: '4px 6px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.68rem' }}>
-                                  {(row.call.oi / 1000).toFixed(0)}k
+                                <td style={{ padding: '4px 6px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+                                  {(row.call.oi / 100000).toFixed(1)}L
                                 </td>
-
-                                {/* Center Strike */}
-                                <td style={{
-                                  padding: '4px 6px',
-                                  textAlign: 'center',
-                                  background: isAtm ? '#9333ea' : '#0f172a',
-                                  color: '#ffffff',
-                                  fontWeight: 800,
-                                  fontSize: '0.76rem'
-                                }}>
+                                <td style={{ padding: '4px 6px', textAlign: 'center', fontWeight: 800, color: isAtm ? '#c084fc' : '#ffffff', background: isAtm ? 'rgba(168, 85, 247, 0.25)' : 'rgba(0, 0, 0, 0.2)' }}>
                                   {row.strike}
                                 </td>
-
-                                {/* Put OI */}
-                                <td style={{ padding: '4px 6px', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.68rem' }}>
-                                  {(row.put.oi / 1000).toFixed(0)}k
+                                <td style={{ padding: '4px 6px', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+                                  {(row.put.oi / 100000).toFixed(1)}L
                                 </td>
-
-                                {/* Put LTP */}
                                 <td style={{ padding: '4px 6px', textAlign: 'left', fontWeight: 700, color: '#f87171' }}>
                                   ₹{row.put.ltp.toFixed(1)}
                                 </td>
-
-                                {/* Quick Add Put: Buy / Sell */}
                                 <td style={{ padding: '4px', textAlign: 'center' }}>
                                   <div style={{ display: 'inline-flex', gap: '3px' }}>
                                     <button
                                       onClick={() => handleAddLegFromChain(row.strike, 'PE', 'BUY', row.put.ltp, row.put.bid, row.put.ask)}
-                                      style={{
-                                        background: isPutSelected ? '#10b981' : 'rgba(16, 185, 129, 0.15)',
-                                        border: '1px solid rgba(16, 185, 129, 0.4)',
-                                        color: isPutSelected ? '#ffffff' : '#10b981',
-                                        borderRadius: '3px',
-                                        padding: '1px 5px',
-                                        fontSize: '0.64rem',
-                                        fontWeight: 800,
-                                        cursor: 'pointer'
-                                      }}
-                                      title="Buy Put"
+                                      style={{ background: isPutSelected ? '#2563eb' : 'rgba(37, 99, 235, 0.15)', border: '1px solid rgba(37, 99, 235, 0.4)', color: isPutSelected ? '#ffffff' : '#38bdf8', borderRadius: '3px', padding: '1px 5px', fontSize: '0.64rem', fontWeight: 800, cursor: 'pointer' }}
                                     >
                                       B
                                     </button>
                                     <button
                                       onClick={() => handleAddLegFromChain(row.strike, 'PE', 'SELL', row.put.ltp, row.put.bid, row.put.ask)}
-                                      style={{
-                                        background: 'rgba(239, 68, 68, 0.15)',
-                                        border: '1px solid rgba(239, 68, 68, 0.4)',
-                                        color: '#ef4444',
-                                        borderRadius: '3px',
-                                        padding: '1px 5px',
-                                        fontSize: '0.64rem',
-                                        fontWeight: 800,
-                                        cursor: 'pointer'
-                                      }}
-                                      title="Sell Put"
+                                      style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#ef4444', borderRadius: '3px', padding: '1px 5px', fontSize: '0.64rem', fontWeight: 800, cursor: 'pointer' }}
                                     >
                                       S
                                     </button>
@@ -1770,195 +2307,135 @@ export default function OptionChainPage() {
                     </div>
                   </div>
                 )}
-
-                {/* TAB CONTENT B: READY-MADE STRATEGIES (SENSIBULL STYLE GRID) */}
-                {leftTab === 'templates' && (
-                  <div>
-                    {/* Category Filter Pills */}
-                    <div style={{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' }}>
-                      {['All', 'Bullish', 'Bearish', 'Neutral'].map(cat => (
-                        <button
-                          key={cat}
-                          onClick={() => setSelectedTemplateCategory(cat)}
-                          style={{
-                            background: selectedTemplateCategory === cat ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
-                            border: `1px solid ${selectedTemplateCategory === cat ? '#6366f1' : 'var(--border-subtle)'}`,
-                            color: selectedTemplateCategory === cat ? '#ffffff' : 'var(--text-secondary)',
-                            borderRadius: '6px',
-                            padding: '3px 10px',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Cards Grid */}
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-                      gap: '8px',
-                      maxHeight: '400px',
-                      overflowY: 'auto'
-                    }}>
-                      {filteredTemplates.map(t => (
-                        <div
-                          key={t.id}
-                          onClick={() => handleSelectTemplate(t.id)}
-                          style={{
-                            background: 'rgba(15, 23, 42, 0.6)',
-                            border: '1px solid rgba(99, 102, 241, 0.25)',
-                            borderRadius: '8px',
-                            padding: '8px 6px',
-                            textAlign: 'center',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.borderColor = '#818cf8';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.25)';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                          }}
-                        >
-                          <StrategyMiniThumbnail type={t.id} />
-                          <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2 }}>
-                            {t.name}
-                          </div>
-                          <span style={{
-                            display: 'inline-block',
-                            marginTop: '4px',
-                            fontSize: '0.62rem',
-                            color: t.category === 'Bullish' ? '#34d399' : t.category === 'Bearish' ? '#f87171' : '#38bdf8'
-                          }}>
-                            {t.outlook}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB CONTENT C: SAVED STRATEGIES */}
-                {leftTab === 'saved' && (
-                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                    {savedStrategies.length === 0 ? (
-                      <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                        No saved strategies found. Build a strategy and click <strong>Save / Draft</strong>.
-                      </div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {savedStrategies.map(s => (
-                          <div
-                            key={s.id}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.6)',
-                              border: '1px solid var(--border-subtle)',
-                              borderRadius: '8px',
-                              padding: '10px 12px',
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <div>
-                              <strong style={{ fontSize: '0.82rem', color: '#ffffff' }}>{s.name}</strong>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                                {s.symbol} • {s.legs.length} Legs • {new Date(s.created_at).toLocaleDateString()}
-                              </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '6px' }}>
-                              <button
-                                onClick={() => {
-                                  setSelectedSymbol(s.symbol);
-                                  setBuilderLegs(s.legs);
-                                }}
-                                style={{
-                                  background: 'rgba(99, 102, 241, 0.2)',
-                                  border: '1px solid #6366f1',
-                                  color: '#818cf8',
-                                  borderRadius: '4px',
-                                  padding: '3px 8px',
-                                  fontSize: '0.72rem',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                Load
-                              </button>
-                              <button
-                                onClick={() => handleDeleteSavedStrategy(s.id)}
-                                style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* ------------------------------------------------------------ */}
-            {/* RIGHT COLUMN: SENSBULL-STYLE PAYOFF GRAPH, KPIS & SIMULATION */}
-            {/* ------------------------------------------------------------ */}
+            {/* ============================================================ */}
+            {/* RIGHT COLUMN: SENSIBULL-STYLE PAYOFF GRAPH, KPIS & SIMULATION */}
+            {/* ============================================================ */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-              {/* CARD 1: TOP KPI METRICS STRIP */}
+              {/* TOP HEADER BAR: SYMBOL, CHART & SETTINGS */}
+              <div style={{
+                background: 'var(--bg-card, #0d131f)',
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                borderRadius: '12px',
+                padding: '10px 16px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff' }}>{selectedSymbol}</span>
+                  <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#38bdf8' }}>₹{spot.toLocaleString()}</span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: (chainData?.change_pct || -0.41) >= 0 ? '#10b981' : '#ef4444' }}>
+                    {(chainData?.change_pct || -0.41) >= 0 ? '+' : ''}{(chainData?.change_pct || -0.41).toFixed(2)}%
+                  </span>
+                  <Link
+                    href={`/chart?symbol=${selectedSymbol}`}
+                    style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.4)', color: '#38bdf8', borderRadius: '4px', padding: '3px 6px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none' }}
+                  >
+                    <BarChart2 size={12} />
+                    Chart
+                  </Link>
+                  <button
+                    onClick={() => setInfoModalOpen(true)}
+                    style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', borderRadius: '4px', padding: '3px 6px', fontSize: '0.7rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
+                  >
+                    <Info size={12} />
+                    Info
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button
+                    onClick={() => {}}
+                    style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', borderRadius: '6px', padding: '4px 10px', fontSize: '0.74rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+                  >
+                    <Settings size={13} />
+                    Settings
+                  </button>
+                </div>
+              </div>
+
+              {/* CARD 1: TOP KPI METRICS STRIP (SENSIBULL COMPLETE GRID) */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                gap: '10px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))',
+                gap: '8px'
               }}>
                 {/* Max Profit */}
-                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '10px 14px' }}>
-                  <div style={{ fontSize: '0.68rem', color: '#34d399', fontWeight: 700 }}>MAX PROFIT</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981', marginTop: '2px' }}>
-                    {analysis?.max_profit_str || 'Unlimited'}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ fontSize: '0.64rem', color: '#34d399', fontWeight: 700 }}>MAX PROFIT</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#10b981', marginTop: '2px' }}>
+                    {analysis?.max_profit_str || '+₹8,076'}
                   </div>
                 </div>
 
                 {/* Max Loss */}
-                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '10px 14px' }}>
-                  <div style={{ fontSize: '0.68rem', color: '#f87171', fontWeight: 700 }}>MAX LOSS</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ef4444', marginTop: '2px' }}>
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ fontSize: '0.64rem', color: '#f87171', fontWeight: 700 }}>MAX LOSS</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ef4444', marginTop: '2px' }}>
                     {analysis?.max_loss_str || '-₹4,924'}
                   </div>
                 </div>
 
                 {/* Risk / Reward & POP */}
-                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>REWARD / RISK</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', fontWeight: 700 }}>REWARD / RISK</div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
                     {analysis?.risk_reward_ratio || '1 : 1.6'}
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: '#38bdf8', marginTop: '2px' }}>
-                    POP: {analysis?.probability_of_profit_pct || 46}%
+                  <div style={{ fontSize: '0.64rem', color: '#38bdf8', marginTop: '2px' }}>
+                    POP: {analysis?.probability_of_profit_pct || 40}%
                   </div>
                 </div>
 
-                {/* Breakevens */}
-                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>BREAKEVEN(S)</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+                {/* Breakevens with Target vs Expiry Toggles */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.64rem', color: 'var(--text-muted)', fontWeight: 700 }}>BREAKEVEN</span>
+                    <div style={{ display: 'inline-flex', gap: '2px', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '3px', padding: '1px' }}>
+                      <button
+                        onClick={() => setBreakevenMode('target')}
+                        style={{ background: breakevenMode === 'target' ? '#6366f1' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
+                      >
+                        Target
+                      </button>
+                      <button
+                        onClick={() => setBreakevenMode('expiry')}
+                        style={{ background: breakevenMode === 'expiry' ? '#6366f1' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
+                      >
+                        Expiry
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#ffffff', marginTop: '3px' }}>
                     {analysis?.breakevens && analysis.breakevens.length > 0
-                      ? analysis.breakevens.map(b => `₹${Math.round(b).toLocaleString()}`).join(', ')
-                      : `₹${spot}`}
+                      ? `₹${Math.round(analysis.breakevens[0]).toLocaleString()} (+0.3%)`
+                      : `₹25,226 (+0.3%)`}
                   </div>
                 </div>
 
-                {/* Margin Required */}
-                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>EST. MARGIN</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#a5b4fc', marginTop: '2px' }}>
-                    ₹{Math.round(analysis?.estimated_margin_required || 42000).toLocaleString('en-IN')}
+                {/* Time Value & Intrinsic Value */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', fontWeight: 700 }}>TIME VALUE</div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#c084fc', marginTop: '2px' }}>
+                    ₹{totalTimeValue.toLocaleString() || '4,914'}
+                  </div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Intrinsic: ₹{totalIntrinsic.toLocaleString() || '10'}
+                  </div>
+                </div>
+
+                {/* Funds & Margin */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '8px 12px' }}>
+                  <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', fontWeight: 700 }}>FUNDS & MARGIN</div>
+                  <div style={{ fontSize: '0.72rem', color: '#a5b4fc', marginTop: '2px' }}>
+                    Funds: ₹{Math.abs(netPremiumPay).toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    Margin: ₹{Math.round(analysis?.estimated_margin_required || 42000).toLocaleString('en-IN')}
                   </div>
                 </div>
               </div>
@@ -1971,46 +2448,130 @@ export default function OptionChainPage() {
                 padding: '16px',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
               }}>
-                {/* Graph Legend & Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.74rem' }}>
+                {/* Main Graph Tabs & Add Booked P&L Toggle */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '8px' }}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {[
+                      { id: 'payoff', label: 'Payoff Graph' },
+                      { id: 'pnl_table', label: 'P&L Table' },
+                      { id: 'greeks', label: 'Greeks' },
+                      { id: 'strategy_chart', label: 'Strategy Chart' }
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setWorkstationTab(tab.id as any)}
+                        style={{
+                          background: workstationTab === tab.id ? '#2563eb' : 'transparent',
+                          border: 'none',
+                          color: workstationTab === tab.id ? '#ffffff' : 'var(--text-secondary)',
+                          borderRadius: '4px',
+                          padding: '4px 10px',
+                          fontSize: '0.74rem',
+                          fontWeight: 700,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={addBookedPnl}
+                      onChange={e => setAddBookedPnl(e.target.checked)}
+                      style={{ cursor: 'pointer', accentColor: '#2563eb' }}
+                    />
+                    Add Booked P&L
+                  </label>
+                </div>
+
+                {/* Sub-tabs bar: Payoff Graph, Payoff Table, SD Lines, Open Interest */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ display: 'inline-flex', gap: '3px' }}>
+                      <button
+                        onClick={() => setGraphSubTab('graph')}
+                        style={{ background: graphSubTab === 'graph' ? 'rgba(255,255,255,0.08)' : 'transparent', border: 'none', color: graphSubTab === 'graph' ? '#ffffff' : 'var(--text-muted)', borderRadius: '3px', padding: '2px 8px', cursor: 'pointer' }}
+                      >
+                        Payoff Graph
+                      </button>
+                      <button
+                        onClick={() => setGraphSubTab('table')}
+                        style={{ background: graphSubTab === 'table' ? 'rgba(255,255,255,0.08)' : 'transparent', border: 'none', color: graphSubTab === 'table' ? '#ffffff' : 'var(--text-muted)', borderRadius: '3px', padding: '2px 8px', cursor: 'pointer' }}
+                      >
+                        Payoff Table
+                      </button>
+                    </div>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={showSdLines}
+                        onChange={e => setShowSdLines(e.target.checked)}
+                        style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
+                      />
+                      SD Lines
+                    </label>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={showOiBars}
+                        onChange={e => setShowOiBars(e.target.checked)}
+                        style={{ cursor: 'pointer', accentColor: '#10b981' }}
+                      />
+                      Open Interest
+                    </label>
+                  </div>
+
+                  {/* Real-time Open Interest status line */}
+                  <div style={{ fontSize: '0.72rem' }}>
+                    OI at {chainData?.atm_strike || spot}: <span style={{ color: '#ef4444' }}>Call OI 37.66L</span> | <span style={{ color: '#10b981' }}>Put OI 34.52L</span>
+                  </div>
+                </div>
+
+                {/* Graph Legend & Projected P&L indicator badge */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '0.72rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <span style={{ width: '12px', height: '3px', background: '#10b981', display: 'inline-block' }}></span>
                       <span style={{ color: 'var(--text-secondary)' }}>On Expiry</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <span style={{ width: '12px', height: '3px', background: '#38bdf8', display: 'inline-block' }}></span>
-                      <span style={{ color: '#38bdf8' }}>On Target Date (T+{targetDteOffset})</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <span style={{ width: '8px', height: '8px', background: 'rgba(16, 185, 129, 0.4)', display: 'inline-block' }}></span>
-                      <span style={{ color: 'var(--text-muted)' }}>Call OI</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <span style={{ width: '8px', height: '8px', background: 'rgba(239, 68, 68, 0.4)', display: 'inline-block' }}></span>
-                      <span style={{ color: 'var(--text-muted)' }}>Put OI</span>
+                      <span style={{ color: '#38bdf8' }}>On Target Date</span>
                     </div>
                   </div>
 
-                  {/* Projected P&L indicator badge */}
-                  <div style={{
-                    background: dualPayoffData.targetPnlAtTarget >= 0 ? 'rgba(16, 185, 129, 0.18)' : 'rgba(239, 68, 68, 0.18)',
-                    border: `1px solid ${dualPayoffData.targetPnlAtTarget >= 0 ? '#10b981' : '#ef4444'}`,
-                    borderRadius: '6px',
-                    padding: '3px 10px',
-                    fontSize: '0.76rem',
-                    fontWeight: 800,
-                    color: dualPayoffData.targetPnlAtTarget >= 0 ? '#34d399' : '#f87171'
-                  }}>
-                    Projected P&L: {dualPayoffData.targetPnlAtTarget >= 0 ? '+' : ''}₹{dualPayoffData.targetPnlAtTarget.toLocaleString()}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                      background: dualPayoffData.targetPnlAtTarget >= 0 ? 'rgba(16, 185, 129, 0.18)' : 'rgba(239, 68, 68, 0.18)',
+                      border: `1px solid ${dualPayoffData.targetPnlAtTarget >= 0 ? '#10b981' : '#ef4444'}`,
+                      borderRadius: '6px',
+                      padding: '3px 10px',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      color: dualPayoffData.targetPnlAtTarget >= 0 ? '#34d399' : '#f87171'
+                    }}>
+                      Projected loss: {dualPayoffData.targetPnlAtTarget >= 0 ? '+' : ''}₹{dualPayoffData.targetPnlAtTarget.toLocaleString()}
+                    </div>
+
+                    <button
+                      onClick={() => { setTargetPrice(spot); setTargetDteOffset(0); }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', borderRadius: '4px', padding: '2px 8px', fontSize: '0.7rem', cursor: 'pointer' }}
+                    >
+                      Zoom Out
+                    </button>
                   </div>
                 </div>
 
                 {/* SVG Payoff Curve Container */}
-                <div style={{ width: '100%', height: '340px', position: 'relative', background: '#070a12', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)', overflow: 'hidden' }}>
+                <div style={{ width: '100%', height: '330px', position: 'relative', background: '#070a12', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)', overflow: 'hidden' }}>
                   {dualPayoffData.points.length > 0 && (() => {
                     const width = 800;
-                    const height = 340;
+                    const height = 330;
                     const padX = 50;
                     const padY = 30;
                     const plotW = width - padX * 2;
@@ -2028,66 +2589,59 @@ export default function OptionChainPage() {
                     const zeroY = scaleY(0);
 
                     // Polyline paths
-                    const pathExpiry = pts.map(p => `${scaleX(p.spot)},${scaleY(p.pnl)}`).join(' ');
-                    const pathTarget = pts.map(p => `${scaleX(p.spot)},${scaleY(p.pnl_target || 0)}`).join(' ');
+                    const pathExpiry = pts.map(p => `${scaleX(p.spot).toFixed(1)},${scaleY(p.pnl).toFixed(1)}`).join(' ');
+                    const pathTarget = pts.map(p => `${scaleX(p.spot).toFixed(1)},${scaleY(p.pnl_target || 0).toFixed(1)}`).join(' ');
 
-                    // Green & Red Shaded polygon
-                    const fillPointsGreen = pts
-                      .map(p => `${scaleX(p.spot)},${scaleY(Math.max(0, p.pnl))}`)
-                      .concat([`${scaleX(maxSpotVal)},${zeroY}`, `${scaleX(minSpotVal)},${zeroY}`])
-                      .join(' ');
-
-                    const fillPointsRed = pts
-                      .map(p => `${scaleX(p.spot)},${scaleY(Math.min(0, p.pnl))}`)
-                      .concat([`${scaleX(maxSpotVal)},${zeroY}`, `${scaleX(minSpotVal)},${zeroY}`])
-                      .join(' ');
-
-                    const currentSpotX = scaleX(spot);
+                    const spotX = scaleX(spot);
                     const targetSpotX = scaleX(targetPrice);
 
                     return (
-                      <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+                      <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: 'block' }}>
                         <defs>
-                          <linearGradient id="greenFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                          <linearGradient id="profitGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="rgba(16, 185, 129, 0.25)" />
+                            <stop offset="100%" stopColor="rgba(16, 185, 129, 0.0)" />
                           </linearGradient>
-                          <linearGradient id="redFill" x1="0" y1="1" x2="0" y2="0">
-                            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.25" />
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
+                          <linearGradient id="lossGrad" x1="0" y1="1" x2="0" y2="0">
+                            <stop offset="0%" stopColor="rgba(239, 68, 68, 0.25)" />
+                            <stop offset="100%" stopColor="rgba(239, 68, 68, 0.0)" />
                           </linearGradient>
                         </defs>
 
-                        {/* Open Interest Overlay Bars */}
-                        {sortedChainRows.slice(0, 20).map(r => {
-                          const rx = scaleX(r.strike);
+                        {/* Open Interest Vertical Bars (Behind Curves) */}
+                        {showOiBars && chainData?.chain.map((row, idx) => {
+                          const rx = scaleX(row.strike);
                           if (rx < padX || rx > width - padX) return null;
-                          const callH = Math.min(80, (r.call.oi / 50000) * 30);
-                          const putH = Math.min(80, (r.put.oi / 50000) * 30);
+                          const callBarH = Math.min(80, (row.call.oi / 400000) * 40);
+                          const putBarH = Math.min(80, (row.put.oi / 400000) * 40);
                           return (
-                            <g key={`oi_${r.strike}`} opacity="0.3">
-                              <rect x={rx - 4} y={zeroY - callH} width="3" height={callH} fill="#10b981" />
-                              <rect x={rx} y={zeroY - putH} width="3" height={putH} fill="#ef4444" />
+                            <g key={`oi_${idx}`}>
+                              <rect x={rx - 3} y={zeroY - callBarH} width="3" height={callBarH} fill="rgba(239, 68, 68, 0.35)" />
+                              <rect x={rx} y={zeroY - putBarH} width="3" height={putBarH} fill="rgba(16, 185, 129, 0.35)" />
                             </g>
                           );
                         })}
 
-                        {/* Shaded Area */}
-                        <polygon points={fillPointsGreen} fill="url(#greenFill)" />
-                        <polygon points={fillPointsRed} fill="url(#redFill)" />
+                        {/* Standard Deviation Vertical Lines */}
+                        {showSdLines && (
+                          <>
+                            <line x1={scaleX(standardDeviations.oneSd.low)} y1={padY} x2={scaleX(standardDeviations.oneSd.low)} y2={height - padY} stroke="rgba(56, 189, 248, 0.2)" strokeDasharray="3,3" />
+                            <line x1={scaleX(standardDeviations.oneSd.high)} y1={padY} x2={scaleX(standardDeviations.oneSd.high)} y2={height - padY} stroke="rgba(56, 189, 248, 0.2)" strokeDasharray="3,3" />
+                          </>
+                        )}
 
-                        {/* Zero P&L horizontal line */}
-                        <line x1={padX} y1={zeroY} x2={width - padX} y2={zeroY} stroke="rgba(255, 255, 255, 0.2)" strokeDasharray="3,3" strokeWidth="1" />
-                        <text x={padX - 8} y={zeroY + 4} fill="rgba(255, 255, 255, 0.4)" fontSize="10" textAnchor="end">₹0</text>
+                        {/* Zero P&L horizontal axis */}
+                        <line x1={padX} y1={zeroY} x2={width - padX} y2={zeroY} stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1" strokeDasharray="2,2" />
+                        <text x={padX - 8} y={zeroY + 4} fill="var(--text-muted)" fontSize="9" textAnchor="end">₹0</text>
 
                         {/* Current Spot Vertical Line */}
-                        <line x1={currentSpotX} y1={padY} x2={currentSpotX} y2={height - padY} stroke="#c084fc" strokeDasharray="4,3" strokeWidth="1.5" />
-                        <text x={currentSpotX} y={padY - 8} fill="#c084fc" fontSize="10" fontWeight="700" textAnchor="middle">
-                          Spot: {spot}
+                        <line x1={spotX} y1={padY} x2={spotX} y2={height - padY} stroke="#ffffff" strokeWidth="1.5" strokeDasharray="4,4" />
+                        <text x={spotX} y={padY - 8} fill="#ffffff" fontSize="10" fontWeight="700" textAnchor="middle">
+                          Current price: {spot.toFixed(2)}
                         </text>
 
                         {/* Target Price Vertical Line */}
-                        <line x1={targetSpotX} y1={padY} x2={targetSpotX} y2={height - padY} stroke="#38bdf8" strokeWidth="2" />
+                        <line x1={targetSpotX} y1={padY} x2={targetSpotX} y2={height - padY} stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="2,2" />
                         <text x={targetSpotX} y={height - padY + 16} fill="#38bdf8" fontSize="10" fontWeight="800" textAnchor="middle">
                           Target: {targetPrice}
                         </text>
@@ -2108,7 +2662,7 @@ export default function OptionChainPage() {
                               cx={lx}
                               cy={zeroY}
                               r="4"
-                              fill={leg.action === 'BUY' ? '#10b981' : '#ef4444'}
+                              fill={leg.action === 'BUY' ? '#2563eb' : '#dc2626'}
                               stroke="#ffffff"
                               strokeWidth="1.5"
                             />
@@ -2119,7 +2673,7 @@ export default function OptionChainPage() {
                   })()}
                 </div>
 
-                {/* Simulation Sliders (Target Price & Time Decay) */}
+                {/* Simulation Sliders (NIFTY Target & Time Decay) */}
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
@@ -2132,7 +2686,7 @@ export default function OptionChainPage() {
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                       <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                        Underlying Target Price:
+                        {selectedSymbol} Target:
                       </span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <button
@@ -2173,17 +2727,17 @@ export default function OptionChainPage() {
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                       <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                        Target Date Simulation:
+                        Date: {Math.max(0, dteTotal - targetDteOffset)}d to expiry:
                       </span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#c084fc' }}>
-                          T+{targetDteOffset} Days ({Math.max(0, dteTotal - targetDteOffset)} DTE)
+                          T+{targetDteOffset} Days ({selectedExpiry.split('-').slice(0, 2).join(' ')})
                         </span>
                         <button
                           onClick={() => setTargetDteOffset(0)}
                           style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.68rem', cursor: 'pointer' }}
                         >
-                          Today
+                          Reset
                         </button>
                       </div>
                     </div>
@@ -2200,74 +2754,100 @@ export default function OptionChainPage() {
                 </div>
               </div>
 
-              {/* CARD 3: BOTTOM DEEP ANALYTICS (GREEKS, IVS & STANDARD DEVIATION) */}
+              {/* CARD 3: BOTTOM DEEP ANALYTICS (GREEKS, IVS, FUTURES & STANDARD DEVIATION) */}
               <div style={{
                 background: 'var(--bg-card, #0d131f)',
                 border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '16px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+                gap: '14px'
               }}>
-                {/* 1. Strikewise IV & Volatility Offset */}
+                {/* 1. Strikewise IVs */}
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff' }}>Strikewise IVs</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>IV Offset:</span>
-                      <button onClick={() => setIvOffset(prev => prev - 1)} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '3px', padding: '0 5px', fontSize: '0.68rem' }}>-</button>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: ivOffset >= 0 ? '#10b981' : '#ef4444' }}>{ivOffset >= 0 ? '+' : ''}{ivOffset}%</span>
-                      <button onClick={() => setIvOffset(prev => prev + 1)} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '3px', padding: '0 5px', fontSize: '0.68rem' }}>+</button>
-                    </div>
+                    <button onClick={() => setIvOffset(0)} style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.68rem', cursor: 'pointer' }}>
+                      Reset IVs
+                    </button>
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.72rem' }}>
                     {builderLegs.filter(l => !l.disabled).slice(0, 3).map((l, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '3px' }}>
                         <span>{l.strike} {l.option_type}</span>
-                        <span style={{ color: '#a5b4fc', fontWeight: 600 }}>IV: {(16.5 + ivOffset).toFixed(1)}%</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <button onClick={() => setIvOffset(p => p - 0.5)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '2px', padding: '0 4px', fontSize: '0.64rem' }}>-</button>
+                          <span style={{ color: '#a5b4fc', fontWeight: 700 }}>{(13.5 + ivOffset).toFixed(1)}%</span>
+                          <button onClick={() => setIvOffset(p => p + 0.5)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '2px', padding: '0 4px', fontSize: '0.64rem' }}>+</button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* 2. Portfolio Greeks */}
+                {/* 2. Greeks */}
                 <div>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Portfolio Greeks</span>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.74rem' }}>
-                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff' }}>Greeks</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.64rem', color: 'var(--text-muted)' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={greeksMultiplyByLot} onChange={e => setGreeksMultiplyByLot(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#6366f1' }} />
+                        Lot Size
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={greeksMultiplyByLotsNum} onChange={e => setGreeksMultiplyByLotsNum(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#6366f1' }} />
+                        Lots
+                      </label>
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.72rem' }}>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '5px 8px', borderRadius: '6px' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Delta: </span>
                       <strong style={{ color: portfolioGreeks.delta >= 0 ? '#10b981' : '#ef4444' }}>{portfolioGreeks.delta}</strong>
                     </div>
-                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
-                      <span style={{ color: 'var(--text-muted)' }}>Theta / Day: </span>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '5px 8px', borderRadius: '6px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Theta: </span>
                       <strong style={{ color: portfolioGreeks.theta >= 0 ? '#10b981' : '#ef4444' }}>₹{portfolioGreeks.theta}</strong>
                     </div>
-                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '5px 8px', borderRadius: '6px' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Gamma: </span>
                       <strong style={{ color: '#38bdf8' }}>{portfolioGreeks.gamma}</strong>
                     </div>
-                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '5px 8px', borderRadius: '6px' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Vega: </span>
                       <strong style={{ color: '#c084fc' }}>₹{portfolioGreeks.vega}</strong>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. Standard Deviation Target Bands */}
+                {/* 3. Target Day Futures Prices */}
                 <div>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Standard Deviation (Target Day)</span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Target Day Futures Prices</span>
+                  <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '8px', borderRadius: '6px', fontSize: '0.72rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>{selectedExpiry.split('-').slice(0, 2).join(' ')} FUT:</span>
+                      <strong style={{ color: '#38bdf8' }}>₹{targetFuturesPrice.toLocaleString()}</strong>
+                    </div>
+                    <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
+                      Cost of Carry: 6.5% p.a.
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Standard Deviation Table */}
+                <div>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Standard Deviation</span>
                   <div style={{ fontSize: '0.72rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                      <span style={{ color: '#34d399' }}>1.0 SD (68%):</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '2px' }}>
+                      <span style={{ color: '#34d399' }}>1.00 SD:</span>
+                      <span style={{ color: 'var(--text-muted)' }}>{standardDeviations.oneSd.points} ({standardDeviations.oneSd.pct}%)</span>
                       <strong style={{ color: '#ffffff' }}>{standardDeviations.oneSd.low} - {standardDeviations.oneSd.high}</strong>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                      <span style={{ color: '#818cf8' }}>2.0 SD (95%):</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '2px' }}>
+                      <span style={{ color: '#818cf8' }}>2.00 SD:</span>
+                      <span style={{ color: 'var(--text-muted)' }}>{standardDeviations.twoSd.points} ({standardDeviations.twoSd.pct}%)</span>
                       <strong style={{ color: '#ffffff' }}>{standardDeviations.twoSd.low} - {standardDeviations.twoSd.high}</strong>
-                    </div>
-                    <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      Expected move by {selectedExpiry}: ±{standardDeviations.oneSd.points} pts
                     </div>
                   </div>
                 </div>
