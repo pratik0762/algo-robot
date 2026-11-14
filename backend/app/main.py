@@ -851,10 +851,10 @@ async def api_get_trade_signals(
     market_cap: Optional[str] = None,
     type: Optional[str] = None,
     timeframe: Optional[str] = None,
-    instrument: Optional[str] = None,
+    instrument: Optional[str] = "EQUITY",
     search: Optional[str] = None
 ):
-    """Multi-Strategy Quantitative Trade Signals across Equities, Index & Stock Futures, and Options."""
+    """Multi-Strategy Quantitative Trade Signals across Cash Equities."""
     return get_trade_signals(
         strategy_id=strategy,
         market_cap=market_cap,
@@ -1511,6 +1511,88 @@ async def api_broadcast_signal_notification(signal: Dict[str, Any]):
     """Broadcast an algorithmic signal to Telegram and Webhooks."""
     from app.notification_engine import notification_engine
     return notification_engine.broadcast_signal(signal)
+
+
+# -----------------------------------------------------------------------------
+# OPTION CHAIN & STRATEGY BUILDER ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@app.get("/api/options/instruments")
+async def get_options_instruments():
+    """List all available F&O companies, indices, lot sizes and strike intervals."""
+    from app.option_chain_engine import FO_INSTRUMENTS
+    return {"status": "success", "instruments": FO_INSTRUMENTS, "count": len(FO_INSTRUMENTS)}
+
+
+@app.get("/api/options/expiries")
+async def get_options_expiries(count: int = 8):
+    """Retrieve list of eligible Thursday expiry dates for NSE F&O contracts."""
+    from app.option_chain_engine import generate_fo_expiries
+    expiries = generate_fo_expiries(count)
+    return {"status": "success", "expiries": expiries}
+
+
+@app.get("/api/options/chain")
+async def get_option_chain_data(
+    symbol: str = Query("NIFTY", description="Underlying symbol (e.g. NIFTY, BANKNIFTY, RELIANCE)"),
+    expiry: Optional[str] = Query(None, description="Contract expiry date (e.g. 21-Nov-2024)"),
+    strike_range: int = Query(15, ge=5, le=50, description="ATM ± strike range count")
+):
+    """Fetch complete real-time option chain with CE/PE Greeks, PCR, Max Pain, and OI analysis."""
+    from app.option_chain_engine import build_option_chain
+    data = build_option_chain(symbol=symbol, expiry=expiry, strike_range=strike_range)
+    return data
+
+
+@app.get("/api/options/templates")
+async def get_option_strategy_templates(
+    symbol: str = Query("NIFTY", description="Underlying symbol to resolve strike prices for")
+):
+    """Retrieve predefined Bullish, Bearish, Neutral, and Advanced strategy templates with resolved strikes."""
+    from app.option_chain_engine import get_predefined_strategies
+    templates = get_predefined_strategies(symbol=symbol)
+    return {"status": "success", "symbol": symbol.upper(), "templates": templates}
+
+
+@app.post("/api/options/strategy/analyze")
+async def analyze_option_strategy(payload: Dict[str, Any]):
+    """Calculate payoff curve, Max Profit, Max Loss, Breakevens, POP %, and Margin requirement."""
+    from app.option_chain_engine import analyze_strategy_payoff
+    symbol = payload.get("symbol", "NIFTY")
+    legs = payload.get("legs", [])
+    expiry = payload.get("expiry")
+    if not legs:
+        raise HTTPException(status_code=400, detail="Strategy must include at least 1 leg.")
+    analysis = analyze_strategy_payoff(symbol=symbol, legs=legs, expiry=expiry)
+    return analysis
+
+
+@app.get("/api/options/saved-strategies")
+async def get_saved_option_strategies():
+    """Retrieve user-saved multi-leg options strategies."""
+    from app.option_chain_engine import list_saved_strategies
+    return {"status": "success", "strategies": list_saved_strategies()}
+
+
+@app.post("/api/options/saved-strategies")
+async def post_save_option_strategy(strategy: Dict[str, Any]):
+    """Save or update an options strategy."""
+    from app.option_chain_engine import save_strategy
+    if not strategy.get("name"):
+        raise HTTPException(status_code=400, detail="Strategy name is required.")
+    saved = save_strategy(strategy)
+    return {"status": "success", "strategy": saved}
+
+
+@app.delete("/api/options/saved-strategies/{strategy_id}")
+async def delete_saved_option_strategy(strategy_id: str):
+    """Delete a saved options strategy."""
+    from app.option_chain_engine import delete_saved_strategy
+    success = delete_saved_strategy(strategy_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Strategy not found.")
+    return {"status": "success", "message": f"Strategy {strategy_id} deleted."}
+
 
 
 

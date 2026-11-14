@@ -90,7 +90,6 @@ function TradeSignalsContent() {
   const [selectedCap, setSelectedCap] = useState<string>('ALL');
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('ALL');
-  const [selectedInstrument, setSelectedInstrument] = useState<string>('ALL');
   // Phase 5: Trade Ledger View Modes & Date Range
   const [viewMode, setViewMode] = useState<'ACTIVE' | 'ALL' | 'ARCHIVED'>('ACTIVE');
   const [dateRange, setDateRange] = useState<string>('today');
@@ -258,12 +257,10 @@ function TradeSignalsContent() {
       if (selectedTimeframe !== 'ALL' && sig.timeframe.toUpperCase() !== selectedTimeframe.toUpperCase()) {
         return false;
       }
-      // Phase 4: Instrument asset class filter (Equities, Futures, Options)
-      if (selectedInstrument !== 'ALL') {
-        const sigInst = (sig.instrument_type || 'EQUITY').toUpperCase();
-        if (sigInst !== selectedInstrument) {
-          return false;
-        }
+      // Exclude Futures (FUT) and Options (OPT) signals
+      const sigInst = (sig.instrument_type || 'EQUITY').toUpperCase();
+      if (sigInst === 'FUTURES' || sigInst === 'OPTIONS') {
+        return false;
       }
       // Search filter
       if (searchTerm.trim()) {
@@ -280,7 +277,7 @@ function TradeSignalsContent() {
       }
       return true;
     });
-  }, [signals, viewMode, outcomeFilter, selectedStrategy, selectedCap, selectedType, selectedTimeframe, selectedInstrument, searchTerm]);
+  }, [signals, viewMode, outcomeFilter, selectedStrategy, selectedCap, selectedType, selectedTimeframe, searchTerm]);
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
@@ -835,42 +832,6 @@ function TradeSignalsContent() {
                 })}
               </div>
 
-              {/* Phase 4: Asset Class Filter Pills (Equities, Futures, Options) */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                {[
-                  { id: 'ALL', label: 'All Assets' },
-                  { id: 'EQUITY', label: 'Equities' },
-                  { id: 'FUTURES', label: 'Futures (FUT)' },
-                  { id: 'OPTIONS', label: 'Options (OPT)' },
-                ].map((asset) => {
-                  const isActive = selectedInstrument === asset.id;
-                  let activeBg = '#4f46e5';
-                  if (asset.id === 'EQUITY') activeBg = '#0284c7';
-                  if (asset.id === 'FUTURES') activeBg = '#d97706';
-                  if (asset.id === 'OPTIONS') activeBg = '#7c3aed';
-
-                  return (
-                    <button
-                      key={asset.id}
-                      onClick={() => setSelectedInstrument(asset.id)}
-                      style={{
-                        padding: '5px 11px',
-                        borderRadius: '6px',
-                        fontSize: '0.74rem',
-                        fontWeight: isActive ? 800 : 500,
-                        background: isActive ? activeBg : 'transparent',
-                        color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      {asset.label}
-                    </button>
-                  );
-                })}
-              </div>
-
               {/* Phase 5: Date Range Filter (Visible in Trade History / Archived views) */}
               {viewMode !== 'ACTIVE' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
@@ -1113,37 +1074,6 @@ function TradeSignalsContent() {
                           {sig.market_cap_category.replace('_', '-')}
                         </span>
 
-                        {/* Phase 4: Asset Class Badge (Equity / Futures / Options) */}
-                        <span
-                          style={{
-                            background:
-                              sig.instrument_type === 'OPTIONS'
-                                ? 'rgba(124, 58, 237, 0.25)'
-                                : sig.instrument_type === 'FUTURES'
-                                ? 'rgba(217, 119, 6, 0.25)'
-                                : 'rgba(2, 132, 199, 0.2)',
-                            border:
-                              sig.instrument_type === 'OPTIONS'
-                                ? '1px solid #8b5cf6'
-                                : sig.instrument_type === 'FUTURES'
-                                ? '1px solid #f59e0b'
-                                : '1px solid #38bdf8',
-                            color:
-                              sig.instrument_type === 'OPTIONS'
-                                ? '#c4b5fd'
-                                : sig.instrument_type === 'FUTURES'
-                                ? '#fcd34d'
-                                : '#38bdf8',
-                            fontSize: '0.62rem',
-                            fontWeight: 900,
-                            padding: '2px 7px',
-                            borderRadius: '4px',
-                            letterSpacing: '0.04em'
-                          }}
-                        >
-                          {sig.instrument_type || 'EQUITY'}
-                        </span>
-
                         {/* NSE Live Feed Verified Badge */}
                         <span
                           style={{
@@ -1278,34 +1208,10 @@ function TradeSignalsContent() {
                         </span>
                       </div>
 
-                      {/* Rationale, Contract Specs and Execution Advice */}
+                      {/* Rationale and Position Sizing */}
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
                         Rationale: <strong style={{ color: '#38bdf8' }}>{sig.indicator_reason}</strong> &bull; {sig.execution_advice}
-                        {sig.instrument_type === 'FUTURES' && (
-                          <div style={{ marginTop: '3px', fontSize: '0.72rem', color: '#fbbf24', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <span>Contract: <strong>{sig.contract_symbol}</strong> (Lot: {sig.lot_size})</span>
-                            <span>&bull;</span>
-                            <span>Basis: ₹{sig.basis} ({sig.basis_pct}%)</span>
-                            <span>&bull;</span>
-                            <span>Carry: {sig.cost_of_carry_annualized_pct}%/yr</span>
-                            <span>&bull;</span>
-                            <span>Expiry: {sig.expiry_date}</span>
-                          </div>
-                        )}
-                        {sig.instrument_type === 'OPTIONS' && (
-                          <div style={{ marginTop: '3px', fontSize: '0.72rem', color: '#c4b5fd', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <span>Contract: <strong>{sig.contract_symbol}</strong> (Lot: {sig.lot_size})</span>
-                            <span>&bull;</span>
-                            <span>Strike: {sig.strike_price} {sig.option_type} ({sig.moneyness})</span>
-                            <span>&bull;</span>
-                            <span>Δ: {sig.delta} | Θ: ₹{sig.theta}/d | IV: {sig.iv}%</span>
-                            <span>&bull;</span>
-                            <span>Cost: ₹{sig.total_cost?.toLocaleString()}</span>
-                            <span>&bull;</span>
-                            <span>Expiry: {sig.expiry_date}</span>
-                          </div>
-                        )}
-                        {(!sig.instrument_type || sig.instrument_type === 'EQUITY') && sig.position_size_shares ? (
+                        {sig.position_size_shares ? (
                           <span style={{ marginLeft: '6px', color: 'var(--text-muted)' }}>
                             &bull; Size: <strong style={{ color: '#fbbf24' }}>{sig.position_size_shares.toLocaleString()} Shares</strong> (Capital: ₹{Math.round(sig.trade_capital_inr || 0).toLocaleString()})
                           </span>

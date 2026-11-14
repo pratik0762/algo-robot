@@ -319,6 +319,17 @@ export default function NavigationDrawer({
     router.push('/broker');
   };
 
+  const prefetchOptionChain = () => {
+    try {
+      fetch(`${getApiBase()}/api/options/instruments`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectOptionChain = () => {
+    onClose();
+    router.push('/option-chain');
+  };
+
   return (
     <div
       className="drawer-backdrop"
@@ -982,6 +993,71 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#10b981" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 10: OPTION CHAIN (F&O Greeks, PCR, Max Pain & Payoff Strategy Builder) */}
+          <div
+            id="nav-option-chain"
+            data-nav-item="option-chain"
+            onClick={handleSelectOptionChain}
+            onMouseEnter={prefetchOptionChain}
+            style={{
+              background: pathname === '/option-chain'
+                ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.24) 0%, rgba(99, 102, 241, 0.20) 100%)'
+                : 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%)',
+              border: pathname === '/option-chain' ? '1px solid #8b5cf6' : '1px solid rgba(139, 92, 246, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/option-chain' ? '0 4px 20px -2px rgba(139, 92, 246, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(139, 92, 246, 0.4)',
+                }}
+              >
+                <Layers size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                OPTION CHAIN
+              </span>
+
+              {pathname === '/option-chain' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#8b5cf6', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#a855f7" style={{ flexShrink: 0 }} />
           </div>
         </div>
 
