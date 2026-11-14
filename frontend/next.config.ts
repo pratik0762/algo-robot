@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: process.env.BUILD_STANDALONE === "true" || process.env.DOCKER_BUILD === "1" ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,
+  allowedDevOrigins: ['localhost:3000', '127.0.0.1:3000', 'localhost', '127.0.0.1'],
   async rewrites() {
     return [
       {

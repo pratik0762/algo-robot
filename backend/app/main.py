@@ -1514,34 +1514,60 @@ async def api_broadcast_signal_notification(signal: Dict[str, Any]):
 
 
 # -----------------------------------------------------------------------------
-# OPTION CHAIN & STRATEGY BUILDER ENDPOINTS
+# REAL-TIME NSE OPTION CHAIN & CONNECTED STRATEGY BUILDER ENDPOINTS
 # -----------------------------------------------------------------------------
 
 @app.get("/api/options/instruments")
-async def get_options_instruments():
-    """List all available F&O companies, indices, lot sizes and strike intervals."""
-    from app.option_chain_engine import FO_INSTRUMENTS
-    return {"status": "success", "instruments": FO_INSTRUMENTS, "count": len(FO_INSTRUMENTS)}
+async def get_options_instruments(force_refresh: bool = False):
+    """List all 220+ available NSE exchange-traded F&O companies, indices, lot sizes and intervals."""
+    from app.option_chain_engine import get_all_instruments
+    instruments = get_all_instruments(force_refresh=force_refresh)
+    return {"status": "success", "instruments": instruments, "count": len(instruments)}
 
 
 @app.get("/api/options/expiries")
-async def get_options_expiries(count: int = 8):
-    """Retrieve list of eligible Thursday expiry dates for NSE F&O contracts."""
-    from app.option_chain_engine import generate_fo_expiries
-    expiries = generate_fo_expiries(count)
-    return {"status": "success", "expiries": expiries}
+async def get_options_expiries(
+    symbol: str = Query("NIFTY", description="Instrument symbol (e.g. NIFTY, BANKNIFTY, RELIANCE)")
+):
+    """Retrieve actual listed exchange expiry dates for a specific instrument from NSE contract info."""
+    from app.option_chain_engine import get_instrument_expiries
+    expiries = get_instrument_expiries(symbol)
+    return {"status": "success", "symbol": symbol.upper(), "expiries": expiries, "count": len(expiries)}
 
 
 @app.get("/api/options/chain")
 async def get_option_chain_data(
     symbol: str = Query("NIFTY", description="Underlying symbol (e.g. NIFTY, BANKNIFTY, RELIANCE)"),
-    expiry: Optional[str] = Query(None, description="Contract expiry date (e.g. 21-Nov-2024)"),
+    expiry: Optional[str] = Query(None, description="Contract expiry date (e.g. 17-Nov-2026)"),
     strike_range: int = Query(15, ge=5, le=50, description="ATM ± strike range count")
 ):
-    """Fetch complete real-time option chain with CE/PE Greeks, PCR, Max Pain, and OI analysis."""
+    """Fetch complete real-time option chain with CE/PE Greeks, PCR, Max Pain, and OI analysis from official NSE."""
     from app.option_chain_engine import build_option_chain
     data = build_option_chain(symbol=symbol, expiry=expiry, strike_range=strike_range)
     return data
+
+
+@app.get("/api/options/stream")
+async def stream_option_chain_events(
+    symbol: str = Query("NIFTY"),
+    expiry: Optional[str] = Query(None),
+    strike_range: int = Query(15)
+):
+    """Server-Sent Events (SSE) endpoint streaming real-time option chain market updates."""
+    from fastapi.responses import StreamingResponse
+    import asyncio
+    from app.option_chain_engine import build_option_chain
+
+    async def event_generator():
+        while True:
+            try:
+                data = build_option_chain(symbol=symbol, expiry=expiry, strike_range=strike_range)
+                yield f"data: {json.dumps(data)}\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            await asyncio.sleep(2.5)
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.get("/api/options/templates")
@@ -1592,6 +1618,42 @@ async def delete_saved_option_strategy(strategy_id: str):
     if not success:
         raise HTTPException(status_code=404, detail="Strategy not found.")
     return {"status": "success", "message": f"Strategy {strategy_id} deleted."}
+
+
+# ---------------------------------------------------------------------------
+# Smart Strike Selector & Options Trading Plan Generator Endpoints
+# ---------------------------------------------------------------------------
+@app.get("/api/options/smart-selector/analyze")
+async def get_smart_strike_analysis(
+    symbol: str = "NIFTY",
+    expiry: Optional[str] = None,
+    mode: str = "auto"
+):
+    """AI-Powered Smart Strike Selector automatic scan & strategy generation."""
+    from app.smart_strike_selector import SmartStrikeSelectorEngine
+    result = SmartStrikeSelectorEngine.evaluate_strikes_and_strategies(
+        symbol=symbol,
+        expiry=expiry,
+        mode=mode
+    )
+    return result
+
+
+@app.post("/api/options/smart-selector/recommend")
+async def post_smart_strike_recommendation(payload: Dict[str, Any]):
+    """AI-Powered Smart Strike Selector manual filter analysis & custom plan generator."""
+    from app.smart_strike_selector import SmartStrikeSelectorEngine
+    symbol = payload.get("symbol", "NIFTY")
+    expiry = payload.get("expiry")
+    mode = payload.get("mode", "manual")
+    result = SmartStrikeSelectorEngine.evaluate_strikes_and_strategies(
+        symbol=symbol,
+        expiry=expiry,
+        mode=mode,
+        manual_params=payload
+    )
+    return result
+
 
 
 

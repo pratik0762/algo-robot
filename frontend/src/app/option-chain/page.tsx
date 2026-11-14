@@ -304,9 +304,21 @@ function StrategyMiniThumbnail({ type }: { type: string }) {
 export default function OptionChainPage() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
 
-  // View Mode: Sensibull Workstation (Default) vs Full 23-Col Table
-  const [viewMode, setViewMode] = useState<'workstation' | 'fullchain'>('workstation');
+  // View Mode: Sensibull Workstation (Default) vs Smart Strike Selector vs Full 23-Col Table
+  const [viewMode, setViewMode] = useState<'workstation' | 'smart_selector' | 'fullchain'>('workstation');
   const [leftTab, setLeftTab] = useState<'chain' | 'templates' | 'saved'>('chain');
+
+  // Smart Strike Selector State
+  const [smartSelectorMode, setSmartSelectorMode] = useState<'auto' | 'manual'>('auto');
+  const [smartAnalysis, setSmartAnalysis] = useState<any | null>(null);
+  const [isLoadingSmartAnalysis, setIsLoadingSmartAnalysis] = useState<boolean>(false);
+  const [smartCapital, setSmartCapital] = useState<number>(500000);
+  const [smartRiskPct, setSmartRiskPct] = useState<number>(2.0);
+  const [smartDirection, setSmartDirection] = useState<'AUTO' | 'BULLISH' | 'BEARISH' | 'NEUTRAL'>('AUTO');
+  const [smartDeltaStyle, setSmartDeltaStyle] = useState<'MODERATE' | 'CONSERVATIVE' | 'AGGRESSIVE' | 'PREMIUM_SELLING'>('MODERATE');
+  const [smartMinRR, setSmartMinRR] = useState<number>(1.4);
+  const [selectedPlanStrategyIdx, setSelectedPlanStrategyIdx] = useState<number>(0);
+
 
   // Instruments & Search State
   const [instruments, setInstruments] = useState<FOInstrument[]>([]);
@@ -476,6 +488,61 @@ export default function OptionChainPage() {
     }, autoRefreshInterval * 1000);
     return () => clearInterval(interval);
   }, [autoRefreshInterval, fetchOptionChain]);
+
+  // Fetch Smart Strike Selector Analysis
+  const fetchSmartStrikeAnalysis = useCallback(async (isManual = false) => {
+    setIsLoadingSmartAnalysis(true);
+    try {
+      console.log('[SMART_SELECTOR] Starting fetch, isManual:', isManual, 'symbol:', selectedSymbol, 'expiry:', selectedExpiry);
+      if (!isManual && smartSelectorMode === 'auto') {
+        const url = `${getApiBase()}/api/options/smart-selector/analyze?symbol=${encodeURIComponent(selectedSymbol)}&expiry=${encodeURIComponent(selectedExpiry)}&mode=auto`;
+        console.log('[SMART_SELECTOR] GET URL:', url);
+        const res = await fetch(url);
+        console.log('[SMART_SELECTOR] Response status:', res.status, res.ok);
+        if (res.ok) {
+          const json = await res.json();
+          console.log('[SMART_SELECTOR] Received JSON status:', json?.status);
+          setSmartAnalysis(json);
+          setSelectedPlanStrategyIdx(0);
+        }
+      } else {
+        const url = `${getApiBase()}/api/options/smart-selector/recommend`;
+        console.log('[SMART_SELECTOR] POST URL:', url);
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            symbol: selectedSymbol,
+            expiry: selectedExpiry,
+            mode: 'manual',
+            direction: smartDirection === 'AUTO' ? undefined : smartDirection,
+            delta_preference: smartDeltaStyle,
+            capital: smartCapital,
+            risk_per_trade_pct: smartRiskPct,
+            min_reward_risk: smartMinRR
+          })
+        });
+        console.log('[SMART_SELECTOR] POST Response status:', res.status, res.ok);
+        if (res.ok) {
+          const json = await res.json();
+          console.log('[SMART_SELECTOR] Received POST JSON status:', json?.status);
+          setSmartAnalysis(json);
+          setSelectedPlanStrategyIdx(0);
+        }
+      }
+    } catch (err) {
+      console.error('Error running Smart Strike Selector:', err);
+    } finally {
+      setIsLoadingSmartAnalysis(false);
+    }
+  }, [selectedSymbol, selectedExpiry, smartSelectorMode, smartDirection, smartDeltaStyle, smartCapital, smartRiskPct, smartMinRR]);
+
+  // Load Smart Analysis when viewMode switches to smart_selector
+  useEffect(() => {
+    if (viewMode === 'smart_selector' && !smartAnalysis) {
+      fetchSmartStrikeAnalysis(false);
+    }
+  }, [viewMode, smartAnalysis, fetchSmartStrikeAnalysis]);
 
   // 5. Analyze Active Builder Strategy Legs
   const triggerAnalysis = useCallback(async (legsToAnalyze: Leg[]) => {
@@ -840,7 +907,7 @@ export default function OptionChainPage() {
 
       {/* Top Barometer */}
       <div style={{ borderBottom: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))', background: 'rgba(5, 8, 17, 0.95)', position: 'sticky', top: 0, zIndex: 40 }}>
-        <IndicesBarometer onMenuClick={() => setNavDrawerOpen(true)} />
+        <IndicesBarometer />
       </div>
 
       <div style={{ maxWidth: '1800px', margin: '0 auto', padding: '16px 20px' }}>
@@ -1032,6 +1099,29 @@ export default function OptionChainPage() {
               >
                 <Sliders size={13} />
                 Workstation (Sensibull Style)
+              </button>
+              <button
+                onClick={() => {
+                  setViewMode('smart_selector');
+                  fetchSmartStrikeAnalysis(false);
+                }}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: viewMode === 'smart_selector' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'transparent',
+                  color: viewMode === 'smart_selector' ? '#ffffff' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: viewMode === 'smart_selector' ? '0 2px 10px rgba(16, 185, 129, 0.4)' : 'none'
+                }}
+              >
+                <Zap size={13} color={viewMode === 'smart_selector' ? '#ffffff' : '#34d399'} />
+                Smart Strike Selector & Trading Plan
               </button>
               <button
                 onClick={() => setViewMode('fullchain')}
@@ -2127,6 +2217,579 @@ export default function OptionChainPage() {
         )}
 
         {/* ============================================================== */}
+        
+        {/* ============================================================== */}
+        {/* MODE 3: SMART STRIKE SELECTOR & TRADING PLAN GENERATOR (AI)   */}
+        {/* ============================================================== */}
+        {viewMode === 'smart_selector' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+
+            {/* Smart Selector Controls Bar: Auto vs Manual */}
+            <div style={{
+              background: 'var(--bg-card, #0d131f)',
+              border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+              borderRadius: '12px',
+              padding: '16px 20px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '14px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 700 }}>ANALYSIS MODE:</span>
+                  <div style={{ display: 'inline-flex', background: 'rgba(15, 23, 42, 0.9)', padding: '2px', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                    <button
+                      onClick={() => {
+                        setSmartSelectorMode('auto');
+                        fetchSmartStrikeAnalysis(false);
+                      }}
+                      style={{
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        fontSize: '0.74rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        border: 'none',
+                        background: smartSelectorMode === 'auto' ? '#10b981' : 'transparent',
+                        color: smartSelectorMode === 'auto' ? '#ffffff' : 'var(--text-secondary)'
+                      }}
+                    >
+                      Mode A: Automatic AI Scan
+                    </button>
+                    <button
+                      onClick={() => setSmartSelectorMode('manual')}
+                      style={{
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        fontSize: '0.74rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        border: 'none',
+                        background: smartSelectorMode === 'manual' ? '#6366f1' : 'transparent',
+                        color: smartSelectorMode === 'manual' ? '#ffffff' : 'var(--text-secondary)'
+                      }}
+                    >
+                      Mode B: Custom / Manual
+                    </button>
+                  </div>
+                </div>
+
+                {/* Manual Mode Parameters */}
+                {smartSelectorMode === 'manual' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    {/* Direction */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Direction:</span>
+                      <select
+                        value={smartDirection}
+                        onChange={e => setSmartDirection(e.target.value as any)}
+                        style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '3px 8px' }}
+                      >
+                        <option value="AUTO">Auto Detect</option>
+                        <option value="BULLISH">Bullish</option>
+                        <option value="BEARISH">Bearish</option>
+                        <option value="NEUTRAL">Neutral / Range</option>
+                      </select>
+                    </div>
+
+                    {/* Delta Preference */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Delta:</span>
+                      <select
+                        value={smartDeltaStyle}
+                        onChange={e => setSmartDeltaStyle(e.target.value as any)}
+                        style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '3px 8px' }}
+                      >
+                        <option value="MODERATE">Moderate (0.45-0.65)</option>
+                        <option value="CONSERVATIVE">Conservative (0.65-0.80)</option>
+                        <option value="AGGRESSIVE">Aggressive (0.25-0.45)</option>
+                        <option value="PREMIUM_SELLING">Premium Selling (0.10-0.30)</option>
+                      </select>
+                    </div>
+
+                    {/* Capital */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Capital (₹):</span>
+                      <input
+                        type="number"
+                        step="50000"
+                        value={smartCapital}
+                        onChange={e => setSmartCapital(Number(e.target.value))}
+                        style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '3px 6px', width: '85px' }}
+                      />
+                    </div>
+
+                    {/* Risk % */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Risk %:</span>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="0.5"
+                        max="10"
+                        value={smartRiskPct}
+                        onChange={e => setSmartRiskPct(Number(e.target.value))}
+                        style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '3px 6px', width: '50px' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Run Scan Action */}
+              <button
+                onClick={() => fetchSmartStrikeAnalysis(smartSelectorMode === 'manual')}
+                disabled={isLoadingSmartAnalysis}
+                style={{
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '7px 16px',
+                  color: '#ffffff',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+                }}
+              >
+                <Zap size={14} className={isLoadingSmartAnalysis ? 'spin' : ''} />
+                {isLoadingSmartAnalysis ? 'Analyzing Market & Scanning Strikes...' : 'Run Analysis & Generate Plan'}
+              </button>
+            </div>
+
+            {/* Smart Strike Selector Content */}
+            {isLoadingSmartAnalysis && !smartAnalysis ? (
+              <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+                <RefreshCw size={36} color="#10b981" className="spin" style={{ margin: '0 auto 16px auto', display: 'block' }} />
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 6px 0' }}>Scanning Real-Time NSE Option Chain & Greeks...</h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  Calculating Multi-Timeframe Regime, Statistical Expected Move, Delta Suitability, and Generating 0-100 Ranked Trading Plans.
+                </p>
+              </div>
+            ) : smartAnalysis ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+                {/* 1. Market Overview & Multi-Timeframe Regime Card */}
+                <div style={{
+                  background: 'var(--bg-card, #0d131f)',
+                  border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                  borderRadius: '12px',
+                  padding: '16px 20px',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '14px'
+                }}>
+                  {/* Regime Badge */}
+                  <div>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.04em' }}>MARKET REGIME</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <span style={{
+                        background: smartAnalysis.market_analysis?.market_regime?.includes('BULLISH') ? 'rgba(16, 185, 129, 0.2)' : smartAnalysis.market_analysis?.market_regime?.includes('BEARISH') ? 'rgba(239, 68, 68, 0.2)' : 'rgba(56, 189, 248, 0.2)',
+                        border: `1px solid ${smartAnalysis.market_analysis?.market_regime?.includes('BULLISH') ? '#10b981' : smartAnalysis.market_analysis?.market_regime?.includes('BEARISH') ? '#ef4444' : '#38bdf8'}`,
+                        color: smartAnalysis.market_analysis?.market_regime?.includes('BULLISH') ? '#34d399' : smartAnalysis.market_analysis?.market_regime?.includes('BEARISH') ? '#f87171' : '#38bdf8',
+                        padding: '4px 10px',
+                        borderRadius: '6px',
+                        fontSize: '0.84rem',
+                        fontWeight: 800
+                      }}>
+                        ● {smartAnalysis.market_analysis?.market_regime?.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                      Trend Strength: <strong style={{ color: '#ffffff' }}>{smartAnalysis.market_analysis?.trend_strength}%</strong>
+                    </div>
+                  </div>
+
+                  {/* Spot & VWAP */}
+                  <div>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.04em' }}>SPOT VS VWAP</span>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+                      ₹{smartAnalysis.market_analysis?.spot_price?.toLocaleString()}
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                      VWAP: ₹{smartAnalysis.market_analysis?.vwap?.toLocaleString()} | RSI: {smartAnalysis.market_analysis?.rsi}
+                    </div>
+                  </div>
+
+                  {/* Expected Move */}
+                  <div>
+                    <span style={{ fontSize: '0.68rem', color: '#c084fc', fontWeight: 700, letterSpacing: '0.04em' }}>STATISTICAL EXPECTED MOVE</span>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#c084fc', marginTop: '2px' }}>
+                      ±{smartAnalysis.expected_move?.expected_move_points} pts ({smartAnalysis.expected_move?.expected_move_pct}%)
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                      1-SD Range: ₹{smartAnalysis.expected_move?.one_sd_range?.[0]?.toLocaleString()} - ₹{smartAnalysis.expected_move?.one_sd_range?.[1]?.toLocaleString()}
+                    </div>
+                  </div>
+
+                  {/* Key S/R Zones */}
+                  <div>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '0.04em' }}>SUPPORT & RESISTANCE</span>
+                    <div style={{ fontSize: '0.76rem', color: '#ffffff', marginTop: '4px' }}>
+                      Res: <strong style={{ color: '#f87171' }}>₹{smartAnalysis.market_analysis?.resistance_levels?.[0]?.toLocaleString()}</strong>
+                    </div>
+                    <div style={{ fontSize: '0.76rem', color: '#ffffff', marginTop: '2px' }}>
+                      Sup: <strong style={{ color: '#34d399' }}>₹{smartAnalysis.market_analysis?.support_levels?.[0]?.toLocaleString()}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Candidate Strikes Grid */}
+                <div>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: 800, margin: '0 0 10px 0', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Target size={15} color="#818cf8" />
+                    Optimal Strike Candidates (Delta & Liquidity Filtered)
+                  </h3>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '10px' }}>
+                    {[
+                      { label: 'Best Call (CE)', contract: smartAnalysis.recommended_contracts?.best_call, color: '#10b981' },
+                      { label: 'Best Put (PE)', contract: smartAnalysis.recommended_contracts?.best_put, color: '#ef4444' },
+                      { label: 'Best ITM Strike', contract: smartAnalysis.recommended_contracts?.best_itm, color: '#38bdf8' },
+                      { label: 'Best ATM Strike', contract: smartAnalysis.recommended_contracts?.best_atm, color: '#c084fc' },
+                      { label: 'Best OTM Strike', contract: smartAnalysis.recommended_contracts?.best_otm, color: '#f59e0b' }
+                    ].map((item, idx) => {
+                      const c = item.contract;
+                      if (!c) return null;
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            background: 'var(--bg-card, #0d131f)',
+                            border: `1px solid ${item.color}40`,
+                            borderRadius: '10px',
+                            padding: '12px',
+                            position: 'relative'
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '0.68rem', fontWeight: 800, color: item.color }}>{item.label}</span>
+                            <span style={{ fontSize: '0.64rem', color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.05)', padding: '1px 5px', borderRadius: '3px' }}>
+                              {c.moneyness}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff' }}>
+                            {c.strike} {c.option_type}
+                          </div>
+                          <div style={{ fontSize: '0.74rem', color: '#ffffff', marginTop: '2px' }}>
+                            LTP: <strong style={{ color: item.color }}>₹{c.ltp?.toFixed(2)}</strong> | Delta: {c.delta}
+                          </div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            Spread: {c.spread_pct}% | Breakeven: ₹{c.breakeven?.toLocaleString()}
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              handleAddLegFromChain(c.strike, c.option_type, 'BUY', c.ltp, c.bid, c.ask);
+                              setViewMode('workstation');
+                            }}
+                            style={{
+                              marginTop: '8px',
+                              width: '100%',
+                              background: 'rgba(99, 102, 241, 0.15)',
+                              border: '1px solid rgba(99, 102, 241, 0.4)',
+                              color: '#818cf8',
+                              borderRadius: '4px',
+                              padding: '4px',
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            + Add to Strategy
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Strategy Evaluation & Ranking Matrix (0-100 Framework) */}
+                <div style={{
+                  background: 'var(--bg-card, #0d131f)',
+                  border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                  borderRadius: '12px',
+                  padding: '16px 20px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
+                }}>
+                  <h3 style={{ fontSize: '0.92rem', fontWeight: 800, margin: '0 0 12px 0', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <BarChart2 size={16} color="#10b981" />
+                    Top Ranked Strategies (Scored 0–100 by Multi-Factor Model)
+                  </h3>
+
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', whiteSpace: 'nowrap' }}>
+                      <thead>
+                        <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
+                          <th style={{ padding: '8px 10px', textAlign: 'left' }}>Strategy</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'center' }}>Outlook</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'center' }}>Score</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'left' }}>Type</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'right' }}>Max Profit</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'right' }}>Max Loss</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'right' }}>Breakeven</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'center' }}>Reward/Risk</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'center' }}>POP %</th>
+                          <th style={{ padding: '8px 10px', textAlign: 'center' }}>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {smartAnalysis.top_strategies?.map((st: any, idx: number) => {
+                          const isSelected = selectedPlanStrategyIdx === idx;
+                          return (
+                            <tr
+                              key={idx}
+                              style={{
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+                                background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'transparent'
+                              }}
+                            >
+                              <td style={{ padding: '8px 10px', fontWeight: 800, color: '#ffffff' }}>
+                                {st.strategy_name}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                                <span style={{
+                                  fontSize: '0.65rem',
+                                  padding: '2px 6px',
+                                  borderRadius: '3px',
+                                  background: st.outlook === 'BULLISH' ? 'rgba(16, 185, 129, 0.15)' : st.outlook === 'BEARISH' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(56, 189, 248, 0.15)',
+                                  color: st.outlook === 'BULLISH' ? '#34d399' : st.outlook === 'BEARISH' ? '#f87171' : '#38bdf8',
+                                  fontWeight: 700
+                                }}>
+                                  {st.outlook}
+                                </span>
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                                <span style={{
+                                  fontSize: '0.82rem',
+                                  fontWeight: 800,
+                                  color: st.score >= 80 ? '#10b981' : st.score >= 65 ? '#38bdf8' : '#f59e0b'
+                                }}>
+                                  {st.score}/100
+                                </span>
+                              </td>
+                              <td style={{ padding: '8px 10px', color: 'var(--text-secondary)' }}>
+                                {st.net_debit_credit}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>
+                                {st.max_profit}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#ef4444', fontWeight: 700 }}>
+                                {st.max_loss}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#ffffff' }}>
+                                ₹{st.breakeven?.toLocaleString()}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'center', color: '#a5b4fc', fontWeight: 700 }}>
+                                {st.risk_reward}
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'center', color: '#38bdf8', fontWeight: 800 }}>
+                                {st.probability_of_profit_pct}%
+                              </td>
+                              <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                                <button
+                                  onClick={() => setSelectedPlanStrategyIdx(idx)}
+                                  style={{
+                                    background: isSelected ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                                    border: `1px solid ${isSelected ? '#6366f1' : 'var(--border-subtle)'}`,
+                                    color: '#ffffff',
+                                    borderRadius: '4px',
+                                    padding: '3px 8px',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 700,
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  {isSelected ? 'Viewing' : 'Select'}
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* 4. Complete Actionable Trading Plan Card */}
+                {smartAnalysis.trading_plan && (() => {
+                  const currentSelectedStrat = smartAnalysis.top_strategies?.[selectedPlanStrategyIdx] || smartAnalysis.top_strategies?.[0];
+                  const plan = smartAnalysis.trading_plan;
+
+                  return (
+                    <div style={{
+                      background: 'var(--bg-card, #0d131f)',
+                      border: '1px solid rgba(16, 185, 129, 0.35)',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+                    }}>
+                      {/* Decision Status Banner */}
+                      <div style={{
+                        background: plan.decision_status === 'STRONG_CANDIDATE' ? 'rgba(16, 185, 129, 0.15)' : plan.decision_status === 'CANDIDATE' ? 'rgba(56, 189, 248, 0.15)' : plan.decision_status === 'NO_TRADE' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                        border: `1px solid ${plan.decision_status === 'STRONG_CANDIDATE' ? '#10b981' : plan.decision_status === 'CANDIDATE' ? '#38bdf8' : plan.decision_status === 'NO_TRADE' ? '#ef4444' : '#f59e0b'}`,
+                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '16px',
+                        flexWrap: 'wrap',
+                        gap: '8px'
+                      }}>
+                        <div>
+                          <div style={{
+                            fontSize: '0.92rem',
+                            fontWeight: 900,
+                            color: plan.decision_status === 'STRONG_CANDIDATE' ? '#10b981' : plan.decision_status === 'CANDIDATE' ? '#38bdf8' : plan.decision_status === 'NO_TRADE' ? '#ef4444' : '#f59e0b',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                          }}>
+                            <CheckCircle2 size={16} />
+                            FINAL DECISION: {plan.decision_status.replace(/_/g, ' ')}
+                          </div>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '2px', display: 'block' }}>
+                            {plan.decision_reason}
+                          </span>
+                        </div>
+
+                        {/* One-click Load into Workstation */}
+                        <button
+                          onClick={() => {
+                            if (currentSelectedStrat?.legs) {
+                              setBuilderLegs(currentSelectedStrat.legs.map((l: any, i: number) => ({
+                                id: `leg_plan_${Date.now()}_${i}`,
+                                action: l.action,
+                                strike: l.strike,
+                                option_type: l.option_type,
+                                lots: plan.position_sizing?.recommended_lots || 1,
+                                lot_size: lotSize,
+                                premium: l.premium,
+                                disabled: false,
+                                expiry: selectedExpiry
+                              })));
+                              setViewMode('workstation');
+                            }
+                          }}
+                          style={{
+                            background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '8px 16px',
+                            color: '#ffffff',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 2px 8px rgba(99, 102, 241, 0.4)'
+                          }}
+                        >
+                          <Zap size={14} />
+                          Transfer to Strategy Builder & Workstation
+                        </button>
+                      </div>
+
+                      {/* Complete Trading Plan Sections */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                        {/* A. Entry Conditions */}
+                        <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '14px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                            <Compass size={14} />
+                            ENTRY CONDITIONS
+                          </span>
+                          <div style={{ fontSize: '0.74rem', color: '#ffffff', lineHeight: 1.5 }}>
+                            <div>• <strong>Ideal Zone:</strong> {plan.entry_conditions?.ideal_entry_zone}</div>
+                            <div style={{ marginTop: '4px' }}>• <strong>Technical Trigger:</strong> {plan.entry_conditions?.technical_confirmation}</div>
+                            <div style={{ marginTop: '4px' }}>• <strong>Volume:</strong> {plan.entry_conditions?.volume_confirmation}</div>
+                            <div style={{ marginTop: '4px', color: '#f87171' }}>• <strong>Invalidation:</strong> {plan.entry_conditions?.invalidation_criteria}</div>
+                          </div>
+                        </div>
+
+                        {/* B. Stop Loss & Risk Management */}
+                        <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '14px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                            <ShieldCheck size={14} />
+                            STOP LOSS & RISK BUDGET
+                          </span>
+                          <div style={{ fontSize: '0.74rem', color: '#ffffff', lineHeight: 1.5 }}>
+                            <div>• <strong>Loss Limit:</strong> <span style={{ color: '#ef4444', fontWeight: 700 }}>{plan.stop_loss?.strategy_loss_limit}</span></div>
+                            <div style={{ marginTop: '4px' }}>• <strong>Underlying Level:</strong> ₹{plan.stop_loss?.underlying_invalidation_level?.toLocaleString()}</div>
+                            <div style={{ marginTop: '4px' }}>• <strong>Position Sizing:</strong> <strong style={{ color: '#10b981' }}>{plan.position_sizing?.recommended_lots} Lots</strong> ({plan.position_sizing?.total_contracts} contracts) based on ₹{plan.position_sizing?.allocated_risk_budget?.toLocaleString()} risk budget.</div>
+                            <div style={{ marginTop: '4px' }}>• <strong>Trailing Stop:</strong> {plan.stop_loss?.trailing_stop_rule}</div>
+                          </div>
+                        </div>
+
+                        {/* C. Target Levels & Partial Booking */}
+                        <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '14px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                            <Target size={14} />
+                            TARGET LEVELS & EXITS
+                          </span>
+                          <div style={{ fontSize: '0.74rem', color: '#ffffff', lineHeight: 1.5 }}>
+                            <div>• <strong>Target 1:</strong> {plan.target_levels?.target_1?.level_pct} (Spot: ₹{plan.target_levels?.target_1?.underlying_price?.toLocaleString()})</div>
+                            <div style={{ color: 'var(--text-secondary)', marginLeft: '8px' }}>{plan.target_levels?.target_1?.action}</div>
+                            <div style={{ marginTop: '6px' }}>• <strong>Target 2:</strong> {plan.target_levels?.target_2?.level_pct} (Spot: ₹{plan.target_levels?.target_2?.underlying_price?.toLocaleString()})</div>
+                            <div style={{ color: 'var(--text-secondary)', marginLeft: '8px' }}>{plan.target_levels?.target_2?.action}</div>
+                            <div style={{ marginTop: '6px', color: '#f59e0b' }}>• <strong>Precaution:</strong> {plan.trade_management?.expiry_precaution}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* 5. AI Explanation Engine Rationale */}
+                {smartAnalysis.ai_explanation && (
+                  <div style={{
+                    background: 'var(--bg-card, #0d131f)',
+                    border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                    borderRadius: '12px',
+                    padding: '16px 20px'
+                  }}>
+                    <h3 style={{ fontSize: '0.88rem', fontWeight: 800, margin: '0 0 10px 0', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <HelpCircle size={15} color="#c084fc" />
+                      AI Decision Logic & Plan Explanation
+                    </h3>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                      <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '10px 12px', borderRadius: '6px' }}>
+                        <strong style={{ color: '#ffffff', display: 'block', marginBottom: '3px' }}>1. Market Structure Analysis</strong>
+                        {smartAnalysis.ai_explanation?.market_analysis}
+                      </div>
+
+                      <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '10px 12px', borderRadius: '6px' }}>
+                        <strong style={{ color: '#ffffff', display: 'block', marginBottom: '3px' }}>2. Strike Selection Logic</strong>
+                        {smartAnalysis.ai_explanation?.strike_selection}
+                      </div>
+
+                      <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '10px 12px', borderRadius: '6px' }}>
+                        <strong style={{ color: '#ffffff', display: 'block', marginBottom: '3px' }}>3. Strategy Selection Edge</strong>
+                        {smartAnalysis.ai_explanation?.strategy_selection}
+                      </div>
+
+                      <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '10px 12px', borderRadius: '6px' }}>
+                        <strong style={{ color: '#ffffff', display: 'block', marginBottom: '3px' }}>4. Risk & Capital Sizing</strong>
+                        {smartAnalysis.ai_explanation?.risk_assessment}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            ) : null}
+
+          </div>
+        )}
+
+
         {/* MODE 2: FULL 23-COLUMN OPTION CHAIN TABLE                      */}
         {/* ============================================================== */}
         {viewMode === 'fullchain' && (
