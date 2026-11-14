@@ -912,6 +912,44 @@ export default function OptionChainPage() {
 
       <div style={{ maxWidth: '1800px', margin: '0 auto', padding: '16px 20px' }}>
 
+        {/* Top Breadcrumb & Navigation Drawer Trigger */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              style={{
+                background: 'rgba(99, 102, 241, 0.14)',
+                border: '1px solid rgba(99, 102, 241, 0.35)',
+                borderRadius: '8px',
+                padding: '6px 14px',
+                color: '#a5b4fc',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                transition: 'all 0.2s ease',
+              }}
+              title="Open Navigation Menu"
+            >
+              <Menu size={15} />
+              <span>Menu</span>
+            </button>
+            <ChevronRight size={14} />
+            <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link>
+            <ChevronRight size={14} />
+            <span style={{ color: '#38bdf8', fontWeight: 600 }}>Option Chain & Strategy Builder</span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></span>
+              Real-Time NSE F&O
+            </span>
+          </div>
+        </div>
+
         {/* ============================================================== */}
         {/* HEADER CONTROLS BAR: SEARCH, SPOT, EXPIRY & WORKSTATION TOGGLE */}
         {/* ============================================================== */}
@@ -929,6 +967,29 @@ export default function OptionChainPage() {
         }}>
           {/* Left: Searchable Symbol Picker */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            {/* Drawer Menu Button */}
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              style={{
+                background: 'rgba(99, 102, 241, 0.12)',
+                border: '1px solid rgba(99, 102, 241, 0.35)',
+                borderRadius: '8px',
+                padding: '7px 12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#a5b4fc',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              title="Open Navigation Menu"
+            >
+              <Menu size={16} />
+              <span style={{ display: 'inline-block' }}>Menu</span>
+            </button>
+
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setSymbolDropdownOpen(!symbolDropdownOpen)}
