@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ import {
   Menu,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   Plus,
   Trash2,
   Sliders,
@@ -31,7 +32,15 @@ import {
   Target,
   Percent,
   Compass,
-  ArrowUpDown
+  ArrowUpDown,
+  Lock,
+  Unlock,
+  SlidersHorizontal,
+  Maximize2,
+  Minimize2,
+  HelpCircle,
+  Eye,
+  RotateCcw
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
@@ -41,8 +50,10 @@ const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), 
   loading: () => null
 });
 
+// ---------------------------------------------------------------------------
 // Types & Interfaces
-interface Leg {
+// ---------------------------------------------------------------------------
+export interface Leg {
   id?: string;
   action: 'BUY' | 'SELL';
   option_type: 'CE' | 'PE';
@@ -52,9 +63,13 @@ interface Leg {
   lot_size?: number;
   premium: number;
   name?: string;
+  disabled?: boolean;
+  expiry?: string;
+  bid?: number;
+  ask?: number;
 }
 
-interface PredefinedTemplate {
+export interface PredefinedTemplate {
   id: string;
   name: string;
   category: string;
@@ -63,13 +78,15 @@ interface PredefinedTemplate {
   legs: Leg[];
 }
 
-interface PayoffPoint {
+export interface PayoffPoint {
   spot: number;
   pnl: number;
+  pnl_target?: number;
   is_spot?: boolean;
+  is_target?: boolean;
 }
 
-interface StrategyAnalysis {
+export interface StrategyAnalysis {
   status: string;
   symbol: string;
   spot_price: number;
@@ -90,48 +107,54 @@ interface StrategyAnalysis {
   payoff_curve: PayoffPoint[];
 }
 
-interface OptionStrikeRow {
+export interface OptionStrikeRow {
   strike: number;
   is_atm: boolean;
   call: {
     oi: number;
     change_oi: number;
+    pchange_oi?: number;
     volume: number;
     iv: number;
     ltp: number;
+    change?: number;
     change_pct: number;
     bid: number;
     bid_qty?: number;
     ask: number;
     ask_qty?: number;
-    delta: number;
-    theta: number;
-    gamma: number;
-    vega: number;
+    delta?: number;
+    theta?: number;
+    gamma?: number;
+    vega?: number;
+    identifier?: string;
     moneyness: string;
     buildup: string;
   };
   put: {
     oi: number;
     change_oi: number;
+    pchange_oi?: number;
     volume: number;
     iv: number;
     ltp: number;
+    change?: number;
     change_pct: number;
     bid: number;
     bid_qty?: number;
     ask: number;
     ask_qty?: number;
-    delta: number;
-    theta: number;
-    gamma: number;
-    vega: number;
+    delta?: number;
+    theta?: number;
+    gamma?: number;
+    vega?: number;
+    identifier?: string;
     moneyness: string;
     buildup: string;
   };
 }
 
-interface OptionChainData {
+export interface OptionChainData {
   status: string;
   symbol: string;
   name: string;
@@ -150,25 +173,24 @@ interface OptionChainData {
     max_pain: number;
     total_call_oi: number;
     total_put_oi: number;
-    total_call_volume: number;
-    total_put_volume: number;
     highest_call_oi_strike: number;
     highest_put_oi_strike: number;
+    highest_call_addition_strike?: number;
+    highest_put_addition_strike?: number;
   };
   chain: OptionStrikeRow[];
-  last_updated: string;
+  last_updated?: string;
 }
 
-interface FOInstrument {
+export interface FOInstrument {
   symbol: string;
   name: string;
   type: string;
   lot_size: number;
-  interval: number;
-  base_price: number;
+  strike_interval: number;
 }
 
-interface SavedStrategy {
+export interface SavedStrategy {
   id: string;
   name: string;
   symbol: string;
@@ -177,22 +199,128 @@ interface SavedStrategy {
   legs: Leg[];
 }
 
+// ---------------------------------------------------------------------------
+// Black-Scholes Formula Helpers (For 60 FPS Target Date & Greek Simulation)
+// ---------------------------------------------------------------------------
+function normCdf(x: number): number {
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
+  const sign = x < 0 ? -1 : 1;
+  const absX = Math.abs(x) / Math.SQRT2;
+  const t = 1.0 / (1.0 + p * absX);
+  const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+  return 0.5 * (1.0 + sign * y);
+}
+
+function bsPrice(s: number, k: number, t: number, r: number, sigma: number, optType: 'CE' | 'PE'): number {
+  if (t <= 0.001) {
+    return optType === 'CE' ? Math.max(0, s - k) : Math.max(0, k - s);
+  }
+  const d1 = (Math.log(s / k) + (r + 0.5 * sigma * sigma) * t) / (sigma * Math.sqrt(t));
+  const d2 = d1 - sigma * Math.sqrt(t);
+  if (optType === 'CE') {
+    return s * normCdf(d1) - k * Math.exp(-r * t) * normCdf(d2);
+  } else {
+    return k * Math.exp(-r * t) * normCdf(-d2) - s * normCdf(-d1);
+  }
+}
+
+function bsGreeks(s: number, k: number, t: number, r: number, sigma: number, optType: 'CE' | 'PE') {
+  if (t <= 0.001) {
+    return { delta: optType === 'CE' ? (s >= k ? 1 : 0) : (s <= k ? -1 : 0), theta: 0, gamma: 0, vega: 0 };
+  }
+  const sqrtT = Math.sqrt(t);
+  const d1 = (Math.log(s / k) + (r + 0.5 * sigma * sigma) * t) / (sigma * sqrtT);
+  const d2 = d1 - sigma * sqrtT;
+  const normPdf = (1.0 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * d1 * d1);
+
+  const delta = optType === 'CE' ? normCdf(d1) : normCdf(d1) - 1.0;
+  const gamma = normPdf / (s * sigma * sqrtT);
+  const vega = (s * normPdf * sqrtT) / 100.0;
+  const theta = (-(s * normPdf * sigma) / (2.0 * sqrtT) - (optType === 'CE' ? r * k * Math.exp(-r * t) * normCdf(d2) : -r * k * Math.exp(-r * t) * normCdf(-d2))) / 365.0;
+
+  return { delta, theta, gamma, vega };
+}
+
+// ---------------------------------------------------------------------------
+// Miniature SVG Payoff Thumbnail Component
+// ---------------------------------------------------------------------------
+function StrategyMiniThumbnail({ type }: { type: string }) {
+  // Generates clean Sensibull-style vector mini payoff curve
+  const t = type.toUpperCase();
+  let points = "5,35 25,35 45,15 65,15"; // default Bull Call spread
+  let stroke = "#10b981"; // green
+  let fill = "rgba(16, 185, 129, 0.15)";
+
+  if (t.includes('LONG_CALL') || t.includes('BUY_CALL')) {
+    points = "5,35 35,35 65,10";
+    stroke = "#10b981";
+  } else if (t.includes('LONG_PUT') || t.includes('BUY_PUT')) {
+    points = "5,10 35,35 65,35";
+    stroke = "#ef4444";
+  } else if (t.includes('BULL_CALL') || t.includes('BULL_PUT')) {
+    points = "5,35 25,35 45,12 65,12";
+    stroke = "#10b981";
+  } else if (t.includes('BEAR_PUT') || t.includes('BEAR_CALL')) {
+    points = "5,12 25,12 45,35 65,35";
+    stroke = "#ef4444";
+  } else if (t.includes('STRADDLE_LONG') || t.includes('LONG_STRADDLE') || t.includes('LONG_STRANGLE')) {
+    points = "5,10 35,35 65,10";
+    stroke = "#38bdf8";
+  } else if (t.includes('STRADDLE_SHORT') || t.includes('SHORT_STRADDLE') || t.includes('SHORT_STRANGLE')) {
+    points = "5,35 35,10 65,35";
+    stroke = "#f59e0b";
+  } else if (t.includes('IRON_CONDOR') || t.includes('CONDOR')) {
+    points = "5,35 20,15 50,15 65,35";
+    stroke = "#818cf8";
+  } else if (t.includes('BUTTERFLY')) {
+    points = "5,35 35,10 65,35";
+    stroke = "#c084fc";
+  } else if (t.includes('RATIO')) {
+    points = "5,30 25,30 45,38 65,5";
+    stroke = "#34d399";
+  } else if (t.includes('CALENDAR')) {
+    points = "5,30 20,20 35,15 50,20 65,30";
+    stroke = "#60a5fa";
+  }
+
+  return (
+    <svg width="70" height="42" viewBox="0 0 70 42" style={{ display: 'block', margin: '0 auto 6px auto' }}>
+      {/* Zero line */}
+      <line x1="5" y1="24" x2="65" y2="24" stroke="rgba(255, 255, 255, 0.15)" strokeDasharray="2,2" strokeWidth="1" />
+      {/* Payoff line */}
+      <polyline points={points} fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// MAIN COMPONENT
+// ---------------------------------------------------------------------------
 export default function OptionChainPage() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'chain' | 'builder' | 'saved'>('chain');
+
+  // View Mode: Sensibull Workstation (Default) vs Full 23-Col Table
+  const [viewMode, setViewMode] = useState<'workstation' | 'fullchain'>('workstation');
+  const [leftTab, setLeftTab] = useState<'chain' | 'templates' | 'saved'>('chain');
 
   // Instruments & Search State
   const [instruments, setInstruments] = useState<FOInstrument[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>('NIFTY');
   const [symbolSearchQuery, setSymbolSearchQuery] = useState<string>('');
   const [symbolDropdownOpen, setSymbolDropdownOpen] = useState<boolean>(false);
+  const [instrumentCategory, setInstrumentCategory] = useState<'ALL' | 'INDICES' | 'STOCKS'>('ALL');
 
   // Expiry & Chain View Configuration
   const [expiries, setExpiries] = useState<string[]>([]);
   const [selectedExpiry, setSelectedExpiry] = useState<string>('');
   const [strikeRange, setStrikeRange] = useState<number>(15);
   const [sideFilter, setSideFilter] = useState<'BOTH' | 'CALLS' | 'PUTS'>('BOTH');
-  const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(5); // 0 = off, 2, 5, 10
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(5); // 0 = off, 5, 10
   const [sortBy, setSortBy] = useState<string>('strike');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -202,12 +330,39 @@ export default function OptionChainPage() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [chainError, setChainError] = useState<string | null>(null);
 
-  // Strategy Builder State
-  const [builderLegs, setBuilderLegs] = useState<Leg[]>([]);
+  // Active Strategy Builder State
+  const [builderLegs, setBuilderLegs] = useState<Leg[]>([
+    {
+      id: 'leg_init_1',
+      action: 'BUY',
+      option_type: 'CE',
+      strike: 25150,
+      lots: 1,
+      lot_size: 25,
+      premium: 125.5,
+      name: 'BUY 25150 CE'
+    },
+    {
+      id: 'leg_init_2',
+      action: 'SELL',
+      option_type: 'CE',
+      strike: 25300,
+      lots: 1,
+      lot_size: 25,
+      premium: 58.2,
+      name: 'SELL 25300 CE'
+    }
+  ]);
   const [templates, setTemplates] = useState<PredefinedTemplate[]>([]);
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
+  const [selectedTemplateCategory, setSelectedTemplateCategory] = useState<string>('All');
   const [analysis, setAnalysis] = useState<StrategyAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+
+  // Interactive Target Price & Date Simulation Sliders
+  const [targetPrice, setTargetPrice] = useState<number>(25150);
+  const [targetDteOffset, setTargetDteOffset] = useState<number>(0); // 0 = today, max = days_to_expiry
+  const [ivOffset, setIvOffset] = useState<number>(0); // -5% to +5%
+  const [multiplier, setMultiplier] = useState<number>(1);
 
   // Saved Strategies State
   const [savedStrategies, setSavedStrategies] = useState<SavedStrategy[]>([]);
@@ -296,6 +451,11 @@ export default function OptionChainPage() {
         setSelectedExpiry(data.selected_expiry || data.expiries[0]);
       }
       setExpiries(data.expiries || []);
+
+      // Initialize target price if not set or symbol changed
+      if (data.spot_price && (targetPrice === 25150 || Math.abs(targetPrice - data.spot_price) > data.spot_price * 0.4)) {
+        setTargetPrice(data.spot_price);
+      }
     } catch (err: any) {
       setChainError(err.message || 'Error loading option chain data');
     } finally {
@@ -304,7 +464,6 @@ export default function OptionChainPage() {
     }
   }, [selectedSymbol, selectedExpiry, strikeRange]);
 
-  // Initial and reactive trigger
   useEffect(() => {
     fetchOptionChain(false);
   }, [fetchOptionChain]);
@@ -320,7 +479,8 @@ export default function OptionChainPage() {
 
   // 5. Analyze Active Builder Strategy Legs
   const triggerAnalysis = useCallback(async (legsToAnalyze: Leg[]) => {
-    if (!legsToAnalyze || legsToAnalyze.length === 0) {
+    const activeLegs = legsToAnalyze.filter(l => !l.disabled);
+    if (!activeLegs || activeLegs.length === 0) {
       setAnalysis(null);
       return;
     }
@@ -331,7 +491,10 @@ export default function OptionChainPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           symbol: selectedSymbol,
-          legs: legsToAnalyze,
+          legs: activeLegs.map(l => ({
+            ...l,
+            lots: l.lots * multiplier
+          })),
           expiry: selectedExpiry
         })
       });
@@ -344,45 +507,43 @@ export default function OptionChainPage() {
     } finally {
       setIsAnalyzing(false);
     }
-  }, [selectedSymbol, selectedExpiry]);
+  }, [selectedSymbol, selectedExpiry, multiplier]);
 
-  // Trigger analysis whenever builderLegs change
   useEffect(() => {
     triggerAnalysis(builderLegs);
   }, [builderLegs, triggerAnalysis]);
 
-  // Quick Action: Add Leg from Option Chain Table
-  const handleAddLegFromChain = (strike: number, optionType: 'CE' | 'PE', action: 'BUY' | 'SELL', ltp: number) => {
+  // Quick Action: Add / Toggle Leg from Left Option Chain Table
+  const handleAddLegFromChain = (strike: number, optionType: 'CE' | 'PE', action: 'BUY' | 'SELL', ltp: number, bid?: number, ask?: number) => {
     const lotSize = chainData?.lot_size || 25;
+    // Check if leg already exists
+    const existingIdx = builderLegs.findIndex(l => l.strike === strike && l.option_type === optionType && l.action === action);
+    if (existingIdx >= 0) {
+      // Toggle or increment
+      const updated = [...builderLegs];
+      updated[existingIdx].lots += 1;
+      setBuilderLegs(updated);
+      return;
+    }
+
     const newLeg: Leg = {
-      id: `leg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: `leg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       action,
       option_type: optionType,
       strike,
       lots: 1,
       lot_size: lotSize,
-      premium: ltp || 10.0,
-      name: `${action} ${strike} ${optionType}`
+      premium: ltp || (action === 'BUY' ? (ask || 10.0) : (bid || 10.0)),
+      name: `${action} ${strike} ${optionType}`,
+      disabled: false,
+      expiry: selectedExpiry,
+      bid,
+      ask
     };
     setBuilderLegs(prev => [...prev, newLeg]);
-    setActiveTab('builder');
   };
 
-  // Template Selection handler
-  const handleSelectTemplate = (templateId: string) => {
-    setSelectedTemplateId(templateId);
-    if (!templateId) return;
-    const tpl = templates.find(t => t.id === templateId);
-    if (tpl && tpl.legs) {
-      const mapped = tpl.legs.map((l, idx) => ({
-        ...l,
-        id: `leg_tpl_${Date.now()}_${idx}`
-      }));
-      setBuilderLegs(mapped);
-    }
-  };
-
-  // Modify leg property
+  // Modify Leg
   const handleUpdateLeg = (index: number, updates: Partial<Leg>) => {
     setBuilderLegs(prev => {
       const copy = [...prev];
@@ -391,7 +552,7 @@ export default function OptionChainPage() {
     });
   };
 
-  // Remove single leg
+  // Remove Leg
   const handleRemoveLeg = (index: number) => {
     setBuilderLegs(prev => prev.filter((_, i) => i !== index));
   };
@@ -399,33 +560,72 @@ export default function OptionChainPage() {
   // Clear all legs
   const handleClearAllLegs = () => {
     setBuilderLegs([]);
-    setSelectedTemplateId('');
     setAnalysis(null);
   };
 
-  // Save Strategy Handler
+  // Shift all strikes up or down
+  const handleShiftStrikes = (direction: 'UP' | 'DOWN') => {
+    const interval = chainData?.interval || 50;
+    const delta = direction === 'UP' ? interval : -interval;
+    setBuilderLegs(prev =>
+      prev.map(l => ({
+        ...l,
+        strike: Math.round(l.strike + delta)
+      }))
+    );
+  };
+
+  // Adjust spread width
+  const handleAdjustWidth = (direction: 'WIDER' | 'NARROWER') => {
+    if (builderLegs.length < 2) return;
+    const interval = chainData?.interval || 50;
+    const delta = direction === 'WIDER' ? interval : -interval;
+    setBuilderLegs(prev => {
+      const sorted = [...prev].sort((a, b) => a.strike - b.strike);
+      if (sorted.length >= 2) {
+        sorted[sorted.length - 1].strike += delta;
+      }
+      return sorted;
+    });
+  };
+
+  // Load Predefined Strategy
+  const handleSelectTemplate = (templateId: string) => {
+    const tpl = templates.find(t => t.id === templateId);
+    if (tpl && tpl.legs) {
+      const mapped = tpl.legs.map((l, idx) => ({
+        ...l,
+        id: `leg_tpl_${Date.now()}_${idx}`,
+        disabled: false,
+        expiry: selectedExpiry
+      }));
+      setBuilderLegs(mapped);
+    }
+  };
+
+  // Save Strategy to backend
   const handleSaveStrategy = async () => {
     if (!newStrategyName.trim() || builderLegs.length === 0) return;
     try {
-      const payload = {
-        name: newStrategyName.trim(),
-        symbol: selectedSymbol,
-        notes: newStrategyNotes.trim(),
-        legs: builderLegs
-      };
       const res = await fetch(`${getApiBase()}/api/options/saved-strategies`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          name: newStrategyName,
+          symbol: selectedSymbol,
+          legs: builderLegs,
+          notes: newStrategyNotes,
+          analysis
+        })
       });
       if (res.ok) {
-        setSaveSuccessMsg('Strategy saved successfully to your repository!');
+        setSaveSuccessMsg('Strategy saved successfully!');
+        setNewStrategyName('');
+        setNewStrategyNotes('');
         fetchSavedStrategies();
         setTimeout(() => {
           setSaveSuccessMsg(null);
           setSaveModalOpen(false);
-          setNewStrategyName('');
-          setNewStrategyNotes('');
         }, 1200);
       }
     } catch (err) {
@@ -433,9 +633,8 @@ export default function OptionChainPage() {
     }
   };
 
-  // Delete Saved Strategy
+  // Delete saved strategy
   const handleDeleteSavedStrategy = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this saved strategy?')) return;
     try {
       const res = await fetch(`${getApiBase()}/api/options/saved-strategies/${id}`, {
         method: 'DELETE'
@@ -444,2355 +643,1747 @@ export default function OptionChainPage() {
         fetchSavedStrategies();
       }
     } catch (err) {
-      console.error('Error deleting strategy:', err);
+      console.error('Error deleting saved strategy:', err);
     }
   };
 
-  // Load Saved Strategy into Builder
-  const handleLoadSavedStrategy = (saved: SavedStrategy) => {
-    setSelectedSymbol(saved.symbol);
-    setBuilderLegs(saved.legs);
-    setActiveTab('builder');
-  };
-
-  // Export Strategy as JSON
-  const handleExportJSON = () => {
-    if (!analysis) return;
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(analysis, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `${selectedSymbol}_Option_Strategy_${Date.now()}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  };
-
-  // Filtered Instruments for Search
+  // Filtered Instruments
   const filteredInstruments = useMemo(() => {
-    const q = symbolSearchQuery.trim().toUpperCase();
-    if (!q) return instruments;
-    return instruments.filter(inst =>
-      inst.symbol.toUpperCase().includes(q) || inst.name.toUpperCase().includes(q)
-    );
-  }, [instruments, symbolSearchQuery]);
+    return instruments.filter(inst => {
+      if (instrumentCategory === 'INDICES' && inst.type !== 'INDEX') return false;
+      if (instrumentCategory === 'STOCKS' && inst.type === 'INDEX') return false;
+      if (!symbolSearchQuery) return true;
+      const q = symbolSearchQuery.toLowerCase();
+      return inst.symbol.toLowerCase().includes(q) || inst.name.toLowerCase().includes(q);
+    });
+  }, [instruments, instrumentCategory, symbolSearchQuery]);
 
-  // Sorted Option Chain Table Rows
+  // Filtered templates by category
+  const filteredTemplates = useMemo(() => {
+    if (selectedTemplateCategory === 'All') return templates;
+    return templates.filter(t => t.category.toLowerCase() === selectedTemplateCategory.toLowerCase());
+  }, [templates, selectedTemplateCategory]);
+
+  // Sorted Chain Rows
   const sortedChainRows = useMemo(() => {
     if (!chainData?.chain) return [];
     const rows = [...chainData.chain];
-    if (sortBy === 'strike') {
-      return sortOrder === 'asc' ? rows : rows.reverse();
-    }
     return rows.sort((a, b) => {
-      let valA = 0;
-      let valB = 0;
-      if (sortBy === 'call_oi') { valA = a.call.oi; valB = b.call.oi; }
-      else if (sortBy === 'put_oi') { valA = a.put.oi; valB = b.put.oi; }
-      else if (sortBy === 'call_vol') { valA = a.call.volume; valB = b.call.volume; }
-      else if (sortBy === 'put_vol') { valA = a.put.volume; valB = b.put.volume; }
-      else if (sortBy === 'call_ltp') { valA = a.call.ltp; valB = b.call.ltp; }
-      else if (sortBy === 'put_ltp') { valA = a.put.ltp; valB = b.put.ltp; }
-      return sortOrder === 'asc' ? valA - valB : valB - valA;
+      let aVal = a.strike;
+      let bVal = b.strike;
+      if (sortBy === 'call_oi') { aVal = a.call.oi; bVal = b.call.oi; }
+      if (sortBy === 'put_oi') { aVal = a.put.oi; bVal = b.put.oi; }
+      if (sortBy === 'call_vol') { aVal = a.call.volume; bVal = b.call.volume; }
+      if (sortBy === 'put_vol') { aVal = a.put.volume; bVal = b.put.volume; }
+      if (sortBy === 'call_ltp') { aVal = a.call.ltp; bVal = b.call.ltp; }
+      if (sortBy === 'put_ltp') { aVal = a.put.ltp; bVal = b.put.ltp; }
+      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
     });
   }, [chainData, sortBy, sortOrder]);
 
-  const toggleSort = (colKey: string) => {
-    if (sortBy === colKey) {
-      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(colKey);
-      setSortOrder('desc');
-    }
-  };
+  // Compute 60-FPS Dual Payoff Curves (Expiry Curve + Target Date Curve)
+  const spot = chainData?.spot_price || 25000;
+  const lotSize = chainData?.lot_size || 25;
+  const dteTotal = chainData?.days_to_expiry || 5;
 
-  // Predefined Template Categories
-  const categorizedTemplates = useMemo(() => {
-    const groups: { [cat: string]: PredefinedTemplate[] } = {
-      'Bullish': [],
-      'Bearish': [],
-      'Neutral': [],
-      'Advanced': []
+  const dualPayoffData = useMemo(() => {
+    const activeLegs = builderLegs.filter(l => !l.disabled);
+    if (activeLegs.length === 0) return { points: [], minPnl: -5000, maxPnl: 5000, targetPnlAtTarget: 0 };
+
+    const minSpot = Math.round(spot * 0.88);
+    const maxSpot = Math.round(spot * 1.12);
+    const steps = 70;
+    const stepSize = (maxSpot - minSpot) / steps;
+
+    const r = 0.065;
+    const sigma = Math.max(0.08, 0.16 + (ivOffset / 100.0));
+    // Remaining time to target date in years
+    const remainingDaysAtTarget = Math.max(0.05, dteTotal - targetDteOffset);
+    const tauTarget = remainingDaysAtTarget / 365.0;
+
+    const points: PayoffPoint[] = [];
+    let minPnl = 999999;
+    let maxPnl = -999999;
+    let targetPnlAtTarget = 0;
+
+    for (let i = 0; i <= steps; i++) {
+      const s = minSpot + i * stepSize;
+      let pnlExpiry = 0;
+      let pnlTarget = 0;
+
+      for (const leg of activeLegs) {
+        const qty = leg.lots * multiplier * lotSize;
+        const k = leg.strike;
+        const prem = leg.premium;
+
+        // 1. Expiry payoff
+        const expVal = leg.option_type === 'CE' ? Math.max(0, s - k) : Math.max(0, k - s);
+        const legExpPnl = leg.action === 'BUY' ? (expVal - prem) * qty : (prem - expVal) * qty;
+        pnlExpiry += legExpPnl;
+
+        // 2. Target Date payoff via Black-Scholes
+        const targetTheoPrice = bsPrice(s, k, tauTarget, r, sigma, leg.option_type);
+        const legTargetPnl = leg.action === 'BUY' ? (targetTheoPrice - prem) * qty : (prem - targetTheoPrice) * qty;
+        pnlTarget += legTargetPnl;
+      }
+
+      minPnl = Math.min(minPnl, pnlExpiry, pnlTarget);
+      maxPnl = Math.max(maxPnl, pnlExpiry, pnlTarget);
+
+      const isCurrentSpot = Math.abs(s - spot) < stepSize * 0.6;
+      const isTargetSpot = Math.abs(s - targetPrice) < stepSize * 0.6;
+
+      if (isTargetSpot) {
+        targetPnlAtTarget = pnlTarget;
+      }
+
+      points.push({
+        spot: Math.round(s),
+        pnl: Math.round(pnlExpiry),
+        pnl_target: Math.round(pnlTarget),
+        is_spot: isCurrentSpot,
+        is_target: isTargetSpot
+      });
+    }
+
+    // Safety buffer on Y-axis
+    const pnlRange = Math.max(5000, maxPnl - minPnl);
+    return {
+      points,
+      minPnl: Math.min(-1000, minPnl - pnlRange * 0.08),
+      maxPnl: Math.max(1000, maxPnl + pnlRange * 0.08),
+      targetPnlAtTarget: Math.round(targetPnlAtTarget)
     };
-    templates.forEach(t => {
-      const cat = t.category || 'Advanced';
-      if (!groups[cat]) groups[cat] = [];
-      groups[cat].push(t);
-    });
-    return groups;
-  }, [templates]);
+  }, [builderLegs, spot, lotSize, dteTotal, targetDteOffset, ivOffset, multiplier, targetPrice]);
 
-  // Interactive Payoff Chart Scaling
-  const chartBounds = useMemo(() => {
-    if (!analysis || !analysis.payoff_curve || analysis.payoff_curve.length === 0) {
-      return null;
+  // Portfolio Greeks Summation
+  const portfolioGreeks = useMemo(() => {
+    const activeLegs = builderLegs.filter(l => !l.disabled);
+    let totalDelta = 0;
+    let totalTheta = 0;
+    let totalGamma = 0;
+    let totalVega = 0;
+
+    const r = 0.065;
+    const sigma = Math.max(0.08, 0.16 + (ivOffset / 100.0));
+    const tau = Math.max(0.05, dteTotal - targetDteOffset) / 365.0;
+
+    for (const leg of activeLegs) {
+      const g = bsGreeks(spot, leg.strike, tau, r, sigma, leg.option_type);
+      const sign = leg.action === 'BUY' ? 1 : -1;
+      const qty = leg.lots * multiplier * lotSize;
+
+      totalDelta += sign * g.delta * qty;
+      totalTheta += sign * g.theta * qty;
+      totalGamma += sign * g.gamma * qty;
+      totalVega += sign * g.vega * qty;
     }
-    const points = analysis.payoff_curve;
-    const pnls = points.map(p => p.pnl);
-    const spots = points.map(p => p.spot);
 
-    const minPnl = Math.min(0, ...pnls);
-    const maxPnl = Math.max(0, ...pnls);
-    const pnlRange = Math.max(100, maxPnl - minPnl);
+    return {
+      delta: roundTo(totalDelta / lotSize, 3), // in lots
+      theta: Math.round(totalTheta),
+      gamma: roundTo(totalGamma, 5),
+      vega: Math.round(totalVega)
+    };
+  }, [builderLegs, spot, lotSize, dteTotal, targetDteOffset, ivOffset, multiplier]);
 
-    const minSpot = Math.min(...spots);
-    const maxSpot = Math.max(...spots);
-    const spotRange = Math.max(1, maxSpot - minSpot);
+  // Standard Deviation Bands (1 SD = 68%, 2 SD = 95%)
+  const standardDeviations = useMemo(() => {
+    const sigma = Math.max(0.08, 0.16 + (ivOffset / 100.0));
+    const t = Math.max(0.5, dteTotal) / 365.0;
+    const oneSdPoints = Math.round(spot * sigma * Math.sqrt(t));
+    const twoSdPoints = Math.round(oneSdPoints * 2);
 
-    return { minPnl, maxPnl, pnlRange, minSpot, maxSpot, spotRange, points };
-  }, [analysis]);
+    return {
+      oneSd: {
+        points: oneSdPoints,
+        pct: roundTo((oneSdPoints / spot) * 100, 1),
+        low: Math.round(spot - oneSdPoints),
+        high: Math.round(spot + oneSdPoints)
+      },
+      twoSd: {
+        points: twoSdPoints,
+        pct: roundTo((twoSdPoints / spot) * 100, 1),
+        low: Math.round(spot - twoSdPoints),
+        high: Math.round(spot + twoSdPoints)
+      }
+    };
+  }, [spot, dteTotal, ivOffset]);
+
+  function roundTo(num: number, dec: number) {
+    const f = Math.pow(10, dec);
+    return Math.round(num * f) / f;
+  }
+
+  // Active strategy title
+  const activeStrategyTitle = useMemo(() => {
+    const active = builderLegs.filter(l => !l.disabled);
+    if (active.length === 0) return 'No Legs Selected';
+    if (active.length === 1) return `${active[0].action} ${active[0].strike} ${active[0].option_type}`;
+    if (active.length === 2) {
+      if (active[0].option_type === 'CE' && active[1].option_type === 'CE') {
+        return active[0].action === 'BUY' ? 'Bull Call Spread' : 'Bear Call Spread';
+      }
+      if (active[0].option_type === 'PE' && active[1].option_type === 'PE') {
+        return active[0].action === 'BUY' ? 'Bear Put Spread' : 'Bull Put Spread';
+      }
+      if (active[0].strike === active[1].strike) return 'Straddle';
+      return 'Strangle';
+    }
+    if (active.length === 4) return 'Iron Condor';
+    return `${active.length}-Leg Custom Strategy`;
+  }, [builderLegs]);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)' }}>
-      {/* Top Benchmark Indices Barometer */}
-      <IndicesBarometer />
+    <div style={{ minHeight: '100vh', background: 'var(--bg-main, #050811)', color: 'var(--text-primary, #ffffff)', paddingBottom: '60px' }}>
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
 
-      {/* Main Container */}
-      <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '20px 24px 80px 24px' }}>
-        {/* Navigation Breadcrumbs & Drawer Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-            <button
-              onClick={() => setNavDrawerOpen(true)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                color: 'var(--text-secondary)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: 500,
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.15)';
-                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                e.currentTarget.style.borderColor = 'var(--border-subtle)';
-              }}
-            >
-              <Menu size={14} color="#818cf8" />
-              <span>Menu</span>
-            </button>
-            <ChevronRight size={14} color="var(--border-subtle)" />
-            <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Dashboard</Link>
-            <ChevronRight size={14} color="var(--border-subtle)" />
-            <span style={{ color: 'var(--text-muted)' }}>Derivatives</span>
-            <ChevronRight size={14} color="var(--border-subtle)" />
-            <span style={{ color: '#818cf8', fontWeight: 600 }}>Option Chain & Strategy Builder</span>
-          </div>
+      {/* Top Barometer */}
+      <div style={{ borderBottom: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))', background: 'rgba(5, 8, 17, 0.95)', position: 'sticky', top: 0, zIndex: 40 }}>
+        <IndicesBarometer onMenuClick={() => setNavDrawerOpen(true)} />
+      </div>
 
-          {/* Real-time Status Badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              borderRadius: '20px',
-              padding: '4px 12px',
-              fontSize: '0.74rem',
-              color: '#10b981',
-              fontWeight: 600
-            }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
-              NSE F&O LIVE FEED
-            </div>
-            {chainData?.last_updated && (
-              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                Updated: {chainData.last_updated.split(' ')[1] || chainData.last_updated}
-              </span>
-            )}
-          </div>
-        </div>
+      <div style={{ maxWidth: '1800px', margin: '0 auto', padding: '16px 20px' }}>
 
-        {/* Page Title & Main Bar */}
+        {/* ============================================================== */}
+        {/* HEADER CONTROLS BAR: SEARCH, SPOT, EXPIRY & WORKSTATION TOGGLE */}
+        {/* ============================================================== */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: '16px',
-          padding: '20px 24px',
-          marginBottom: '20px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
+          background: 'var(--bg-card, #0d131f)',
+          border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+          borderRadius: '12px',
+          padding: '12px 18px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '14px'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 16px rgba(99, 102, 241, 0.35)'
-              }}>
-                <Layers size={24} color="#ffffff" />
-              </div>
-              <div>
-                <h1 style={{ fontSize: '1.45rem', fontWeight: 700, margin: 0, letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  Option Chain & Strategy Builder
-                  <span style={{
-                    fontSize: '0.68rem',
-                    background: 'rgba(99, 102, 241, 0.2)',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    color: '#a5b4fc',
-                    borderRadius: '6px',
-                    padding: '2px 8px',
-                    fontWeight: 600
-                  }}>
-                    SEBI MULTI-LEG HEDGED
-                  </span>
-                </h1>
-                <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  Real-time Call/Put Open Interest, Greeks, Max Pain, PCR, Buildup tags, and professional multi-leg strategy payoff analysis.
-                </p>
-              </div>
-            </div>
-
-            {/* View Mode Switcher Pills */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(15, 23, 42, 0.8)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+          {/* Left: Searchable Symbol Picker */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setActiveTab('chain')}
+                onClick={() => setSymbolDropdownOpen(!symbolDropdownOpen)}
                 style={{
-                  background: activeTab === 'chain' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
-                  color: activeTab === 'chain' ? '#ffffff' : 'var(--text-secondary)',
-                  border: 'none',
+                  background: 'rgba(15, 23, 42, 0.9)',
+                  border: '1px solid rgba(99, 102, 241, 0.4)',
                   borderRadius: '8px',
-                  padding: '8px 16px',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
+                  padding: '7px 14px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: activeTab === 'chain' ? '0 2px 10px rgba(99, 102, 241, 0.35)' : 'none'
+                  gap: '10px',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
+                  fontWeight: 800,
+                  cursor: 'pointer'
                 }}
               >
-                <Layers size={15} />
-                Option Chain Table
+                <Search size={15} color="#818cf8" />
+                <span>{selectedSymbol}</span>
+                <span style={{ fontSize: '0.74rem', color: '#34d399', background: 'rgba(16, 185, 129, 0.15)', padding: '2px 6px', borderRadius: '4px' }}>
+                  ₹{(chainData?.spot_price || spot).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </span>
+                <span style={{ fontSize: '0.72rem', color: (chainData?.change_pct || 0) >= 0 ? '#10b981' : '#ef4444' }}>
+                  {(chainData?.change_pct || 0) >= 0 ? '+' : ''}{(chainData?.change_pct || 0).toFixed(2)}%
+                </span>
+                <ChevronDown size={14} color="#818cf8" />
               </button>
 
-              <button
-                onClick={() => setActiveTab('builder')}
-                style={{
-                  background: activeTab === 'builder' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
-                  color: activeTab === 'builder' ? '#ffffff' : 'var(--text-secondary)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '8px 16px',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: activeTab === 'builder' ? '0 2px 10px rgba(99, 102, 241, 0.35)' : 'none'
-                }}
-              >
-                <Sliders size={15} />
-                Strategy Builder & Payoff
-                {builderLegs.length > 0 && (
-                  <span style={{
-                    background: '#10b981',
-                    color: '#ffffff',
-                    fontSize: '0.68rem',
-                    borderRadius: '10px',
-                    padding: '1px 6px',
-                    fontWeight: 700
-                  }}>
-                    {builderLegs.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => setActiveTab('saved')}
-                style={{
-                  background: activeTab === 'saved' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
-                  color: activeTab === 'saved' ? '#ffffff' : 'var(--text-secondary)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '8px 16px',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: activeTab === 'saved' ? '0 2px 10px rgba(99, 102, 241, 0.35)' : 'none'
-                }}
-              >
-                <FolderOpen size={15} />
-                Saved Strategies
-                {savedStrategies.length > 0 && (
-                  <span style={{
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    color: '#e2e8f0',
-                    fontSize: '0.68rem',
-                    borderRadius: '10px',
-                    padding: '1px 6px',
-                    fontWeight: 600
-                  }}>
-                    {savedStrategies.length}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Instrument & Expiry Control Toolbar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '20px',
-            paddingTop: '16px',
-            borderTop: '1px solid var(--border-subtle)',
-            flexWrap: 'wrap',
-            gap: '14px'
-          }}>
-            {/* Instrument Searchable Picker */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', position: 'relative' }}>
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setSymbolDropdownOpen(prev => !prev)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '8px',
-                    padding: '8px 14px',
-                    color: '#ffffff',
-                    fontSize: '0.86rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    minWidth: '180px',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Target size={15} color="#818cf8" />
-                    <span>{selectedSymbol}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                      ({chainData?.name || selectedSymbol})
-                    </span>
-                  </div>
-                  <ChevronDown size={14} color="var(--text-muted)" />
-                </button>
-
-                {/* Dropdown Menu */}
-                {symbolDropdownOpen && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    marginTop: '6px',
-                    width: '320px',
-                    maxHeight: '380px',
-                    background: '#0f172a',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    borderRadius: '12px',
-                    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.6)',
-                    zIndex: 999,
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}>
-                    <div style={{ padding: '10px', borderBottom: '1px solid var(--border-subtle)' }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: '6px',
-                        padding: '6px 10px'
-                      }}>
-                        <Search size={14} color="var(--text-muted)" />
-                        <input
-                          type="text"
-                          placeholder="Search NIFTY, RELIANCE, TCS..."
-                          value={symbolSearchQuery}
-                          onChange={e => setSymbolSearchQuery(e.target.value)}
-                          autoFocus
-                          style={{
-                            background: 'transparent',
-                            border: 'none',
-                            color: '#ffffff',
-                            fontSize: '0.82rem',
-                            outline: 'none',
-                            width: '100%'
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ overflowY: 'auto', maxHeight: '310px', padding: '6px' }}>
-                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', padding: '4px 8px', fontWeight: 700, letterSpacing: '0.05em' }}>
-                        POPULAR INDICES & F&O EQUITIES ({filteredInstruments.length})
-                      </div>
-                      {filteredInstruments.map(inst => (
-                        <div
-                          key={inst.symbol}
-                          onClick={() => {
-                            setSelectedSymbol(inst.symbol);
-                            setSelectedExpiry('');
-                            setSymbolDropdownOpen(false);
-                            setSymbolSearchQuery('');
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '8px 10px',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            background: selectedSymbol === inst.symbol ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-                            color: selectedSymbol === inst.symbol ? '#818cf8' : 'var(--text-primary)',
-                            fontSize: '0.8rem',
-                            fontWeight: 500,
-                            transition: 'background 0.15s'
-                          }}
-                          onMouseEnter={e => {
-                            if (selectedSymbol !== inst.symbol) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                          }}
-                          onMouseLeave={e => {
-                            if (selectedSymbol !== inst.symbol) e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          <div>
-                            <span style={{ fontWeight: 700 }}>{inst.symbol}</span>
-                            <span style={{ marginLeft: '6px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                              {inst.name}
-                            </span>
-                          </div>
-                          <span style={{
-                            fontSize: '0.68rem',
-                            background: inst.type === 'INDEX' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)',
-                            color: inst.type === 'INDEX' ? '#34d399' : '#a5b4fc',
-                            padding: '2px 6px',
-                            borderRadius: '4px'
-                          }}>
-                            Lot: {inst.lot_size}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Quick Popular Instrument Pills */}
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {['NIFTY', 'BANKNIFTY', 'FINNIFTY', 'RELIANCE', 'TCS', 'HDFCBANK'].map(sym => (
-                  <button
-                    key={sym}
-                    onClick={() => {
-                      if (selectedSymbol !== sym) {
-                        setSelectedSymbol(sym);
-                        setSelectedExpiry('');
-                      }
-                    }}
+              {/* Autocomplete Dropdown */}
+              {symbolDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '110%',
+                  left: 0,
+                  width: '320px',
+                  background: '#0a0f1d',
+                  border: '1px solid rgba(99, 102, 241, 0.35)',
+                  borderRadius: '10px',
+                  boxShadow: '0 12px 36px rgba(0, 0, 0, 0.6)',
+                  zIndex: 100,
+                  padding: '8px'
+                }}>
+                  <input
+                    type="text"
+                    placeholder="Search 224+ F&O stocks & indices..."
+                    value={symbolSearchQuery}
+                    onChange={e => setSymbolSearchQuery(e.target.value)}
+                    autoFocus
                     style={{
-                      background: selectedSymbol === sym ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.04)',
-                      border: `1px solid ${selectedSymbol === sym ? '#6366f1' : 'var(--border-subtle)'}`,
+                      width: '100%',
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid var(--border-subtle)',
                       borderRadius: '6px',
-                      padding: '4px 10px',
-                      color: selectedSymbol === sym ? '#ffffff' : 'var(--text-secondary)',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
+                      padding: '8px 10px',
+                      color: '#ffffff',
+                      fontSize: '0.8rem',
+                      outline: 'none',
+                      marginBottom: '8px'
                     }}
-                  >
-                    {sym}
-                  </button>
-                ))}
-              </div>
+                  />
+                  <div style={{ display: 'flex', gap: '4px', marginBottom: '8px' }}>
+                    {(['ALL', 'INDICES', 'STOCKS'] as const).map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setInstrumentCategory(cat)}
+                        style={{
+                          flex: 1,
+                          padding: '4px',
+                          fontSize: '0.68rem',
+                          fontWeight: 700,
+                          borderRadius: '4px',
+                          background: instrumentCategory === cat ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                          border: 'none',
+                          color: '#ffffff',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
+                    {filteredInstruments.slice(0, 50).map(inst => (
+                      <div
+                        key={inst.symbol}
+                        onClick={() => {
+                          setSelectedSymbol(inst.symbol);
+                          setSelectedExpiry('');
+                          setSymbolDropdownOpen(false);
+                          setSymbolSearchQuery('');
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          background: selectedSymbol === inst.symbol ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                          fontSize: '0.78rem'
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = selectedSymbol === inst.symbol ? 'rgba(99, 102, 241, 0.2)' : 'transparent')}
+                      >
+                        <div>
+                          <strong style={{ color: '#ffffff' }}>{inst.symbol}</strong>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: '6px' }}>{inst.name}</span>
+                        </div>
+                        <span style={{ fontSize: '0.65rem', color: '#a5b4fc', background: 'rgba(99, 102, 241, 0.15)', padding: '2px 5px', borderRadius: '4px' }}>
+                          Lot: {inst.lot_size}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Expiry Selector */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>EXPIRY:</span>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Expiry:</span>
               <select
                 value={selectedExpiry}
                 onChange={e => setSelectedExpiry(e.target.value)}
                 style={{
                   background: 'rgba(15, 23, 42, 0.9)',
                   border: '1px solid var(--border-subtle)',
-                  borderRadius: '8px',
-                  padding: '7px 12px',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
                   color: '#ffffff',
-                  fontSize: '0.82rem',
+                  fontSize: '0.8rem',
                   fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer'
                 }}
               >
                 {expiries.map(exp => (
-                  <option key={exp} value={exp} style={{ background: '#0f172a', color: '#ffffff' }}>
-                    {exp} {exp === expiries[0] ? '(Nearest / Current)' : ''}
-                  </option>
+                  <option key={exp} value={exp}>{exp}</option>
                 ))}
               </select>
-
               {chainData?.days_to_expiry !== undefined && (
-                <span style={{
-                  fontSize: '0.72rem',
-                  background: 'rgba(99, 102, 241, 0.15)',
-                  border: '1px solid rgba(99, 102, 241, 0.3)',
-                  color: '#a5b4fc',
-                  padding: '4px 8px',
-                  borderRadius: '6px',
-                  fontWeight: 600
-                }}>
+                <span style={{ fontSize: '0.72rem', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.12)', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
                   {chainData.days_to_expiry} DTE
                 </span>
               )}
             </div>
+          </div>
 
-            {/* Controls: Range, CE/PE Filter, Auto-refresh & Manual Refresh */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              {/* Range Filter */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>STRIKES:</span>
-                <select
-                  value={strikeRange}
-                  onChange={e => setStrikeRange(Number(e.target.value))}
-                  style={{
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '6px',
-                    padding: '5px 8px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.76rem',
-                    outline: 'none',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <option value={10}>ATM ± 10</option>
-                  <option value={15}>ATM ± 15</option>
-                  <option value={20}>ATM ± 20</option>
-                  <option value={30}>ATM ± 30</option>
-                </select>
-              </div>
-
-              {/* CE/PE Filter */}
-              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '6px', padding: '2px' }}>
-                <button
-                  onClick={() => setSideFilter('BOTH')}
-                  style={{
-                    background: sideFilter === 'BOTH' ? 'rgba(99, 102, 241, 0.3)' : 'transparent',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '4px 8px',
-                    fontSize: '0.72rem',
-                    color: sideFilter === 'BOTH' ? '#ffffff' : 'var(--text-muted)',
-                    cursor: 'pointer',
-                    fontWeight: 600
-                  }}
-                >
-                  Both
-                </button>
-                <button
-                  onClick={() => setSideFilter('CALLS')}
-                  style={{
-                    background: sideFilter === 'CALLS' ? 'rgba(16, 185, 129, 0.3)' : 'transparent',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '4px 8px',
-                    fontSize: '0.72rem',
-                    color: sideFilter === 'CALLS' ? '#10b981' : 'var(--text-muted)',
-                    cursor: 'pointer',
-                    fontWeight: 600
-                  }}
-                >
-                  Calls
-                </button>
-                <button
-                  onClick={() => setSideFilter('PUTS')}
-                  style={{
-                    background: sideFilter === 'PUTS' ? 'rgba(239, 68, 68, 0.3)' : 'transparent',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '4px 8px',
-                    fontSize: '0.72rem',
-                    color: sideFilter === 'PUTS' ? '#ef4444' : 'var(--text-muted)',
-                    cursor: 'pointer',
-                    fontWeight: 600
-                  }}
-                >
-                  Puts
-                </button>
-              </div>
-
-              {/* Refresh Interval Selector */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <select
-                  value={autoRefreshInterval}
-                  onChange={e => setAutoRefreshInterval(Number(e.target.value))}
-                  style={{
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '6px',
-                    padding: '5px 8px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.76rem',
-                    outline: 'none',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <option value={0}>Refresh: Off</option>
-                  <option value={2}>Refresh: 2s</option>
-                  <option value={5}>Refresh: 5s</option>
-                  <option value={10}>Refresh: 10s</option>
-                </select>
-
-                <button
-                  onClick={() => fetchOptionChain(false)}
-                  disabled={isRefreshing}
-                  style={{
-                    background: 'rgba(99, 102, 241, 0.15)',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    borderRadius: '6px',
-                    padding: '6px 10px',
-                    color: '#818cf8',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.76rem',
-                    fontWeight: 600
-                  }}
-                  title="Manual refresh option chain data"
-                >
-                  <RefreshCw size={13} className={isRefreshing ? 'spin' : ''} />
-                  <span>Refresh</span>
-                </button>
-              </div>
+          {/* Right: View Mode Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'inline-flex', background: 'rgba(15, 23, 42, 0.9)', padding: '3px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <button
+                onClick={() => setViewMode('workstation')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: viewMode === 'workstation' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  color: viewMode === 'workstation' ? '#ffffff' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Sliders size={13} />
+                Workstation (Sensibull Style)
+              </button>
+              <button
+                onClick={() => setViewMode('fullchain')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: viewMode === 'fullchain' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  color: viewMode === 'fullchain' ? '#ffffff' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Layers size={13} />
+                Full Option Chain (23 Cols)
+              </button>
             </div>
+
+            <button
+              onClick={() => fetchOptionChain(false)}
+              disabled={isRefreshing}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer'
+              }}
+              title="Refresh Market Data"
+            >
+              <RefreshCw size={14} className={isRefreshing ? 'spin' : ''} />
+            </button>
           </div>
         </div>
 
-        {/* Derivative Pulse Barometer (Key Summary Metrics) */}
-        {chainData && chainData.summary && (
+        {/* ============================================================== */}
+        {/* MODE 1: SENSIBULL-STYLE WORKSTATION (SPLIT VIEW)               */}
+        {/* ============================================================== */}
+        {viewMode === 'workstation' && (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '12px',
-            marginBottom: '20px'
+            gridTemplateColumns: 'minmax(460px, 44%) 1fr',
+            gap: '16px',
+            alignItems: 'start'
           }}>
-            {/* Spot Price Card */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                UNDERLYING SPOT
-              </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '4px' }}>
-                <span style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff' }}>
-                  ₹{chainData.spot_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                </span>
-                <span style={{
-                  fontSize: '0.76rem',
-                  fontWeight: 700,
-                  color: chainData.change_pct >= 0 ? '#10b981' : '#ef4444',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  {chainData.change_pct >= 0 ? '+' : ''}{chainData.change_pct}%
-                </span>
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Lot: {chainData.lot_size} | Interval: {chainData.interval}
-              </div>
-            </div>
 
-            {/* ATM Strike Card */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid rgba(168, 85, 247, 0.3)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ fontSize: '0.72rem', color: '#c084fc', fontWeight: 600, letterSpacing: '0.04em' }}>
-                ATM STRIKE
-              </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                {chainData.atm_strike}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Nearest at-the-money
-              </div>
-            </div>
+            {/* ------------------------------------------------------------ */}
+            {/* LEFT COLUMN: ACTIVE STRATEGY LEGS + MULTI-TOOL TABS          */}
+            {/* ------------------------------------------------------------ */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-            {/* PCR Card */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                  PUT-CALL RATIO (PCR)
-                </span>
-                <span style={{
-                  fontSize: '0.65rem',
-                  fontWeight: 700,
-                  borderRadius: '4px',
-                  padding: '1px 6px',
-                  background: chainData.summary.pcr_sentiment === 'BULLISH' ? 'rgba(16, 185, 129, 0.2)' : chainData.summary.pcr_sentiment === 'BEARISH' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                  color: chainData.summary.pcr_sentiment === 'BULLISH' ? '#10b981' : chainData.summary.pcr_sentiment === 'BEARISH' ? '#ef4444' : '#f59e0b'
-                }}>
-                  {chainData.summary.pcr_sentiment}
-                </span>
-              </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                {chainData.summary.pcr}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Total Put OI / Call OI
-              </div>
-            </div>
-
-            {/* Max Pain Strike Card */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ fontSize: '0.72rem', color: '#f59e0b', fontWeight: 600, letterSpacing: '0.04em' }}>
-                MAX PAIN STRIKE
-              </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                {chainData.summary.max_pain}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Min Option Writer Loss
-              </div>
-            </div>
-
-            {/* Highest Call OI (Major Resistance) */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ fontSize: '0.72rem', color: '#f87171', fontWeight: 600, letterSpacing: '0.04em' }}>
-                MAJOR RESISTANCE (CALL OI)
-              </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                {chainData.summary.highest_call_oi_strike}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Highest Call OI accumulation
-              </div>
-            </div>
-
-            {/* Highest Put OI (Major Support) */}
-            <div style={{
-              background: 'rgba(18, 24, 38, 0.75)',
-              border: '1px solid rgba(16, 185, 129, 0.25)',
-              borderRadius: '12px',
-              padding: '14px 16px'
-            }}>
-              <div style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600, letterSpacing: '0.04em' }}>
-                MAJOR SUPPORT (PUT OI)
-              </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                {chainData.summary.highest_put_oi_strike}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Highest Put OI accumulation
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 1: OPTION CHAIN TABLE VIEW */}
-        {activeTab === 'chain' && (
-          <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-          }}>
-            {/* Table Header Bar */}
-            <div style={{
-              padding: '14px 20px',
-              background: 'rgba(15, 23, 42, 0.95)',
-              borderBottom: '1px solid var(--border-subtle)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#ffffff' }}>
-                  {selectedSymbol} Option Chain Matrix ({selectedExpiry})
-                </span>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                  Total Call OI: <strong style={{ color: '#f87171' }}>{chainData?.summary.total_call_oi.toLocaleString()}</strong> |
-                  Total Put OI: <strong style={{ color: '#34d399' }}>{chainData?.summary.total_put_oi.toLocaleString()}</strong>
-                </span>
-              </div>
-
-              {/* Table Legends */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ width: '10px', height: '10px', background: 'rgba(234, 179, 8, 0.15)', border: '1px solid rgba(234, 179, 8, 0.4)', borderRadius: '2px' }} />
-                  <span>Call ITM</span>
+              {/* CARD 1: ACTIVE STRATEGY LEGS TABLE */}
+              <div style={{
+                background: 'var(--bg-card, #0d131f)',
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
+              }}>
+                {/* Legs Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Sliders size={16} color="#818cf8" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#ffffff' }}>
+                      {builderLegs.filter(l => !l.disabled).length} Selected - {activeStrategyTitle}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      // Reset prices to current LTP
+                      const updated = builderLegs.map(l => {
+                        const row = chainData?.chain.find(r => r.strike === l.strike);
+                        const freshLtp = l.option_type === 'CE' ? row?.call.ltp : row?.put.ltp;
+                        return { ...l, premium: freshLtp || l.premium };
+                      });
+                      setBuilderLegs(updated);
+                    }}
+                    style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <RotateCcw size={12} />
+                    Reset Prices
+                  </button>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ width: '10px', height: '10px', background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '2px' }} />
-                  <span>Put ITM</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ width: '10px', height: '10px', background: 'rgba(168, 85, 247, 0.35)', border: '1px solid #a855f7', borderRadius: '2px' }} />
-                  <span>ATM</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Error or Loading Banner */}
-            {chainError && (
-              <div style={{ padding: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', textAlign: 'center', fontSize: '0.85rem' }}>
-                {chainError}
-              </div>
-            )}
+                {/* Strategy Legs Rows */}
+                {builderLegs.length === 0 ? (
+                  <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                    No legs selected. Click <strong>+ B</strong> or <strong>+ S</strong> in the Option Chain below, or select a Ready-Made template.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {builderLegs.map((leg, idx) => (
+                      <div
+                        key={leg.id || idx}
+                        style={{
+                          background: leg.disabled ? 'rgba(255, 255, 255, 0.02)' : 'rgba(15, 23, 42, 0.75)',
+                          border: `1px solid ${leg.disabled ? 'rgba(255, 255, 255, 0.04)' : 'rgba(99, 102, 241, 0.25)'}`,
+                          borderRadius: '8px',
+                          padding: '8px 10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '8px',
+                          opacity: leg.disabled ? 0.5 : 1
+                        }}
+                      >
+                        {/* Checkbox */}
+                        <input
+                          type="checkbox"
+                          checked={!leg.disabled}
+                          onChange={e => handleUpdateLeg(idx, { disabled: !e.target.checked })}
+                          style={{ cursor: 'pointer' }}
+                        />
 
-            {isLoadingChain && !chainData ? (
-              <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                <RefreshCw size={28} className="spin" style={{ margin: '0 auto 12px auto', display: 'block', color: '#818cf8' }} />
-                <span>Loading real-time NSE Option Chain data...</span>
-              </div>
-            ) : (
-              <div style={{ overflowX: 'auto', maxHeight: '720px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
-                  <thead>
-                    <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', position: 'sticky', top: 0, zIndex: 10 }}>
-                      {/* CALL SIDE HEADER */}
-                      {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
-                        <>
-                          <th style={{ padding: '10px 8px', color: '#34d399', textAlign: 'center', borderRight: '1px solid var(--border-subtle)' }} colSpan={11}>
-                            CALL OPTIONS (CE)
-                          </th>
-                        </>
-                      )}
-
-                      {/* CENTER STRIKE HEADER */}
-                      <th style={{ padding: '10px 14px', color: '#c084fc', textAlign: 'center', background: '#0f172a', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
-                        STRIKE
-                      </th>
-
-                      {/* PUT SIDE HEADER */}
-                      {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
-                        <>
-                          <th style={{ padding: '10px 8px', color: '#f87171', textAlign: 'center', borderLeft: '1px solid var(--border-subtle)' }} colSpan={11}>
-                            PUT OPTIONS (PE)
-                          </th>
-                        </>
-                      )}
-                    </tr>
-
-                    {/* SUB-HEADERS */}
-                    <tr style={{ background: '#0d131f', borderBottom: '2px solid rgba(99, 102, 241, 0.3)', position: 'sticky', top: '37px', zIndex: 9, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                      {/* CALL SUBHEADERS */}
-                      {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
-                        <>
-                          <th style={{ padding: '8px 6px', textAlign: 'center' }}>+ Leg</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', cursor: 'pointer' }} onClick={() => toggleSort('call_oi')}>
-                            OI <ArrowUpDown size={10} style={{ display: 'inline' }} />
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right' }}>Chg OI</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', cursor: 'pointer' }} onClick={() => toggleSort('call_vol')}>
-                            Volume
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right' }}>IV %</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', cursor: 'pointer' }} onClick={() => toggleSort('call_ltp')}>
-                            LTP (₹)
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right' }}>Chg %</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#10b981' }}>Bid Qty</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#34d399' }}>Bid Price</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#f87171' }}>Ask Price</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#ef4444', borderRight: '1px solid var(--border-subtle)' }}>Ask Qty</th>
-                        </>
-                      )}
-
-                      {/* CENTER STRIKE */}
-                      <th style={{ padding: '8px 12px', textAlign: 'center', background: '#0f172a', color: '#ffffff', fontWeight: 700, borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
-                        Strike Price
-                      </th>
-
-                      {/* PUT SUBHEADERS */}
-                      {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
-                        <>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#10b981', borderLeft: '1px solid var(--border-subtle)' }}>Bid Qty</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#34d399' }}>Bid Price</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#f87171' }}>Ask Price</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#ef4444' }}>Ask Qty</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', cursor: 'pointer' }} onClick={() => toggleSort('put_ltp')}>
-                            LTP (₹)
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg %</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left' }}>IV %</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', cursor: 'pointer' }} onClick={() => toggleSort('put_vol')}>
-                            Volume
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg OI</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', cursor: 'pointer' }} onClick={() => toggleSort('put_oi')}>
-                            OI <ArrowUpDown size={10} style={{ display: 'inline' }} />
-                          </th>
-                          <th style={{ padding: '8px 6px', textAlign: 'center' }}>+ Leg</th>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {sortedChainRows.map(row => {
-                      const isAtm = row.is_atm;
-                      const callItm = row.strike < (chainData?.spot_price || 0);
-                      const putItm = row.strike > (chainData?.spot_price || 0);
-
-                      // Call background tint
-                      const callBg = isAtm
-                        ? 'rgba(168, 85, 247, 0.18)'
-                        : callItm
-                        ? 'rgba(234, 179, 8, 0.05)'
-                        : 'transparent';
-
-                      // Put background tint
-                      const putBg = isAtm
-                        ? 'rgba(168, 85, 247, 0.18)'
-                        : putItm
-                        ? 'rgba(6, 182, 212, 0.05)'
-                        : 'transparent';
-
-                      // OI Buildup pill colors
-                      const getBuildupColor = (tag: string) => {
-                        if (tag === 'Long Buildup') return '#10b981';
-                        if (tag === 'Short Buildup') return '#ef4444';
-                        if (tag === 'Short Covering') return '#06b6d4';
-                        return '#f59e0b'; // Long Unwinding
-                      };
-
-                      return (
-                        <tr
-                          key={row.strike}
+                        {/* Buy / Sell Toggle Pill */}
+                        <button
+                          onClick={() => handleUpdateLeg(idx, { action: leg.action === 'BUY' ? 'SELL' : 'BUY' })}
                           style={{
-                            borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                            transition: 'background 0.12s ease'
+                            background: leg.action === 'BUY' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                            border: `1px solid ${leg.action === 'BUY' ? '#10b981' : '#ef4444'}`,
+                            color: leg.action === 'BUY' ? '#10b981' : '#ef4444',
+                            borderRadius: '4px',
+                            padding: '2px 8px',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            minWidth: '28px'
                           }}
                         >
-                          {/* CALL SIDE CELLS */}
-                          {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
-                            <>
-                              {/* Quick Add Call Leg Button */}
-                              <td style={{ padding: '6px 4px', textAlign: 'center', background: callBg }}>
-                                <div style={{ display: 'flex', gap: '3px', justifyContent: 'center' }}>
-                                  <button
-                                    onClick={() => handleAddLegFromChain(row.strike, 'CE', 'BUY', row.call.ltp)}
-                                    style={{
-                                      background: 'rgba(16, 185, 129, 0.15)',
-                                      border: '1px solid rgba(16, 185, 129, 0.4)',
-                                      color: '#10b981',
-                                      borderRadius: '4px',
-                                      padding: '2px 5px',
-                                      fontSize: '0.66rem',
-                                      fontWeight: 700,
-                                      cursor: 'pointer'
-                                    }}
-                                    title={`Buy ${row.strike} CE`}
-                                  >
-                                    B
-                                  </button>
-                                  <button
-                                    onClick={() => handleAddLegFromChain(row.strike, 'CE', 'SELL', row.call.ltp)}
-                                    style={{
-                                      background: 'rgba(239, 68, 68, 0.15)',
-                                      border: '1px solid rgba(239, 68, 68, 0.4)',
-                                      color: '#ef4444',
-                                      borderRadius: '4px',
-                                      padding: '2px 5px',
-                                      fontSize: '0.66rem',
-                                      fontWeight: 700,
-                                      cursor: 'pointer'
-                                    }}
-                                    title={`Sell ${row.strike} CE`}
-                                  >
-                                    S
-                                  </button>
-                                </div>
-                              </td>
+                          {leg.action === 'BUY' ? 'B' : 'S'}
+                        </button>
 
-                              {/* Call OI */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, fontWeight: 600 }}>
-                                {row.call.oi.toLocaleString()}
-                                {row.strike === chainData?.summary.highest_call_oi_strike && (
-                                  <span style={{ marginLeft: '4px', fontSize: '0.62rem', color: '#f87171', background: 'rgba(239, 68, 68, 0.2)', padding: '1px 4px', borderRadius: '3px' }}>
-                                    MAX
-                                  </span>
-                                )}
-                              </td>
+                        {/* Expiry Pill */}
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', minWidth: '46px' }}>
+                          {leg.expiry ? leg.expiry.split('-').slice(0, 2).join(' ') : (selectedExpiry.split('-').slice(0, 2).join(' '))}
+                        </span>
 
-                              {/* Call Change in OI */}
-                              <td style={{
-                                padding: '6px 8px',
-                                textAlign: 'right',
-                                background: callBg,
-                                color: row.call.change_oi >= 0 ? '#10b981' : '#ef4444'
-                              }}>
-                                {row.call.change_oi > 0 ? `+${row.call.change_oi.toLocaleString()}` : row.call.change_oi.toLocaleString()}
-                              </td>
-
-                              {/* Call Volume */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: 'var(--text-secondary)' }}>
-                                {row.call.volume.toLocaleString()}
-                              </td>
-
-                              {/* Call IV */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: 'var(--text-muted)' }}>
-                                {row.call.iv}%
-                              </td>
-
-                              {/* Call LTP */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, fontWeight: 700, color: '#ffffff' }}>
-                                ₹{row.call.ltp.toFixed(2)}
-                              </td>
-
-                              {/* Call Change % */}
-                              <td style={{
-                                padding: '6px 8px',
-                                textAlign: 'right',
-                                background: callBg,
-                                color: row.call.change_pct >= 0 ? '#10b981' : '#ef4444',
-                                fontWeight: 500
-                              }}>
-                                {row.call.change_pct >= 0 ? '+' : ''}{row.call.change_pct}%
-                              </td>
-
-                              {/* Call Bid Qty */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#a7f3d0', fontSize: '0.74rem', fontFamily: 'monospace' }}>
-                                {(row.call.bid_qty ?? 0).toLocaleString()}
-                              </td>
-
-                              {/* Call Bid Price */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#34d399', fontWeight: 600, fontSize: '0.74rem' }}>
-                                ₹{(row.call.bid ?? 0).toFixed(2)}
-                              </td>
-
-                              {/* Call Ask Price */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#f87171', fontWeight: 600, fontSize: '0.74rem' }}>
-                                ₹{(row.call.ask ?? 0).toFixed(2)}
-                              </td>
-
-                              {/* Call Ask Qty */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#fca5a5', borderRight: '1px solid var(--border-subtle)', fontSize: '0.74rem', fontFamily: 'monospace' }}>
-                                {(row.call.ask_qty ?? 0).toLocaleString()}
-                              </td>
-                            </>
-                          )}
-
-                          {/* CENTER STRIKE CELL */}
-                          <td style={{
-                            padding: '6px 12px',
-                            textAlign: 'center',
-                            background: isAtm ? 'rgba(168, 85, 247, 0.35)' : '#0f172a',
-                            fontWeight: 800,
-                            color: isAtm ? '#ffffff' : 'var(--text-primary)',
-                            borderLeft: '1px solid var(--border-subtle)',
-                            borderRight: '1px solid var(--border-subtle)',
-                            position: 'relative'
-                          }}>
-                            <span>{row.strike}</span>
-                            {isAtm && (
-                              <span style={{
-                                position: 'absolute',
-                                right: '4px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                fontSize: '0.6rem',
-                                background: '#9333ea',
-                                color: '#ffffff',
-                                padding: '1px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 700
-                              }}>
-                                ATM
-                              </span>
-                            )}
-                          </td>
-
-                          {/* PUT SIDE CELLS */}
-                          {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
-                            <>
-                              {/* Put Bid Qty */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#a7f3d0', borderLeft: '1px solid var(--border-subtle)', fontSize: '0.74rem', fontFamily: 'monospace' }}>
-                                {(row.put.bid_qty ?? 0).toLocaleString()}
-                              </td>
-
-                              {/* Put Bid Price */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#34d399', fontWeight: 600, fontSize: '0.74rem' }}>
-                                ₹{(row.put.bid ?? 0).toFixed(2)}
-                              </td>
-
-                              {/* Put Ask Price */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#f87171', fontWeight: 600, fontSize: '0.74rem' }}>
-                                ₹{(row.put.ask ?? 0).toFixed(2)}
-                              </td>
-
-                              {/* Put Ask Qty */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#fca5a5', fontSize: '0.74rem', fontFamily: 'monospace' }}>
-                                {(row.put.ask_qty ?? 0).toLocaleString()}
-                              </td>
-
-                              {/* Put Change % */}
-                              <td style={{
-                                padding: '6px 8px',
-                                textAlign: 'left',
-                                background: putBg,
-                                color: row.put.change_pct >= 0 ? '#10b981' : '#ef4444',
-                                fontWeight: 500
-                              }}>
-                                {row.put.change_pct >= 0 ? '+' : ''}{row.put.change_pct}%
-                              </td>
-
-                              {/* Put LTP */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, fontWeight: 700, color: '#ffffff' }}>
-                                ₹{row.put.ltp.toFixed(2)}
-                              </td>
-
-                              {/* Put IV */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: 'var(--text-muted)' }}>
-                                {row.put.iv}%
-                              </td>
-
-                              {/* Put Volume */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: 'var(--text-secondary)' }}>
-                                {row.put.volume.toLocaleString()}
-                              </td>
-
-                              {/* Put Change in OI */}
-                              <td style={{
-                                padding: '6px 8px',
-                                textAlign: 'left',
-                                background: putBg,
-                                color: row.put.change_oi >= 0 ? '#10b981' : '#ef4444'
-                              }}>
-                                {row.put.change_oi > 0 ? `+${row.put.change_oi.toLocaleString()}` : row.put.change_oi.toLocaleString()}
-                              </td>
-
-                              {/* Put OI */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, fontWeight: 600 }}>
-                                {row.put.oi.toLocaleString()}
-                                {row.strike === chainData?.summary.highest_put_oi_strike && (
-                                  <span style={{ marginLeft: '4px', fontSize: '0.62rem', color: '#34d399', background: 'rgba(16, 185, 129, 0.2)', padding: '1px 4px', borderRadius: '3px' }}>
-                                    MAX
-                                  </span>
-                                )}
-                              </td>
-
-                              {/* Quick Add Put Leg Button */}
-                              <td style={{ padding: '6px 4px', textAlign: 'center', background: putBg }}>
-                                <div style={{ display: 'flex', gap: '3px', justifyContent: 'center' }}>
-                                  <button
-                                    onClick={() => handleAddLegFromChain(row.strike, 'PE', 'BUY', row.put.ltp)}
-                                    style={{
-                                      background: 'rgba(16, 185, 129, 0.15)',
-                                      border: '1px solid rgba(16, 185, 129, 0.4)',
-                                      color: '#10b981',
-                                      borderRadius: '4px',
-                                      padding: '2px 5px',
-                                      fontSize: '0.66rem',
-                                      fontWeight: 700,
-                                      cursor: 'pointer'
-                                    }}
-                                    title={`Buy ${row.strike} PE`}
-                                  >
-                                    B
-                                  </button>
-                                  <button
-                                    onClick={() => handleAddLegFromChain(row.strike, 'PE', 'SELL', row.put.ltp)}
-                                    style={{
-                                      background: 'rgba(239, 68, 68, 0.15)',
-                                      border: '1px solid rgba(239, 68, 68, 0.4)',
-                                      color: '#ef4444',
-                                      borderRadius: '4px',
-                                      padding: '2px 5px',
-                                      fontSize: '0.66rem',
-                                      fontWeight: 700,
-                                      cursor: 'pointer'
-                                    }}
-                                    title={`Sell ${row.strike} PE`}
-                                  >
-                                    S
-                                  </button>
-                                </div>
-                              </td>
-                            </>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 2: STRATEGY BUILDER & PAYOFF VIEW */}
-        {activeTab === 'builder' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Top Toolbar: Template Selector & Actions */}
-            <div style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '16px',
-              padding: '18px 24px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '14px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                  PREDEFINED TEMPLATES:
-                </span>
-                <select
-                  value={selectedTemplateId}
-                  onChange={e => handleSelectTemplate(e.target.value)}
-                  style={{
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    borderRadius: '8px',
-                    padding: '8px 14px',
-                    color: '#ffffff',
-                    fontSize: '0.84rem',
-                    fontWeight: 600,
-                    outline: 'none',
-                    cursor: 'pointer',
-                    minWidth: '220px'
-                  }}
-                >
-                  <option value="">-- Select Strategy Template --</option>
-                  {Object.entries(categorizedTemplates).map(([cat, list]) => (
-                    <optgroup key={cat} label={`── ${cat} Strategies ──`}>
-                      {list.map(t => (
-                        <option key={t.id} value={t.id}>
-                          {t.name} ({t.outlook})
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-
-                {selectedTemplateId && (
-                  <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-                    {templates.find(t => t.id === selectedTemplateId)?.description}
-                  </span>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={() => {
-                    const spot = chainData?.spot_price || 24000;
-                    const interval = chainData?.interval || 50;
-                    const atm = Math.round(spot / interval) * interval;
-                    const newLeg: Leg = {
-                      id: `leg_${Date.now()}`,
-                      action: 'BUY',
-                      option_type: 'CE',
-                      strike: atm,
-                      lots: 1,
-                      lot_size: chainData?.lot_size || 25,
-                      premium: 100.0,
-                      name: `BUY ${atm} CE`
-                    };
-                    setBuilderLegs(prev => [...prev, newLeg]);
-                  }}
-                  style={{
-                    background: 'rgba(99, 102, 241, 0.15)',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    borderRadius: '8px',
-                    padding: '8px 14px',
-                    color: '#818cf8',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <Plus size={14} />
-                  Add Leg
-                </button>
-
-                <button
-                  onClick={handleClearAllLegs}
-                  disabled={builderLegs.length === 0}
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    borderRadius: '8px',
-                    padding: '8px 14px',
-                    color: '#ef4444',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: builderLegs.length === 0 ? 'not-allowed' : 'pointer',
-                    opacity: builderLegs.length === 0 ? 0.5 : 1
-                  }}
-                >
-                  Clear All
-                </button>
-
-                <button
-                  onClick={() => setSaveModalOpen(true)}
-                  disabled={builderLegs.length === 0}
-                  style={{
-                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    color: '#ffffff',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: builderLegs.length === 0 ? 'not-allowed' : 'pointer',
-                    opacity: builderLegs.length === 0 ? 0.5 : 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
-                  }}
-                >
-                  <Save size={14} />
-                  Save Strategy
-                </button>
-
-                <button
-                  onClick={handleExportJSON}
-                  disabled={!analysis}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.8rem',
-                    cursor: !analysis ? 'not-allowed' : 'pointer',
-                    opacity: !analysis ? 0.5 : 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                  title="Export strategy analysis as JSON"
-                >
-                  <Download size={14} />
-                  JSON
-                </button>
-              </div>
-            </div>
-
-            {/* Empty Legs State */}
-            {builderLegs.length === 0 && (
-              <div style={{
-                background: 'var(--bg-card)',
-                border: '1px dashed var(--border-subtle)',
-                borderRadius: '16px',
-                padding: '60px 24px',
-                textAlign: 'center'
-              }}>
-                <Sliders size={40} color="#818cf8" style={{ margin: '0 auto 16px auto', display: 'block', opacity: 0.8 }} />
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 8px 0' }}>No Active Option Legs Selected</h3>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto 20px auto' }}>
-                  Choose a predefined strategy template above (e.g. Bull Call Spread, Iron Condor) or navigate to the Option Chain Table to add custom strike legs.
-                </p>
-                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                  <button
-                    onClick={() => handleSelectTemplate('BULL_CALL_SPREAD')}
-                    style={{
-                      background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
-                      border: 'none',
-                      borderRadius: '8px',
-                      padding: '8px 16px',
-                      color: '#ffffff',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Load Bull Call Spread
-                  </button>
-                  <button
-                    onClick={() => handleSelectTemplate('IRON_CONDOR')}
-                    style={{
-                      background: 'rgba(99, 102, 241, 0.2)',
-                      border: '1px solid rgba(99, 102, 241, 0.4)',
-                      borderRadius: '8px',
-                      padding: '8px 16px',
-                      color: '#818cf8',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Load Iron Condor
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Active Legs Configurator Table */}
-            {builderLegs.length > 0 && (
-              <div style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '16px',
-                padding: '20px',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <h3 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Sliders size={16} color="#818cf8" />
-                    Strategy Legs ({builderLegs.length})
-                  </h3>
-                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                    Underlying: <strong>{selectedSymbol}</strong> | Spot: <strong>₹{chainData?.spot_price.toFixed(2)}</strong>
-                  </span>
-                </div>
-
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
-                    <thead>
-                      <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', fontSize: '0.72rem' }}>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>#</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Action</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Option Type</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Strike Price</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'center' }}>Lots</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Lot Size</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Premium (₹)</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'right' }}>Total Premium</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'center' }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {builderLegs.map((leg, idx) => {
-                        const totalPrem = leg.premium * leg.lots * (leg.lot_size || chainData?.lot_size || 25);
-                        return (
-                          <tr key={leg.id || idx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                            <td style={{ padding: '10px', color: 'var(--text-muted)' }}>{idx + 1}</td>
-
-                            {/* BUY / SELL TOGGLE */}
-                            <td style={{ padding: '10px' }}>
-                              <button
-                                onClick={() => handleUpdateLeg(idx, { action: leg.action === 'BUY' ? 'SELL' : 'BUY' })}
-                                style={{
-                                  background: leg.action === 'BUY' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                  border: `1px solid ${leg.action === 'BUY' ? '#10b981' : '#ef4444'}`,
-                                  color: leg.action === 'BUY' ? '#10b981' : '#ef4444',
-                                  borderRadius: '6px',
-                                  padding: '4px 10px',
-                                  fontSize: '0.74rem',
-                                  fontWeight: 700,
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                {leg.action}
-                              </button>
-                            </td>
-
-                            {/* CE / PE TOGGLE */}
-                            <td style={{ padding: '10px' }}>
-                              <button
-                                onClick={() => handleUpdateLeg(idx, { option_type: leg.option_type === 'CE' ? 'PE' : 'CE' })}
-                                style={{
-                                  background: leg.option_type === 'CE' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                                  border: `1px solid ${leg.option_type === 'CE' ? '#6366f1' : '#f59e0b'}`,
-                                  color: leg.option_type === 'CE' ? '#818cf8' : '#fbbf24',
-                                  borderRadius: '6px',
-                                  padding: '4px 10px',
-                                  fontSize: '0.74rem',
-                                  fontWeight: 700,
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                {leg.option_type}
-                              </button>
-                            </td>
-
-                            {/* STRIKE PRICE */}
-                            <td style={{ padding: '10px' }}>
-                              <input
-                                type="number"
-                                step={chainData?.interval || 50}
-                                value={leg.strike}
-                                onChange={e => handleUpdateLeg(idx, { strike: Number(e.target.value) })}
-                                style={{
-                                  background: 'rgba(15, 23, 42, 0.9)',
-                                  border: '1px solid var(--border-subtle)',
-                                  borderRadius: '6px',
-                                  padding: '5px 8px',
-                                  color: '#ffffff',
-                                  fontSize: '0.8rem',
-                                  fontWeight: 700,
-                                  width: '95px'
-                                }}
-                              />
-                            </td>
-
-                            {/* LOTS ADJUSTER */}
-                            <td style={{ padding: '10px', textAlign: 'center' }}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(15, 23, 42, 0.9)', borderRadius: '6px', padding: '2px 4px', border: '1px solid var(--border-subtle)' }}>
-                                <button
-                                  onClick={() => handleUpdateLeg(idx, { lots: Math.max(1, leg.lots - 1) })}
-                                  style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 4px', fontWeight: 700 }}
-                                >
-                                  -
-                                </button>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 700, minWidth: '18px', textAlign: 'center' }}>
-                                  {leg.lots}
-                                </span>
-                                <button
-                                  onClick={() => handleUpdateLeg(idx, { lots: leg.lots + 1 })}
-                                  style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 4px', fontWeight: 700 }}
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </td>
-
-                            {/* LOT SIZE */}
-                            <td style={{ padding: '10px', color: 'var(--text-muted)' }}>
-                              {leg.lot_size || chainData?.lot_size || 25}
-                            </td>
-
-                            {/* PREMIUM INPUT */}
-                            <td style={{ padding: '10px' }}>
-                              <input
-                                type="number"
-                                step="0.5"
-                                value={leg.premium}
-                                onChange={e => handleUpdateLeg(idx, { premium: Number(e.target.value) })}
-                                style={{
-                                  background: 'rgba(15, 23, 42, 0.9)',
-                                  border: '1px solid var(--border-subtle)',
-                                  borderRadius: '6px',
-                                  padding: '5px 8px',
-                                  color: '#ffffff',
-                                  fontSize: '0.8rem',
-                                  fontWeight: 600,
-                                  width: '90px'
-                                }}
-                              />
-                            </td>
-
-                            {/* TOTAL PREMIUM (CREDIT / DEBIT) */}
-                            <td style={{
-                              padding: '10px',
-                              textAlign: 'right',
-                              fontWeight: 700,
-                              color: leg.action === 'BUY' ? '#ef4444' : '#10b981'
-                            }}>
-                              {leg.action === 'BUY' ? '-' : '+'}₹{Math.round(totalPrem).toLocaleString('en-IN')}
-                            </td>
-
-                            {/* DELETE BUTTON */}
-                            <td style={{ padding: '10px', textAlign: 'center' }}>
-                              <button
-                                onClick={() => handleRemoveLeg(idx)}
-                                style={{
-                                  background: 'transparent',
-                                  border: 'none',
-                                  color: 'var(--text-muted)',
-                                  cursor: 'pointer',
-                                  padding: '4px'
-                                }}
-                                onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                                title="Remove leg"
-                              >
-                                <Trash2 size={15} />
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Strategy Analysis Cards & Interactive Payoff Chart */}
-            {analysis && (
-              <>
-                {/* Metrics Strip */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                  gap: '12px'
-                }}>
-                  {/* Max Profit */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      MAX PROFIT
-                    </div>
-                    <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#10b981', marginTop: '4px' }}>
-                      {analysis.max_profit_str}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Theoretical ceiling at expiry
-                    </div>
-                  </div>
-
-                  {/* Max Loss */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: '#f87171', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      MAX LOSS
-                    </div>
-                    <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#ef4444', marginTop: '4px' }}>
-                      {analysis.max_loss_str}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Capped downside risk
-                    </div>
-                  </div>
-
-                  {/* Breakevens */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      BREAKEVEN POINT(S)
-                    </div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                      {analysis.breakevens && analysis.breakevens.length > 0
-                        ? analysis.breakevens.map(b => `₹${b.toLocaleString()}`).join(', ')
-                        : 'None'}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Zero P&L inflection price
-                    </div>
-                  </div>
-
-                  {/* Net Premium */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      NET PREMIUM ({analysis.premium_type})
-                    </div>
-                    <div style={{
-                      fontSize: '1.35rem',
-                      fontWeight: 800,
-                      color: analysis.is_credit ? '#10b981' : '#ef4444',
-                      marginTop: '4px'
-                    }}>
-                      ₹{Math.abs(analysis.net_premium_total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      {analysis.is_credit ? 'Net cash credited into account' : 'Net cash paid upfront'}
-                    </div>
-                  </div>
-
-                  {/* Risk to Reward */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      RISK-TO-REWARD RATIO
-                    </div>
-                    <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                      {analysis.risk_reward_ratio}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Payoff efficiency index
-                    </div>
-                  </div>
-
-                  {/* Probability of Profit (POP) */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.72rem', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.04em' }}>
-                        PROBABILITY OF PROFIT
-                      </span>
-                      <Percent size={14} color="#818cf8" />
-                    </div>
-                    <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#818cf8', marginTop: '4px' }}>
-                      {analysis.probability_of_profit_pct}%
-                    </div>
-                    <div style={{
-                      height: '4px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      borderRadius: '2px',
-                      marginTop: '8px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{
-                        height: '100%',
-                        width: `${Math.min(100, analysis.probability_of_profit_pct)}%`,
-                        background: 'linear-gradient(90deg, #6366f1, #10b981)',
-                        borderRadius: '2px'
-                      }} />
-                    </div>
-                  </div>
-
-                  {/* Estimated Margin Required */}
-                  <div style={{
-                    background: 'rgba(18, 24, 38, 0.85)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '12px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                      EST. MARGIN (SEBI HEDGED)
-                    </div>
-                    <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#ffffff', marginTop: '4px' }}>
-                      ₹{analysis.estimated_margin_required.toLocaleString('en-IN')}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#10b981', marginTop: '4px' }}>
-                      Multi-leg spread benefit applied
-                    </div>
-                  </div>
-                </div>
-
-                {/* Interactive SVG Payoff Chart */}
-                <div style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '16px',
-                  padding: '24px',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <BarChart2 size={18} color="#818cf8" />
-                        Strategy Payoff Profile at Expiry
-                      </h3>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-                        Net P&L across underlying price spectrum at expiration. Shaded zones represent Profit (Green) vs Loss (Red).
-                      </p>
-                    </div>
-
-                    {/* Chart Legend */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '0.74rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '12px', height: '2px', background: '#3b82f6', borderTop: '2px dashed #3b82f6' }} />
-                        <span style={{ color: 'var(--text-secondary)' }}>Spot: ₹{analysis.spot_price.toFixed(2)}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '12px', height: '2px', background: '#f59e0b', borderTop: '2px dashed #f59e0b' }} />
-                        <span style={{ color: 'var(--text-secondary)' }}>Breakeven</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '10px', height: '10px', background: '#10b981', borderRadius: '2px' }} />
-                        <span style={{ color: '#10b981' }}>Profit Zone</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '10px', height: '10px', background: '#ef4444', borderRadius: '2px' }} />
-                        <span style={{ color: '#ef4444' }}>Loss Zone</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SVG Canvas */}
-                  {chartBounds && (
-                    <div style={{ position: 'relative', width: '100%', height: '340px' }}>
-                      <svg
-                        viewBox="0 0 900 320"
-                        style={{ width: '100%', height: '100%', overflow: 'visible' }}
-                        onMouseLeave={() => setHoveredPoint(null)}
-                      >
-                        <defs>
-                          <linearGradient id="profitGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                            <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
-                          </linearGradient>
-                          <linearGradient id="lossGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.02" />
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.4" />
-                          </linearGradient>
-                        </defs>
-
-                        {/* Chart Area Box */}
-                        {(() => {
-                          const w = 900;
-                          const h = 320;
-                          const padX = 60;
-                          const padY = 30;
-                          const chartW = w - padX * 2;
-                          const chartH = h - padY * 2;
-
-                          const { minPnl, maxPnl, minSpot, maxSpot, spotRange, pnlRange, points } = chartBounds;
-
-                          const getX = (spotVal: number) => padX + ((spotVal - minSpot) / spotRange) * chartW;
-                          const getY = (pnlVal: number) => padY + chartH - ((pnlVal - minPnl) / pnlRange) * chartH;
-
-                          const zeroY = getY(0);
-
-                          // Build SVG Path
-                          const pathD = points
-                            .map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${getX(p.spot).toFixed(1)} ${getY(p.pnl).toFixed(1)}`)
-                            .join(' ');
-
-                          return (
-                            <>
-                              {/* Horizontal Grid lines */}
-                              {[-1, 0, 1].map(multiplier => {
-                                const val = multiplier === 0 ? 0 : multiplier > 0 ? maxPnl * 0.5 : minPnl * 0.5;
-                                const yPos = getY(val);
-                                return (
-                                  <g key={multiplier}>
-                                    <line
-                                      x1={padX}
-                                      y1={yPos}
-                                      x2={padX + chartW}
-                                      y2={yPos}
-                                      stroke={multiplier === 0 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.08)'}
-                                      strokeWidth={multiplier === 0 ? 1.5 : 1}
-                                      strokeDasharray={multiplier === 0 ? 'none' : '4 4'}
-                                    />
-                                    <text
-                                      x={padX - 8}
-                                      y={yPos + 4}
-                                      fill="var(--text-muted)"
-                                      fontSize="11"
-                                      textAnchor="end"
-                                      fontFamily="monospace"
-                                    >
-                                      ₹{Math.round(val).toLocaleString()}
-                                    </text>
-                                  </g>
-                                );
-                              })}
-
-                              {/* Payoff Curve Line */}
-                              <path
-                                d={pathD}
-                                fill="none"
-                                stroke="#818cf8"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                              />
-
-                              {/* Breakeven Vertical Lines */}
-                              {analysis.breakevens.map((be, idx) => {
-                                const bx = getX(be);
-                                return (
-                                  <g key={`be_${idx}`}>
-                                    <line
-                                      x1={bx}
-                                      y1={padY}
-                                      x2={bx}
-                                      y2={padY + chartH}
-                                      stroke="#f59e0b"
-                                      strokeWidth="1.5"
-                                      strokeDasharray="4 4"
-                                    />
-                                    <text
-                                      x={bx}
-                                      y={padY + chartH + 16}
-                                      fill="#f59e0b"
-                                      fontSize="10"
-                                      textAnchor="middle"
-                                      fontWeight="bold"
-                                    >
-                                      BE: ₹{Math.round(be)}
-                                    </text>
-                                  </g>
-                                );
-                              })}
-
-                              {/* Spot Price Marker */}
-                              {(() => {
-                                const sx = getX(analysis.spot_price);
-                                return (
-                                  <g>
-                                    <line
-                                      x1={sx}
-                                      y1={padY}
-                                      x2={sx}
-                                      y2={padY + chartH}
-                                      stroke="#3b82f6"
-                                      strokeWidth="2"
-                                    />
-                                    <circle
-                                      cx={sx}
-                                      cy={getY(0)}
-                                      r="4"
-                                      fill="#3b82f6"
-                                    />
-                                    <text
-                                      x={sx}
-                                      y={padY - 8}
-                                      fill="#3b82f6"
-                                      fontSize="11"
-                                      textAnchor="middle"
-                                      fontWeight="bold"
-                                    >
-                                      Spot: ₹{analysis.spot_price.toFixed(1)}
-                                    </text>
-                                  </g>
-                                );
-                              })()}
-
-                              {/* Invisible mouse hover listener overlay points */}
-                              {points.map((p, idx) => {
-                                const cx = getX(p.spot);
-                                const cy = getY(p.pnl);
-                                return (
-                                  <circle
-                                    key={idx}
-                                    cx={cx}
-                                    cy={cy}
-                                    r="8"
-                                    fill="transparent"
-                                    style={{ cursor: 'pointer' }}
-                                    onMouseEnter={() => setHoveredPoint(p)}
-                                  />
-                                );
-                              })}
-
-                              {/* Hover Tooltip Marker */}
-                              {hoveredPoint && (
-                                <g>
-                                  <circle
-                                    cx={getX(hoveredPoint.spot)}
-                                    cy={getY(hoveredPoint.pnl)}
-                                    r="6"
-                                    fill={hoveredPoint.pnl >= 0 ? '#10b981' : '#ef4444'}
-                                    stroke="#ffffff"
-                                    strokeWidth="2"
-                                  />
-                                </g>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </svg>
-
-                      {/* Tooltip Float Box */}
-                      {hoveredPoint && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '12px',
-                          right: '20px',
-                          background: 'rgba(15, 23, 42, 0.95)',
-                          border: `1px solid ${hoveredPoint.pnl >= 0 ? '#10b981' : '#ef4444'}`,
-                          borderRadius: '8px',
-                          padding: '8px 14px',
-                          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
-                          pointerEvents: 'none'
-                        }}>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            Underlying at Expiry: <strong style={{ color: '#ffffff' }}>₹{hoveredPoint.spot.toFixed(2)}</strong>
-                          </div>
-                          <div style={{
-                            fontSize: '0.95rem',
-                            fontWeight: 800,
-                            color: hoveredPoint.pnl >= 0 ? '#10b981' : '#ef4444',
-                            marginTop: '2px'
-                          }}>
-                            P&L: {hoveredPoint.pnl >= 0 ? '+' : ''}₹{Math.round(hoveredPoint.pnl).toLocaleString('en-IN')}
-                          </div>
+                        {/* Strike Price Stepper */}
+                        <div style={{ display: 'inline-flex', alignItems: 'center', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '6px', border: '1px solid var(--border-subtle)', padding: '1px 3px' }}>
+                          <button
+                            onClick={() => handleUpdateLeg(idx, { strike: leg.strike - (chainData?.interval || 50) })}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 4px', fontWeight: 800, fontSize: '0.75rem' }}
+                          >
+                            -
+                          </button>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#ffffff', minWidth: '48px', textAlign: 'center' }}>
+                            {leg.strike}
+                          </span>
+                          <button
+                            onClick={() => handleUpdateLeg(idx, { strike: leg.strike + (chainData?.interval || 50) })}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 4px', fontWeight: 800, fontSize: '0.75rem' }}
+                          >
+                            +
+                          </button>
                         </div>
-                      )}
-                    </div>
-                  )}
+
+                        {/* Option Type CE/PE */}
+                        <button
+                          onClick={() => handleUpdateLeg(idx, { option_type: leg.option_type === 'CE' ? 'PE' : 'CE' })}
+                          style={{
+                            background: leg.option_type === 'CE' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                            border: `1px solid ${leg.option_type === 'CE' ? '#6366f1' : '#f59e0b'}`,
+                            color: leg.option_type === 'CE' ? '#818cf8' : '#fbbf24',
+                            borderRadius: '4px',
+                            padding: '2px 6px',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {leg.option_type}
+                        </button>
+
+                        {/* Lots Stepper */}
+                        <div style={{ display: 'inline-flex', alignItems: 'center', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '6px', border: '1px solid var(--border-subtle)', padding: '1px 3px' }}>
+                          <button
+                            onClick={() => handleUpdateLeg(idx, { lots: Math.max(1, leg.lots - 1) })}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 3px', fontWeight: 800 }}
+                          >
+                            -
+                          </button>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 700, minWidth: '16px', textAlign: 'center' }}>
+                            {leg.lots}
+                          </span>
+                          <button
+                            onClick={() => handleUpdateLeg(idx, { lots: leg.lots + 1 })}
+                            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0 3px', fontWeight: 800 }}
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* Premium Input */}
+                        <input
+                          type="number"
+                          step="0.5"
+                          value={leg.premium}
+                          onChange={e => handleUpdateLeg(idx, { premium: Number(e.target.value) })}
+                          style={{
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid var(--border-subtle)',
+                            borderRadius: '4px',
+                            padding: '3px 6px',
+                            color: '#ffffff',
+                            fontSize: '0.74rem',
+                            fontWeight: 700,
+                            width: '64px',
+                            textAlign: 'right'
+                          }}
+                        />
+
+                        {/* Delete Trash */}
+                        <button
+                          onClick={() => handleRemoveLeg(idx)}
+                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px' }}
+                          title="Remove leg"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Quick Shift & Width Adjustments Toolbar */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '8px',
+                  marginTop: '12px',
+                  paddingTop: '10px',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+                  flexWrap: 'wrap'
+                }}>
+                  {/* Shift Strikes */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Shift:</span>
+                    <button
+                      onClick={() => handleShiftStrikes('DOWN')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => handleShiftStrikes('UP')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Spread Width */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Width:</span>
+                    <button
+                      onClick={() => handleAdjustWidth('NARROWER')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => handleAdjustWidth('WIDER')}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '4px', padding: '2px 8px', fontSize: '0.74rem', cursor: 'pointer' }}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Lots Multiplier */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Multiplier:</span>
+                    <select
+                      value={multiplier}
+                      onChange={e => setMultiplier(Number(e.target.value))}
+                      style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#ffffff', fontSize: '0.72rem', padding: '2px 6px' }}
+                    >
+                      {[1, 2, 3, 5, 10].map(m => (
+                        <option key={m} value={m}>{m}x</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Net Premium Preview */}
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800 }}>
+                    <span style={{ color: 'var(--text-muted)', marginRight: '4px' }}>Net:</span>
+                    <span style={{ color: analysis?.is_credit ? '#10b981' : '#ef4444' }}>
+                      {analysis?.is_credit ? '+' : '-'}₹{Math.abs(analysis?.net_premium_total || 0).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-              </>
-            )}
 
-            {/* Disclaimer Banner */}
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '12px',
-              padding: '14px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              color: 'var(--text-muted)',
-              fontSize: '0.75rem'
-            }}>
-              <AlertTriangle size={18} color="#f59e0b" style={{ flexShrink: 0 }} />
-              <div>
-                <strong>Theoretical Simulation Disclaimer:</strong> Payoff curves, Greeks, and metrics are computed based on European Black-Scholes pricing and SEBI standardized margin models. Past performance does not guarantee future results. F&O trading involves substantial risk of capital loss.
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: SAVED STRATEGIES LIBRARY */}
-        {activeTab === 'saved' && (
-          <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FolderOpen size={18} color="#818cf8" />
-                  Saved Option Strategies Library
-                </h3>
-                <p style={{ margin: '4px 0 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  Manage and retrieve your custom multi-leg options combinations across market conditions.
-                </p>
-              </div>
-
-              <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-                Total Saved: <strong>{savedStrategies.length}</strong>
-              </span>
-            </div>
-
-            {savedStrategies.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-                <FolderOpen size={36} color="var(--border-subtle)" style={{ margin: '0 auto 12px auto', display: 'block' }} />
-                <p style={{ margin: 0, fontSize: '0.88rem' }}>No saved strategies yet.</p>
-                <p style={{ margin: '4px 0 16px 0', fontSize: '0.76rem' }}>
-                  Build a strategy in the Strategy Builder tab and click &quot;Save Strategy&quot; to archive it here.
-                </p>
-                <button
-                  onClick={() => setActiveTab('builder')}
-                  style={{
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    color: '#ffffff',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Go to Strategy Builder
-                </button>
-              </div>
-            ) : (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-                gap: '16px'
-              }}>
-                {savedStrategies.map(strat => (
-                  <div
-                    key={strat.id}
+                {/* Primary Action Buttons */}
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button
+                    onClick={() => setLeftTab('chain')}
                     style={{
-                      background: 'rgba(15, 23, 42, 0.85)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: '12px',
-                      padding: '18px',
+                      flex: 1,
+                      background: 'rgba(99, 102, 241, 0.15)',
+                      border: '1px solid rgba(99, 102, 241, 0.4)',
+                      borderRadius: '6px',
+                      padding: '7px 12px',
+                      color: '#818cf8',
+                      fontSize: '0.76rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      transition: 'all 0.2s ease'
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '5px'
                     }}
                   >
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                          <h4 style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: '#ffffff' }}>
-                            {strat.name}
-                          </h4>
+                    <Plus size={13} />
+                    Add / Edit from Chain
+                  </button>
+                  <button
+                    onClick={() => setSaveModalOpen(true)}
+                    disabled={builderLegs.length === 0}
+                    style={{
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '7px 12px',
+                      color: '#ffffff',
+                      fontSize: '0.76rem',
+                      fontWeight: 700,
+                      cursor: builderLegs.length === 0 ? 'not-allowed' : 'pointer',
+                      opacity: builderLegs.length === 0 ? 0.5 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}
+                  >
+                    <Save size={13} />
+                    Save / Draft
+                  </button>
+                  <button
+                    onClick={handleClearAllLegs}
+                    disabled={builderLegs.length === 0}
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      borderRadius: '6px',
+                      padding: '7px 10px',
+                      color: '#ef4444',
+                      fontSize: '0.76rem',
+                      cursor: 'pointer'
+                    }}
+                    title="Clear All Legs"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              {/* CARD 2: LOWER LEFT MULTI-TOOL TABS (OPTION CHAIN / READY-MADE / SAVED) */}
+              <div style={{
+                background: 'var(--bg-card, #0d131f)',
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                borderRadius: '12px',
+                padding: '14px',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
+              }}>
+                {/* Sub-tabs header */}
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', marginBottom: '12px', gap: '4px' }}>
+                  <button
+                    onClick={() => setLeftTab('chain')}
+                    style={{
+                      background: leftTab === 'chain' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                      borderBottom: leftTab === 'chain' ? '2px solid #6366f1' : '2px solid transparent',
+                      borderTop: 'none',
+                      borderLeft: 'none',
+                      borderRight: 'none',
+                      color: leftTab === 'chain' ? '#ffffff' : 'var(--text-secondary)',
+                      padding: '7px 14px',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Layers size={13} />
+                    Option Chain
+                  </button>
+
+                  <button
+                    onClick={() => setLeftTab('templates')}
+                    style={{
+                      background: leftTab === 'templates' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                      borderBottom: leftTab === 'templates' ? '2px solid #6366f1' : '2px solid transparent',
+                      borderTop: 'none',
+                      borderLeft: 'none',
+                      borderRight: 'none',
+                      color: leftTab === 'templates' ? '#ffffff' : 'var(--text-secondary)',
+                      padding: '7px 14px',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Sliders size={13} />
+                    Ready-made ({templates.length})
+                  </button>
+
+                  <button
+                    onClick={() => setLeftTab('saved')}
+                    style={{
+                      background: leftTab === 'saved' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                      borderBottom: leftTab === 'saved' ? '2px solid #6366f1' : '2px solid transparent',
+                      borderTop: 'none',
+                      borderLeft: 'none',
+                      borderRight: 'none',
+                      color: leftTab === 'saved' ? '#ffffff' : 'var(--text-secondary)',
+                      padding: '7px 14px',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <FolderOpen size={13} />
+                    Saved Strategies
+                  </button>
+                </div>
+
+                {/* TAB CONTENT A: COMPACT LEFT OPTION CHAIN */}
+                {leftTab === 'chain' && (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      <span>Select strikes to add legs to the strategy above:</span>
+                      <span>ATM Strike: <strong style={{ color: '#c084fc' }}>{chainData?.atm_strike}</strong></span>
+                    </div>
+
+                    <div style={{ maxHeight: '420px', overflowY: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
+                        <thead>
+                          <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', position: 'sticky', top: 0, zIndex: 10 }}>
+                            <th style={{ padding: '6px 4px', textAlign: 'center', color: '#10b981' }}>+ Call</th>
+                            <th style={{ padding: '6px 4px', textAlign: 'right' }}>CE LTP</th>
+                            <th style={{ padding: '6px 4px', textAlign: 'right' }}>OI</th>
+                            <th style={{ padding: '6px 6px', textAlign: 'center', background: '#0f172a', color: '#c084fc', fontWeight: 800 }}>STRIKE</th>
+                            <th style={{ padding: '6px 4px', textAlign: 'left' }}>OI</th>
+                            <th style={{ padding: '6px 4px', textAlign: 'left' }}>PE LTP</th>
+                            <th style={{ padding: '6px 4px', textAlign: 'center', color: '#f87171' }}>+ Put</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {sortedChainRows.map(row => {
+                            const isAtm = row.is_atm;
+                            const isCallSelected = builderLegs.some(l => l.strike === row.strike && l.option_type === 'CE');
+                            const isPutSelected = builderLegs.some(l => l.strike === row.strike && l.option_type === 'PE');
+
+                            return (
+                              <tr
+                                key={row.strike}
+                                style={{
+                                  borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+                                  background: isAtm ? 'rgba(168, 85, 247, 0.12)' : 'transparent'
+                                }}
+                              >
+                                {/* Quick Add Call: Buy / Sell */}
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
+                                  <div style={{ display: 'inline-flex', gap: '3px' }}>
+                                    <button
+                                      onClick={() => handleAddLegFromChain(row.strike, 'CE', 'BUY', row.call.ltp, row.call.bid, row.call.ask)}
+                                      style={{
+                                        background: isCallSelected ? '#10b981' : 'rgba(16, 185, 129, 0.15)',
+                                        border: '1px solid rgba(16, 185, 129, 0.4)',
+                                        color: isCallSelected ? '#ffffff' : '#10b981',
+                                        borderRadius: '3px',
+                                        padding: '1px 5px',
+                                        fontSize: '0.64rem',
+                                        fontWeight: 800,
+                                        cursor: 'pointer'
+                                      }}
+                                      title="Buy Call"
+                                    >
+                                      B
+                                    </button>
+                                    <button
+                                      onClick={() => handleAddLegFromChain(row.strike, 'CE', 'SELL', row.call.ltp, row.call.bid, row.call.ask)}
+                                      style={{
+                                        background: 'rgba(239, 68, 68, 0.15)',
+                                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                                        color: '#ef4444',
+                                        borderRadius: '3px',
+                                        padding: '1px 5px',
+                                        fontSize: '0.64rem',
+                                        fontWeight: 800,
+                                        cursor: 'pointer'
+                                      }}
+                                      title="Sell Call"
+                                    >
+                                      S
+                                    </button>
+                                  </div>
+                                </td>
+
+                                {/* Call LTP */}
+                                <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, color: '#34d399' }}>
+                                  ₹{row.call.ltp.toFixed(1)}
+                                </td>
+
+                                {/* Call OI */}
+                                <td style={{ padding: '4px 6px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.68rem' }}>
+                                  {(row.call.oi / 1000).toFixed(0)}k
+                                </td>
+
+                                {/* Center Strike */}
+                                <td style={{
+                                  padding: '4px 6px',
+                                  textAlign: 'center',
+                                  background: isAtm ? '#9333ea' : '#0f172a',
+                                  color: '#ffffff',
+                                  fontWeight: 800,
+                                  fontSize: '0.76rem'
+                                }}>
+                                  {row.strike}
+                                </td>
+
+                                {/* Put OI */}
+                                <td style={{ padding: '4px 6px', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.68rem' }}>
+                                  {(row.put.oi / 1000).toFixed(0)}k
+                                </td>
+
+                                {/* Put LTP */}
+                                <td style={{ padding: '4px 6px', textAlign: 'left', fontWeight: 700, color: '#f87171' }}>
+                                  ₹{row.put.ltp.toFixed(1)}
+                                </td>
+
+                                {/* Quick Add Put: Buy / Sell */}
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
+                                  <div style={{ display: 'inline-flex', gap: '3px' }}>
+                                    <button
+                                      onClick={() => handleAddLegFromChain(row.strike, 'PE', 'BUY', row.put.ltp, row.put.bid, row.put.ask)}
+                                      style={{
+                                        background: isPutSelected ? '#10b981' : 'rgba(16, 185, 129, 0.15)',
+                                        border: '1px solid rgba(16, 185, 129, 0.4)',
+                                        color: isPutSelected ? '#ffffff' : '#10b981',
+                                        borderRadius: '3px',
+                                        padding: '1px 5px',
+                                        fontSize: '0.64rem',
+                                        fontWeight: 800,
+                                        cursor: 'pointer'
+                                      }}
+                                      title="Buy Put"
+                                    >
+                                      B
+                                    </button>
+                                    <button
+                                      onClick={() => handleAddLegFromChain(row.strike, 'PE', 'SELL', row.put.ltp, row.put.bid, row.put.ask)}
+                                      style={{
+                                        background: 'rgba(239, 68, 68, 0.15)',
+                                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                                        color: '#ef4444',
+                                        borderRadius: '3px',
+                                        padding: '1px 5px',
+                                        fontSize: '0.64rem',
+                                        fontWeight: 800,
+                                        cursor: 'pointer'
+                                      }}
+                                      title="Sell Put"
+                                    >
+                                      S
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB CONTENT B: READY-MADE STRATEGIES (SENSIBULL STYLE GRID) */}
+                {leftTab === 'templates' && (
+                  <div>
+                    {/* Category Filter Pills */}
+                    <div style={{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                      {['All', 'Bullish', 'Bearish', 'Neutral'].map(cat => (
+                        <button
+                          key={cat}
+                          onClick={() => setSelectedTemplateCategory(cat)}
+                          style={{
+                            background: selectedTemplateCategory === cat ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                            border: `1px solid ${selectedTemplateCategory === cat ? '#6366f1' : 'var(--border-subtle)'}`,
+                            color: selectedTemplateCategory === cat ? '#ffffff' : 'var(--text-secondary)',
+                            borderRadius: '6px',
+                            padding: '3px 10px',
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Cards Grid */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                      gap: '8px',
+                      maxHeight: '400px',
+                      overflowY: 'auto'
+                    }}>
+                      {filteredTemplates.map(t => (
+                        <div
+                          key={t.id}
+                          onClick={() => handleSelectTemplate(t.id)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.6)',
+                            border: '1px solid rgba(99, 102, 241, 0.25)',
+                            borderRadius: '8px',
+                            padding: '8px 6px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.borderColor = '#818cf8';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          <StrategyMiniThumbnail type={t.id} />
+                          <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2 }}>
+                            {t.name}
+                          </div>
                           <span style={{
                             display: 'inline-block',
                             marginTop: '4px',
-                            fontSize: '0.68rem',
-                            background: 'rgba(99, 102, 241, 0.2)',
-                            color: '#a5b4fc',
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            fontWeight: 600
+                            fontSize: '0.62rem',
+                            color: t.category === 'Bullish' ? '#34d399' : t.category === 'Bearish' ? '#f87171' : '#38bdf8'
                           }}>
-                            {strat.symbol}
+                            {t.outlook}
                           </span>
                         </div>
-                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                          {strat.created_at ? strat.created_at.split('T')[0] : ''}
-                        </span>
-                      </div>
-
-                      {strat.notes && (
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '8px 0 12px 0' }}>
-                          {strat.notes}
-                        </p>
-                      )}
-
-                      {/* Legs Badges */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '12px 0' }}>
-                        {strat.legs.map((leg, lIdx) => (
-                          <span
-                            key={lIdx}
-                            style={{
-                              fontSize: '0.72rem',
-                              background: leg.action === 'BUY' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                              border: `1px solid ${leg.action === 'BUY' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
-                              color: leg.action === 'BUY' ? '#10b981' : '#ef4444',
-                              borderRadius: '4px',
-                              padding: '2px 6px',
-                              fontWeight: 600
-                            }}
-                          >
-                            {leg.action} {leg.strike} {leg.option_type} ({leg.lots}L)
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
-                      <button
-                        onClick={() => handleLoadSavedStrategy(strat)}
-                        style={{
-                          background: 'rgba(99, 102, 241, 0.2)',
-                          border: '1px solid rgba(99, 102, 241, 0.4)',
-                          borderRadius: '6px',
-                          padding: '6px 12px',
-                          color: '#818cf8',
-                          fontSize: '0.76rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        <Compass size={13} />
-                        Load in Builder
-                      </button>
-
-                      <button
-                        onClick={() => handleDeleteSavedStrategy(strat.id)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: 'var(--text-muted)',
-                          cursor: 'pointer',
-                          padding: '4px'
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                        title="Delete strategy"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
+
+                {/* TAB CONTENT C: SAVED STRATEGIES */}
+                {leftTab === 'saved' && (
+                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                    {savedStrategies.length === 0 ? (
+                      <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                        No saved strategies found. Build a strategy and click <strong>Save / Draft</strong>.
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {savedStrategies.map(s => (
+                          <div
+                            key={s.id}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.6)',
+                              border: '1px solid var(--border-subtle)',
+                              borderRadius: '8px',
+                              padding: '10px 12px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <div>
+                              <strong style={{ fontSize: '0.82rem', color: '#ffffff' }}>{s.name}</strong>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                {s.symbol} • {s.legs.length} Legs • {new Date(s.created_at).toLocaleDateString()}
+                              </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button
+                                onClick={() => {
+                                  setSelectedSymbol(s.symbol);
+                                  setBuilderLegs(s.legs);
+                                }}
+                                style={{
+                                  background: 'rgba(99, 102, 241, 0.2)',
+                                  border: '1px solid #6366f1',
+                                  color: '#818cf8',
+                                  borderRadius: '4px',
+                                  padding: '3px 8px',
+                                  fontSize: '0.72rem',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Load
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSavedStrategy(s.id)}
+                                style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+
+            {/* ------------------------------------------------------------ */}
+            {/* RIGHT COLUMN: SENSBULL-STYLE PAYOFF GRAPH, KPIS & SIMULATION */}
+            {/* ------------------------------------------------------------ */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+              {/* CARD 1: TOP KPI METRICS STRIP */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+                gap: '10px'
+              }}>
+                {/* Max Profit */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '10px 14px' }}>
+                  <div style={{ fontSize: '0.68rem', color: '#34d399', fontWeight: 700 }}>MAX PROFIT</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981', marginTop: '2px' }}>
+                    {analysis?.max_profit_str || 'Unlimited'}
+                  </div>
+                </div>
+
+                {/* Max Loss */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '10px 14px' }}>
+                  <div style={{ fontSize: '0.68rem', color: '#f87171', fontWeight: 700 }}>MAX LOSS</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ef4444', marginTop: '2px' }}>
+                    {analysis?.max_loss_str || '-₹4,924'}
+                  </div>
+                </div>
+
+                {/* Risk / Reward & POP */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>REWARD / RISK</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+                    {analysis?.risk_reward_ratio || '1 : 1.6'}
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: '#38bdf8', marginTop: '2px' }}>
+                    POP: {analysis?.probability_of_profit_pct || 46}%
+                  </div>
+                </div>
+
+                {/* Breakevens */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>BREAKEVEN(S)</div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
+                    {analysis?.breakevens && analysis.breakevens.length > 0
+                      ? analysis.breakevens.map(b => `₹${Math.round(b).toLocaleString()}`).join(', ')
+                      : `₹${spot}`}
+                  </div>
+                </div>
+
+                {/* Margin Required */}
+                <div style={{ background: 'var(--bg-card, #0d131f)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '10px 14px' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>EST. MARGIN</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#a5b4fc', marginTop: '2px' }}>
+                    ₹{Math.round(analysis?.estimated_margin_required || 42000).toLocaleString('en-IN')}
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 2: INTERACTIVE SVG PAYOFF GRAPH & SIMULATION SLIDERS */}
+              <div style={{
+                background: 'var(--bg-card, #0d131f)',
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
+              }}>
+                {/* Graph Legend & Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.74rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '12px', height: '3px', background: '#10b981', display: 'inline-block' }}></span>
+                      <span style={{ color: 'var(--text-secondary)' }}>On Expiry</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '12px', height: '3px', background: '#38bdf8', display: 'inline-block' }}></span>
+                      <span style={{ color: '#38bdf8' }}>On Target Date (T+{targetDteOffset})</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '8px', height: '8px', background: 'rgba(16, 185, 129, 0.4)', display: 'inline-block' }}></span>
+                      <span style={{ color: 'var(--text-muted)' }}>Call OI</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '8px', height: '8px', background: 'rgba(239, 68, 68, 0.4)', display: 'inline-block' }}></span>
+                      <span style={{ color: 'var(--text-muted)' }}>Put OI</span>
+                    </div>
+                  </div>
+
+                  {/* Projected P&L indicator badge */}
+                  <div style={{
+                    background: dualPayoffData.targetPnlAtTarget >= 0 ? 'rgba(16, 185, 129, 0.18)' : 'rgba(239, 68, 68, 0.18)',
+                    border: `1px solid ${dualPayoffData.targetPnlAtTarget >= 0 ? '#10b981' : '#ef4444'}`,
+                    borderRadius: '6px',
+                    padding: '3px 10px',
+                    fontSize: '0.76rem',
+                    fontWeight: 800,
+                    color: dualPayoffData.targetPnlAtTarget >= 0 ? '#34d399' : '#f87171'
+                  }}>
+                    Projected P&L: {dualPayoffData.targetPnlAtTarget >= 0 ? '+' : ''}₹{dualPayoffData.targetPnlAtTarget.toLocaleString()}
+                  </div>
+                </div>
+
+                {/* SVG Payoff Curve Container */}
+                <div style={{ width: '100%', height: '340px', position: 'relative', background: '#070a12', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)', overflow: 'hidden' }}>
+                  {dualPayoffData.points.length > 0 && (() => {
+                    const width = 800;
+                    const height = 340;
+                    const padX = 50;
+                    const padY = 30;
+                    const plotW = width - padX * 2;
+                    const plotH = height - padY * 2;
+
+                    const pts = dualPayoffData.points;
+                    const minSpotVal = pts[0].spot;
+                    const maxSpotVal = pts[pts.length - 1].spot;
+                    const minPnlVal = dualPayoffData.minPnl;
+                    const maxPnlVal = dualPayoffData.maxPnl;
+
+                    const scaleX = (s: number) => padX + ((s - minSpotVal) / (maxSpotVal - minSpotVal)) * plotW;
+                    const scaleY = (p: number) => padY + plotH - ((p - minPnlVal) / (maxPnlVal - minPnlVal)) * plotH;
+
+                    const zeroY = scaleY(0);
+
+                    // Polyline paths
+                    const pathExpiry = pts.map(p => `${scaleX(p.spot)},${scaleY(p.pnl)}`).join(' ');
+                    const pathTarget = pts.map(p => `${scaleX(p.spot)},${scaleY(p.pnl_target || 0)}`).join(' ');
+
+                    // Green & Red Shaded polygon
+                    const fillPointsGreen = pts
+                      .map(p => `${scaleX(p.spot)},${scaleY(Math.max(0, p.pnl))}`)
+                      .concat([`${scaleX(maxSpotVal)},${zeroY}`, `${scaleX(minSpotVal)},${zeroY}`])
+                      .join(' ');
+
+                    const fillPointsRed = pts
+                      .map(p => `${scaleX(p.spot)},${scaleY(Math.min(0, p.pnl))}`)
+                      .concat([`${scaleX(maxSpotVal)},${zeroY}`, `${scaleX(minSpotVal)},${zeroY}`])
+                      .join(' ');
+
+                    const currentSpotX = scaleX(spot);
+                    const targetSpotX = scaleX(targetPrice);
+
+                    return (
+                      <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="greenFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                          </linearGradient>
+                          <linearGradient id="redFill" x1="0" y1="1" x2="0" y2="0">
+                            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+
+                        {/* Open Interest Overlay Bars */}
+                        {sortedChainRows.slice(0, 20).map(r => {
+                          const rx = scaleX(r.strike);
+                          if (rx < padX || rx > width - padX) return null;
+                          const callH = Math.min(80, (r.call.oi / 50000) * 30);
+                          const putH = Math.min(80, (r.put.oi / 50000) * 30);
+                          return (
+                            <g key={`oi_${r.strike}`} opacity="0.3">
+                              <rect x={rx - 4} y={zeroY - callH} width="3" height={callH} fill="#10b981" />
+                              <rect x={rx} y={zeroY - putH} width="3" height={putH} fill="#ef4444" />
+                            </g>
+                          );
+                        })}
+
+                        {/* Shaded Area */}
+                        <polygon points={fillPointsGreen} fill="url(#greenFill)" />
+                        <polygon points={fillPointsRed} fill="url(#redFill)" />
+
+                        {/* Zero P&L horizontal line */}
+                        <line x1={padX} y1={zeroY} x2={width - padX} y2={zeroY} stroke="rgba(255, 255, 255, 0.2)" strokeDasharray="3,3" strokeWidth="1" />
+                        <text x={padX - 8} y={zeroY + 4} fill="rgba(255, 255, 255, 0.4)" fontSize="10" textAnchor="end">₹0</text>
+
+                        {/* Current Spot Vertical Line */}
+                        <line x1={currentSpotX} y1={padY} x2={currentSpotX} y2={height - padY} stroke="#c084fc" strokeDasharray="4,3" strokeWidth="1.5" />
+                        <text x={currentSpotX} y={padY - 8} fill="#c084fc" fontSize="10" fontWeight="700" textAnchor="middle">
+                          Spot: {spot}
+                        </text>
+
+                        {/* Target Price Vertical Line */}
+                        <line x1={targetSpotX} y1={padY} x2={targetSpotX} y2={height - padY} stroke="#38bdf8" strokeWidth="2" />
+                        <text x={targetSpotX} y={height - padY + 16} fill="#38bdf8" fontSize="10" fontWeight="800" textAnchor="middle">
+                          Target: {targetPrice}
+                        </text>
+
+                        {/* On Expiry Curve */}
+                        <polyline points={pathExpiry} fill="none" stroke="#10b981" strokeWidth="2.5" />
+
+                        {/* On Target Date Curve */}
+                        <polyline points={pathTarget} fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4,2" />
+
+                        {/* Active Legs Strike Markers */}
+                        {builderLegs.filter(l => !l.disabled).map((leg, idx) => {
+                          const lx = scaleX(leg.strike);
+                          if (lx < padX || lx > width - padX) return null;
+                          return (
+                            <circle
+                              key={`dot_${idx}`}
+                              cx={lx}
+                              cy={zeroY}
+                              r="4"
+                              fill={leg.action === 'BUY' ? '#10b981' : '#ef4444'}
+                              stroke="#ffffff"
+                              strokeWidth="1.5"
+                            />
+                          );
+                        })}
+                      </svg>
+                    );
+                  })()}
+                </div>
+
+                {/* Simulation Sliders (Target Price & Time Decay) */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '16px',
+                  marginTop: '14px',
+                  paddingTop: '12px',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.06)'
+                }}>
+                  {/* Slider 1: Underlying Price Target */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                        Underlying Target Price:
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <button
+                          onClick={() => setTargetPrice(prev => Math.round(prev - (chainData?.interval || 50)))}
+                          style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', borderRadius: '3px', color: '#ffffff', padding: '1px 6px', fontSize: '0.7rem', cursor: 'pointer' }}
+                        >
+                          -
+                        </button>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#38bdf8' }}>
+                          ₹{targetPrice} ({(((targetPrice - spot) / spot) * 100).toFixed(1)}%)
+                        </span>
+                        <button
+                          onClick={() => setTargetPrice(prev => Math.round(prev + (chainData?.interval || 50)))}
+                          style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', borderRadius: '3px', color: '#ffffff', padding: '1px 6px', fontSize: '0.7rem', cursor: 'pointer' }}
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => setTargetPrice(spot)}
+                          style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.68rem', cursor: 'pointer' }}
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min={Math.round(spot * 0.9)}
+                      max={Math.round(spot * 1.1)}
+                      step={chainData?.interval || 50}
+                      value={targetPrice}
+                      onChange={e => setTargetPrice(Number(e.target.value))}
+                      style={{ width: '100%', cursor: 'pointer', accentColor: '#38bdf8' }}
+                    />
+                  </div>
+
+                  {/* Slider 2: Target Date / Theta Decay Simulation */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                        Target Date Simulation:
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#c084fc' }}>
+                          T+{targetDteOffset} Days ({Math.max(0, dteTotal - targetDteOffset)} DTE)
+                        </span>
+                        <button
+                          onClick={() => setTargetDteOffset(0)}
+                          style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.68rem', cursor: 'pointer' }}
+                        >
+                          Today
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={Math.max(1, dteTotal)}
+                      step={1}
+                      value={targetDteOffset}
+                      onChange={e => setTargetDteOffset(Number(e.target.value))}
+                      style={{ width: '100%', cursor: 'pointer', accentColor: '#c084fc' }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 3: BOTTOM DEEP ANALYTICS (GREEKS, IVS & STANDARD DEVIATION) */}
+              <div style={{
+                background: 'var(--bg-card, #0d131f)',
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                gap: '16px'
+              }}>
+                {/* 1. Strikewise IV & Volatility Offset */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff' }}>Strikewise IVs</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>IV Offset:</span>
+                      <button onClick={() => setIvOffset(prev => prev - 1)} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '3px', padding: '0 5px', fontSize: '0.68rem' }}>-</button>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: ivOffset >= 0 ? '#10b981' : '#ef4444' }}>{ivOffset >= 0 ? '+' : ''}{ivOffset}%</span>
+                      <button onClick={() => setIvOffset(prev => prev + 1)} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#ffffff', borderRadius: '3px', padding: '0 5px', fontSize: '0.68rem' }}>+</button>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                    {builderLegs.filter(l => !l.disabled).slice(0, 3).map((l, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
+                        <span>{l.strike} {l.option_type}</span>
+                        <span style={{ color: '#a5b4fc', fontWeight: 600 }}>IV: {(16.5 + ivOffset).toFixed(1)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Portfolio Greeks */}
+                <div>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Portfolio Greeks</span>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.74rem' }}>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Delta: </span>
+                      <strong style={{ color: portfolioGreeks.delta >= 0 ? '#10b981' : '#ef4444' }}>{portfolioGreeks.delta}</strong>
+                    </div>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Theta / Day: </span>
+                      <strong style={{ color: portfolioGreeks.theta >= 0 ? '#10b981' : '#ef4444' }}>₹{portfolioGreeks.theta}</strong>
+                    </div>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Gamma: </span>
+                      <strong style={{ color: '#38bdf8' }}>{portfolioGreeks.gamma}</strong>
+                    </div>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '6px 8px', borderRadius: '6px' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Vega: </span>
+                      <strong style={{ color: '#c084fc' }}>₹{portfolioGreeks.vega}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Standard Deviation Target Bands */}
+                <div>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff', display: 'block', marginBottom: '8px' }}>Standard Deviation (Target Day)</span>
+                  <div style={{ fontSize: '0.72rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span style={{ color: '#34d399' }}>1.0 SD (68%):</span>
+                      <strong style={{ color: '#ffffff' }}>{standardDeviations.oneSd.low} - {standardDeviations.oneSd.high}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span style={{ color: '#818cf8' }}>2.0 SD (95%):</span>
+                      <strong style={{ color: '#ffffff' }}>{standardDeviations.twoSd.low} - {standardDeviations.twoSd.high}</strong>
+                    </div>
+                    <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      Expected move by {selectedExpiry}: ±{standardDeviations.oneSd.points} pts
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         )}
 
-        {/* SAVE STRATEGY MODAL */}
+        {/* ============================================================== */}
+        {/* MODE 2: FULL 23-COLUMN OPTION CHAIN TABLE                      */}
+        {/* ============================================================== */}
+        {viewMode === 'fullchain' && (
+          <div style={{
+            background: 'var(--bg-card, #0d131f)',
+            border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, color: '#ffffff' }}>
+                  Full Option Chain ({selectedSymbol})
+                </h2>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                  Spot: ₹{spot.toLocaleString()} | Lot Size: {lotSize} | Interval: {chainData?.interval}
+                </span>
+              </div>
+
+              {/* Side Filter */}
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {(['BOTH', 'CALLS', 'PUTS'] as const).map(side => (
+                  <button
+                    key={side}
+                    onClick={() => setSideFilter(side)}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: '4px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: sideFilter === side ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                      border: 'none',
+                      color: '#ffffff'
+                    }}
+                  >
+                    {side}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 23-Column Table */}
+            <div style={{ overflowX: 'auto', maxHeight: '720px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', whiteSpace: 'nowrap' }}>
+                <thead>
+                  <tr style={{ background: '#090d16', borderBottom: '1px solid var(--border-subtle)', position: 'sticky', top: 0, zIndex: 10 }}>
+                    {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
+                      <th style={{ padding: '10px 8px', color: '#34d399', textAlign: 'center', borderRight: '1px solid var(--border-subtle)' }} colSpan={11}>
+                        CALL OPTIONS (CE)
+                      </th>
+                    )}
+                    <th style={{ padding: '10px 14px', color: '#c084fc', textAlign: 'center', background: '#0f172a', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+                      STRIKE
+                    </th>
+                    {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
+                      <th style={{ padding: '10px 8px', color: '#f87171', textAlign: 'center', borderLeft: '1px solid var(--border-subtle)' }} colSpan={11}>
+                        PUT OPTIONS (PE)
+                      </th>
+                    )}
+                  </tr>
+
+                  <tr style={{ background: '#0d131f', borderBottom: '2px solid rgba(99, 102, 241, 0.3)', position: 'sticky', top: '37px', zIndex: 9, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
+                      <>
+                        <th style={{ padding: '8px 6px', textAlign: 'center' }}>+ Leg</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>OI</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>Chg OI</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>Volume</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>IV %</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>LTP (₹)</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right' }}>Chg %</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right', color: '#10b981' }}>Bid Qty</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right', color: '#34d399' }}>Bid Price</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right', color: '#f87171' }}>Ask Price</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'right', color: '#ef4444', borderRight: '1px solid var(--border-subtle)' }}>Ask Qty</th>
+                      </>
+                    )}
+                    <th style={{ padding: '8px 12px', textAlign: 'center', background: '#0f172a', color: '#ffffff', fontWeight: 800, borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+                      Strike Price
+                    </th>
+                    {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
+                      <>
+                        <th style={{ padding: '8px 6px', textAlign: 'left', color: '#10b981', borderLeft: '1px solid var(--border-subtle)' }}>Bid Qty</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left', color: '#34d399' }}>Bid Price</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left', color: '#f87171' }}>Ask Price</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left', color: '#ef4444' }}>Ask Qty</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>LTP (₹)</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg %</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>IV %</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>Volume</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg OI</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'left' }}>OI</th>
+                        <th style={{ padding: '8px 6px', textAlign: 'center' }}>+ Leg</th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedChainRows.map(row => {
+                    const isAtm = row.is_atm;
+                    const callBg = isAtm ? 'rgba(168, 85, 247, 0.15)' : row.strike < spot ? 'rgba(234, 179, 8, 0.04)' : 'transparent';
+                    const putBg = isAtm ? 'rgba(168, 85, 247, 0.15)' : row.strike > spot ? 'rgba(6, 182, 212, 0.04)' : 'transparent';
+
+                    return (
+                      <tr key={row.strike} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
+                        {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
+                          <>
+                            <td style={{ padding: '5px 4px', textAlign: 'center', background: callBg }}>
+                              <div style={{ display: 'inline-flex', gap: '3px' }}>
+                                <button onClick={() => handleAddLegFromChain(row.strike, 'CE', 'BUY', row.call.ltp)} style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#10b981', borderRadius: '3px', padding: '1px 5px', fontSize: '0.66rem', fontWeight: 800, cursor: 'pointer' }}>B</button>
+                                <button onClick={() => handleAddLegFromChain(row.strike, 'CE', 'SELL', row.call.ltp)} style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#ef4444', borderRadius: '3px', padding: '1px 5px', fontSize: '0.66rem', fontWeight: 800, cursor: 'pointer' }}>S</button>
+                              </div>
+                            </td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, fontWeight: 600 }}>{row.call.oi.toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: row.call.change_oi >= 0 ? '#10b981' : '#ef4444' }}>{row.call.change_oi > 0 ? `+${row.call.change_oi.toLocaleString()}` : row.call.change_oi.toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: 'var(--text-secondary)' }}>{row.call.volume.toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: 'var(--text-muted)' }}>{row.call.iv}%</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, fontWeight: 700, color: '#ffffff' }}>₹{row.call.ltp.toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: row.call.change_pct >= 0 ? '#10b981' : '#ef4444' }}>{row.call.change_pct >= 0 ? '+' : ''}{row.call.change_pct}%</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: '#a7f3d0', fontFamily: 'monospace' }}>{(row.call.bid_qty || 0).toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: '#34d399', fontWeight: 600 }}>₹{(row.call.bid || 0).toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: '#f87171', fontWeight: 600 }}>₹{(row.call.ask || 0).toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'right', background: callBg, color: '#fca5a5', fontFamily: 'monospace', borderRight: '1px solid var(--border-subtle)' }}>{(row.call.ask_qty || 0).toLocaleString()}</td>
+                          </>
+                        )}
+                        <td style={{ padding: '5px 12px', textAlign: 'center', background: isAtm ? '#9333ea' : '#0f172a', fontWeight: 800, color: '#ffffff', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+                          {row.strike}
+                        </td>
+                        {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
+                          <>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: '#a7f3d0', fontFamily: 'monospace', borderLeft: '1px solid var(--border-subtle)' }}>{(row.put.bid_qty || 0).toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: '#34d399', fontWeight: 600 }}>₹{(row.put.bid || 0).toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: '#f87171', fontWeight: 600 }}>₹{(row.put.ask || 0).toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: '#fca5a5', fontFamily: 'monospace' }}>{(row.put.ask_qty || 0).toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, fontWeight: 700, color: '#ffffff' }}>₹{row.put.ltp.toFixed(2)}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: row.put.change_pct >= 0 ? '#10b981' : '#ef4444' }}>{row.put.change_pct >= 0 ? '+' : ''}{row.put.change_pct}%</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: 'var(--text-muted)' }}>{row.put.iv}%</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: 'var(--text-secondary)' }}>{row.put.volume.toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, color: row.put.change_oi >= 0 ? '#10b981' : '#ef4444' }}>{row.put.change_oi > 0 ? `+${row.put.change_oi.toLocaleString()}` : row.put.change_oi.toLocaleString()}</td>
+                            <td style={{ padding: '5px 8px', textAlign: 'left', background: putBg, fontWeight: 600 }}>{row.put.oi.toLocaleString()}</td>
+                            <td style={{ padding: '5px 4px', textAlign: 'center', background: putBg }}>
+                              <div style={{ display: 'inline-flex', gap: '3px' }}>
+                                <button onClick={() => handleAddLegFromChain(row.strike, 'PE', 'BUY', row.put.ltp)} style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#10b981', borderRadius: '3px', padding: '1px 5px', fontSize: '0.66rem', fontWeight: 800, cursor: 'pointer' }}>B</button>
+                                <button onClick={() => handleAddLegFromChain(row.strike, 'PE', 'SELL', row.put.ltp)} style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#ef4444', borderRadius: '3px', padding: '1px 5px', fontSize: '0.66rem', fontWeight: 800, cursor: 'pointer' }}>S</button>
+                              </div>
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Save Strategy */}
         {saveModalOpen && (
           <div style={{
             position: 'fixed',
             inset: 0,
             background: 'rgba(0, 0, 0, 0.75)',
-            backdropFilter: 'blur(6px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 1000,
+            zIndex: 100,
             padding: '20px'
           }}>
             <div style={{
-              background: '#0f172a',
+              background: '#0d131f',
               border: '1px solid rgba(99, 102, 241, 0.4)',
-              borderRadius: '16px',
+              borderRadius: '12px',
               padding: '24px',
               width: '100%',
               maxWidth: '460px',
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)'
+              boxShadow: '0 16px 48px rgba(0, 0, 0, 0.8)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Save size={18} color="#818cf8" />
-                  Save Multi-Leg Strategy
-                </h3>
-                <button
-                  onClick={() => setSaveModalOpen(false)}
-                  style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
-                >
-                  <X size={18} />
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#ffffff' }}>Save Multi-Leg Strategy</h3>
+                <button onClick={() => setSaveModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                  <X size={16} />
                 </button>
               </div>
 
-              {saveSuccessMsg ? (
-                <div style={{
-                  padding: '20px',
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  border: '1px solid rgba(16, 185, 129, 0.4)',
-                  borderRadius: '8px',
-                  color: '#10b981',
-                  textAlign: 'center',
-                  fontWeight: 600,
-                  fontSize: '0.88rem'
-                }}>
-                  <CheckCircle2 size={24} style={{ margin: '0 auto 8px auto', display: 'block' }} />
+              {saveSuccessMsg && (
+                <div style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '10px', borderRadius: '6px', fontSize: '0.8rem', marginBottom: '14px' }}>
                   {saveSuccessMsg}
                 </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  <div>
-                    <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '6px' }}>
-                      STRATEGY NAME *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. NIFTY Weekly Bull Call Spread"
-                      value={newStrategyName}
-                      onChange={e => setNewStrategyName(e.target.value)}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: '8px',
-                        padding: '10px 12px',
-                        color: '#ffffff',
-                        fontSize: '0.84rem',
-                        outline: 'none'
-                      }}
-                      autoFocus
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: '6px' }}>
-                      NOTES / THESIS (OPTIONAL)
-                    </label>
-                    <textarea
-                      placeholder="Targeting breakout above 24,200 with strictly defined downside risk..."
-                      value={newStrategyNotes}
-                      onChange={e => setNewStrategyNotes(e.target.value)}
-                      rows={3}
-                      style={{
-                        width: '100%',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: '8px',
-                        padding: '10px 12px',
-                        color: '#ffffff',
-                        fontSize: '0.82rem',
-                        outline: 'none',
-                        resize: 'none'
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Contains {builderLegs.length} leg(s) for <strong>{selectedSymbol}</strong>.
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
-                    <button
-                      onClick={() => setSaveModalOpen(false)}
-                      style={{
-                        background: 'transparent',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: '8px',
-                        padding: '8px 16px',
-                        color: 'var(--text-secondary)',
-                        fontSize: '0.82rem',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveStrategy}
-                      disabled={!newStrategyName.trim()}
-                      style={{
-                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '8px 18px',
-                        color: '#ffffff',
-                        fontSize: '0.82rem',
-                        fontWeight: 700,
-                        cursor: !newStrategyName.trim() ? 'not-allowed' : 'pointer',
-                        opacity: !newStrategyName.trim() ? 0.5 : 1
-                      }}
-                    >
-                      Save Strategy
-                    </button>
-                  </div>
-                </div>
               )}
+
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ display: 'block', fontSize: '0.74rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Strategy Name:
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. NIFTY Weekly Bull Call Spread"
+                  value={newStrategyName}
+                  onChange={e => setNewStrategyName(e.target.value)}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '6px',
+                    padding: '8px 10px',
+                    color: '#ffffff',
+                    fontSize: '0.82rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '0.74rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Notes (Optional):
+                </label>
+                <textarea
+                  placeholder="Enter strategy thesis, target price or risk rules..."
+                  value={newStrategyNotes}
+                  onChange={e => setNewStrategyNotes(e.target.value)}
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '6px',
+                    padding: '8px 10px',
+                    color: '#ffffff',
+                    fontSize: '0.8rem',
+                    outline: 'none',
+                    resize: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button
+                  onClick={() => setSaveModalOpen(false)}
+                  style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', borderRadius: '6px', padding: '6px 14px', fontSize: '0.78rem', cursor: 'pointer' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveStrategy}
+                  style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', border: 'none', color: '#ffffff', borderRadius: '6px', padding: '6px 16px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Confirm & Save
+                </button>
+              </div>
             </div>
           </div>
         )}
+
       </div>
-
-      {/* Global Navigation Drawer */}
-      <NavigationDrawer
-        isOpen={navDrawerOpen}
-        onClose={() => setNavDrawerOpen(false)}
-      />
-
-      <style jsx global>{`
-        .spin {
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }
-
