@@ -101,7 +101,9 @@ interface OptionStrikeRow {
     ltp: number;
     change_pct: number;
     bid: number;
+    bid_qty?: number;
     ask: number;
+    ask_qty?: number;
     delta: number;
     theta: number;
     gamma: number;
@@ -117,7 +119,9 @@ interface OptionStrikeRow {
     ltp: number;
     change_pct: number;
     bid: number;
+    bid_qty?: number;
     ask: number;
+    ask_qty?: number;
     delta: number;
     theta: number;
     gamma: number;
@@ -1287,7 +1291,7 @@ export default function OptionChainPage() {
                       {/* CALL SIDE HEADER */}
                       {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
                         <>
-                          <th style={{ padding: '10px 8px', color: '#34d399', textAlign: 'center', borderRight: '1px solid var(--border-subtle)' }} colSpan={8}>
+                          <th style={{ padding: '10px 8px', color: '#34d399', textAlign: 'center', borderRight: '1px solid var(--border-subtle)' }} colSpan={11}>
                             CALL OPTIONS (CE)
                           </th>
                         </>
@@ -1301,7 +1305,7 @@ export default function OptionChainPage() {
                       {/* PUT SIDE HEADER */}
                       {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
                         <>
-                          <th style={{ padding: '10px 8px', color: '#f87171', textAlign: 'center', borderLeft: '1px solid var(--border-subtle)' }} colSpan={8}>
+                          <th style={{ padding: '10px 8px', color: '#f87171', textAlign: 'center', borderLeft: '1px solid var(--border-subtle)' }} colSpan={11}>
                             PUT OPTIONS (PE)
                           </th>
                         </>
@@ -1326,7 +1330,10 @@ export default function OptionChainPage() {
                             LTP (₹)
                           </th>
                           <th style={{ padding: '8px 6px', textAlign: 'right' }}>Chg %</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'right', borderRight: '1px solid var(--border-subtle)' }}>Bid / Ask</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#10b981' }}>Bid Qty</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#34d399' }}>Bid Price</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#f87171' }}>Ask Price</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'right', color: '#ef4444', borderRight: '1px solid var(--border-subtle)' }}>Ask Qty</th>
                         </>
                       )}
 
@@ -1338,11 +1345,14 @@ export default function OptionChainPage() {
                       {/* PUT SUBHEADERS */}
                       {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
                         <>
-                          <th style={{ padding: '8px 6px', textAlign: 'left', borderLeft: '1px solid var(--border-subtle)' }}>Bid / Ask</th>
-                          <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg %</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#10b981', borderLeft: '1px solid var(--border-subtle)' }}>Bid Qty</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#34d399' }}>Bid Price</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#f87171' }}>Ask Price</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'left', color: '#ef4444' }}>Ask Qty</th>
                           <th style={{ padding: '8px 6px', textAlign: 'left', cursor: 'pointer' }} onClick={() => toggleSort('put_ltp')}>
                             LTP (₹)
                           </th>
+                          <th style={{ padding: '8px 6px', textAlign: 'left' }}>Chg %</th>
                           <th style={{ padding: '8px 6px', textAlign: 'left' }}>IV %</th>
                           <th style={{ padding: '8px 6px', textAlign: 'left', cursor: 'pointer' }} onClick={() => toggleSort('put_vol')}>
                             Volume
@@ -1480,9 +1490,24 @@ export default function OptionChainPage() {
                                 {row.call.change_pct >= 0 ? '+' : ''}{row.call.change_pct}%
                               </td>
 
-                              {/* Call Bid / Ask */}
-                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: 'var(--text-muted)', borderRight: '1px solid var(--border-subtle)', fontSize: '0.72rem' }}>
-                                {row.call.bid.toFixed(2)} / {row.call.ask.toFixed(2)}
+                              {/* Call Bid Qty */}
+                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#a7f3d0', fontSize: '0.74rem', fontFamily: 'monospace' }}>
+                                {(row.call.bid_qty ?? 0).toLocaleString()}
+                              </td>
+
+                              {/* Call Bid Price */}
+                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#34d399', fontWeight: 600, fontSize: '0.74rem' }}>
+                                ₹{(row.call.bid ?? 0).toFixed(2)}
+                              </td>
+
+                              {/* Call Ask Price */}
+                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#f87171', fontWeight: 600, fontSize: '0.74rem' }}>
+                                ₹{(row.call.ask ?? 0).toFixed(2)}
+                              </td>
+
+                              {/* Call Ask Qty */}
+                              <td style={{ padding: '6px 8px', textAlign: 'right', background: callBg, color: '#fca5a5', borderRight: '1px solid var(--border-subtle)', fontSize: '0.74rem', fontFamily: 'monospace' }}>
+                                {(row.call.ask_qty ?? 0).toLocaleString()}
                               </td>
                             </>
                           )}
@@ -1520,9 +1545,24 @@ export default function OptionChainPage() {
                           {/* PUT SIDE CELLS */}
                           {(sideFilter === 'BOTH' || sideFilter === 'PUTS') && (
                             <>
-                              {/* Put Bid / Ask */}
-                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: 'var(--text-muted)', borderLeft: '1px solid var(--border-subtle)', fontSize: '0.72rem' }}>
-                                {row.put.bid.toFixed(2)} / {row.put.ask.toFixed(2)}
+                              {/* Put Bid Qty */}
+                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#a7f3d0', borderLeft: '1px solid var(--border-subtle)', fontSize: '0.74rem', fontFamily: 'monospace' }}>
+                                {(row.put.bid_qty ?? 0).toLocaleString()}
+                              </td>
+
+                              {/* Put Bid Price */}
+                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#34d399', fontWeight: 600, fontSize: '0.74rem' }}>
+                                ₹{(row.put.bid ?? 0).toFixed(2)}
+                              </td>
+
+                              {/* Put Ask Price */}
+                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#f87171', fontWeight: 600, fontSize: '0.74rem' }}>
+                                ₹{(row.put.ask ?? 0).toFixed(2)}
+                              </td>
+
+                              {/* Put Ask Qty */}
+                              <td style={{ padding: '6px 8px', textAlign: 'left', background: putBg, color: '#fca5a5', fontSize: '0.74rem', fontFamily: 'monospace' }}>
+                                {(row.put.ask_qty ?? 0).toLocaleString()}
                               </td>
 
                               {/* Put Change % */}

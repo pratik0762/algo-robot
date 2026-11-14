@@ -777,7 +777,9 @@ export default function StrategyPage() {
             borderBottom: '1px solid var(--border-subtle)',
             marginBottom: '24px',
             paddingBottom: '12px',
-            width: '100%'
+            width: '100%',
+            overflowX: 'auto',
+            scrollbarWidth: 'thin'
           }}
         >
           <button
