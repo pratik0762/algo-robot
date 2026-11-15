@@ -11,11 +11,14 @@ from typing import Dict, List, Any, Optional
 try:
     from app.companies_data import NIFTY_50_REGISTRY, get_all_companies_summary
     from app.tick_engine import tick_engine
-    from app.trade_signals_engine import SIGNAL_UNIVERSE
-except ImportError:
-    from backend.app.companies_data import NIFTY_50_REGISTRY, get_all_companies_summary
-    from backend.app.tick_engine import tick_engine
     try:
+        from app.trade_signals_engine import SIGNAL_UNIVERSE
+    except ImportError:
+        from app.trade_signals_engine import COMPANIES_UNIVERSE as SIGNAL_UNIVERSE
+except ImportError:
+    try:
+        from backend.app.companies_data import NIFTY_50_REGISTRY, get_all_companies_summary
+        from backend.app.tick_engine import tick_engine
         from backend.app.trade_signals_engine import SIGNAL_UNIVERSE
     except ImportError:
         SIGNAL_UNIVERSE = []

@@ -140,7 +140,7 @@ interface IndexContributor {
 }
 
 // -----------------------------------------------------------------------------
-// SQUARIFIED TREEMAP ALGORITHM (PURE REACT/CANVAS LOGIC)
+// TRUE SQUARIFIED TREEMAP ALGORITHM (BRULS-HUIZING-VAN WIJK)
 // -----------------------------------------------------------------------------
 interface RectBox {
   x: number;
@@ -150,84 +150,212 @@ interface RectBox {
   tile: HeatmapTile;
 }
 
-function layoutTreemapRow(
-  row: HeatmapTile[],
+interface SectorCluster {
+  name: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  avgChange: number;
+  boxes: RectBox[];
+}
+
+function squarifyAlgorithm<T extends { size_weight: number }>(
+  items: T[],
   x: number,
   y: number,
   w: number,
-  h: number,
-  totalRowWeight: number,
-  horizontal: boolean
-): RectBox[] {
-  const boxes: RectBox[] = [];
-  let offset = 0;
+  h: number
+): { item: T; x: number; y: number; w: number; h: number }[] {
+  if (!items || items.length === 0 || w <= 0 || h <= 0) return [];
 
-  for (const item of row) {
-    const fraction = totalRowWeight > 0 ? (item.size_weight / totalRowWeight) : (1 / row.length);
-    if (horizontal) {
-      const boxW = Math.max(1, w * fraction);
-      boxes.push({ x: x + offset, y: y, w: boxW, h: Math.max(1, h), tile: item });
-      offset += boxW;
+  // Sort descending by weight
+  const sorted = [...items].sort((a, b) => b.size_weight - a.size_weight);
+  const totalWeight = sorted.reduce((acc, it) => acc + Math.max(1, it.size_weight), 0);
+  if (totalWeight <= 0) return [];
+
+  const totalArea = w * h;
+  const normalized = sorted.map(it => ({
+    item: it,
+    area: (Math.max(1, it.size_weight) * totalArea) / totalWeight
+  }));
+
+  const results: { item: T; x: number; y: number; w: number; h: number }[] = [];
+
+  function worst(row: typeof normalized, side: number): number {
+    const rSum = row.reduce((s, it) => s + it.area, 0);
+    if (rSum === 0 || side === 0) return 999999;
+    const sideSq = side * side;
+    const rSq = rSum * rSum;
+    let maxRatio = 0;
+    for (const r of row) {
+      if (r.area <= 0) continue;
+      const ratio = Math.max((sideSq * r.area) / rSq, rSq / (sideSq * r.area));
+      if (ratio > maxRatio) maxRatio = ratio;
+    }
+    return maxRatio;
+  }
+
+  function layoutRow(
+    row: typeof normalized,
+    rx: number,
+    ry: number,
+    rw: number,
+    rh: number
+  ) {
+    const rSum = row.reduce((s, it) => s + it.area, 0);
+    if (rSum === 0) return;
+    const isHoriz = rw >= rh;
+    if (isHoriz) {
+      const stripW = rSum / rh;
+      let curY = ry;
+      for (const r of row) {
+        const boxH = stripW > 0 ? r.area / stripW : 0;
+        results.push({ item: r.item, x: rx, y: curY, w: stripW, h: boxH });
+        curY += boxH;
+      }
     } else {
-      const boxH = Math.max(1, h * fraction);
-      boxes.push({ x: x, y: y + offset, w: Math.max(1, w), h: boxH, tile: item });
-      offset += boxH;
+      const stripH = rSum / rw;
+      let curX = rx;
+      for (const r of row) {
+        const boxW = stripH > 0 ? r.area / stripH : 0;
+        results.push({ item: r.item, x: curX, y: ry, w: boxW, h: stripH });
+        curX += boxW;
+      }
     }
   }
-  return boxes;
+
+  function recurse(
+    children: typeof normalized,
+    rx: number,
+    ry: number,
+    rw: number,
+    rh: number
+  ) {
+    if (!children || children.length === 0 || rw <= 0 || rh <= 0) return;
+    if (children.length === 1) {
+      results.push({ item: children[0].item, x: rx, y: ry, w: rw, h: rh });
+      return;
+    }
+
+    const side = Math.min(rw, rh);
+    const row = [children[0]];
+    let i = 1;
+    while (i < children.length) {
+      const cand = children[i];
+      if (worst([...row, cand], side) <= worst(row, side)) {
+        row.push(cand);
+        i++;
+      } else {
+        break;
+      }
+    }
+
+    layoutRow(row, rx, ry, rw, rh);
+    const rSum = row.reduce((s, it) => s + it.area, 0);
+    const isHoriz = rw >= rh;
+    if (isHoriz) {
+      const stripW = rh > 0 ? rSum / rh : 0;
+      recurse(children.slice(i), rx + stripW, ry, Math.max(0, rw - stripW), rh);
+    } else {
+      const stripH = rw > 0 ? rSum / rw : 0;
+      recurse(children.slice(i), rx, ry + stripH, rw, Math.max(0, rh - stripH));
+    }
+  }
+
+  recurse(normalized, x, y, w, h);
+  return results;
 }
 
-function computeSquarifiedTreemap(
+function computeSectorClusters(
   items: HeatmapTile[],
   containerWidth: number,
-  containerHeight: number
-): RectBox[] {
+  containerHeight: number,
+  isGroupedBySector: boolean
+): SectorCluster[] {
   if (!items || items.length === 0 || containerWidth <= 0 || containerHeight <= 0) return [];
 
-  const totalWeight = items.reduce((acc, it) => acc + Math.max(1, it.size_weight), 0);
-  const boxes: RectBox[] = [];
-
-  let curX = 0;
-  let curY = 0;
-  let curW = containerWidth;
-  let curH = containerHeight;
-
-  let remaining = [...items].sort((a, b) => b.size_weight - a.size_weight);
-
-  while (remaining.length > 0) {
-    const isHorizontal = curW >= curH;
-    const sideLen = isHorizontal ? curH : curW;
-
-    // Pick a chunk of items for this strip
-    const chunkSize = Math.min(remaining.length, Math.max(2, Math.round(remaining.length * 0.25)));
-    const chunk = remaining.slice(0, chunkSize);
-    remaining = remaining.slice(chunkSize);
-
-    const chunkWeight = chunk.reduce((acc, it) => acc + Math.max(1, it.size_weight), 0);
-    const chunkFraction = totalWeight > 0 ? (chunkWeight / totalWeight) : (chunk.length / items.length);
-
-    if (isHorizontal) {
-      const stripW = Math.max(1, curW * chunkFraction);
-      const rowBoxes = layoutTreemapRow(chunk, curX, curY, stripW, sideLen, chunkWeight, false);
-      boxes.push(...rowBoxes);
-      curX += stripW;
-      curW = Math.max(0, curW - stripW);
-    } else {
-      const stripH = Math.max(1, curH * chunkFraction);
-      const rowBoxes = layoutTreemapRow(chunk, curX, curY, sideLen, stripH, chunkWeight, true);
-      boxes.push(...rowBoxes);
-      curY += stripH;
-      curH = Math.max(0, curH - stripH);
-    }
-
-    if (curW <= 0 || curH <= 0) break;
+  if (!isGroupedBySector) {
+    const flatBoxes = squarifyAlgorithm(items, 0, 0, containerWidth, containerHeight);
+    return [{
+      name: 'ALL STOCKS',
+      x: 0,
+      y: 0,
+      w: containerWidth,
+      h: containerHeight,
+      avgChange: items.reduce((acc, it) => acc + it.percent_change, 0) / items.length,
+      boxes: flatBoxes.map(b => ({
+        x: Math.round(b.x),
+        y: Math.round(b.y),
+        w: Math.max(2, Math.round(b.w)),
+        h: Math.max(2, Math.round(b.h)),
+        tile: b.item
+      }))
+    }];
   }
 
-  return boxes;
+  // 1. Group by sector
+  const sectorMap: { [sec: string]: HeatmapTile[] } = {};
+  for (const it of items) {
+    const sec = it.sector || 'Other';
+    if (!sectorMap[sec]) sectorMap[sec] = [];
+    sectorMap[sec].push(it);
+  }
+
+  const sectorList = Object.entries(sectorMap).map(([secName, secItems]) => {
+    const totalW = secItems.reduce((acc, it) => acc + Math.max(1, it.size_weight), 0);
+    const avgChg = secItems.reduce((acc, it) => acc + it.percent_change, 0) / secItems.length;
+    return {
+      name: secName,
+      size_weight: totalW,
+      avgChange: avgChg,
+      stocks: secItems
+    };
+  });
+
+  // Sort sectors by total weight
+  sectorList.sort((a, b) => b.size_weight - a.size_weight);
+
+  // 2. Layout sector bounding boxes across the full container
+  const sectorBoxes = squarifyAlgorithm(sectorList, 0, 0, containerWidth, containerHeight);
+
+  const clusters: SectorCluster[] = [];
+
+  for (const secBox of sectorBoxes) {
+    const sec = secBox.item;
+    const headerHeight = secBox.h > 90 ? 24 : secBox.h > 50 ? 18 : 12;
+    const subX = secBox.x + 2;
+    const subY = secBox.y + headerHeight;
+    const subW = Math.max(4, secBox.w - 4);
+    const subH = Math.max(4, secBox.h - headerHeight - 2);
+
+    const stockBoxes = squarifyAlgorithm(sec.stocks, subX, subY, subW, subH);
+
+    clusters.push({
+      name: sec.name,
+      x: Math.round(secBox.x),
+      y: Math.round(secBox.y),
+      w: Math.max(4, Math.round(secBox.w)),
+      h: Math.max(4, Math.round(secBox.h)),
+      avgChange: sec.avgChange,
+      boxes: stockBoxes.map(b => ({
+        x: Math.round(b.x),
+        y: Math.round(b.y),
+        w: Math.max(2, Math.round(b.w)),
+        h: Math.max(2, Math.round(b.h)),
+        tile: b.item
+      }))
+    });
+  }
+
+  return clusters;
 }
+
 
 export default function MarketHeatmapPage() {
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
+  const [treemapDisplayMode, setTreemapDisplayMode] = useState<'treemap' | 'grid'>('treemap');
+  const [hoveredTile, setHoveredTile] = useState<{ tile: HeatmapTile; x: number; y: number } | null>(null);
 
   // Filter States
   const [exchange, setExchange] = useState<'ALL' | 'NSE' | 'BSE'>('ALL');
@@ -378,15 +506,18 @@ export default function MarketHeatmapPage() {
     return heatmapData.items;
   }, [heatmapData, showWatchlistOnly, watchlist]);
 
-  // Calculate Treemap Rectangles
-  const treemapRects = useMemo(() => {
+  // Calculate Sector Clusters and Squarified Treemap Boxes
+  const sectorClusters = useMemo(() => {
     if (!displayItems || displayItems.length === 0) return [];
-    return computeSquarifiedTreemap(
+    const containerW = Math.max(600, containerDimensions.width);
+    const containerH = Math.max(450, containerDimensions.height);
+    return computeSectorClusters(
       displayItems,
-      Math.max(600, containerDimensions.width - 20),
-      Math.max(400, containerDimensions.height - 20)
+      containerW,
+      containerH,
+      groupBy === 'sector'
     );
-  }, [displayItems, containerDimensions]);
+  }, [displayItems, containerDimensions, groupBy]);
 
   return (
     <div style={{
@@ -884,7 +1015,7 @@ export default function MarketHeatmapPage() {
             display: 'flex',
             flexDirection: 'column'
           }}>
-            {/* Color Legend & Scale Info */}
+            {/* View Mode Switcher & Scale Info Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem' }}>
                 <span style={{ color: 'var(--text-muted)', fontWeight: 700 }}>PERFORMANCE SCALE:</span>
@@ -897,128 +1028,344 @@ export default function MarketHeatmapPage() {
                 <span style={{ background: '#b91c1c', padding: '2px 8px', borderRadius: '4px', color: '#ffffff', fontWeight: 700 }}>&lt;-3%</span>
               </div>
 
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                Tile Size: <strong>{sizeBy.replace('_', ' ').toUpperCase()}</strong> • Grouping: <strong>{groupBy.toUpperCase()}</strong>
+              {/* View Switcher: Treemap vs Card Grid */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'inline-flex', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '6px', padding: '2px', border: '1px solid var(--border-subtle)' }}>
+                  <button
+                    onClick={() => setTreemapDisplayMode('treemap')}
+                    style={{
+                      background: treemapDisplayMode === 'treemap' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                      border: 'none',
+                      color: treemapDisplayMode === 'treemap' ? '#ffffff' : 'var(--text-secondary)',
+                      borderRadius: '4px',
+                      padding: '3px 10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Grid size={12} />
+                    Squarified Treemap
+                  </button>
+                  <button
+                    onClick={() => setTreemapDisplayMode('grid')}
+                    style={{
+                      background: treemapDisplayMode === 'grid' ? 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)' : 'transparent',
+                      border: 'none',
+                      color: treemapDisplayMode === 'grid' ? '#ffffff' : 'var(--text-secondary)',
+                      borderRadius: '4px',
+                      padding: '3px 10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Columns size={12} />
+                    Stock Cards Grid ({displayItems.length})
+                  </button>
+                </div>
+
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  Size: <strong>{sizeBy.replace('_', ' ').toUpperCase()}</strong> • Group: <strong>{groupBy.toUpperCase()}</strong>
+                </div>
               </div>
             </div>
 
-            {/* Treemap Canvas Container */}
-            <div
-              ref={treemapContainerRef}
-              style={{
-                flex: 1,
-                minHeight: isFullScreen ? 'calc(100vh - 180px)' : '680px',
-                position: 'relative',
-                background: 'rgba(5, 8, 17, 0.6)',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                border: '1px solid rgba(255, 255, 255, 0.05)'
-              }}
-            >
-              {isLoading && !heatmapData ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '400px' }}>
-                  <RefreshCw size={32} color="#06b6d4" className="spin" style={{ marginBottom: '12px' }} />
-                  <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>Rendering Real-Time Indian Equity Heatmap Tiles...</span>
-                </div>
-              ) : treemapRects.length === 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '400px' }}>
-                  <Info size={32} color="#94a3b8" style={{ marginBottom: '12px' }} />
-                  <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>No matching securities found for current filters.</span>
-                </div>
-              ) : (
-                treemapRects.map((box, idx) => {
-                  const t = box.tile;
+            {/* Main Content: Treemap Canvas OR Card Grid View */}
+            {treemapDisplayMode === 'grid' ? (
+              /* CARD GRID VIEW (Ultra-clean responsive trading cards) */
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+                gap: '12px',
+                maxHeight: isFullScreen ? 'calc(100vh - 220px)' : '720px',
+                overflowY: 'auto',
+                padding: '4px'
+              }}>
+                {displayItems.map((t: HeatmapTile) => {
                   const isPositive = t.percent_change >= 0;
                   const isWatched = watchlist.includes(t.symbol);
 
                   return (
                     <div
-                      key={`${t.symbol}-${idx}`}
+                      key={t.symbol}
                       onClick={() => {
                         setSelectedStock(t);
                         setStockDetailDrawerOpen(true);
                       }}
                       style={{
-                        position: 'absolute',
-                        left: `${box.x}px`,
-                        top: `${box.y}px`,
-                        width: `${box.w}px`,
-                        height: `${box.h}px`,
-                        background: t.color,
-                        boxSizing: 'border-box',
-                        border: '1px solid rgba(0, 0, 0, 0.35)',
+                        background: 'rgba(15, 23, 42, 0.85)',
+                        border: `1px solid ${isPositive ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)'}`,
+                        borderLeft: `4px solid ${isPositive ? '#10b981' : '#ef4444'}`,
+                        borderRadius: '8px',
+                        padding: '12px',
                         cursor: 'pointer',
-                        overflow: 'hidden',
-                        padding: box.w > 70 && box.h > 45 ? '6px 8px' : '2px 4px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
                         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                        boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.15)'
+                        position: 'relative'
                       }}
                       onMouseEnter={e => {
-                        (e.currentTarget as HTMLElement).style.zIndex = '20';
-                        (e.currentTarget as HTMLElement).style.outline = '2px solid #ffffff';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
                       }}
                       onMouseLeave={e => {
-                        (e.currentTarget as HTMLElement).style.zIndex = '1';
-                        (e.currentTarget as HTMLElement).style.outline = 'none';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
                       }}
-                      title={`${t.symbol} (${t.name})\nPrice: ₹${t.price} (${t.percent_change >= 0 ? '+' : ''}${t.percent_change}%)\nSector: ${t.sector}\nMcap: ₹${t.market_cap_cr.toLocaleString()} Cr\nVolume: ${t.volume.toLocaleString()}`}
                     >
-                      {/* Top Row: Symbol & Watchlist Star */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                        <span style={{
-                          fontWeight: 900,
-                          fontSize: box.w > 120 ? '0.90rem' : box.w > 70 ? '0.74rem' : '0.62rem',
-                          color: '#ffffff',
-                          textShadow: '0 1px 3px rgba(0, 0, 0, 0.7)',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          {t.symbol}
-                        </span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {t.symbol}
+                            {isWatched && <Star size={11} fill="#fbbf24" color="#fbbf24" />}
+                          </div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '110px' }}>
+                            {t.name}
+                          </div>
+                        </div>
 
-                        {box.w > 90 && box.h > 50 && isWatched && (
-                          <Star size={11} fill="#fbbf24" color="#fbbf24" />
-                        )}
+                        <span style={{
+                          background: isPositive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                          color: isPositive ? '#34d399' : '#f87171',
+                          border: `1px solid ${isPositive ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                          borderRadius: '4px',
+                          padding: '2px 8px',
+                          fontSize: '0.78rem',
+                          fontWeight: 800
+                        }}>
+                          {isPositive ? '+' : ''}{t.percent_change.toFixed(2)}%
+                        </span>
                       </div>
 
-                      {/* Middle: Metric Display (% Change) */}
-                      {box.h > 35 && (
-                        <div style={{
-                          fontSize: box.w > 110 ? '0.88rem' : box.w > 65 ? '0.72rem' : '0.60rem',
-                          fontWeight: 900,
-                          color: '#ffffff',
-                          textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
-                          lineHeight: 1.1
-                        }}>
-                          {t.metric_label}
-                        </div>
-                      )}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>
+                        <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#ffffff' }}>₹{t.price.toLocaleString()}</span>
+                        <span style={{ fontSize: '0.70rem', color: 'var(--text-secondary)' }}>₹{Math.round(t.market_cap_cr).toLocaleString()} Cr</span>
+                      </div>
 
-                      {/* Bottom Row: Price & Mcap/Sector */}
-                      {box.w > 80 && box.h > 55 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', paddingTop: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.68rem' }}>
+                        <span style={{ color: '#38bdf8', fontWeight: 600 }}>{t.sector}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Vol: {(t.volume / 100000).toFixed(1)}L</span>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
+                        <Link
+                          href={`/chart?symbol=${t.symbol}`}
+                          onClick={e => e.stopPropagation()}
+                          style={{
+                            flex: 1,
+                            background: 'rgba(56, 189, 248, 0.1)',
+                            border: '1px solid rgba(56, 189, 248, 0.3)',
+                            borderRadius: '4px',
+                            color: '#38bdf8',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            textAlign: 'center',
+                            padding: '3px',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          Chart
+                        </Link>
+                        <Link
+                          href={`/option-chain?symbol=${t.symbol}`}
+                          onClick={e => e.stopPropagation()}
+                          style={{
+                            flex: 1,
+                            background: 'rgba(99, 102, 241, 0.1)',
+                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                            borderRadius: '4px',
+                            color: '#818cf8',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            textAlign: 'center',
+                            padding: '3px',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          Options
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* SQUARIFIED TREEMAP CANVAS (Proper geometry, aspect ratios ~1.2, zero empty space) */
+              <div
+                ref={treemapContainerRef}
+                style={{
+                  flex: 1,
+                  minHeight: isFullScreen ? 'calc(100vh - 180px)' : '680px',
+                  position: 'relative',
+                  background: 'rgba(5, 8, 17, 0.95)',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}
+              >
+                {isLoading && !heatmapData ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '400px' }}>
+                    <RefreshCw size={32} color="#06b6d4" className="spin" style={{ marginBottom: '12px' }} />
+                    <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>Rendering Real-Time Indian Equity Heatmap Tiles...</span>
+                  </div>
+                ) : sectorClusters.length === 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '400px' }}>
+                    <Info size={32} color="#94a3b8" style={{ marginBottom: '12px' }} />
+                    <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>No matching securities found for current filters.</span>
+                  </div>
+                ) : (
+                  sectorClusters.map((cluster, cIdx) => (
+                    <div
+                      key={`cluster_${cluster.name}_${cIdx}`}
+                      style={{
+                        position: 'absolute',
+                        left: `${cluster.x}px`,
+                        top: `${cluster.y}px`,
+                        width: `${cluster.w}px`,
+                        height: `${cluster.h}px`,
+                        boxSizing: 'border-box',
+                        border: groupBy === 'sector' ? '1px solid rgba(255, 255, 255, 0.15)' : 'none',
+                        background: 'rgba(0, 0, 0, 0.2)',
+                        overflow: 'hidden'
+                      }}
+                    >
+                      {/* Sector Header Banner (Only when grouped by sector) */}
+                      {groupBy === 'sector' && cluster.h > 45 && (
                         <div style={{
+                          height: cluster.h > 90 ? '24px' : '18px',
+                          background: 'rgba(15, 23, 42, 0.92)',
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          fontSize: box.w > 100 ? '0.68rem' : '0.58rem',
-                          color: 'rgba(255, 255, 255, 0.85)',
-                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.7)'
+                          padding: '0 8px',
+                          fontSize: cluster.w > 140 ? '0.68rem' : '0.58rem',
+                          fontWeight: 800,
+                          color: '#ffffff',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap'
                         }}>
-                          <span>₹{t.price.toLocaleString()}</span>
-                          {box.w > 120 && (
-                            <span style={{ opacity: 0.85 }}>₹{Math.round(t.market_cap_cr / 1000)}k Cr</span>
-                          )}
+                          <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{cluster.name.toUpperCase()}</span>
+                          <span style={{
+                            color: cluster.avgChange >= 0 ? '#34d399' : '#f87171',
+                            marginLeft: '4px'
+                          }}>
+                            {cluster.avgChange >= 0 ? '+' : ''}{cluster.avgChange.toFixed(2)}%
+                          </span>
                         </div>
                       )}
+
+                      {/* Stock Tiles in this Sector */}
+                      {cluster.boxes.map((box, bIdx) => {
+                        const t = box.tile;
+                        const isPositive = t.percent_change >= 0;
+                        const isWatched = watchlist.includes(t.symbol);
+
+                        // Relative coordinates inside the cluster
+                        const relX = box.x - cluster.x;
+                        const relY = box.y - cluster.y;
+
+                        // Font sizing according to tile size
+                        const isLarge = box.w >= 100 && box.h >= 60;
+                        const isMedium = box.w >= 65 && box.h >= 40;
+
+                        return (
+                          <div
+                            key={`${t.symbol}-${bIdx}`}
+                            onClick={() => {
+                              setSelectedStock(t);
+                              setStockDetailDrawerOpen(true);
+                            }}
+                            onMouseEnter={e => {
+                              (e.currentTarget as HTMLElement).style.zIndex = '30';
+                              (e.currentTarget as HTMLElement).style.outline = '2px solid #ffffff';
+                              setHoveredTile({ tile: t, x: box.x + box.w / 2, y: box.y });
+                            }}
+                            onMouseLeave={e => {
+                              (e.currentTarget as HTMLElement).style.zIndex = '1';
+                              (e.currentTarget as HTMLElement).style.outline = 'none';
+                              setHoveredTile(null);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              left: `${relX}px`,
+                              top: `${relY}px`,
+                              width: `${box.w}px`,
+                              height: `${box.h}px`,
+                              background: t.color,
+                              boxSizing: 'border-box',
+                              border: '1px solid rgba(0, 0, 0, 0.4)',
+                              cursor: 'pointer',
+                              overflow: 'hidden',
+                              padding: isLarge ? '6px 8px' : isMedium ? '4px 6px' : '2px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: isMedium ? 'space-between' : 'center',
+                              alignItems: isMedium ? 'stretch' : 'center',
+                              boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.25)',
+                              transition: 'outline 0.1s ease'
+                            }}
+                          >
+                            {/* Top: Symbol & Star */}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: isMedium ? 'space-between' : 'center', width: '100%' }}>
+                              <span style={{
+                                fontWeight: 900,
+                                fontSize: isLarge ? '0.94rem' : isMedium ? '0.78rem' : '0.64rem',
+                                color: '#ffffff',
+                                textShadow: '0 1px 3px rgba(0, 0, 0, 0.85)',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                              }}>
+                                {t.symbol}
+                              </span>
+
+                              {isLarge && isWatched && (
+                                <Star size={11} fill="#fbbf24" color="#fbbf24" />
+                              )}
+                            </div>
+
+                            {/* Middle: % Change */}
+                            <div style={{
+                              fontSize: isLarge ? '1.05rem' : isMedium ? '0.82rem' : '0.66rem',
+                              fontWeight: 900,
+                              color: '#ffffff',
+                              textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
+                              textAlign: isMedium ? 'left' : 'center',
+                              lineHeight: 1.1
+                            }}>
+                              {isPositive ? '+' : ''}{t.percent_change.toFixed(2)}%
+                            </div>
+
+                            {/* Bottom: Price & Mcap */}
+                            {isMedium && (
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                fontSize: isLarge ? '0.68rem' : '0.58rem',
+                                color: 'rgba(255, 255, 255, 0.9)',
+                                textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)'
+                              }}>
+                                <span style={{ fontWeight: 700 }}>₹{t.price.toLocaleString()}</span>
+                                {isLarge && (
+                                  <span style={{ opacity: 0.85 }}>₹{Math.round(t.market_cap_cr / 1000)}k Cr</span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })
-              )}
-            </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         )}
 

@@ -72,6 +72,7 @@ COMPANIES_UNIVERSE = [
     {"symbol": "ANGELONE", "name": "Angel One Limited", "sector": "Fintech & Broking", "cap": "SMALL_CAP", "mcap_cr": 13400, "base_price": 345.15},
     {"symbol": "CLEAN", "name": "Clean Science and Technology", "sector": "Specialty Chemicals", "cap": "SMALL_CAP", "mcap_cr": 12100, "base_price": 691.60}
 ]
+SIGNAL_UNIVERSE = COMPANIES_UNIVERSE
 
 # 3. In-Memory Persistent Signals Store & Precomputed Summary
 _SIGNALS_CACHE: List[Dict[str, Any]] = []
