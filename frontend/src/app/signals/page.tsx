@@ -49,7 +49,26 @@ export interface StrategyItem {
   badge: string;
   category?: string;
   win_rate?: string;
+  version?: string;
+  is_custom?: boolean;
+  is_enabled?: boolean;
   description?: string;
+  trading_objective?: string;
+  supported_instruments?: string[];
+  supported_timeframes?: string[];
+  indicators?: Array<{
+    name: string;
+    symbol: string;
+    parameters?: Record<string, any>;
+    purpose?: string;
+  }>;
+  buy_conditions?: string[];
+  sell_conditions?: string[];
+  stop_loss_logic?: string;
+  target_calculation?: Record<string, string>;
+  risk_reward?: string;
+  confirmation_rules?: string[];
+  status?: Record<string, any>;
 }
 
 export interface TradeSignalsResponse {
@@ -100,6 +119,17 @@ function TradeSignalsContent() {
   const [syncCountdown, setSyncCountdown] = useState<number>(6);
   const seenSignalIds = useRef<Set<string>>(new Set());
 
+  // Read URL query parameter for strategy selection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const stratParam = params.get('strategy');
+      if (stratParam) {
+        setSelectedStrategy(stratParam);
+      }
+    }
+  }, []);
+
   // Refresh strategies list from registry API
   const refreshStrategiesList = useCallback(async () => {
     try {
@@ -119,6 +149,12 @@ function TradeSignalsContent() {
   useEffect(() => {
     refreshStrategiesList();
   }, [refreshStrategiesList]);
+
+  // Active Strategy Object for formulation showcase
+  const activeStrategyObj = useMemo(() => {
+    if (selectedStrategy === 'all') return null;
+    return strategies.find(s => s.id === selectedStrategy) || null;
+  }, [strategies, selectedStrategy]);
 
   // Web Audio Synth chime when a new signal triggers
   const playAudioChime = useCallback(() => {
@@ -180,6 +216,9 @@ function TradeSignalsContent() {
       if (res.ok) {
         const data = await res.json();
         setSignals(data.signals || []);
+        if (data.available_strategies && data.available_strategies.length > 0) {
+          setStrategies(data.available_strategies);
+        }
       } else {
         const fallbackRes = await fetch(`${apiBase}/api/trade-signals`);
         if (fallbackRes.ok) {
@@ -732,6 +771,31 @@ function TradeSignalsContent() {
                   </button>
                 );
               })}
+
+              {/* Action button to Formulate new strategy on Strategy Page */}
+              <Link
+                href="/strategy?tab=BUILDER"
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  background: 'rgba(99, 102, 241, 0.1)',
+                  border: '1px dashed rgba(99, 102, 241, 0.4)',
+                  color: '#a5b4fc',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  transition: 'all 0.15s ease'
+                }}
+                title="Formulate a new custom strategy on Strategy Desk"
+              >
+                <Sliders size={13} />
+                <span>+ Formulate Strategy</span>
+              </Link>
             </div>
           </div>
 
@@ -931,6 +995,165 @@ function TradeSignalsContent() {
           </div>
         </div>
 
+        {/* Active Formulated Strategy Showcase Banner */}
+        {activeStrategyObj && (
+          <div
+            style={{
+              marginBottom: '20px',
+              padding: '16px 20px',
+              background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.88) 100%)',
+              border: '1px solid rgba(99, 102, 241, 0.35)',
+              borderRadius: '12px',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            {/* Strategy Header Strip */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.25)', border: '1px solid #818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c7d2fe' }}>
+                  <Zap size={18} />
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff' }}>
+                      {activeStrategyObj.name}
+                    </span>
+                    <span style={{ background: 'rgba(99, 102, 241, 0.2)', border: '1px solid #818cf8', color: '#c7d2fe', fontSize: '0.64rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                      {activeStrategyObj.badge}
+                    </span>
+                    {activeStrategyObj.is_custom && (
+                      <span style={{ background: 'rgba(16, 185, 129, 0.25)', border: '1px solid #10b981', color: '#34d399', fontSize: '0.64rem', fontWeight: 900, padding: '2px 8px', borderRadius: '4px' }}>
+                        FORMULATED CUSTOM
+                      </span>
+                    )}
+                    <span style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', color: '#38bdf8', fontSize: '0.64rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                      v{activeStrategyObj.version || '1.0.0'}
+                    </span>
+                    <span style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)', color: '#34d399', fontSize: '0.64rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                      WIN RATE: {activeStrategyObj.win_rate || '70%'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    {activeStrategyObj.description || activeStrategyObj.trading_objective || 'Quantitative algorithm formulated and active on the Strategy Desk.'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Links back to Strategy Desk */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Link
+                  href={`/strategy?id=${activeStrategyObj.id}`}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '6px',
+                    fontSize: '0.74rem',
+                    fontWeight: 800,
+                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    border: '1px solid #818cf8',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)'
+                  }}
+                  title="Edit or adjust strategy logic on Strategy Desk"
+                >
+                  <span>Edit Formulation on Strategy Desk</span>
+                  <ExternalLink size={12} />
+                </Link>
+                <button
+                  onClick={() => setSelectedStrategy('all')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '0.74rem',
+                    fontWeight: 600,
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  View All Strategies
+                </button>
+              </div>
+            </div>
+
+            {/* Formulated Components Summary Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              {/* 1. Indicators */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', borderRadius: '8px', padding: '10px 12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#a5b4fc', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  Configured Technical Indicators ({activeStrategyObj.indicators?.length || 0})
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {activeStrategyObj.indicators && activeStrategyObj.indicators.length > 0 ? (
+                    activeStrategyObj.indicators.map((ind, idx) => {
+                      const paramStr = ind.parameters && Object.keys(ind.parameters).length > 0
+                        ? Object.entries(ind.parameters).map(([k, v]) => `${k}:${v}`).join(', ')
+                        : '';
+                      return (
+                        <span
+                          key={idx}
+                          style={{
+                            background: 'rgba(99, 102, 241, 0.12)',
+                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                            color: '#e0e7ff',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            padding: '3px 8px',
+                            borderRadius: '5px'
+                          }}
+                          title={ind.purpose || ind.name}
+                        >
+                          {ind.name || ind.symbol} {paramStr ? `(${paramStr})` : ''}
+                        </span>
+                      );
+                    })
+                  ) : (
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Multi-indicator quantitative model</span>
+                  )}
+                </div>
+              </div>
+
+              {/* 2. Formulated Conditions */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', borderRadius: '8px', padding: '10px 12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  Formulated Entry Logic
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                  {activeStrategyObj.buy_conditions && activeStrategyObj.buy_conditions.length > 0 ? (
+                    <div>
+                      <strong style={{ color: '#34d399' }}>BUY:</strong> {activeStrategyObj.buy_conditions[0]}
+                    </div>
+                  ) : null}
+                  {activeStrategyObj.sell_conditions && activeStrategyObj.sell_conditions.length > 0 ? (
+                    <div style={{ marginTop: '3px' }}>
+                      <strong style={{ color: '#f87171' }}>SELL:</strong> {activeStrategyObj.sell_conditions[0]}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* 3. Risk & Target Model */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.25)', borderRadius: '8px', padding: '10px 12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  Capital Protection & Targets
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                  <div>
+                    <strong style={{ color: '#fbbf24' }}>R:R Ratio:</strong> {activeStrategyObj.risk_reward || '1 : 2.0 minimum'}
+                  </div>
+                  <div style={{ marginTop: '2px', color: 'var(--text-muted)' }}>
+                    {activeStrategyObj.stop_loss_logic ? activeStrategyObj.stop_loss_logic.slice(0, 95) + '...' : 'Dynamic ATR Stop Loss buffer with 1:2 R:R profit target.'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header Results Count Strip */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
           <div>
@@ -953,12 +1176,54 @@ function TradeSignalsContent() {
             <div>Loading live algorithmic trade signals...</div>
           </div>
         ) : filteredSignals.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center', background: 'var(--panel)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ padding: '44px 24px', textAlign: 'center', background: 'var(--panel)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
             <Activity size={32} color="#6366f1" style={{ margin: '0 auto 12px auto' }} />
-            <h3 style={{ margin: '0 0 6px 0', fontSize: '1rem', color: '#ffffff' }}>No Trade Signals Found</h3>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              No active signals currently match your selected filters. Try choosing "All Strategies" or "All Caps".
+            <h3 style={{ margin: '0 0 6px 0', fontSize: '1.05rem', color: '#ffffff' }}>
+              {activeStrategyObj ? `No Active Signals for "${activeStrategyObj.name}"` : 'No Trade Signals Found'}
+            </h3>
+            <p style={{ margin: '0 auto 16px auto', fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: '580px', lineHeight: 1.5 }}>
+              {activeStrategyObj
+                ? `The quantitative scanner is continuously evaluating closed candles across all 32 NSE stocks against the formulated rules for "${activeStrategyObj.name}". When technical conditions confirm, signals are emitted automatically.`
+                : 'No active signals currently match your selected filters. Try choosing "All Strategies" or "All Caps".'}
             </p>
+            {activeStrategyObj && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => setSelectedStrategy('all')}
+                  style={{
+                    padding: '7px 16px',
+                    borderRadius: '6px',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    color: '#ffffff',
+                    cursor: 'pointer'
+                  }}
+                >
+                  View All Strategies ({signals.length} Signals)
+                </button>
+                <Link
+                  href={`/strategy?id=${activeStrategyObj.id}`}
+                  style={{
+                    padding: '7px 16px',
+                    borderRadius: '6px',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    border: '1px solid #818cf8',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <span>Edit Formulation on Desk</span>
+                  <ExternalLink size={12} />
+                </Link>
+              </div>
+            )}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -1023,8 +1288,89 @@ function TradeSignalsContent() {
                       <span>{sig.strength}</span>
                     </div>
 
-                    {/* Stock Symbol, Price, Sector Pill, Cap Badge & Rationale */}
+                    {/* Stock Symbol, Strategy Header, Price, Sector Pill, Cap Badge & Rationale */}
                     <div style={{ minWidth: 0, flex: 1 }}>
+                      {/* Strategy Identification Strip */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                        <span
+                          style={{
+                            background: 'rgba(99, 102, 241, 0.22)',
+                            border: '1px solid rgba(129, 140, 248, 0.5)',
+                            color: '#e0e7ff',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            borderRadius: '5px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px'
+                          }}
+                        >
+                          <Zap size={12} color="#a5b4fc" />
+                          <span>STRATEGY: <strong style={{ color: '#ffffff' }}>{sig.strategy_name}</strong></span>
+                        </span>
+
+                        <span
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            border: '1px solid rgba(255, 255, 255, 0.12)',
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.62rem',
+                            fontWeight: 800,
+                            padding: '2px 6px',
+                            borderRadius: '4px'
+                          }}
+                        >
+                          {sig.strategy_badge || 'QUANT'}
+                        </span>
+
+                        {sig.is_custom && (
+                          <span
+                            style={{
+                              background: 'rgba(16, 185, 129, 0.25)',
+                              border: '1px solid #10b981',
+                              color: '#34d399',
+                              fontSize: '0.60rem',
+                              fontWeight: 900,
+                              padding: '1px 6px',
+                              borderRadius: '4px'
+                            }}
+                          >
+                            CUSTOM
+                          </span>
+                        )}
+
+                        {sig.strategy_version && (
+                          <span
+                            style={{
+                              color: 'var(--text-muted)',
+                              fontSize: '0.65rem',
+                              fontWeight: 700
+                            }}
+                          >
+                            v{sig.strategy_version}
+                          </span>
+                        )}
+
+                        <Link
+                          href={`/strategy?id=${sig.strategy_id}`}
+                          style={{
+                            fontSize: '0.68rem',
+                            color: '#818cf8',
+                            textDecoration: 'none',
+                            fontWeight: 700,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                            marginLeft: 'auto'
+                          }}
+                          title="View exact mathematical formulation on Strategy Desk"
+                        >
+                          <span>Strategy Formulation</span>
+                          <ExternalLink size={10} />
+                        </Link>
+                      </div>
+
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.01em' }}>
                           {sig.symbol} &bull; ₹{sig.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}

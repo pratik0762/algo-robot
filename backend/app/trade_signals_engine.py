@@ -26,7 +26,10 @@ logger = logging.getLogger("trade_signals")
 IST = timezone(timedelta(hours=5, minutes=30))
 
 # 1. Extensible Strategy Registry (Canonical Single Source of Truth)
-AVAILABLE_STRATEGIES = get_all_registered_strategies()
+def get_current_registered_strategies() -> List[Dict[str, Any]]:
+    return get_all_registered_strategies()
+
+AVAILABLE_STRATEGIES = get_current_registered_strategies()
 
 # 2. Master Universe of Equities and Benchmark Indices with live market caps & verified prices
 COMPANIES_UNIVERSE = [
@@ -209,10 +212,17 @@ def _evaluate_single_symbol(
 
     return results
 
+def invalidate_signals_cache() -> None:
+    """Invalidates the in-memory trade signals cache to force a fresh market scan with updated strategies."""
+    global _SIGNALS_CACHE, _SUMMARY_CACHE
+    _SIGNALS_CACHE = []
+    _SUMMARY_CACHE = None
+
 def scan_market_for_signals() -> List[Dict[str, Any]]:
     """High-Performance Multi-Worker Parallel Market Scanner across all 32 universe symbols and multi-timeframe candles."""
     detected_signals: List[Dict[str, Any]] = []
-    strategies_to_test = [s["id"] for s in AVAILABLE_STRATEGIES if s["id"] != "all"]
+    registered = get_all_registered_strategies()
+    strategies_to_test = [s["id"] for s in registered if s["id"] != "all" and s.get("is_enabled", True)]
     timeframes = ["15m", "1H", "1D"]
 
     # Offset counters to preserve natural staggering in initial view
@@ -341,11 +351,12 @@ def get_trade_signals(
     signal_tracker.process_all_signals_lifecycle(all_signals, quotes_dict)
     analytics = signal_tracker.get_performance_analytics(all_signals)
 
+    registered_strategies = get_all_registered_strategies()
     return {
         "status": "success",
         "total_signals": len(all_signals),
         "filtered_count": len(filtered),
-        "available_strategies": AVAILABLE_STRATEGIES,
+        "available_strategies": registered_strategies,
         "signals": filtered,
         "summary": _SUMMARY_CACHE,
         "analytics": analytics
@@ -361,7 +372,8 @@ def generate_live_signal_event() -> Optional[Dict[str, Any]]:
         initialize_trade_signals()
 
     # Check for setups on active symbols
-    strategies_to_test = [s["id"] for s in AVAILABLE_STRATEGIES if s["id"] != "all"]
+    registered_strategies = get_all_registered_strategies()
+    strategies_to_test = [s["id"] for s in registered_strategies if s["id"] != "all" and s.get("is_enabled", True)]
     existing_keys = {(s.get("symbol"), s.get("strategy_id"), s.get("timeframe")) for s in _SIGNALS_CACHE}
 
     for comp in COMPANIES_UNIVERSE:

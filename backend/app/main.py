@@ -966,10 +966,11 @@ async def api_get_trade_signals_ledger(
     """
     from app.trade_ledger import trade_ledger
     from app.trade_signals_engine import initialize_trade_signals
+    from app.strategy_registry import get_all_registered_strategies
     all_signals = initialize_trade_signals()
     trade_ledger.sync_signals(all_signals)
 
-    return trade_ledger.query_ledger(
+    res = trade_ledger.query_ledger(
         view=view,
         date_range=date_range,
         start_date=start_date,
@@ -979,6 +980,8 @@ async def api_get_trade_signals_ledger(
         status=status,
         search=search
     )
+    res["available_strategies"] = get_all_registered_strategies()
+    return res
 
 @app.get("/api/fo/specifications")
 async def api_get_fo_specifications():
@@ -1076,8 +1079,10 @@ async def api_get_trade_strategy_detail(strategy_id: str, response: Response):
 async def api_create_custom_strategy(payload: Dict[str, Any]):
     """Create a new custom quantitative strategy with versioning and validation."""
     from app.custom_strategies_manager import create_custom_strategy
+    from app.trade_signals_engine import invalidate_signals_cache
     try:
         new_strat = create_custom_strategy(payload)
+        invalidate_signals_cache()
         return {
             "status": "success",
             "message": f"Strategy '{new_strat['name']}' created successfully (v{new_strat['version']}).",
@@ -1115,8 +1120,10 @@ async def api_get_custom_strategy(strategy_id: str):
 async def api_update_custom_strategy(strategy_id: str, payload: Dict[str, Any]):
     """Update custom strategy with automatic minor version increment."""
     from app.custom_strategies_manager import update_custom_strategy
+    from app.trade_signals_engine import invalidate_signals_cache
     try:
         updated = update_custom_strategy(strategy_id, payload)
+        invalidate_signals_cache()
         return {
             "status": "success",
             "message": f"Strategy '{updated['name']}' updated to v{updated['version']}.",
@@ -1133,8 +1140,10 @@ async def api_update_custom_strategy(strategy_id: str, payload: Dict[str, Any]):
 async def api_duplicate_custom_strategy(strategy_id: str):
     """Clone an existing strategy into a new draft custom strategy."""
     from app.custom_strategies_manager import duplicate_custom_strategy
+    from app.trade_signals_engine import invalidate_signals_cache
     try:
         cloned = duplicate_custom_strategy(strategy_id)
+        invalidate_signals_cache()
         return {
             "status": "success",
             "message": f"Strategy '{cloned['name']}' duplicated as draft.",
@@ -1149,10 +1158,12 @@ async def api_duplicate_custom_strategy(strategy_id: str):
 async def api_patch_strategy_status(strategy_id: str, payload: Dict[str, Any]):
     """Toggle strategy activation, disable, or archive."""
     from app.custom_strategies_manager import patch_strategy_status
+    from app.trade_signals_engine import invalidate_signals_cache
     try:
         is_enabled = payload.get("is_enabled")
         is_archived = payload.get("is_archived")
         patched = patch_strategy_status(strategy_id, is_enabled=is_enabled, is_archived=is_archived)
+        invalidate_signals_cache()
         return {
             "status": "success",
             "message": f"Strategy '{patched['name']}' status updated.",
@@ -1169,8 +1180,10 @@ async def api_patch_strategy_status(strategy_id: str, payload: Dict[str, Any]):
 async def api_delete_custom_strategy(strategy_id: str):
     """Safely archive or delete a strategy with active trade checks and historical integrity preservation."""
     from app.custom_strategies_manager import delete_custom_strategy
+    from app.trade_signals_engine import invalidate_signals_cache
     try:
         res = delete_custom_strategy(strategy_id)
+        invalidate_signals_cache()
         return {
             "status": "success",
             "message": res.get("message", f"Strategy '{strategy_id}' processed successfully."),

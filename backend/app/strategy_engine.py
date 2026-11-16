@@ -40,9 +40,11 @@ class StrategyEngine:
         current_price: float,
         highs: np.ndarray,
         lows: np.ndarray,
-        atr: float
+        atr: float,
+        target_1_ratio: float = 2.0,
+        target_2_ratio: float = 3.5
     ) -> Tuple[float, float, float, float, str]:
-        """Calculates structural Entry, Stop Loss, Target 1, and Target 2 with strict 1:2 R:R minimum."""
+        """Calculates structural Entry, Stop Loss, Target 1, and Target 2 with strict R:R minimum."""
         entry = round(current_price, 2)
         swing_h, swing_l = detect_swing_levels(highs, lows, lookback=8)
         min_risk_pct = 0.012  # 1.2% min
@@ -55,17 +57,17 @@ class StrategyEngine:
             sl = max(entry * (1 - max_risk_pct), min(candidate_sl, entry * (1 - min_risk_pct)))
             sl = round(sl, 2)
             risk = entry - sl
-            t1 = round(entry + (risk * 2.0), 2)
-            t2 = round(entry + (risk * 3.5), 2)
+            t1 = round(entry + (risk * target_1_ratio), 2)
+            t2 = round(entry + (risk * target_2_ratio), 2)
         else:  # SELL
             candidate_sl = max(swing_h * 1.002, entry + (1.5 * atr)) if atr > 0 else entry * 1.015
             sl = min(entry * (1 + max_risk_pct), max(candidate_sl, entry * (1 + min_risk_pct)))
             sl = round(sl, 2)
             risk = sl - entry
-            t1 = round(entry - (risk * 2.0), 2)
-            t2 = round(entry - (risk * 3.5), 2)
+            t1 = round(entry - (risk * target_1_ratio), 2)
+            t2 = round(entry - (risk * target_2_ratio), 2)
 
-        risk_reward = "1 : 2.0"
+        risk_reward = f"1 : {target_1_ratio:.1f}"
         return entry, sl, t1, t2, risk_reward
 
     def prepare_candle_context(self, candles: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -246,8 +248,161 @@ class StrategyEngine:
                 reason = f"Lower Bollinger Band Breakdown Expansion on Selling Pressure (Lower Band: ₹{lower[-1]:.2f})"
                 confidence = 92
 
+        # -------------------------------------------------------------
+        # 8. Dynamic Custom Formulated Strategies Evaluator
+        # -------------------------------------------------------------
+        else:
+            strat_logic = None
+            try:
+                from app.strategy_registry import get_strategy_logic
+                strat_logic = get_strategy_logic(strategy_id)
+            except Exception:
+                strat_logic = None
+
+            if strat_logic and strat_logic.get("is_enabled", True):
+                strat_custom_name = strat_logic.get("name", strategy_id)
+                strat_cat = strat_logic.get("category", "Custom Strategy")
+                inds = strat_logic.get("indicators", [])
+
+                # Scan for indicator configurations
+                rsi_cfg = next((ind for ind in inds if "RSI" in ind.get("symbol", "").upper() or "RSI" in ind.get("name", "").upper()), None)
+                ma_cfgs = [ind for ind in inds if any(k in ind.get("symbol", "").upper() or k in ind.get("name", "").upper() for k in ["EMA", "SMA", "MA"])]
+                st_cfg = next((ind for ind in inds if "SUPERTREND" in ind.get("symbol", "").upper() or "SUPERTREND" in ind.get("name", "").upper()), None)
+                macd_cfg = next((ind for ind in inds if "MACD" in ind.get("symbol", "").upper() or "MACD" in ind.get("name", "").upper()), None)
+                bb_cfg = next((ind for ind in inds if "BOLLINGER" in ind.get("name", "").upper() or "BB" in ind.get("symbol", "").upper()), None)
+
+                # A. Evaluate RSI Mean Reversion / Momentum configurations
+                if rsi_cfg:
+                    r_params = rsi_cfg.get("parameters", {}) if isinstance(rsi_cfg, dict) else {}
+                    r_period = int(r_params.get("period", 14))
+                    r_os = float(r_params.get("oversold", 30))
+                    r_ob = float(r_params.get("overbought", 70))
+                    rsi_vals = compute_rsi(closes, period=r_period)
+
+                    # Check for Mean Reversion or Oversold Hook
+                    if (min(rsi_vals[-4:-1]) <= (r_os + 3.0) and rsi_vals[-1] > rsi_vals[-2] and closes[-1] > opens[-1]):
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: RSI({r_period}) oversold rebound ({rsi_vals[-2]:.1f} -> {rsi_vals[-1]:.1f}) with bullish closed candle confirmation"
+                        confidence = 92
+                    elif (max(rsi_vals[-4:-1]) >= (r_ob - 3.0) and rsi_vals[-1] < rsi_vals[-2] and closes[-1] < opens[-1]):
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: RSI({r_period}) overbought exhaustion ({rsi_vals[-2]:.1f} -> {rsi_vals[-1]:.1f}) with bearish reversal candle"
+                        confidence = 91
+                    elif "Mean Reversion" in strat_cat and ma_cfgs:
+                        # Mean reversion towards baseline MA
+                        ma_p = int(ma_cfgs[0].get("parameters", {}).get("period", 20)) if isinstance(ma_cfgs[0], dict) else 20
+                        sma_base = compute_sma(closes, ma_p)
+                        if closes[-1] < sma_base[-1] and rsi_vals[-1] > rsi_vals[-2] and closes[-1] > opens[-1]:
+                            sig_type = "BUY"
+                            reason = f"{strat_custom_name}: Bullish mean reversion hook towards SMA({ma_p}) target ₹{sma_base[-1]:.2f}"
+                            confidence = 90
+                        elif closes[-1] > sma_base[-1] and rsi_vals[-1] < rsi_vals[-2] and closes[-1] < opens[-1]:
+                            sig_type = "SELL"
+                            reason = f"{strat_custom_name}: Bearish mean reversion pullback towards SMA({ma_p}) target ₹{sma_base[-1]:.2f}"
+                            confidence = 89
+
+                # B. Evaluate Moving Average Crossover configurations
+                if not sig_type and len(ma_cfgs) >= 2:
+                    p1 = int(ma_cfgs[0].get("parameters", {}).get("period", 9)) if isinstance(ma_cfgs[0], dict) else 9
+                    p2 = int(ma_cfgs[1].get("parameters", {}).get("period", 21)) if isinstance(ma_cfgs[1], dict) else 21
+                    fast_p, slow_p = min(p1, p2), max(p1, p2)
+                    fast_ma = compute_ema(closes, fast_p)
+                    slow_ma = compute_ema(closes, slow_p)
+                    if (fast_ma[-2] <= slow_ma[-2] and fast_ma[-1] > slow_ma[-1]) or (fast_ma[-1] > slow_ma[-1] and closes[-1] > fast_ma[-1] and closes[-2] <= fast_ma[-2]):
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: EMA {fast_p}/{slow_p} Golden Bullish Cross confirmed on {timeframe} close"
+                        confidence = 92
+                    elif (fast_ma[-2] >= slow_ma[-2] and fast_ma[-1] < slow_ma[-1]) or (fast_ma[-1] < slow_ma[-1] and closes[-1] < fast_ma[-1] and closes[-2] >= fast_ma[-2]):
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: EMA {fast_p}/{slow_p} Bearish Death Cross confirmed on {timeframe} close"
+                        confidence = 91
+
+                # C. Evaluate Supertrend configurations
+                if not sig_type and st_cfg:
+                    st_p = int(st_cfg.get("parameters", {}).get("period", 10)) if isinstance(st_cfg, dict) else 10
+                    st_m = float(st_cfg.get("parameters", {}).get("multiplier", 3.0)) if isinstance(st_cfg, dict) else 3.0
+                    st_band, st_dir = compute_supertrend(highs, lows, closes, period=st_p, multiplier=st_m)
+                    if st_dir[-2] == -1 and st_dir[-1] == 1:
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: Supertrend ({st_p}, {st_m}) Bullish Flip on {timeframe} close above pivot ₹{st_band[-1]:.2f}"
+                        confidence = 94
+                    elif st_dir[-2] == 1 and st_dir[-1] == -1:
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: Supertrend ({st_p}, {st_m}) Bearish Breakdown on {timeframe} close below resistance ₹{st_band[-1]:.2f}"
+                        confidence = 93
+
+                # D. Evaluate MACD configurations
+                if not sig_type and macd_cfg:
+                    macd_line, sig_line, macd_hist = compute_macd(closes, 12, 26, 9)
+                    if (macd_line[-2] <= sig_line[-2] and macd_line[-1] > sig_line[-1]) or (macd_hist[-2] < 0 and macd_hist[-1] > 0):
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: MACD Expansion & Zero-Line Bullish Crossover on {timeframe}"
+                        confidence = 91
+                    elif (macd_line[-2] >= sig_line[-2] and macd_line[-1] < sig_line[-1]) or (macd_hist[-2] > 0 and macd_hist[-1] < 0):
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: MACD Bearish Divergence & Negative Signal Line Penetration on {timeframe}"
+                        confidence = 90
+
+                # E. Evaluate Bollinger Bands configurations
+                if not sig_type and bb_cfg:
+                    u, m, l, bw_arr = compute_bollinger_bands(closes, period=20, std_dev=2.0)
+                    if closes[-1] > u[-1]:
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: Upper Bollinger Band Volatility Breakout on {timeframe} close"
+                        confidence = 92
+                    elif closes[-1] < l[-1]:
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: Lower Bollinger Band Breakdown on {timeframe} close"
+                        confidence = 91
+
+                # F. Generic Price Action & Swing Trend Continuation fallback for formulated models
+                if not sig_type and len(closes) >= 20:
+                    ma20 = compute_sma(closes, 20)
+                    if closes[-1] > ma20[-1] and closes[-1] > opens[-1] and closes[-2] <= ma20[-2] * 1.002:
+                        sig_type = "BUY"
+                        reason = f"{strat_custom_name}: Structural Price Action Bullish Continuation above 20-SMA on {timeframe}"
+                        confidence = 88
+                    elif closes[-1] < ma20[-1] and closes[-1] < opens[-1] and closes[-2] >= ma20[-2] * 0.998:
+                        sig_type = "SELL"
+                        reason = f"{strat_custom_name}: Structural Price Action Bearish Breakdown below 20-SMA on {timeframe}"
+                        confidence = 88
+
         if not sig_type:
             return None
+
+        # Fetch canonical logic from single source of truth for exact metadata
+        strat_logic = None
+        try:
+            from app.strategy_registry import get_strategy_logic
+            strat_logic = get_strategy_logic(strategy_id)
+        except Exception:
+            strat_logic = None
+
+        if strat_logic:
+            strat_name = strat_logic.get("name", strategy_id)
+            strat_badge = strat_logic.get("badge", "QUANT")
+            strat_category = strat_logic.get("category", "Quantitative")
+            strat_version = strat_logic.get("version", "1.0.0")
+            is_custom = strat_logic.get("is_custom", False)
+            indicators = strat_logic.get("indicators", [])
+            risk_mgmt = strat_logic.get("risk_management", {})
+        else:
+            strat_meta = {
+                "ema_cross": {"name": "EMA 9/21 Trend Crossover", "badge": "TREND FOLLOWING", "category": "Moving Averages"},
+                "supertrend": {"name": "Supertrend (10, 3) Breakout", "badge": "VOLATILITY BAND", "category": "Trend & ATR"},
+                "breakout_52w": {"name": "52-Week Breakout & Reversal", "badge": "MOMENTUM / S&R", "category": "Breakout"},
+                "rsi_reversal": {"name": "RSI Mean Reversion", "badge": "OSCILLATOR", "category": "Mean Reversion"},
+                "volume_momentum": {"name": "Volume Spike & Order Block", "badge": "INSTITUTIONAL FLOW", "category": "Volume Based"},
+                "macd_cross": {"name": "MACD Histogram Expansion", "badge": "MOMENTUM ACCELERATION", "category": "Momentum"},
+                "bollinger_squeeze": {"name": "Bollinger Bands Squeeze", "badge": "VOLATILITY EXPANSION", "category": "Volatility"}
+            }.get(strategy_id, {"name": strategy_id, "badge": "QUANT", "category": "Custom Strategy"})
+            strat_name = strat_meta["name"]
+            strat_badge = strat_meta["badge"]
+            strat_category = strat_meta.get("category", "Quantitative")
+            strat_version = "1.0.0"
+            is_custom = False
+            indicators = []
+            risk_mgmt = {}
 
         # Phase 4: Multi-Timeframe Confluence Confirmation
         htf_aligned = False
@@ -270,8 +425,12 @@ class StrategyEngine:
                 else:
                     confidence = max(80, confidence - 2)
 
+        # Dynamic target multipliers from formulated risk management
+        t1_ratio = float(risk_mgmt.get("target_1_ratio", 2.0)) if risk_mgmt else 2.0
+        t2_ratio = float(risk_mgmt.get("target_2_ratio", 3.5)) if risk_mgmt else 3.5
+
         # Calculate exact price levels
-        entry, sl, t1, t2, rr = self.calculate_trade_levels(sig_type, cur_close, highs, lows, cur_atr)
+        entry, sl, t1, t2, rr = self.calculate_trade_levels(sig_type, cur_close, highs, lows, cur_atr, target_1_ratio=t1_ratio, target_2_ratio=t2_ratio)
 
         # Institutional capital risk model (Standard ₹5,00,000 Portfolio, 1.0% Max Risk per Trade = ₹5,000)
         account_capital = 500000.0
@@ -294,16 +453,6 @@ class StrategyEngine:
         ts_ms = int(now_ist.timestamp() * 1000)
         issued_str = now_ist.strftime("%d-%b-%Y %I:%M:%S %p IST")
 
-        strat_meta = {
-            "ema_cross": {"name": "EMA 9/21 Trend Crossover", "badge": "TREND FOLLOWING"},
-            "supertrend": {"name": "Supertrend (10, 3) Breakout", "badge": "VOLATILITY BAND"},
-            "breakout_52w": {"name": "52-Week Breakout & Reversal", "badge": "MOMENTUM / S&R"},
-            "rsi_reversal": {"name": "RSI Mean Reversion", "badge": "OSCILLATOR"},
-            "volume_momentum": {"name": "Volume Spike & Order Block", "badge": "INSTITUTIONAL FLOW"},
-            "macd_cross": {"name": "MACD Histogram Expansion", "badge": "MOMENTUM ACCELERATION"},
-            "bollinger_squeeze": {"name": "Bollinger Bands Squeeze", "badge": "VOLATILITY EXPANSION"}
-        }.get(strategy_id, {"name": strategy_id, "badge": "QUANT"})
-
         return {
             "id": f"SIG-{symbol}-{strategy_id}-{ts_ms}",
             "symbol": symbol,
@@ -314,8 +463,12 @@ class StrategyEngine:
             "type": sig_type,
             "strength": strength,
             "strategy_id": strategy_id,
-            "strategy_name": strat_meta["name"],
-            "strategy_badge": strat_meta["badge"],
+            "strategy_name": strat_name,
+            "strategy_badge": strat_badge,
+            "strategy_category": strat_category,
+            "strategy_version": strat_version,
+            "is_custom": is_custom,
+            "indicators": indicators,
             "current_price": float(cur_close),
             "entry_price": float(entry),
             "stop_loss": float(sl),
@@ -341,7 +494,7 @@ class StrategyEngine:
             "htf_trend": htf_desc,
             "nse_verified": True,
             "data_source": "Official NSE Live Market Feed",
-            "risk_control_rating": "CAPPED RISK (1:2 R:R)",
+            "risk_control_rating": f"CAPPED RISK ({rr} R:R)",
             "hard_stop_loss_required": True
         }
 

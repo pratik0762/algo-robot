@@ -98,6 +98,9 @@ export interface TradeSignalItem {
   is_closed?: boolean;
   is_archived?: boolean;
   strategy_version?: string;
+  strategy_category?: string;
+  is_custom?: boolean;
+  indicators?: any[];
   outcome_time?: string;
 }
 
