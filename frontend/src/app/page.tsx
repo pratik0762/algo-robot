@@ -207,6 +207,11 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  const [mounted, setMounted] = useState<boolean>(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Quick Hub Selector horizontal scroll & drag controls
   const hubScrollRef = useRef<HTMLDivElement>(null);
   const hubIsDraggingRef = useRef<boolean>(false);
@@ -602,6 +607,7 @@ export default function HomePage() {
 
         {/* Quick Hub Fast-Navigation Pill Bar with Left/Right Controls and Smooth Horizontal Scroll */}
         <div
+          suppressHydrationWarning
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -611,7 +617,8 @@ export default function HomePage() {
           }}
         >
           {/* Fixed Pinned Label */}
-          <div
+          <span
+            suppressHydrationWarning
             style={{
               fontSize: '0.8rem',
               fontWeight: 700,
@@ -626,27 +633,28 @@ export default function HomePage() {
           >
             <Compass size={15} color="#818cf8" />
             <span>SELECT HUB:</span>
-          </div>
+          </span>
 
           {/* Left Arrow Button */}
           <button
+            suppressHydrationWarning
             onClick={() => scrollHubs(-280)}
-            disabled={!canScrollHubLeft}
+            disabled={!mounted || !canScrollHubLeft}
             style={{
               flexShrink: 0,
               width: '28px',
               height: '34px',
               borderRadius: '8px',
-              background: canScrollHubLeft ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
-              border: canScrollHubLeft ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
-              color: canScrollHubLeft ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
-              cursor: canScrollHubLeft ? 'pointer' : 'default',
+              background: mounted && canScrollHubLeft ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
+              border: mounted && canScrollHubLeft ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              color: mounted && canScrollHubLeft ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
+              cursor: mounted && canScrollHubLeft ? 'pointer' : 'default',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.15s ease',
-              boxShadow: canScrollHubLeft ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
-              opacity: canScrollHubLeft ? 1 : 0.35,
+              boxShadow: mounted && canScrollHubLeft ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
+              opacity: mounted && canScrollHubLeft ? 1 : 0.35,
               zIndex: 2,
             }}
             title="Scroll hubs left"
@@ -658,6 +666,7 @@ export default function HomePage() {
           {/* Scrollable Track */}
           <div
             ref={hubScrollRef}
+            suppressHydrationWarning
             onWheel={handleHubWheel}
             onMouseDown={handleHubMouseDown}
             onMouseMove={handleHubMouseMove}
@@ -725,23 +734,24 @@ export default function HomePage() {
 
           {/* Right Arrow Button */}
           <button
+            suppressHydrationWarning
             onClick={() => scrollHubs(280)}
-            disabled={!canScrollHubRight}
+            disabled={mounted && !canScrollHubRight}
             style={{
               flexShrink: 0,
               width: '28px',
               height: '34px',
               borderRadius: '8px',
-              background: canScrollHubRight ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
-              border: canScrollHubRight ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
-              color: canScrollHubRight ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
-              cursor: canScrollHubRight ? 'pointer' : 'default',
+              background: (!mounted || canScrollHubRight) ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
+              border: (!mounted || canScrollHubRight) ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              color: (!mounted || canScrollHubRight) ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
+              cursor: (!mounted || canScrollHubRight) ? 'pointer' : 'default',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.15s ease',
-              boxShadow: canScrollHubRight ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
-              opacity: canScrollHubRight ? 1 : 0.35,
+              boxShadow: (!mounted || canScrollHubRight) ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
+              opacity: (!mounted || canScrollHubRight) ? 1 : 0.35,
               zIndex: 2,
             }}
             title="Scroll hubs right"
