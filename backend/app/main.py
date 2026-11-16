@@ -1235,6 +1235,117 @@ async def api_get_strategies_stats():
         ]
     }
 
+# =====================================================================
+# Institutional Supply & Demand + CHoCH Engine REST Endpoints
+# =====================================================================
+
+@app.get("/api/strategies/supply-demand/zones")
+async def api_get_supply_demand_zones(
+    symbol: str = Query("RELIANCE", description="NSE Stock/Index Symbol"),
+    timeframe: str = Query("15m", description="Timeframe: 5m, 15m, 1H, 1D"),
+    limit: int = Query(150, description="Number of candles")
+):
+    """Retrieve detected Major/Minor Supply and Demand zones, virgin lifecycle status, and market structure."""
+    from app.market_data_service import market_data_service
+    from app.supply_demand_engine import supply_demand_engine
+    sym_clean = symbol.upper().replace(".NS", "").replace("-EQ", "")
+    candles = market_data_service.get_candles(sym_clean, timeframe=timeframe, limit=limit)
+    if not candles:
+        candles = market_data_service.get_candles(sym_clean, timeframe="5m", limit=limit)
+    
+    zones = supply_demand_engine.get_detected_zones_for_display(candles) if candles else []
+    return {
+        "status": "success",
+        "symbol": sym_clean,
+        "timeframe": timeframe,
+        "candles_analyzed": len(candles) if candles else 0,
+        "total_zones_detected": len(zones),
+        "zones": zones
+    }
+
+@app.get("/api/strategies/supply-demand/config")
+async def api_get_supply_demand_config():
+    """Retrieve configurable parameters and operational profiles for Supply & Demand + CHoCH."""
+    from app.supply_demand_engine import supply_demand_engine
+    return {
+        "status": "success",
+        "config": {
+            "entry_mode": supply_demand_engine.entry_mode.value,
+            "min_score_threshold": supply_demand_engine.min_score_threshold,
+            "min_risk_reward": supply_demand_engine.min_risk_reward,
+            "atr_buffer_mult": supply_demand_engine.atr_buffer_mult,
+            "major_displacement_threshold": supply_demand_engine.zone_detector.major_disp,
+            "minor_displacement_threshold": supply_demand_engine.zone_detector.minor_disp,
+            "swing_left_bars": supply_demand_engine.swing_detector.left_bars,
+            "swing_right_bars": supply_demand_engine.swing_detector.right_bars,
+            "supported_modes": ["CONSERVATIVE", "BALANCED", "AGGRESSIVE"]
+        }
+    }
+
+@app.post("/api/strategies/supply-demand/config")
+async def api_update_supply_demand_config(payload: Dict[str, Any]):
+    """Update operational parameters and entry mode for Supply & Demand + CHoCH."""
+    from app.supply_demand_engine import supply_demand_engine, EntryMode
+    from app.trade_signals_engine import invalidate_signals_cache
+    if "entry_mode" in payload:
+        mode_str = str(payload["entry_mode"]).upper()
+        if mode_str in [e.value for e in EntryMode]:
+            supply_demand_engine.entry_mode = EntryMode(mode_str)
+    if "min_score_threshold" in payload:
+        supply_demand_engine.min_score_threshold = float(payload["min_score_threshold"])
+    if "min_risk_reward" in payload:
+        supply_demand_engine.min_risk_reward = float(payload["min_risk_reward"])
+    if "atr_buffer_mult" in payload:
+        supply_demand_engine.atr_buffer_mult = float(payload["atr_buffer_mult"])
+    
+    invalidate_signals_cache()
+    return {
+        "status": "success",
+        "message": "Supply & Demand engine configuration updated.",
+        "config": {
+            "entry_mode": supply_demand_engine.entry_mode.value,
+            "min_score_threshold": supply_demand_engine.min_score_threshold,
+            "min_risk_reward": supply_demand_engine.min_risk_reward,
+            "atr_buffer_mult": supply_demand_engine.atr_buffer_mult
+        }
+    }
+
+@app.get("/api/strategies/supply-demand/analyze")
+async def api_analyze_symbol_supply_demand(
+    symbol: str = Query("RELIANCE", description="NSE Stock Symbol"),
+    timeframe: str = Query("15m", description="Evaluation timeframe")
+):
+    """Deep real-time institutional price action analysis for a specific symbol."""
+    from app.market_data_service import market_data_service
+    from app.strategy_engine import strategy_engine
+    from app.supply_demand_engine import supply_demand_engine
+    sym_clean = symbol.upper().replace(".NS", "").replace("-EQ", "")
+    candles = market_data_service.get_candles(sym_clean, timeframe=timeframe, limit=120)
+    if not candles or len(candles) < 25:
+        candles = market_data_service.get_candles(sym_clean, timeframe="5m", limit=120)
+    
+    quote = market_data_service.get_live_quote(sym_clean)
+    zones = supply_demand_engine.get_detected_zones_for_display(candles) if candles else []
+    signal = strategy_engine.evaluate_strategy(
+        strategy_id="supply_demand_choch",
+        symbol=sym_clean,
+        company_info={"name": sym_clean, "sector": "NSE", "cap": "LARGE_CAP"},
+        candles=candles,
+        timeframe=timeframe,
+        quote=quote
+    ) if candles else None
+
+    return {
+        "status": "success",
+        "symbol": sym_clean,
+        "timeframe": timeframe,
+        "quote": quote,
+        "zones_count": len(zones),
+        "zones": zones[-8:] if zones else [],
+        "signal": signal,
+        "has_active_signal": signal is not None
+    }
+
 @app.get("/api/trade-signals/analytics")
 async def api_get_trade_signals_analytics():
     """Quantitative lifecycle performance analytics: win rate, active count, target hits, stop loss hits."""

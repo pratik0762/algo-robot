@@ -105,6 +105,14 @@ STRATEGY_COMPATIBILITY_MATRIX: Dict[str, Dict[str, Any]] = {
         "recommended_instruments": ["Index Options", "Stock Options", "Index Futures"],
         "options_usage": "Ideal for explosive volatility expansion; long straddle or directional ATM option purchases.",
         "compatibility_note": "Specifically designed for volatility channel expansion."
+    },
+    "supply_demand_choch": {
+        "equity": True,
+        "futures": True,
+        "options": True,
+        "recommended_instruments": ["Equity Stocks", "Index Futures", "Stock Futures", "Index Options"],
+        "options_usage": "Buys ATM/Slight OTM Call (CE) on confirmed Bullish CHoCH from Demand; Buys ATM/Slight OTM Put (PE) on Bearish CHoCH from Supply.",
+        "compatibility_note": "Institutional Price Action model with high asymmetric risk-to-reward (>= 1:2.0) across all asset classes."
     }
 }
 
