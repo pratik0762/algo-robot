@@ -60,7 +60,7 @@ interface StrategyStats {
 export default function StrategyPage() {
   const router = useRouter();
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'SUPPLY_DEMAND' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING' | 'NOTIFICATIONS'>('REPOSITORY');
+  const [activeTab, setActiveTab] = useState<'REPOSITORY' | 'BUILDER' | 'BACKTEST' | 'MULTILEG' | 'OPTIMIZER' | 'PAPERTRADING' | 'NOTIFICATIONS'>('REPOSITORY');
 
   // Stats & Strategies State
   const [stats, setStats] = useState<StrategyStats>({
@@ -810,32 +810,6 @@ export default function StrategyPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab('SUPPLY_DEMAND')}
-            style={{
-              background: activeTab === 'SUPPLY_DEMAND' ? 'rgba(99, 102, 241, 0.25)' : 'transparent',
-              border: activeTab === 'SUPPLY_DEMAND' ? '1px solid #818cf8' : '1px solid transparent',
-              color: activeTab === 'SUPPLY_DEMAND' ? '#ffffff' : 'var(--text-secondary)',
-              padding: '8px 10px',
-              borderRadius: 'var(--radius-md)',
-              fontWeight: 700,
-              fontSize: '0.81rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              gap: '8px',
-              textAlign: 'left',
-              lineHeight: 1.25,
-              flex: '1 1 0',
-              minWidth: 0,
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <ShieldCheck size={19} style={{ flexShrink: 0 }} color={activeTab === 'SUPPLY_DEMAND' ? '#a5b4fc' : undefined} />
-            <span style={{ textAlign: 'left', lineHeight: 1.25 }}>S/D &amp; CHoCH Desk</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab('BUILDER')}
             style={{
               background: activeTab === 'BUILDER' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
@@ -1089,6 +1063,16 @@ export default function StrategyPage() {
               />
             </div>
 
+            {/* S/D & CHoCH Live Workstation embedded directly inside Strategy Repository when selected */}
+            {selectedStrategyId === 'supply_demand_choch' && (
+              <div style={{ marginBottom: '24px' }}>
+                <SupplyDemandStrategyDesk
+                  onLaunchBacktest={handleLaunchBacktest}
+                  onOpenPaperTrading={() => setActiveTab('PAPERTRADING')}
+                />
+              </div>
+            )}
+
             {/* Strategies Grid Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px' }}>
               {filteredStrategies.map((strat) => {
@@ -1240,35 +1224,6 @@ export default function StrategyPage() {
                           <Play size={11} />
                           <span>Backtest</span>
                         </button>
-
-                        {/* Dedicated S/D Desk Button */}
-                        {strat.id === 'supply_demand_choch' && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTab('SUPPLY_DEMAND');
-                            }}
-                            title="Open S/D & CHoCH Desk"
-                            style={{
-                              background: 'rgba(99, 102, 241, 0.25)',
-                              border: '1px solid #818cf8',
-                              color: '#ffffff',
-                              padding: '4px 10px',
-                              borderRadius: 'var(--radius-sm)',
-                              fontSize: '0.7rem',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              transition: 'all 0.15s ease'
-                            }}
-                          >
-                            <ShieldCheck size={11} />
-                            <span>Desk</span>
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -1276,16 +1231,6 @@ export default function StrategyPage() {
               })}
             </div>
           </div>
-        )}
-
-        {/* ============================================================== */}
-        {/* TAB 1.5: S/D & CHOCH INSTITUTIONAL DESK                        */}
-        {/* ============================================================== */}
-        {activeTab === 'SUPPLY_DEMAND' && (
-          <SupplyDemandStrategyDesk
-            onLaunchBacktest={handleLaunchBacktest}
-            onOpenPaperTrading={() => setActiveTab('PAPERTRADING')}
-          />
         )}
 
         {/* ============================================================== */}
