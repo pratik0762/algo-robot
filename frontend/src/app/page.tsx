@@ -14,6 +14,7 @@ import {
   BarChart3,
   PieChart,
   ShieldCheck,
+  ChevronLeft,
   ChevronRight,
   ArrowUpRight,
   ArrowDownRight,
@@ -206,12 +207,89 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Quick Hub Selector horizontal scroll & drag controls
+  const hubScrollRef = useRef<HTMLDivElement>(null);
+  const hubIsDraggingRef = useRef<boolean>(false);
+  const hubStartXRef = useRef<number>(0);
+  const hubStartScrollLeftRef = useRef<number>(0);
+  const hubHasDraggedRef = useRef<boolean>(false);
+  const [canScrollHubLeft, setCanScrollHubLeft] = useState<boolean>(false);
+  const [canScrollHubRight, setCanScrollHubRight] = useState<boolean>(true);
+
+  const checkHubScroll = useCallback(() => {
+    const el = hubScrollRef.current;
+    if (!el) return;
+    setCanScrollHubLeft(el.scrollLeft > 6);
+    setCanScrollHubRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    const el = hubScrollRef.current;
+    if (!el) return;
+    checkHubScroll();
+    el.addEventListener('scroll', checkHubScroll, { passive: true });
+    window.addEventListener('resize', checkHubScroll);
+    return () => {
+      el.removeEventListener('scroll', checkHubScroll);
+      window.removeEventListener('resize', checkHubScroll);
+    };
+  }, [checkHubScroll]);
+
+  const handleHubWheel = (e: React.WheelEvent) => {
+    const el = hubScrollRef.current;
+    if (!el) return;
+    if (e.deltaY !== 0) {
+      el.scrollLeft += e.deltaY;
+    }
+  };
+
+  const scrollHubs = (offset: number) => {
+    const el = hubScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: offset, behavior: 'smooth' });
+  };
+
+  const handleHubMouseDown = (e: React.MouseEvent) => {
+    const el = hubScrollRef.current;
+    if (!el) return;
+    hubIsDraggingRef.current = true;
+    hubHasDraggedRef.current = false;
+    hubStartXRef.current = e.pageX - el.offsetLeft;
+    hubStartScrollLeftRef.current = el.scrollLeft;
+  };
+
+  const handleHubMouseMove = (e: React.MouseEvent) => {
+    const el = hubScrollRef.current;
+    if (!hubIsDraggingRef.current || !el) return;
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - hubStartXRef.current) * 1.4;
+    if (Math.abs(walk) > 4) {
+      hubHasDraggedRef.current = true;
+    }
+    el.scrollLeft = hubStartScrollLeftRef.current - walk;
+  };
+
+  const handleHubMouseUp = () => {
+    hubIsDraggingRef.current = false;
+  };
+
+  const handleHubMouseLeave = () => {
+    hubIsDraggingRef.current = false;
+  };
+
   const handleSelectHub = (hubId: string) => {
+    if (hubHasDraggedRef.current) return;
     setActiveHub(hubId);
     setSelectedSector('All');
     setSearchTerm('');
     setSelectedCompany(null);
     fetchCompanies(hubId);
+
+    // Smoothly scroll active hub button into view
+    const btn = document.getElementById(`hub-pill-${hubId}`);
+    if (btn && hubScrollRef.current) {
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
   };
 
   const currentHubMeta = useMemo(() => {
@@ -522,64 +600,155 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Quick Hub Fast-Navigation Pill Bar */}
+        {/* Quick Hub Fast-Navigation Pill Bar with Left/Right Controls and Smooth Horizontal Scroll */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            overflowX: 'auto',
-            paddingBottom: '16px',
+            gap: '8px',
             marginBottom: '20px',
-            scrollbarWidth: 'none',
+            position: 'relative',
           }}
         >
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {/* Fixed Pinned Label */}
+          <div
+            style={{
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              color: 'var(--text-muted)',
+              whiteSpace: 'nowrap',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              flexShrink: 0,
+              paddingRight: '4px',
+            }}
+          >
             <Compass size={15} color="#818cf8" />
-            SELECT HUB:
-          </span>
+            <span>SELECT HUB:</span>
+          </div>
 
-          {NAV_HUBS.map((hub) => {
-            const isActive = activeHub === hub.id;
-            const HubIcon = hub.icon;
-            return (
-              <button
-                key={hub.id}
-                onClick={() => handleSelectHub(hub.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 16px',
-                  borderRadius: '12px',
-                  fontSize: '0.82rem',
-                  fontWeight: isActive ? 700 : 500,
-                  background: isActive ? hub.gradient : 'rgba(255, 255, 255, 0.04)',
-                  border: isActive ? `1px solid ${hub.color}` : '1px solid rgba(255, 255, 255, 0.08)',
-                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  boxShadow: isActive ? `0 0 16px ${hub.color}50` : 'none',
-                  transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-              >
-                <HubIcon size={15} color={isActive ? '#ffffff' : hub.color} />
-                <span>{hub.name.replace(' FINANCIAL HUB', '')}</span>
-                <span
+          {/* Left Arrow Button */}
+          <button
+            onClick={() => scrollHubs(-280)}
+            disabled={!canScrollHubLeft}
+            style={{
+              flexShrink: 0,
+              width: '28px',
+              height: '34px',
+              borderRadius: '8px',
+              background: canScrollHubLeft ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
+              border: canScrollHubLeft ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              color: canScrollHubLeft ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
+              cursor: canScrollHubLeft ? 'pointer' : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s ease',
+              boxShadow: canScrollHubLeft ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
+              opacity: canScrollHubLeft ? 1 : 0.35,
+              zIndex: 2,
+            }}
+            title="Scroll hubs left"
+            aria-label="Scroll hubs left"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {/* Scrollable Track */}
+          <div
+            ref={hubScrollRef}
+            onWheel={handleHubWheel}
+            onMouseDown={handleHubMouseDown}
+            onMouseMove={handleHubMouseMove}
+            onMouseUp={handleHubMouseUp}
+            onMouseLeave={handleHubMouseLeave}
+            className="no-scrollbar"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              overflowX: 'auto',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              padding: '4px 0',
+              flex: 1,
+              minWidth: 0,
+              cursor: 'grab',
+              userSelect: 'none',
+            }}
+          >
+            {NAV_HUBS.map((hub) => {
+              const isActive = activeHub === hub.id;
+              const HubIcon = hub.icon;
+              return (
+                <button
+                  key={hub.id}
+                  id={`hub-pill-${hub.id}`}
+                  onClick={() => handleSelectHub(hub.id)}
                   style={{
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    padding: '1px 6px',
-                    borderRadius: '8px',
-                    background: isActive ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)',
-                    color: isActive ? '#fff' : 'var(--text-muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '8px 16px',
+                    borderRadius: '12px',
+                    fontSize: '0.82rem',
+                    fontWeight: isActive ? 700 : 500,
+                    background: isActive ? hub.gradient : 'rgba(255, 255, 255, 0.04)',
+                    border: isActive ? `1px solid ${hub.color}` : '1px solid rgba(255, 255, 255, 0.08)',
+                    color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                    boxShadow: isActive ? `0 0 16px ${hub.color}50` : 'none',
+                    transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
                 >
-                  {hub.count}
-                </span>
-              </button>
-            );
-          })}
+                  <HubIcon size={15} color={isActive ? '#ffffff' : hub.color} />
+                  <span>{hub.name.replace(' FINANCIAL HUB', '')}</span>
+                  <span
+                    style={{
+                      fontSize: '0.7rem',
+                      fontWeight: 700,
+                      padding: '1px 6px',
+                      borderRadius: '8px',
+                      background: isActive ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                      color: isActive ? '#fff' : 'var(--text-muted)',
+                    }}
+                  >
+                    {hub.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Arrow Button */}
+          <button
+            onClick={() => scrollHubs(280)}
+            disabled={!canScrollHubRight}
+            style={{
+              flexShrink: 0,
+              width: '28px',
+              height: '34px',
+              borderRadius: '8px',
+              background: canScrollHubRight ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
+              border: canScrollHubRight ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              color: canScrollHubRight ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
+              cursor: canScrollHubRight ? 'pointer' : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s ease',
+              boxShadow: canScrollHubRight ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
+              opacity: canScrollHubRight ? 1 : 0.35,
+              zIndex: 2,
+            }}
+            title="Scroll hubs right"
+            aria-label="Scroll hubs right"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Aggregated Market Statistics Banner */}
