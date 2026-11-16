@@ -123,6 +123,7 @@ export default function StrategyOptimizerDesk() {
               className="select-field"
               style={{ width: '100%', marginTop: '4px', padding: '8px 10px', fontSize: '0.82rem' }}
             >
+              <option value="supply_demand_choch">Supply &amp; Demand + CHoCH (ATR Disp / Mode / Score)</option>
               <option value="ema_cross">Dual EMA Cross (Fast / Slow / SL)</option>
               <option value="supertrend">Supertrend (ATR Period / Multiplier / SL)</option>
               <option value="rsi_momentum">RSI Momentum (Period / OB / OS)</option>

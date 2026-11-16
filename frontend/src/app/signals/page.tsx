@@ -90,6 +90,7 @@ export interface TradeSignalsResponse {
 // Extensible fallback strategies array
 const DEFAULT_STRATEGIES: StrategyItem[] = [
   { id: 'all', name: 'All Strategies', badge: 'COMPREHENSIVE' },
+  { id: 'supply_demand_choch', name: 'Multi-Timeframe Supply & Demand + CHoCH', badge: 'INSTITUTIONAL PRICE ACTION' },
   { id: 'ema_cross', name: 'EMA 9/21 Trend Crossover', badge: 'TREND FOLLOWING' },
   { id: 'supertrend', name: 'Supertrend (10, 3) Breakout', badge: 'VOLATILITY BAND' },
   { id: 'breakout_52w', name: '52-Week Breakout & Reversal', badge: 'MOMENTUM / S&R' },

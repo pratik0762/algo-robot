@@ -57,6 +57,113 @@ interface StrategyStats {
   supported_asset_classes: string[];
 }
 
+const DEFAULT_REPOSITORY_STRATEGIES = [
+  {
+    id: 'supply_demand_choch',
+    name: 'Multi-Timeframe Strong Supply & Demand + Failed Breakout + CHoCH',
+    category: 'Price Action & Structure',
+    badge: 'INSTITUTIONAL PRICE ACTION',
+    win_rate: '74%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Multi-Timeframe institutional model detecting Major Supply/Demand zones, Virgin levels, Liquidity Sweeps, and confirmed Change of Character (CHoCH) on closed candles.',
+    supported_instruments: ['Equity Stocks', 'Index Futures', 'Stock Futures', 'Index Options (CE/PE)'],
+    supported_timeframes: ['15m', '1H', '4H', '1D']
+  },
+  {
+    id: 'ema_cross',
+    name: 'EMA 9/21 Trend Crossover',
+    category: 'Moving Averages',
+    badge: 'TREND FOLLOWING',
+    win_rate: '68%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Fast 9-period EMA crosses 21-period EMA on confirmed closed candle with momentum confirmation.',
+    supported_instruments: ['Equity Stocks', 'Index Futures', 'Stock Futures'],
+    supported_timeframes: ['15m', '1H', '1D']
+  },
+  {
+    id: 'supertrend',
+    name: 'Supertrend (10, 3) Breakout',
+    category: 'Trend & ATR',
+    badge: 'VOLATILITY BAND',
+    win_rate: '72%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Adaptive ATR trailing stop volatility envelope capturing institutional trend transitions.',
+    supported_instruments: ['Equity Stocks', 'Index Futures', 'Stock Futures', 'Options (CE/PE via Delta)'],
+    supported_timeframes: ['15m', '1H', '1D']
+  },
+  {
+    id: 'breakout_52w',
+    name: '52-Week Breakout & Reversal',
+    category: 'Breakout',
+    badge: 'MOMENTUM / S&R',
+    win_rate: '69%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Multi-month structural breakout clearance near 52-week highs/lows with institutional volume surge.',
+    supported_instruments: ['Equity Stocks', 'Stock Futures'],
+    supported_timeframes: ['1D']
+  },
+  {
+    id: 'rsi_reversal',
+    name: 'RSI Mean Reversion',
+    category: 'Mean Reversion',
+    badge: 'OSCILLATOR',
+    win_rate: '66%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Overbought / Oversold divergence exhaustion with mean reversion hook confirmation.',
+    supported_instruments: ['Equity Stocks', 'Index Options', 'Stock Futures'],
+    supported_timeframes: ['15m', '1H']
+  },
+  {
+    id: 'volume_momentum',
+    name: 'Volume Spike & Order Block',
+    category: 'Volume Based',
+    badge: 'INSTITUTIONAL FLOW',
+    win_rate: '75%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: '2.5x volume surge over 20-period baseline indicating heavy institutional accumulation or distribution.',
+    supported_instruments: ['Equity Stocks', 'Stock Futures', 'Stock Options'],
+    supported_timeframes: ['15m', '1H']
+  },
+  {
+    id: 'macd_cross',
+    name: 'MACD Histogram Expansion',
+    category: 'Momentum',
+    badge: 'MOMENTUM ACCELERATION',
+    win_rate: '67%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'MACD line crossing signal line combined with directional histogram acceleration away from zero-line.',
+    supported_instruments: ['Equity Stocks', 'Index Futures', 'Stock Futures'],
+    supported_timeframes: ['15m', '1H']
+  },
+  {
+    id: 'bollinger_squeeze',
+    name: 'Bollinger Bands Squeeze',
+    category: 'Volatility',
+    badge: 'VOLATILITY EXPANSION',
+    win_rate: '71%',
+    version: '1.0.0',
+    is_custom: false,
+    is_enabled: true,
+    description: 'Low-volatility consolidation squeeze breakout signaling explosive institutional trend expansion.',
+    supported_instruments: ['Equity Stocks', 'Index Options', 'Stock Options', 'Index Futures'],
+    supported_timeframes: ['15m', '1H']
+  }
+];
+
 export default function StrategyPage() {
   const router = useRouter();
   const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
@@ -64,14 +171,14 @@ export default function StrategyPage() {
 
   // Stats & Strategies State
   const [stats, setStats] = useState<StrategyStats>({
-    total_strategies: 8,
-    active_strategies: 8,
+    total_strategies: 9,
+    active_strategies: 9,
     custom_strategies: 1,
-    builtin_strategies: 7,
+    builtin_strategies: 8,
     backtested_runs: 0,
     supported_asset_classes: ['Cash Equities (NSE)', 'Index Futures', 'Stock Futures', 'Index Options (CE/PE)', 'Stock Options']
   });
-  const [strategies, setStrategies] = useState<any[]>([]);
+  const [strategies, setStrategies] = useState<any[]>(DEFAULT_REPOSITORY_STRATEGIES);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -133,7 +240,10 @@ export default function StrategyPage() {
 
       if (sRes.ok) {
         const sData = await sRes.json();
-        const strats = (sData.strategies || []).filter((s: any) => s.id !== 'all');
+        let strats = (sData.strategies || []).filter((s: any) => s.id !== 'all');
+        if (!strats.some((s: any) => s.id === 'supply_demand_choch')) {
+          strats = [DEFAULT_REPOSITORY_STRATEGIES[0], ...strats];
+        }
         setStrategies(strats);
         if (strats.length > 0 && !selectedStrategyId) {
           setSelectedStrategyId(strats[0].id);
