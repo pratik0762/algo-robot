@@ -225,6 +225,17 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
     strategies_to_test = [s["id"] for s in registered if s["id"] != "all" and s.get("is_enabled", True)]
     timeframes = ["15m", "1H", "1D"]
 
+    # Check already active trades in ledger to preserve them without re-stamping
+    ledger_active = {}
+    try:
+        from app.trade_ledger import trade_ledger
+        for r in trade_ledger._ledger.values():
+            if not r.get("is_closed", False):
+                k = f"{r.get('symbol')}_{r.get('strategy_id')}_{r.get('timeframe')}"
+                ledger_active[k] = r
+    except Exception:
+        pass
+
     # Offset counters to preserve natural staggering in initial view
     stagger_offset = 60
     seen_keys = set()
@@ -240,6 +251,12 @@ def scan_market_for_signals() -> List[Dict[str, Any]]:
                     if key in seen_keys:
                         continue
                     seen_keys.add(key)
+
+                    # Referential integrity: if trade is already active in ledger, preserve existing record
+                    if key in ledger_active:
+                        detected_signals.append(ledger_active[key])
+                        continue
+
                     stagger_offset += 300
                     issued_dt = datetime.now(IST) - timedelta(seconds=stagger_offset)
                     sig["offset_seconds"] = stagger_offset
@@ -375,6 +392,13 @@ def generate_live_signal_event() -> Optional[Dict[str, Any]]:
     registered_strategies = get_all_registered_strategies()
     strategies_to_test = [s["id"] for s in registered_strategies if s["id"] != "all" and s.get("is_enabled", True)]
     existing_keys = {(s.get("symbol"), s.get("strategy_id"), s.get("timeframe")) for s in _SIGNALS_CACHE}
+    try:
+        from app.trade_ledger import trade_ledger
+        for r in trade_ledger._ledger.values():
+            if not r.get("is_closed", False):
+                existing_keys.add((r.get("symbol"), r.get("strategy_id"), r.get("timeframe")))
+    except Exception:
+        pass
 
     for comp in COMPANIES_UNIVERSE:
         sym = comp["symbol"]
@@ -402,14 +426,22 @@ def generate_live_signal_event() -> Optional[Dict[str, Any]]:
                     higher_tf_candles=htf_candles
                 )
                 if sig:
+                    existing_keys.add(key)
                     _SIGNALS_CACHE.insert(0, sig)
                     if len(_SIGNALS_CACHE) > 60:
                         _SIGNALS_CACHE = _SIGNALS_CACHE[:60]
                     _SUMMARY_CACHE = _compute_summary(_SIGNALS_CACHE)
+
+                    # Also record immediately to ledger so subsequent cycles recognize it as an existing active trade
+                    try:
+                        from app.trade_ledger import trade_ledger
+                        trade_ledger.record_signal(sig)
+                    except Exception:
+                        pass
+
                     logger.info("Genuine live signal triggered: [%s] %s on %s (%s)", sig["type"], sym, strat_id, tf)
                     return sig
 
-    # If no brand new signal triggered, pick the top active genuine setup to refresh
-    if _SIGNALS_CACHE:
-        return _SIGNALS_CACHE[0]
+    # Strict rule: Never re-broadcast an already signaled trade!
+    # Return None when no brand new setup is confirmed on candle close.
     return None

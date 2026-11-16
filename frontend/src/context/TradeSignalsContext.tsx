@@ -118,13 +118,41 @@ interface TradeSignalsContextType {
 
 const TradeSignalsContext = createContext<TradeSignalsContextType | null>(null);
 
+const getTradeKey = (sig: TradeSignalItem): string => {
+  return `${sig.symbol}__${sig.strategy_id}__${sig.timeframe}__${sig.type}`;
+};
+
+const getDismissedTrades = (): Set<string> => {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = sessionStorage.getItem('algo_acknowledged_trades');
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) return new Set(arr);
+    }
+  } catch (_) {}
+  return new Set();
+};
+
+const recordDismissedTrade = (sig: TradeSignalItem) => {
+  if (typeof window === 'undefined' || !sig) return;
+  try {
+    const dismissed = getDismissedTrades();
+    dismissed.add(sig.id);
+    dismissed.add(getTradeKey(sig));
+    sessionStorage.setItem('algo_acknowledged_trades', JSON.stringify(Array.from(dismissed)));
+  } catch (_) {}
+};
+
 export function TradeSignalsProvider({ children }: { children: React.ReactNode }) {
   const [signals, setSignals] = useState<TradeSignalItem[]>([]);
   const [toastQueue, setToastQueue] = useState<TradeSignalItem[]>([]);
   const [selectedChartSignal, setSelectedChartSignal] = useState<TradeSignalItem | null>(null);
   const [isChartModalOpen, setIsChartModalOpen] = useState<boolean>(false);
   const [syncCountdown, setSyncCountdown] = useState<number>(6);
+  const isInitialLoad = useRef<boolean>(true);
   const seenSignalIds = useRef<Set<string>>(new Set());
+  const seenTradeKeys = useRef<Set<string>>(new Set());
 
   // Web Audio Synth chime when a new signal arrives
   const playAudioChime = useCallback(() => {
@@ -157,14 +185,29 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
         const incoming: TradeSignalItem[] = data.signals || [];
         setSignals(incoming);
 
-        // Populate seen IDs on first load
-        if (seenSignalIds.current.size === 0) {
-          incoming.forEach((s) => seenSignalIds.current.add(s.id));
+        const dismissed = getDismissedTrades();
+
+        // On first load, mark all pre-existing active trades as seen/known
+        if (isInitialLoad.current) {
+          incoming.forEach((s) => {
+            seenSignalIds.current.add(s.id);
+            seenTradeKeys.current.add(getTradeKey(s));
+          });
+          isInitialLoad.current = false;
         } else {
-          // Detect brand new incoming signals
-          const newSignals = incoming.filter((s) => !seenSignalIds.current.has(s.id));
+          // Detect genuine new incoming signals (never re-toast already signaled/dismissed trades)
+          const newSignals = incoming.filter((s) => {
+            const key = getTradeKey(s);
+            if (dismissed.has(s.id) || dismissed.has(key)) return false;
+            if (seenSignalIds.current.has(s.id) || seenTradeKeys.current.has(key)) return false;
+            return true;
+          });
+
           if (newSignals.length > 0) {
-            newSignals.forEach((s) => seenSignalIds.current.add(s.id));
+            newSignals.forEach((s) => {
+              seenSignalIds.current.add(s.id);
+              seenTradeKeys.current.add(getTradeKey(s));
+            });
             setToastQueue((prev) => [...prev, ...newSignals]);
             playAudioChime();
           }
@@ -198,8 +241,20 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
             const data = JSON.parse(event.data);
             if (data.type === 'TRADE_SIGNAL' && data.signal) {
               const sig = data.signal as TradeSignalItem;
-              if (sig && sig.id && !seenSignalIds.current.has(sig.id)) {
+              if (sig && sig.symbol) {
+                const key = getTradeKey(sig);
+                const dismissed = getDismissedTrades();
+
+                // If user already acknowledged or trade was already signaled, never show toast again
+                if (dismissed.has(sig.id) || dismissed.has(key)) {
+                  return;
+                }
+                if (seenSignalIds.current.has(sig.id) || seenTradeKeys.current.has(key)) {
+                  return;
+                }
+
                 seenSignalIds.current.add(sig.id);
+                seenTradeKeys.current.add(key);
                 setSignals((prev) => [sig, ...prev.filter((item) => item.id !== sig.id)]);
                 setToastQueue((prev) => [...prev, sig]);
                 playAudioChime();
@@ -241,12 +296,27 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
 
   // Acknowledge single toast
   const acknowledgeToast = useCallback(() => {
-    setToastQueue((prev) => prev.slice(1));
+    setToastQueue((prev) => {
+      const dismissed = prev[0];
+      if (dismissed) {
+        recordDismissedTrade(dismissed);
+        seenSignalIds.current.add(dismissed.id);
+        seenTradeKeys.current.add(getTradeKey(dismissed));
+      }
+      return prev.slice(1);
+    });
   }, []);
 
   // Clear all queued toasts
   const clearAllToasts = useCallback(() => {
-    setToastQueue([]);
+    setToastQueue((prev) => {
+      prev.forEach((sig) => {
+        recordDismissedTrade(sig);
+        seenSignalIds.current.add(sig.id);
+        seenTradeKeys.current.add(getTradeKey(sig));
+      });
+      return [];
+    });
   }, []);
 
   // Open Chart Modal
