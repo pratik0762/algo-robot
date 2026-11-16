@@ -1129,36 +1129,36 @@ export default function Week52Page() {
           /* 52-Week Comprehensive Table */
           <div
             style={{
-              background: 'var(--panel)',
-              border: '1px solid var(--border-subtle)',
+              background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.7) 0%, rgba(10, 14, 23, 0.9) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '14px',
               overflow: 'hidden',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
             }}
           >
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+            <div style={{ overflowX: 'auto' }} className="no-scrollbar">
+              <table style={{ width: '100%', minWidth: '1240px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
                   <tr
                     style={{
-                      background: 'rgba(255, 255, 255, 0.03)',
-                      borderBottom: '1px solid var(--border-subtle)',
+                      background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%)',
+                      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                       color: 'var(--text-muted)',
-                      fontSize: '0.72rem',
+                      fontSize: '0.70rem',
                       fontWeight: 700,
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                     }}
                   >
-                    <th style={{ padding: '12px 16px' }}>COMPANY &amp; SECTOR</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }}>DUAL SCRIP &amp; EXCH</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>NSE LIVE LTP</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'right', color: '#fbbf24' }}>BSE LTP &amp; SPREAD</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'right', color: '#34d399' }}>52-WEEK HIGH (NSE / BSE)</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'right', color: '#f87171' }}>52-WEEK LOW (NSE / BSE)</th>
-                    <th style={{ padding: '12px 20px', minWidth: '200px' }}>52W SPECTRUM</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'center' }}>SIGNAL RADAR</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'center' }}>ACTIONS &bull; EXCH</th>
+                    <th style={{ padding: '12px 14px', width: '180px' }}>COMPANY &amp; SECTOR</th>
+                    <th style={{ padding: '12px 10px', width: '115px', textAlign: 'center' }}>DUAL SCRIP &amp; EXCH</th>
+                    <th style={{ padding: '12px 12px', width: '125px', textAlign: 'right' }}>NSE LIVE LTP</th>
+                    <th style={{ padding: '12px 12px', width: '125px', textAlign: 'right' }}>BSE LTP &amp; SPREAD</th>
+                    <th style={{ padding: '12px 12px', width: '135px', textAlign: 'right' }}>52W HIGH (NSE/BSE)</th>
+                    <th style={{ padding: '12px 12px', width: '135px', textAlign: 'right' }}>52W LOW (NSE/BSE)</th>
+                    <th style={{ padding: '12px 14px', width: '170px' }}>52W SPECTRUM</th>
+                    <th style={{ padding: '12px 10px', width: '135px', textAlign: 'center' }}>SIGNAL RADAR</th>
+                    <th style={{ padding: '12px 10px', width: '130px', textAlign: 'center' }}>ACTIONS &bull; EXCH</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1192,7 +1192,7 @@ export default function Week52Page() {
                           onClick={() => openCompanyDetail(item.symbol)}
                         >
                           {/* 1. Company Name & Sector */}
-                          <td style={{ padding: '12px 16px' }}>
+                          <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <strong style={{ fontSize: '0.90rem', color: '#ffffff' }}>
                                 {item.symbol}
@@ -1201,7 +1201,7 @@ export default function Week52Page() {
                                 NSE: {item.symbol}
                               </span>
                             </div>
-                            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                               {item.company_name}
                             </div>
                             <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
@@ -1210,19 +1210,19 @@ export default function Week52Page() {
                           </td>
 
                           {/* 2. Dual Scrip & Exchange */}
-                          <td style={{ padding: '12px 14px', textAlign: 'center' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                          <td style={{ padding: '12px 10px', verticalAlign: 'middle', textAlign: 'center' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
                               <span style={{ fontSize: '0.68rem', color: '#fbbf24', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
                                 BSE: {item.bse_scrip_code || '500325'}
                               </span>
                               <span style={{ fontSize: '0.60rem', color: 'var(--text-muted)' }}>
-                                Dual-Listed Blue-Chip
+                                Dual-Listed
                               </span>
                             </div>
                           </td>
 
                           {/* 3. NSE Live LTP */}
-                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <td style={{ padding: '12px 12px', verticalAlign: 'middle', textAlign: 'right' }}>
                             <div style={{ fontSize: '0.92rem', fontWeight: 900, color: '#ffffff' }}>
                               ₹{item.current_price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
@@ -1239,7 +1239,7 @@ export default function Week52Page() {
                           </td>
 
                           {/* 4. BSE Live LTP & Spread */}
-                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <td style={{ padding: '12px 12px', verticalAlign: 'middle', textAlign: 'right' }}>
                             <div style={{ fontSize: '0.90rem', fontWeight: 800, color: '#fbbf24' }}>
                               ₹{bseLtp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
@@ -1249,7 +1249,7 @@ export default function Week52Page() {
                           </td>
 
                           {/* 5. 52-Week High (NSE & BSE) */}
-                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <td style={{ padding: '12px 12px', verticalAlign: 'middle', textAlign: 'right' }}>
                             <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#34d399' }}>
                               ₹{item.high_52w.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
@@ -1266,7 +1266,7 @@ export default function Week52Page() {
                           </td>
 
                           {/* 6. 52-Week Low (NSE & BSE) */}
-                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                          <td style={{ padding: '12px 12px', verticalAlign: 'middle', textAlign: 'right' }}>
                             <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#f87171' }}>
                               ₹{item.low_52w.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
@@ -1279,18 +1279,20 @@ export default function Week52Page() {
                           </td>
 
                           {/* 7. 52-Week Price Spectrum Gauge */}
-                          <td style={{ padding: '12px 20px', minWidth: '200px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.66rem', marginBottom: '4px' }}>
-                              <span style={{ color: '#f87171' }}>₹{item.low_52w.toFixed(0)}</span>
-                              <span style={{ color: '#ffffff', fontWeight: 700 }}>{item.range_position_pct.toFixed(0)}% Range</span>
-                              <span style={{ color: '#34d399' }}>₹{item.high_52w.toFixed(0)}</span>
+                          <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.64rem', marginBottom: '5px' }}>
+                              <span style={{ color: '#f87171', fontWeight: 600 }}>₹{item.low_52w.toFixed(0)}</span>
+                              <span style={{ color: '#ffffff', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', padding: '1px 6px', borderRadius: '4px', fontSize: '0.62rem' }}>
+                                {item.range_position_pct.toFixed(0)}% Range
+                              </span>
+                              <span style={{ color: '#34d399', fontWeight: 600 }}>₹{item.high_52w.toFixed(0)}</span>
                             </div>
                             <div
                               style={{
                                 position: 'relative',
-                                height: '7px',
-                                background: 'rgba(255, 255, 255, 0.08)',
-                                borderRadius: '4px',
+                                height: '6px',
+                                background: 'rgba(255, 255, 255, 0.1)',
+                                borderRadius: '3px',
                               }}
                             >
                               <div
@@ -1299,28 +1301,28 @@ export default function Week52Page() {
                                   left: 0,
                                   top: 0,
                                   bottom: 0,
-                                  width: `${item.range_position_pct}%`,
-                                  background: 'linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%)',
-                                  borderRadius: '4px',
+                                  width: `${Math.min(Math.max(item.range_position_pct, 2), 100)}%`,
+                                  background: 'linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #10b981 100%)',
+                                  borderRadius: '3px',
                                 }}
                               />
                               <div
                                 style={{
                                   position: 'absolute',
-                                  left: `calc(${item.range_position_pct}% - 5px)`,
+                                  left: `calc(${Math.min(Math.max(item.range_position_pct, 2), 98)}% - 5px)`,
                                   top: '-3px',
                                   width: '10px',
-                                  height: '13px',
+                                  height: '12px',
                                   background: '#ffffff',
-                                  borderRadius: '2px',
-                                  boxShadow: '0 0 6px rgba(255, 255, 255, 0.9)',
+                                  borderRadius: '3px',
+                                  boxShadow: '0 0 8px rgba(255, 255, 255, 0.9)',
                                 }}
                               />
                             </div>
                           </td>
 
                           {/* 8. Technical Status Badge */}
-                          <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                          <td style={{ padding: '12px 10px', verticalAlign: 'middle', textAlign: 'center' }}>
                             <span
                               style={{
                                 fontSize: '0.68rem',
@@ -1357,19 +1359,21 @@ export default function Week52Page() {
                           </td>
 
                           {/* 9. Action Buttons & Exchange Links */}
-                          <td style={{ padding: '12px 16px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                          <td style={{ padding: '12px 10px', verticalAlign: 'middle', textAlign: 'center', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                               <button
                                 onClick={() => openCompanyDetail(item.symbol)}
                                 className="btn btn-secondary"
                                 style={{
                                   fontSize: '0.68rem',
-                                  padding: '4px 8px',
+                                  padding: '4px 7px',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '3px',
                                   color: '#38bdf8',
+                                  background: 'rgba(56, 189, 248, 0.08)',
                                   border: '1px solid rgba(56, 189, 248, 0.3)',
+                                  borderRadius: '5px',
                                 }}
                                 title={`View full financial statements & 52-week breakdown for ${item.symbol}`}
                               >
@@ -1388,7 +1392,10 @@ export default function Week52Page() {
                                   alignItems: 'center',
                                   gap: '2px',
                                   color: '#34d399',
+                                  background: 'rgba(16, 185, 129, 0.08)',
                                   border: '1px solid rgba(16, 185, 129, 0.3)',
+                                  borderRadius: '5px',
+                                  textDecoration: 'none',
                                 }}
                                 title={`View official quote for ${item.symbol} on NSE India Portal`}
                               >
@@ -1407,7 +1414,10 @@ export default function Week52Page() {
                                   alignItems: 'center',
                                   gap: '2px',
                                   color: '#fbbf24',
+                                  background: 'rgba(245, 158, 11, 0.08)',
                                   border: '1px solid rgba(245, 158, 11, 0.3)',
+                                  borderRadius: '5px',
+                                  textDecoration: 'none',
                                 }}
                                 title={`View official quote for ${item.symbol} on BSE India Portal (Scrip: ${item.bse_scrip_code || '500325'})`}
                               >

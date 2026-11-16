@@ -388,6 +388,19 @@ class LiveTickEngine:
                     cached = json.load(f)
                     if isinstance(cached, dict) and len(cached) >= len(BASE_EQUITY_PRICES) - 5:
                         self.stocks = cached
+                        # Validate stock prices against BASE_EQUITY_PRICES to fix any corrupt cached prices
+                        for s_sym, s_base in BASE_EQUITY_PRICES.items():
+                            s_item = self.stocks.get(s_sym)
+                            if s_item:
+                                cur_ltp = s_item.get("ltp", 0.0)
+                                if cur_ltp <= 0.0 or (s_base > 1000 and cur_ltp < 600) or abs(cur_ltp - s_base) / s_base > 0.35:
+                                    s_item["ltp"] = s_base
+                                    s_item["open"] = s_base
+                                    s_item["previous_close"] = s_base
+                                    s_item["high_52w"] = round(s_base * 1.15, 2)
+                                    s_item["low_52w"] = round(s_base * 0.85, 2)
+                                    s_item["high"] = round(s_base * 1.01, 2)
+                                    s_item["low"] = round(s_base * 0.99, 2)
                         # Ensure 52-week high and low are present
                         for s_sym, s_data in self.stocks.items():
                             if not s_data.get("high_52w") or not s_data.get("low_52w"):
