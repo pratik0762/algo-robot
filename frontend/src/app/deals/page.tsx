@@ -1345,37 +1345,37 @@ function DealsPageContent() {
             {/* Detailed Table with Date Display */}
             <div
               style={{
-                background: 'var(--panel)',
-                border: '1px solid var(--border-subtle)',
+                background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.7) 0%, rgba(10, 14, 23, 0.9) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
                 borderRadius: '14px',
                 overflow: 'hidden',
-                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
               }}
             >
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+              <div style={{ overflowX: 'auto' }} className="no-scrollbar">
+                <table style={{ width: '100%', minWidth: '1220px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                   <thead>
                     <tr
                       style={{
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        borderBottom: '1px solid var(--border-subtle)',
+                        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%)',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                         color: 'var(--text-muted)',
-                        fontSize: '0.72rem',
+                        fontSize: '0.70rem',
                         fontWeight: 700,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
                       }}
                     >
-                      <th style={{ padding: '12px 16px', color: '#38bdf8' }}>DATE &amp; TIME</th>
-                      <th style={{ padding: '12px 16px' }}>COMPANY &amp; SECTOR</th>
-                      <th style={{ padding: '12px 16px' }}>CLIENT / TRADER NAME</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>DEAL TYPE &amp; ACTION</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>VOLUME (SHARES)</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>TOTAL VALUE</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>EQUITY %</th>
-                      <th style={{ padding: '12px 16px' }}>SIGNAL &amp; STRATEGY TAKEAWAY</th>
-                      <th style={{ padding: '12px 16px', textAlign: 'center' }}>NSE LINK</th>
+                      <th style={{ padding: '12px 14px', width: '130px', color: '#38bdf8' }}>DATE &amp; TIME</th>
+                      <th style={{ padding: '12px 14px', width: '160px' }}>COMPANY &amp; SECTOR</th>
+                      <th style={{ padding: '12px 14px', width: '200px' }}>CLIENT / TRADER NAME</th>
+                      <th style={{ padding: '12px 14px', width: '135px', textAlign: 'center' }}>DEAL TYPE &amp; ACTION</th>
+                      <th style={{ padding: '12px 14px', width: '120px', textAlign: 'right' }}>VOLUME (SHARES)</th>
+                      <th style={{ padding: '12px 14px', width: '135px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
+                      <th style={{ padding: '12px 14px', width: '115px', textAlign: 'right' }}>TOTAL VALUE</th>
+                      <th style={{ padding: '12px 14px', width: '85px', textAlign: 'center' }}>EQUITY %</th>
+                      <th style={{ padding: '12px 14px', minWidth: '230px' }}>SIGNAL &amp; STRATEGY TAKEAWAY</th>
+                      <th style={{ padding: '12px 14px', width: '105px', textAlign: 'center' }}>NSE DISCLOSURE</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1402,15 +1402,15 @@ function DealsPageContent() {
                               transition: 'background 0.15s ease',
                             }}
                           >
-                            {/* 1. Explicit DATE & TIME (Mandatory User Requirement) */}
-                            <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                            {/* 1. Explicit DATE & TIME */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <Calendar size={13} color="#38bdf8" />
                                 <strong style={{ color: '#ffffff', fontSize: '0.82rem' }}>
                                   {item.trade_date}
                                 </strong>
                               </div>
-                              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <Clock size={11} />
                                 <span>{item.trade_time}</span>
                                 {item.days_ago !== undefined && (
@@ -1422,28 +1422,28 @@ function DealsPageContent() {
                             </td>
 
                             {/* 2. Company Name & Sector */}
-                            <td style={{ padding: '12px 16px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.90rem' }}>
                                   {item.symbol}
                                 </div>
                                 {item.live_change !== undefined && (
-                                  <span style={{ fontSize: '0.70rem', color: (item.live_change || 0) >= 0 ? '#34d399' : '#f87171', fontWeight: 700 }}>
+                                  <span style={{ fontSize: '0.70rem', color: (item.live_change || 0) >= 0 ? '#34d399' : '#f87171', fontWeight: 700, padding: '1px 5px', borderRadius: '4px', background: (item.live_change || 0) >= 0 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)' }}>
                                     {(item.live_change || 0) >= 0 ? '+' : ''}{(item.live_percent_change || 0).toFixed(2)}%
                                   </span>
                                 )}
                               </div>
-                              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                              <div style={{ fontSize: '0.70rem', color: 'var(--text-secondary)', marginTop: '2px', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.company_name}>
                                 {item.company_name}
                               </div>
-                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', marginTop: '1px' }}>
                                 {item.sector}
                               </div>
                             </td>
 
                             {/* 3. Client Name & Category */}
-                            <td style={{ padding: '12px 16px', maxWidth: '260px' }}>
-                              <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '0.82rem', lineHeight: 1.35 }}>
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                              <div style={{ fontWeight: 700, color: '#f8fafc', fontSize: '0.82rem', lineHeight: 1.3, maxWidth: '200px' }}>
                                 {item.client_name}
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
@@ -1464,15 +1464,16 @@ function DealsPageContent() {
                                       item.client_category === 'HNI' ? '#f472b6' :
                                       item.client_category === 'PROP_DESK' ? '#fb7185' : '#34d399',
                                     border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    letterSpacing: '0.02em',
                                   }}
                                 >
-                                  {item.client_category}
+                                  {item.client_category?.replace('_', ' ')}
                                 </span>
                               </div>
                             </td>
 
                             {/* 4. Combined DEAL TYPE & ACTION Column */}
-                            <td style={{ padding: '12px 16px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'center', whiteSpace: 'nowrap' }}>
                               <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                                 {/* Deal Type Badge */}
                                 <span
@@ -1514,82 +1515,99 @@ function DealsPageContent() {
                               </div>
                             </td>
 
-                            {/* 6. Traded Volume (Shares) */}
-                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                            {/* 5. Traded Volume (Shares) */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'right' }}>
                               <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.84rem' }}>
                                 {(item.quantity ?? 0).toLocaleString('en-IN')}
                               </div>
-                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)', marginTop: '2px' }}>
                                 {((item.quantity ?? 0) / 100000).toFixed(2)} Lakh Shares
                               </div>
                             </td>
 
-                            {/* 7. Deal Price vs Current LTP */}
-                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                            {/* 6. Deal Price vs Current LTP */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'right' }}>
                               <div style={{ fontWeight: 800, color: '#38bdf8', fontSize: '0.85rem' }}>
                                 ₹{(item.trade_price ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </div>
                               {item.current_market_price && (
                                 <div style={{ fontSize: '0.68rem', color: diffPct >= 0 ? '#34d399' : '#f87171', marginTop: '2px', fontWeight: 600 }}>
-                                  LTP: ₹{item.current_market_price.toFixed(1)} ({diffPct >= 0 ? '+' : ''}{diffPct.toFixed(1)}%)
+                                  LTP: ₹{item.current_market_price.toLocaleString('en-IN', { maximumFractionDigits: 1 })} ({diffPct >= 0 ? '+' : ''}{diffPct.toFixed(1)}%)
                                 </div>
                               )}
                             </td>
 
-                            {/* 8. Total Deal Value (Crores) */}
-                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                              <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '0.95rem', letterSpacing: '-0.01em' }}>
+                            {/* 7. Total Deal Value (Crores) */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'right' }}>
+                              <div style={{ fontWeight: 900, color: '#ffffff', fontSize: '0.92rem', letterSpacing: '-0.01em' }}>
                                 ₹{(item.deal_value_cr ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Cr
                               </div>
-                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', marginTop: '2px' }}>
                                 Transaction Size
                               </div>
                             </td>
 
-                            {/* 9. Equity % */}
-                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                            {/* 8. Equity % */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'center' }}>
                               <span
                                 style={{
                                   fontSize: '0.76rem',
                                   fontWeight: 800,
                                   color: item.equity_percentage >= 1.0 ? '#fbbf24' : '#ffffff',
+                                  background: item.equity_percentage >= 1.0 ? 'rgba(245, 158, 11, 0.12)' : 'rgba(255, 255, 255, 0.05)',
+                                  padding: '2px 7px',
+                                  borderRadius: '5px',
+                                  border: item.equity_percentage >= 1.0 ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
                                 }}
                               >
                                 {item.equity_percentage.toFixed(2)}%
                               </span>
-                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '0.64rem', color: 'var(--text-muted)', marginTop: '3px' }}>
                                 of Capital
                               </div>
                             </td>
 
-                            {/* 10. Signal & Takeaway */}
-                            <td style={{ padding: '12px 16px', maxWidth: '320px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
-                                <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#ffffff' }}>
-                                  {item.actionable_signal}
-                                </span>
-                              </div>
-                              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
-                                {item.strategy_takeaway}
+                            {/* 9. Signal & Takeaway */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
+                              <div
+                                style={{
+                                  background: 'rgba(255, 255, 255, 0.03)',
+                                  border: '1px solid rgba(255, 255, 255, 0.07)',
+                                  borderRadius: '8px',
+                                  padding: '7px 10px',
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '3px' }}>
+                                  <span style={{ fontWeight: 800, fontSize: '0.73rem', color: '#ffffff' }}>
+                                    {item.actionable_signal}
+                                  </span>
+                                </div>
+                                <div style={{ fontSize: '0.69rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                                  {item.strategy_takeaway}
+                                </div>
                               </div>
                             </td>
 
-                            {/* 11. NSE Link */}
-                            <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                            {/* 10. NSE Link */}
+                            <td style={{ padding: '12px 14px', verticalAlign: 'middle', textAlign: 'center', whiteSpace: 'nowrap' }}>
                               <a
                                 href={getOfficialNseUrl(item.symbol, item.nse_official_url)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn btn-secondary"
                                 style={{
                                   fontSize: '0.70rem',
-                                  padding: '5px 8px',
+                                  padding: '5px 9px',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '4px',
                                   whiteSpace: 'nowrap',
                                   color: '#38bdf8',
+                                  background: 'rgba(56, 189, 248, 0.08)',
                                   border: '1px solid rgba(56, 189, 248, 0.3)',
+                                  borderRadius: '6px',
+                                  textDecoration: 'none',
+                                  fontWeight: 600,
+                                  transition: 'all 0.15s ease',
                                 }}
                                 title={`Open ${item.symbol} quote & official disclosures on NSE India`}
                               >

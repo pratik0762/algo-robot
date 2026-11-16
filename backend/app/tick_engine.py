@@ -164,12 +164,12 @@ def _fetch_gift_nifty_quote() -> Optional[Dict[str, Any]]:
 
 # Real reference base prices for all 50 Nifty constituents (used as resilient fallback)
 BASE_EQUITY_PRICES: Dict[str, float] = {
-    "RELIANCE": 1165.00,
-    "TCS": 2483.60,
-    "HDFCBANK": 685.20,
+    "RELIANCE": 1285.00,
+    "TCS": 4120.50,
+    "HDFCBANK": 1740.80,
     "BHARTIARTL": 1820.50,
     "ICICIBANK": 1245.80,
-    "INFY": 1142.75,
+    "INFY": 1872.25,
     "SBIN": 969.80,
     "ITC": 435.50,
     "HINDUNILVR": 2210.40,
