@@ -665,6 +665,16 @@ export default function OptionChainPage() {
   const [importantInfoOpen, setImportantInfoOpen] = useState<boolean>(false);
   const [infoModalOpen, setInfoModalOpen] = useState<boolean>(false);
   const [tradeAllSuccessMsg, setTradeAllSuccessMsg] = useState<string | null>(null);
+  const [lastUpdatedTime, setLastUpdatedTime] = useState<string>('');
+
+  // Clock state to avoid prerender new Date() hydration error
+  useEffect(() => {
+    setLastUpdatedTime(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }));
+    const timer = setInterval(() => {
+      setLastUpdatedTime(new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }));
+    }, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
 
   // 1. Fetch Instruments List on Load
@@ -2133,7 +2143,7 @@ export default function OptionChainPage() {
 
                     {/* Footer Info & Auto-refresh note */}
                     <div style={{ marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                      Prices last updated at {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}. (Prices are auto-refreshed every 30 seconds)
+                      Prices last updated at {lastUpdatedTime || '03:30 PM'}. (Prices are auto-refreshed every 30 seconds)
                     </div>
 
                     {/* Important Info Accordion */}
