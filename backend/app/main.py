@@ -151,13 +151,15 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(news_engine.refresh_live_news())
     asyncio.create_task(tick_engine.sync_initial_live_quotes())
 
-    # Register candle aggregator and signal service listener on market data router
+    # Register candle aggregator, signal service, and OMS listener on market data router
     async def on_stream_tick(tick: NormalizedTick):
         candle_aggregator.add_tick(tick)
         from app.strategies import signal_service
         events = signal_service.process_tick(tick)
         for ev in events:
             asyncio.create_task(signal_service.broadcast_event(ev))
+        from app.oms import order_management_service
+        order_management_service.on_tick(tick)
     market_data_router.register_listener(on_stream_tick)
 
     # Startup: spawn tick background loop & market data router
@@ -668,6 +670,158 @@ async def websocket_risk_alerts(websocket: WebSocket):
             await websocket.receive_text()
     except (WebSocketDisconnect, Exception):
         risk_service.unregister_websocket(websocket)
+
+
+# =========================================================================
+# Phase 9: Multi-Broker Order Management System (OMS) REST & WebSocket APIs
+# =========================================================================
+
+@app.post("/api/orders/place")
+def place_order_endpoint(payload: Dict[str, Any]):
+    """Places order via OMS: evaluates pre-trade risk gates, dispatches to broker, and records fills."""
+    from app.oms import order_management_service
+    order = order_management_service.place_order(
+        symbol=payload.get("symbol", ""),
+        transaction_type=payload.get("transaction_type", payload.get("side", "BUY")),
+        order_type=payload.get("order_type", "MARKET"),
+        quantity=int(payload.get("quantity", 1)),
+        price=float(payload.get("price", 0.0)),
+        trigger_price=float(payload.get("trigger_price", 0.0)),
+        product_type=payload.get("product_type", payload.get("product", "MIS")),
+        exchange=payload.get("exchange", "NSE"),
+        execution_mode=payload.get("execution_mode", "PAPER"),
+        broker_name=payload.get("broker_name", payload.get("broker", "PAPER")),
+        stop_loss=payload.get("stop_loss"),
+        target=payload.get("target"),
+        sector=payload.get("sector"),
+        tag=payload.get("tag", "ALGO_ROBOT"),
+    )
+    return {
+        "status": "success" if order.state.value != "REJECTED" else "rejected",
+        "order": order.to_dict(),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/orders/{order_id}/cancel")
+def cancel_order_endpoint(order_id: str):
+    """Cancels an active working order."""
+    from app.oms import order_management_service
+    cancelled = order_management_service.cancel_order(order_id)
+    if not cancelled:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found or not active")
+    return {
+        "status": "success",
+        "order": cancelled.to_dict(),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/orders/{order_id}/modify")
+def modify_order_endpoint(order_id: str, payload: Dict[str, Any]):
+    """Modifies price, quantity, or trigger price of an open resting order."""
+    from app.oms import order_management_service
+    modified = order_management_service.modify_order(
+        order_id=order_id,
+        new_price=payload.get("price"),
+        new_quantity=payload.get("quantity"),
+        new_trigger_price=payload.get("trigger_price"),
+    )
+    if not modified:
+        raise HTTPException(status_code=400, detail=f"Order {order_id} could not be modified")
+    return {
+        "status": "success",
+        "order": modified.to_dict(),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/orders")
+def get_orders_endpoint(
+    status: Optional[str] = None,
+    symbol: Optional[str] = None,
+    execution_mode: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+):
+    """Retrieves orders from the master OMS ledger with optional filters."""
+    from app.oms import order_management_service
+    orders = order_management_service.get_orders(
+        status=status,
+        symbol=symbol,
+        execution_mode=execution_mode,
+        limit=limit,
+        offset=offset,
+    )
+    return {
+        "status": "success",
+        "orders": orders,
+        "count": len(orders),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/orders/{order_id}")
+def get_order_by_id_endpoint(order_id: str):
+    """Retrieves single order with complete fill history and state transitions."""
+    from app.oms import order_management_service
+    order = order_management_service.get_order_by_id(order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+    return {
+        "status": "success",
+        "order": order,
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/positions")
+def get_positions_endpoint():
+    """Retrieves all live open positions with real-time MTM and PnL."""
+    from app.oms import order_management_service
+    positions = order_management_service.get_positions()
+    return {
+        "status": "success",
+        "positions": positions,
+        "count": len(positions),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/trades")
+def get_trades_endpoint(limit: int = 50):
+    """Retrieves executed trade fills ledger with statutory friction breakdown."""
+    from app.oms import order_management_service
+    trades = order_management_service.get_trades(limit=limit)
+    return {
+        "status": "success",
+        "trades": trades,
+        "count": len(trades),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/oms/portfolio-summary")
+def get_oms_portfolio_summary_endpoint():
+    """Retrieves consolidated portfolio equity, cash, margin, and MTM across execution desks."""
+    from app.oms import order_management_service
+    return {
+        "status": "success",
+        "summary": order_management_service.get_portfolio_summary(),
+        "timestamp": time.time(),
+    }
+
+
+@app.websocket("/ws/orders")
+async def websocket_orders(websocket: WebSocket):
+    """Real-time streaming WebSocket broadcasting order transitions and execution fills."""
+    from app.oms import order_management_service
+    await order_management_service.register_websocket(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except (WebSocketDisconnect, Exception):
+        order_management_service.unregister_websocket(websocket)
 
 
 # =========================================================================

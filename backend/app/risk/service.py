@@ -124,7 +124,6 @@ class RiskService:
             loop = asyncio.get_running_loop()
             loop.create_task(self._broadcast_risk_event(event.to_dict()))
         except RuntimeError:
-            # No running event loop in current thread
             pass
         except Exception as e:
             logger.debug("Could not schedule risk broadcast: %s", e)
@@ -149,3 +148,4 @@ class RiskService:
 
 # Singleton risk service
 risk_service = RiskService()
+

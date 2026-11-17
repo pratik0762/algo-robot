@@ -35,11 +35,13 @@ class TradeFrictionBreakdown:
             "brokerage": round(self.brokerage, 2),
             "stt": round(self.stt, 2),
             "exchange_turnover_fee": round(self.exchange_turnover_fee, 2),
+            "exchange_fee": round(self.exchange_turnover_fee, 2),
             "gst": round(self.gst, 2),
             "sebi_fee": round(self.sebi_fee, 2),
             "stamp_duty": round(self.stamp_duty, 2),
             "slippage_cost": round(self.slippage_cost, 2),
             "total_friction": round(self.total_friction, 2),
+            "total_charges": round(self.total_friction - self.slippage_cost, 2),
         }
 
 
