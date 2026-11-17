@@ -151,9 +151,13 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(news_engine.refresh_live_news())
     asyncio.create_task(tick_engine.sync_initial_live_quotes())
 
-    # Register candle aggregator listener on market data router
+    # Register candle aggregator and signal service listener on market data router
     async def on_stream_tick(tick: NormalizedTick):
         candle_aggregator.add_tick(tick)
+        from app.strategies import signal_service
+        events = signal_service.process_tick(tick)
+        for ev in events:
+            asyncio.create_task(signal_service.broadcast_event(ev))
     market_data_router.register_listener(on_stream_tick)
 
     # Startup: spawn tick background loop & market data router
@@ -447,6 +451,115 @@ async def websocket_options_chain_stream(websocket: WebSocket, symbol: str):
             await websocket.receive_text()
     except (WebSocketDisconnect, Exception):
         options_chain_service.unregister_websocket(symbol, websocket)
+
+# =========================================================================
+# PHASE 6: MULTI-TIMEFRAME STRATEGY & SIGNAL STATE MACHINE
+# =========================================================================
+
+@app.get("/api/strategies")
+def get_available_strategies():
+    """Returns catalog of institutional Smart Money Concepts and quantitative strategies."""
+    from app.strategies import signal_service
+    return {
+        "status": "success",
+        "strategies": signal_service.list_strategies(),
+        "total_strategies": len(signal_service.list_strategies()),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/strategies/evaluate")
+def evaluate_symbol_strategy(
+    symbol: str = Query(..., description="Symbol to evaluate (e.g. RELIANCE, NIFTY)"),
+    timeframe: str = Query("5m", description="Execution timeframe (e.g. 5m, 15m)"),
+    htf_timeframe: str = Query("1h", description="Higher timeframe for confluence (e.g. 1h, 1D)"),
+):
+    """Evaluates multi-timeframe quantitative & SMC strategies against authentic candle data."""
+    from app.strategies import signal_service
+    candidates = signal_service.evaluate_symbol_strategies(
+        symbol=symbol,
+        timeframe=timeframe,
+        htf_timeframe=htf_timeframe,
+    )
+    return {
+        "status": "success",
+        "symbol": symbol.upper(),
+        "timeframe": timeframe,
+        "htf_timeframe": htf_timeframe,
+        "candidates": [c.to_dict() for c in candidates],
+        "signals_count": len(candidates),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/signals/active")
+def get_active_trade_signals(symbol: Optional[str] = Query(None, description="Optional symbol filter")):
+    """Returns active signals currently monitored by the tick state machine."""
+    from app.strategies import signal_service
+    signals = signal_service.get_active_signals(symbol=symbol)
+    return {
+        "status": "success",
+        "total_active": len(signals),
+        "signals": signals,
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/signals/history")
+def get_signals_performance_history(limit: int = Query(100, description="Max history records to return")):
+    """Returns historically resolved signals, win rate, profit factor, and average Risk-Reward."""
+    from app.strategies import signal_service
+    history = signal_service.get_signal_history(limit=limit)
+    return {
+        "status": "success",
+        **history,
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/signals/trigger")
+def manually_trigger_signal(
+    symbol: str = Query(..., description="Stock symbol (e.g. TCS)"),
+    strategy_name: str = Query("Order Block Retest & Mitigation", description="Strategy name"),
+    timeframe: str = Query("15m", description="Timeframe"),
+    signal_type: str = Query("BUY", description="BUY or SELL"),
+    entry_price: float = Query(..., description="Entry price"),
+    stop_loss: float = Query(..., description="Stop Loss"),
+    target_1: float = Query(..., description="Target 1"),
+    target_2: float = Query(..., description="Target 2"),
+    confidence_score: float = Query(85.0, description="Confidence score 0-100"),
+):
+    """Spawns and enters a new tracked signal into the state machine."""
+    from app.strategies import signal_service
+    sig = signal_service.create_signal(
+        symbol=symbol,
+        strategy_name=strategy_name,
+        timeframe=timeframe,
+        signal_type=signal_type,
+        entry_price=entry_price,
+        stop_loss=stop_loss,
+        target_1=target_1,
+        target_2=target_2,
+        confidence_score=confidence_score,
+        confluence_factors=["Manual / Automated Quantitative Trigger"],
+    )
+    return {
+        "status": "success",
+        "signal": sig.to_dict(),
+        "timestamp": time.time(),
+    }
+
+
+@app.websocket("/ws/signals")
+async def websocket_signals_stream(websocket: WebSocket):
+    """Real-time WebSocket stream broadcasting signal triggers and state transitions."""
+    from app.strategies import signal_service
+    await signal_service.register_websocket(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except (WebSocketDisconnect, Exception):
+        signal_service.unregister_websocket(websocket)
 
 
 # =========================================================================
