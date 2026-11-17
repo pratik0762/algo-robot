@@ -1,0 +1,1794 @@
+[
+  {
+    "symbol": "BANKNIFTY",
+    "name": "NIFTY BANK",
+    "type": "INDEX",
+    "lot_size": 30,
+    "interval": 100,
+    "active_status": true
+  },
+  {
+    "symbol": "FINNIFTY",
+    "name": "NIFTY FINANCIAL SERVICES",
+    "type": "INDEX",
+    "lot_size": 60,
+    "interval": 25,
+    "active_status": true
+  },
+  {
+    "symbol": "MIDCPNIFTY",
+    "name": "NIFTY MID SELECT",
+    "type": "INDEX",
+    "lot_size": 120,
+    "interval": 25,
+    "active_status": true
+  },
+  {
+    "symbol": "NIFTY",
+    "name": "NIFTY 50",
+    "type": "INDEX",
+    "lot_size": 65,
+    "interval": 50,
+    "active_status": true
+  },
+  {
+    "symbol": "NIFTYFPI",
+    "name": "NIFTY FPI 150",
+    "type": "INDEX",
+    "lot_size": 1100,
+    "interval": 25,
+    "active_status": true
+  },
+  {
+    "symbol": "NIFTYNXT50",
+    "name": "NIFTY NEXT 50",
+    "type": "INDEX",
+    "lot_size": 25,
+    "interval": 25,
+    "active_status": true
+  },
+  {
+    "symbol": "360ONE",
+    "name": "360 ONE WAM LIMITED",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ABB",
+    "name": "ABB INDIA LIMITED",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ABCAPITAL",
+    "name": "ADITYA BIRLA CAPITAL LTD.",
+    "type": "STOCK",
+    "lot_size": 1550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ADANIENSOL",
+    "name": "ADANI ENERGY SOLUTION LTD",
+    "type": "STOCK",
+    "lot_size": 675,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ADANIENT",
+    "name": "ADANI ENTERPRISES LIMITED",
+    "type": "STOCK",
+    "lot_size": 309,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ADANIGREEN",
+    "name": "ADANI GREEN ENERGY LTD",
+    "type": "STOCK",
+    "lot_size": 600,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "name": "ADANI PORT & SEZ LTD",
+    "type": "STOCK",
+    "lot_size": 475,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ADANIPOWER",
+    "name": "ADANI POWER LTD",
+    "type": "STOCK",
+    "lot_size": 3550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ALKEM",
+    "name": "ALKEM LABORATORIES LTD.",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "AMBER",
+    "name": "AMBER ENTERPRISES (I) LTD",
+    "type": "STOCK",
+    "lot_size": 100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "AMBUJACEM",
+    "name": "AMBUJA CEMENTS LTD",
+    "type": "STOCK",
+    "lot_size": 1200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ANANDRATHI",
+    "name": "ANAND RATHI WEALTH LTD",
+    "type": "STOCK",
+    "lot_size": 250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ANGELONE",
+    "name": "ANGEL ONE LIMITED",
+    "type": "STOCK",
+    "lot_size": 2500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "APLAPOLLO",
+    "name": "APL APOLLO TUBES LTD",
+    "type": "STOCK",
+    "lot_size": 350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "APOLLOHOSP",
+    "name": "APOLLO HOSPITALS ENTER. L",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ASHOKLEY",
+    "name": "ASHOK LEYLAND LTD",
+    "type": "STOCK",
+    "lot_size": 5000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ASIANPAINT",
+    "name": "ASIAN PAINTS LIMITED",
+    "type": "STOCK",
+    "lot_size": 250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ASTRAL",
+    "name": "ASTRAL LIMITED",
+    "type": "STOCK",
+    "lot_size": 425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ATHERENERG",
+    "name": "ATHER ENERGY LIMITED",
+    "type": "STOCK",
+    "lot_size": 375,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "AUBANK",
+    "name": "AU SMALL FINANCE BANK LTD",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "AUROPHARMA",
+    "name": "AUROBINDO PHARMA LTD",
+    "type": "STOCK",
+    "lot_size": 550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "AXISBANK",
+    "name": "AXIS BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BAJAJ-AUTO",
+    "name": "BAJAJ AUTO LIMITED",
+    "type": "STOCK",
+    "lot_size": 75,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BAJAJFINSV",
+    "name": "BAJAJ FINSERV LTD.",
+    "type": "STOCK",
+    "lot_size": 300,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "name": "BAJAJ FINANCE LIMITED",
+    "type": "STOCK",
+    "lot_size": 750,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BANDHANBNK",
+    "name": "BANDHAN BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 3600,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BANKBARODA",
+    "name": "BANK OF BARODA",
+    "type": "STOCK",
+    "lot_size": 2925,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BANKINDIA",
+    "name": "BANK OF INDIA",
+    "type": "STOCK",
+    "lot_size": 5200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BDL",
+    "name": "BHARAT DYNAMICS LIMITED",
+    "type": "STOCK",
+    "lot_size": 425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BEL",
+    "name": "BHARAT ELECTRONICS LTD",
+    "type": "STOCK",
+    "lot_size": 1425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BHARATFORG",
+    "name": "BHARAT FORGE LTD",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "name": "BHARTI AIRTEL LIMITED",
+    "type": "STOCK",
+    "lot_size": 475,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BHEL",
+    "name": "BHEL",
+    "type": "STOCK",
+    "lot_size": 2625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BIOCON",
+    "name": "BIOCON LIMITED.",
+    "type": "STOCK",
+    "lot_size": 2500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BLUESTARCO",
+    "name": "BLUE STAR LIMITED",
+    "type": "STOCK",
+    "lot_size": 325,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BOSCHLTD",
+    "name": "BOSCH LIMITED",
+    "type": "STOCK",
+    "lot_size": 25,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BPCL",
+    "name": "BHARAT PETROLEUM CORP  LT",
+    "type": "STOCK",
+    "lot_size": 1975,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BRITANNIA",
+    "name": "BRITANNIA INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "BSE",
+    "name": "BSE LIMITED",
+    "type": "STOCK",
+    "lot_size": 200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CAMS",
+    "name": "COMPUTER AGE MNGT SER LTD",
+    "type": "STOCK",
+    "lot_size": 825,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CANBK",
+    "name": "CANARA BANK",
+    "type": "STOCK",
+    "lot_size": 6750,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CDSL",
+    "name": "CENTRAL DEPO SER (I) LTD",
+    "type": "STOCK",
+    "lot_size": 475,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CGPOWER",
+    "name": "CG POWER AND IND SOL LTD",
+    "type": "STOCK",
+    "lot_size": 850,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CHOLAFIN",
+    "name": "CHOLAMANDALAM IN & FIN CO",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CIPLA",
+    "name": "CIPLA LTD",
+    "type": "STOCK",
+    "lot_size": 425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "COALINDIA",
+    "name": "COAL INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 1350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "COCHINSHIP",
+    "name": "COCHIN SHIPYARD LIMITED",
+    "type": "STOCK",
+    "lot_size": 400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "COFORGE",
+    "name": "COFORGE LIMITED",
+    "type": "STOCK",
+    "lot_size": 475,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "COLPAL",
+    "name": "COLGATE PALMOLIVE LTD.",
+    "type": "STOCK",
+    "lot_size": 275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CONCOR",
+    "name": "CONTAINER CORP OF IND LTD",
+    "type": "STOCK",
+    "lot_size": 1250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "COROMANDEL",
+    "name": "COROMANDEL INTERNTL. LTD",
+    "type": "STOCK",
+    "lot_size": 300,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CROMPTON",
+    "name": "CROMPT GREA CON ELEC LTD",
+    "type": "STOCK",
+    "lot_size": 2150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CUB",
+    "name": "CITY UNION BANK LTD",
+    "type": "STOCK",
+    "lot_size": 2325,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "CUMMINSIND",
+    "name": "CUMMINS INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DABUR",
+    "name": "DABUR INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 1250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DATAPATTNS",
+    "name": "DATA PATTERNS INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DELHIVERY",
+    "name": "DELHIVERY LIMITED",
+    "type": "STOCK",
+    "lot_size": 2075,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DIVISLAB",
+    "name": "DIVI S LABORATORIES LTD",
+    "type": "STOCK",
+    "lot_size": 100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DIXON",
+    "name": "DIXON TECHNO (INDIA) LTD",
+    "type": "STOCK",
+    "lot_size": 50,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DLF",
+    "name": "DLF LIMITED",
+    "type": "STOCK",
+    "lot_size": 950,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DMART",
+    "name": "AVENUE SUPERMARTS LIMITED",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "DRREDDY",
+    "name": "DR. REDDY S LABORATORIES",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "EICHERMOT",
+    "name": "EICHER MOTORS LTD",
+    "type": "STOCK",
+    "lot_size": 100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ENRIN",
+    "name": "SIEMENS ENERGY INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ETERNAL",
+    "name": "ETERNAL LIMITED",
+    "type": "STOCK",
+    "lot_size": 2425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "FEDERALBNK",
+    "name": "FEDERAL BANK LTD",
+    "type": "STOCK",
+    "lot_size": 2500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "FORCEMOT",
+    "name": "FORCE MOTORS LIMITED",
+    "type": "STOCK",
+    "lot_size": 25,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "FORTIS",
+    "name": "FORTIS HEALTHCARE LTD",
+    "type": "STOCK",
+    "lot_size": 775,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GAIL",
+    "name": "GAIL (INDIA) LTD",
+    "type": "STOCK",
+    "lot_size": 3550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GLENMARK",
+    "name": "GLENMARK PHARMACEUTICALS",
+    "type": "STOCK",
+    "lot_size": 375,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GMRAIRPORT",
+    "name": "GMR AIRPORTS LIMITED",
+    "type": "STOCK",
+    "lot_size": 6975,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GODFRYPHLP",
+    "name": "GODFREY PHILLIPS INDIA LT",
+    "type": "STOCK",
+    "lot_size": 275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GODREJCP",
+    "name": "GODREJ CONSUMER PRODUCTS",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GODREJPROP",
+    "name": "GODREJ PROPERTIES LTD",
+    "type": "STOCK",
+    "lot_size": 325,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GRASIM",
+    "name": "GRASIM INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "GVT&D",
+    "name": "GE VERNOVA T&D INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HAL",
+    "name": "HINDUSTAN AERONAUTICS LTD",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HAVELLS",
+    "name": "HAVELLS INDIA LIMITED",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HCLTECH",
+    "name": "HCL TECHNOLOGIES LTD",
+    "type": "STOCK",
+    "lot_size": 400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HDFCAMC",
+    "name": "HDFC AMC LIMITED",
+    "type": "STOCK",
+    "lot_size": 300,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC BANK LTD",
+    "type": "STOCK",
+    "lot_size": 650,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HDFCLIFE",
+    "name": "HDFC LIFE INS CO LTD",
+    "type": "STOCK",
+    "lot_size": 1100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HEROMOTOCO",
+    "name": "HERO MOTOCORP LIMITED",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HINDALCO",
+    "name": "HINDALCO  INDUSTRIES  LTD",
+    "type": "STOCK",
+    "lot_size": 700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HINDPETRO",
+    "name": "HINDUSTAN PETROLEUM CORP",
+    "type": "STOCK",
+    "lot_size": 2025,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HINDUNILVR",
+    "name": "HINDUSTAN UNILEVER LTD.",
+    "type": "STOCK",
+    "lot_size": 300,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HINDZINC",
+    "name": "HINDUSTAN ZINC LIMITED",
+    "type": "STOCK",
+    "lot_size": 1225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "HYUNDAI",
+    "name": "HYUNDAI MOTOR INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ICICIBANK",
+    "name": "ICICI BANK LTD.",
+    "type": "STOCK",
+    "lot_size": 700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ICICIGI",
+    "name": "ICICI LOMBARD GIC LIMITED",
+    "type": "STOCK",
+    "lot_size": 325,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ICICILIFE",
+    "name": "ICICI LIFE INSURANCE LTD",
+    "type": "STOCK",
+    "lot_size": 925,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IDEA",
+    "name": "VODAFONE IDEA LIMITED",
+    "type": "STOCK",
+    "lot_size": 71475,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IDFCFIRSTB",
+    "name": "IDFC FIRST BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 9275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IEX",
+    "name": "INDIAN ENERGY EXC LTD",
+    "type": "STOCK",
+    "lot_size": 4350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INDHOTEL",
+    "name": "THE INDIAN HOTELS CO. LTD",
+    "type": "STOCK",
+    "lot_size": 1000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INDIANB",
+    "name": "INDIAN BANK",
+    "type": "STOCK",
+    "lot_size": 1000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INDIGO",
+    "name": "INTERGLOBE AVIATION LTD",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INDUSINDBK",
+    "name": "INDUSIND BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INDUSTOWER",
+    "name": "INDUS TOWERS LIMITED",
+    "type": "STOCK",
+    "lot_size": 1700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INFY",
+    "name": "INFOSYS LIMITED",
+    "type": "STOCK",
+    "lot_size": 400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "INOXWIND",
+    "name": "INOX WIND LIMITED",
+    "type": "STOCK",
+    "lot_size": 6400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IOC",
+    "name": "INDIAN OIL CORP LTD",
+    "type": "STOCK",
+    "lot_size": 4875,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IREDA",
+    "name": "INDIAN RENEWABLE ENERGY",
+    "type": "STOCK",
+    "lot_size": 4525,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "IRFC",
+    "name": "INDIAN RAILWAY FIN CORP L",
+    "type": "STOCK",
+    "lot_size": 5425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ITC",
+    "name": "ITC LTD",
+    "type": "STOCK",
+    "lot_size": 1725,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "JINDALSTEL",
+    "name": "JINDAL STEEL LIMITED",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "JIOFIN",
+    "name": "JIO FIN SERVICES LTD",
+    "type": "STOCK",
+    "lot_size": 2350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "JSWENERGY",
+    "name": "JSW ENERGY LIMITED",
+    "type": "STOCK",
+    "lot_size": 1075,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "name": "JSW STEEL LIMITED",
+    "type": "STOCK",
+    "lot_size": 675,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "JUBLFOOD",
+    "name": "JUBILANT FOODWORKS LTD",
+    "type": "STOCK",
+    "lot_size": 1250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KALYANKJIL",
+    "name": "KALYAN JEWELLERS IND LTD",
+    "type": "STOCK",
+    "lot_size": 1350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KARURVYSYA",
+    "name": "KARUR VYSYA BANK LTD",
+    "type": "STOCK",
+    "lot_size": 1550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KAYNES",
+    "name": "KAYNES TECHNOLOGY IND LTD",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KEI",
+    "name": "KEI INDUSTRIES LTD.",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KFINTECH",
+    "name": "KFIN TECHNOLOGIES LIMITED",
+    "type": "STOCK",
+    "lot_size": 575,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "name": "KOTAK MAHINDRA BANK LTD",
+    "type": "STOCK",
+    "lot_size": 2000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "KPITTECH",
+    "name": "KPIT TECHNOLOGIES LIMITED",
+    "type": "STOCK",
+    "lot_size": 775,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LAURUSLABS",
+    "name": "LAURUS LABS LIMITED",
+    "type": "STOCK",
+    "lot_size": 425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LICHSGFIN",
+    "name": "LIC HOUSING FINANCE LTD",
+    "type": "STOCK",
+    "lot_size": 1000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LICI",
+    "name": "LIFE INSURA CORP OF INDIA",
+    "type": "STOCK",
+    "lot_size": 1400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LODHA",
+    "name": "LODHA DEVELOPERS LIMITED",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LT",
+    "name": "LARSEN & TOUBRO LTD.",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LTF",
+    "name": "L&T FINANCE LIMITED",
+    "type": "STOCK",
+    "lot_size": 2250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LTM",
+    "name": "LTM LIMITED",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "LUPIN",
+    "name": "LUPIN LIMITED",
+    "type": "STOCK",
+    "lot_size": 425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "M&M",
+    "name": "MAHINDRA & MAHINDRA LTD",
+    "type": "STOCK",
+    "lot_size": 200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MAHABANK",
+    "name": "BANK OF MAHARASHTRA",
+    "type": "STOCK",
+    "lot_size": 6500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MANAPPURAM",
+    "name": "MANAPPURAM FINANCE LTD",
+    "type": "STOCK",
+    "lot_size": 3000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MANKIND",
+    "name": "MANKIND PHARMA LIMITED",
+    "type": "STOCK",
+    "lot_size": 250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MARICO",
+    "name": "MARICO LIMITED",
+    "type": "STOCK",
+    "lot_size": 1200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MARUTI",
+    "name": "MARUTI SUZUKI INDIA LTD.",
+    "type": "STOCK",
+    "lot_size": 50,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MAXHEALTH",
+    "name": "MAX HEALTHCARE INS LTD",
+    "type": "STOCK",
+    "lot_size": 525,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MAZDOCK",
+    "name": "MAZAGON DOCK SHIPBUIL LTD",
+    "type": "STOCK",
+    "lot_size": 225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MCX",
+    "name": "MULTI COMMODITY EXCHANGE",
+    "type": "STOCK",
+    "lot_size": 225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MFSL",
+    "name": "MAX FINANCIAL SERV LTD",
+    "type": "STOCK",
+    "lot_size": 400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MOTHERSON",
+    "name": "SAMVRDHNA MTHRSN INTL LTD",
+    "type": "STOCK",
+    "lot_size": 6150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MOTILALOFS",
+    "name": "MOTILAL OSWAL FIN LTD",
+    "type": "STOCK",
+    "lot_size": 775,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MPHASIS",
+    "name": "MPHASIS LIMITED",
+    "type": "STOCK",
+    "lot_size": 275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "MUTHOOTFIN",
+    "name": "MUTHOOT FINANCE LIMITED",
+    "type": "STOCK",
+    "lot_size": 275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NAM-INDIA",
+    "name": "NIPPON L I A M LTD",
+    "type": "STOCK",
+    "lot_size": 625,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NATIONALUM",
+    "name": "NATIONAL ALUMINIUM CO LTD",
+    "type": "STOCK",
+    "lot_size": 1875,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NAUKRI",
+    "name": "INFO EDGE (I) LTD",
+    "type": "STOCK",
+    "lot_size": 550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NAVINFLUOR",
+    "name": "NAVIN FLUORINE INT. LTD",
+    "type": "STOCK",
+    "lot_size": 75,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NBCC",
+    "name": "NBCC (INDIA) LIMITED",
+    "type": "STOCK",
+    "lot_size": 6500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NESTLEIND",
+    "name": "NESTLE INDIA LIMITED",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NHPC",
+    "name": "NHPC LTD",
+    "type": "STOCK",
+    "lot_size": 6950,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NMDC",
+    "name": "NMDC LTD.",
+    "type": "STOCK",
+    "lot_size": 6750,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NTPC",
+    "name": "NTPC LTD",
+    "type": "STOCK",
+    "lot_size": 1500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "NYKAA",
+    "name": "FSN E COMMERCE VENTURES",
+    "type": "STOCK",
+    "lot_size": 3125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "OBEROIRLTY",
+    "name": "OBEROI REALTY LIMITED",
+    "type": "STOCK",
+    "lot_size": 350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "OFSS",
+    "name": "ORACLE FIN SERV SOFT LTD.",
+    "type": "STOCK",
+    "lot_size": 50,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "OIL",
+    "name": "OIL INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 1400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ONGC",
+    "name": "OIL AND NATURAL GAS CORP.",
+    "type": "STOCK",
+    "lot_size": 2250,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PAGEIND",
+    "name": "PAGE INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 20,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PATANJALI",
+    "name": "PATANJALI FOODS LIMITED",
+    "type": "STOCK",
+    "lot_size": 1075,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PAYTM",
+    "name": "ONE 97 COMMUNICATIONS LTD",
+    "type": "STOCK",
+    "lot_size": 725,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PERSISTENT",
+    "name": "PERSISTENT SYSTEMS LTD",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PETRONET",
+    "name": "PETRONET LNG LIMITED",
+    "type": "STOCK",
+    "lot_size": 1900,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PFC",
+    "name": "POWER FIN CORP LTD.",
+    "type": "STOCK",
+    "lot_size": 1300,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PGEL",
+    "name": "PG ELECTROPLAST LTD",
+    "type": "STOCK",
+    "lot_size": 950,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PHOENIXLTD",
+    "name": "THE PHOENIX MILLS LTD",
+    "type": "STOCK",
+    "lot_size": 350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PIDILITIND",
+    "name": "PIDILITE INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PIIND",
+    "name": "PI INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PNB",
+    "name": "PUNJAB NATIONAL BANK",
+    "type": "STOCK",
+    "lot_size": 8000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PNBHOUSING",
+    "name": "PNB HOUSING FIN LTD.",
+    "type": "STOCK",
+    "lot_size": 650,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "POLICYBZR",
+    "name": "PB FINTECH LIMITED",
+    "type": "STOCK",
+    "lot_size": 350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "POLYCAB",
+    "name": "POLYCAB INDIA LIMITED",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "POWERGRID",
+    "name": "POWER GRID CORP. LTD.",
+    "type": "STOCK",
+    "lot_size": 1900,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "POWERINDIA",
+    "name": "HITACHI ENERGY INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 25,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PREMIERENE",
+    "name": "PREMIER ENERGIES LIMITED",
+    "type": "STOCK",
+    "lot_size": 650,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "PRESTIGE",
+    "name": "PRESTIGE ESTATE LTD",
+    "type": "STOCK",
+    "lot_size": 450,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "RADICO",
+    "name": "RADICO KHAITAN LTD",
+    "type": "STOCK",
+    "lot_size": 150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "RBLBANK",
+    "name": "RBL BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 3175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "RECLTD",
+    "name": "REC LIMITED",
+    "type": "STOCK",
+    "lot_size": 1575,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "RELIANCE",
+    "name": "RELIANCE INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 500,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "RVNL",
+    "name": "RAIL VIKAS NIGAM LIMITED",
+    "type": "STOCK",
+    "lot_size": 1925,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SAGILITY",
+    "name": "SAGILITY LIMITED",
+    "type": "STOCK",
+    "lot_size": 12000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SAIL",
+    "name": "STEEL AUTHORITY OF INDIA",
+    "type": "STOCK",
+    "lot_size": 4700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SBICARD",
+    "name": "SBI CARDS & PAY SER LTD",
+    "type": "STOCK",
+    "lot_size": 800,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SBILIFE",
+    "name": "SBI LIFE INSURANCE CO LTD",
+    "type": "STOCK",
+    "lot_size": 375,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SBIN",
+    "name": "STATE BANK OF INDIA",
+    "type": "STOCK",
+    "lot_size": 750,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SHREECEM",
+    "name": "SHREE CEMENT LIMITED",
+    "type": "STOCK",
+    "lot_size": 25,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "name": "SHRIRAM FINANCE LIMITED",
+    "type": "STOCK",
+    "lot_size": 825,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SIEMENS",
+    "name": "SIEMENS LTD",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SOLARINDS",
+    "name": "SOLAR INDUSTRIES (I) LTD",
+    "type": "STOCK",
+    "lot_size": 25,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SONACOMS",
+    "name": "SONA BLW PRECISION FRGS L",
+    "type": "STOCK",
+    "lot_size": 1225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SRF",
+    "name": "SRF LTD",
+    "type": "STOCK",
+    "lot_size": 200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "name": "SUN PHARMACEUTICAL IND L",
+    "type": "STOCK",
+    "lot_size": 350,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SUPREMEIND",
+    "name": "SUPREME INDUSTRIES LTD",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SUZLON",
+    "name": "SUZLON ENERGY LIMITED",
+    "type": "STOCK",
+    "lot_size": 12700,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SWIGGY",
+    "name": "SWIGGY LIMITED",
+    "type": "STOCK",
+    "lot_size": 1825,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "SYRMA",
+    "name": "SYRMA SGS TECHNOLOGY LTD",
+    "type": "STOCK",
+    "lot_size": 325,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TATACONSUM",
+    "name": "TATA CONSUMER PRODUCT LTD",
+    "type": "STOCK",
+    "lot_size": 550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TATAELXSI",
+    "name": "TATA ELXSI LIMITED",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TATAPOWER",
+    "name": "TATA POWER CO LTD",
+    "type": "STOCK",
+    "lot_size": 1450,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TATASTEEL",
+    "name": "TATA STEEL LIMITED",
+    "type": "STOCK",
+    "lot_size": 2750,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TCS",
+    "name": "TATA CONSULTANCY SERV LT",
+    "type": "STOCK",
+    "lot_size": 225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TECHM",
+    "name": "TECH MAHINDRA LIMITED",
+    "type": "STOCK",
+    "lot_size": 600,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TIINDIA",
+    "name": "TUBE INVEST OF INDIA LTD",
+    "type": "STOCK",
+    "lot_size": 200,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TITAN",
+    "name": "TITAN COMPANY LIMITED",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TMPV",
+    "name": "TATA MOTORS PASS VEH LTD",
+    "type": "STOCK",
+    "lot_size": 1600,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TORNTPHARM",
+    "name": "TORRENT PHARMACEUTICALS L",
+    "type": "STOCK",
+    "lot_size": 125,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TRENT",
+    "name": "TRENT LTD",
+    "type": "STOCK",
+    "lot_size": 225,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "TVSMOTOR",
+    "name": "TVS MOTOR COMPANY  LTD",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "UJJIVANSFB",
+    "name": "UJJIVAN SMALL FINANC BANK",
+    "type": "STOCK",
+    "lot_size": 8000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "name": "ULTRATECH CEMENT LIMITED",
+    "type": "STOCK",
+    "lot_size": 50,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "UNIONBANK",
+    "name": "UNION BANK OF INDIA",
+    "type": "STOCK",
+    "lot_size": 4425,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "UNITDSPR",
+    "name": "UNITED SPIRITS LIMITED",
+    "type": "STOCK",
+    "lot_size": 400,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "UNOMINDA",
+    "name": "UNO MINDA LIMITED",
+    "type": "STOCK",
+    "lot_size": 550,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "UPL",
+    "name": "UPL LIMITED",
+    "type": "STOCK",
+    "lot_size": 1355,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "VBL",
+    "name": "VARUN BEVERAGES LIMITED",
+    "type": "STOCK",
+    "lot_size": 1275,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "VEDL",
+    "name": "VEDANTA LIMITED",
+    "type": "STOCK",
+    "lot_size": 1150,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "VMM",
+    "name": "VISHAL MEGA MART LIMITED",
+    "type": "STOCK",
+    "lot_size": 4850,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "VOLTAS",
+    "name": "VOLTAS LTD",
+    "type": "STOCK",
+    "lot_size": 375,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "WAAREEENER",
+    "name": "WAAREE ENERGIES LIMITED",
+    "type": "STOCK",
+    "lot_size": 175,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "WIPRO",
+    "name": "WIPRO LTD",
+    "type": "STOCK",
+    "lot_size": 3000,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "YESBANK",
+    "name": "YES BANK LIMITED",
+    "type": "STOCK",
+    "lot_size": 31100,
+    "interval": 20,
+    "active_status": true
+  },
+  {
+    "symbol": "ZYDUSLIFE",
+    "name": "ZYDUS LIFESCIENCES LTD",
+    "type": "STOCK",
+    "lot_size": 450,
+    "interval": 20,
+    "active_status": true
+  }
+]

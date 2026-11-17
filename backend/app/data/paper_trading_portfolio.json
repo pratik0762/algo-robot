@@ -1,0 +1,81 @@
+{
+  "account_id": "VIRTUAL-DESK-001",
+  "initial_capital": 1000000.0,
+  "cash_balance": 959642.0,
+  "used_margin": 0.0,
+  "realized_pnl": -40.1,
+  "total_charges": 133.5,
+  "total_orders_placed": 4,
+  "winning_trades": 0,
+  "losing_trades": 1,
+  "open_positions": [
+    {
+      "position_id": "POS-98B1DD27",
+      "symbol": "RELIANCE",
+      "instrument_type": "EQUITY",
+      "side": "BUY",
+      "quantity": 10,
+      "entry_price": 1340.37,
+      "current_price": 1340.37,
+      "unrealized_pnl": 0.0,
+      "pnl_pct": 0.0,
+      "margin_allocated": 13403.699999999999,
+      "stop_loss": null,
+      "target": null,
+      "strategy_name": "ALGO_ROBOT",
+      "entry_time": "2026-11-13 15:07:55 UTC"
+    },
+    {
+      "position_id": "POS-375A7D5C",
+      "symbol": "RELIANCE",
+      "instrument_type": "EQUITY",
+      "side": "BUY",
+      "quantity": 10,
+      "entry_price": 1340.37,
+      "current_price": 1340.37,
+      "unrealized_pnl": 0.0,
+      "pnl_pct": 0.0,
+      "margin_allocated": 13403.699999999999,
+      "stop_loss": null,
+      "target": null,
+      "strategy_name": "ALGO_ROBOT",
+      "entry_time": "2026-11-13 15:08:48 UTC"
+    },
+    {
+      "position_id": "POS-60B67FD2",
+      "symbol": "RELIANCE",
+      "instrument_type": "EQUITY",
+      "side": "BUY",
+      "quantity": 10,
+      "entry_price": 1340.37,
+      "current_price": 1340.37,
+      "unrealized_pnl": 0.0,
+      "pnl_pct": 0.0,
+      "margin_allocated": 13403.699999999999,
+      "stop_loss": null,
+      "target": null,
+      "strategy_name": "ALGO_ROBOT",
+      "entry_time": "2026-11-13 15:20:51 UTC"
+    }
+  ],
+  "closed_trades": [
+    {
+      "position_id": "POS-003B00CC",
+      "symbol": "RELIANCE",
+      "instrument_type": "EQUITY",
+      "side": "BUY",
+      "quantity": 10,
+      "entry_price": 1340.37,
+      "entry_time": "2026-11-13 14:48:33 UTC",
+      "exit_price": 1339.03,
+      "exit_time": "2026-11-13 14:48:33 UTC",
+      "exit_reason": "MANUAL_EXIT",
+      "gross_pnl": -13.4,
+      "charges": 26.7,
+      "net_pnl": -40.1,
+      "return_pct": -0.3,
+      "outcome": "LOSS"
+    }
+  ],
+  "last_updated": "2026-11-13T15:20:51.499446+00:00"
+}

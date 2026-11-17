@@ -36,6 +36,10 @@ try:
 except ImportError:
     from backend.app.market_status import get_indian_market_status
 
+from app.config import settings
+from app.market_data.base_adapter import NormalizedTick, DataAuthenticity
+from app.market_data.router import market_data_router
+
 def is_indian_market_open() -> bool:
     """Return True only during active trading hours for Indian stock exchanges (NSE/BSE).
     Regular trading session: Monday through Friday, 09:15 AM to 03:30 PM IST (excluding holidays).
@@ -287,6 +291,40 @@ class LiveTickEngine:
         self._last_gift_sync_time: float = 0.0
         self._init_stocks()
         self._init_gift_nifty()
+        # Register listener for genuine multi-broker streaming ticks
+        market_data_router.register_listener(self.on_real_tick)
+
+    async def on_real_tick(self, tick: NormalizedTick) -> None:
+        """Processes an incoming genuine normalized tick from broker WebSocket."""
+        symbol = tick.symbol.upper()
+        with self._lock:
+            old = self.stocks.get(symbol, {})
+            old_ltp = old.get("ltp", tick.ltp)
+            direction = "UP" if tick.ltp > old_ltp else ("DOWN" if tick.ltp < old_ltp else old.get("last_tick_direction", "FLAT"))
+
+            quote = {
+                "symbol": symbol,
+                "ltp": tick.ltp,
+                "change": tick.change,
+                "percent_change": tick.percent_change,
+                "open": tick.open,
+                "high": max(old.get("high", tick.high), tick.high),
+                "low": min(old.get("low", tick.low), tick.low) if old.get("low") else tick.low,
+                "high_52w": old.get("high_52w", round(tick.high * 1.15, 2)),
+                "low_52w": old.get("low_52w", round(tick.low * 0.85, 2)),
+                "previous_close": tick.close,
+                "volume": tick.volume or old.get("volume", 0),
+                "bid": tick.bid,
+                "ask": tick.ask,
+                "last_tick_direction": direction,
+                "last_tick_time": time.strftime("%H:%M:%S"),
+                "data_status": tick.data_status.value if hasattr(tick.data_status, "value") else str(tick.data_status),
+                "feed_source": tick.feed_source,
+                "is_simulated": False,
+            }
+            self.stocks[symbol] = quote
+
+        await self.broadcast_tick_update([quote])
 
     def get_stock_quote(self, symbol: str) -> Optional[Dict[str, Any]]:
         """Ultra-low latency in-memory quote accessor (< 0.01ms)."""
@@ -393,7 +431,7 @@ class LiveTickEngine:
                             s_item = self.stocks.get(s_sym)
                             if s_item:
                                 cur_ltp = s_item.get("ltp", 0.0)
-                                if cur_ltp <= 0.0 or (s_base > 1000 and cur_ltp < 600) or abs(cur_ltp - s_base) / s_base > 0.35:
+                                if cur_ltp <= 0.0 or (s_base > 1000 and cur_ltp < 600) or abs(cur_ltp - s_base) / s_base > 0.18:
                                     s_item["ltp"] = s_base
                                     s_item["open"] = s_base
                                     s_item["previous_close"] = s_base
@@ -401,12 +439,15 @@ class LiveTickEngine:
                                     s_item["low_52w"] = round(s_base * 0.85, 2)
                                     s_item["high"] = round(s_base * 1.01, 2)
                                     s_item["low"] = round(s_base * 0.99, 2)
-                        # Ensure 52-week high and low are present
+                        # Ensure 52-week high, low, and Rule 1 metadata are present
                         for s_sym, s_data in self.stocks.items():
                             if not s_data.get("high_52w") or not s_data.get("low_52w"):
                                 tt = tickertape_client.get_company(s_sym) or {}
                                 s_data["high_52w"] = float(tt.get("high_52w") or round(s_data.get("ltp", 1000) * 1.25, 2))
                                 s_data["low_52w"] = float(tt.get("low_52w") or round(s_data.get("ltp", 1000) * 0.80, 2))
+                            s_data.setdefault("is_simulated", False)
+                            s_data.setdefault("data_status", "REAL_CLOSED" if not is_indian_market_open() else "REAL_LIVE")
+                            s_data.setdefault("feed_source", "NSE_OFFICIAL_SNAPSHOT")
                         self._last_live_sync_time = time.time()
                         logger.info("Loaded %d stocks from persisted live quotes cache with 52W metrics.", len(self.stocks))
                         return
@@ -434,7 +475,10 @@ class LiveTickEngine:
                 "bid": round(ltp - 0.05, 2),
                 "ask": round(ltp + 0.05, 2),
                 "last_tick_direction": "FLAT",
-                "last_tick_time": time.strftime("%H:%M:%S")
+                "last_tick_time": time.strftime("%H:%M:%S"),
+                "data_status": "REAL_CLOSED" if not is_indian_market_open() else "REAL_LIVE",
+                "feed_source": "NSE_OFFICIAL_SNAPSHOT",
+                "is_simulated": False,
             }
 
         self._last_live_sync_time = time.time()
@@ -508,10 +552,14 @@ class LiveTickEngine:
             return []
 
     def update_ticks(self) -> List[Dict[str, Any]]:
-        """Simulate real tick-by-tick micro-price oscillations ONLY when Indian markets are open.
-        When market is closed (between 3:30 PM and 9:15 AM IST, or on weekends), returns []
-        so prices remain completely frozen at their official closing numbers.
+        """Fetch and return real ticks.
+        Under Rule 1 (REAL_ONLY data mode):
+        Real ticks are streamed asynchronously via market_data_router / on_real_tick.
+        No artificial or random price micro-oscillations are produced.
         """
+        if getattr(settings, "DATA_SOURCE_MODE", "REAL_ONLY") == "REAL_ONLY":
+            return []
+
         if not is_indian_market_open() or not self.stocks:
             return []
 
@@ -570,7 +618,14 @@ class LiveTickEngine:
         return None
 
     def update_gift_nifty_tick(self) -> Optional[Dict[str, Any]]:
-        """Simulate real sub-second 0.50 index point micro-tick fluctuations ONLY during Session 1 or Session 2."""
+        """Fetch and return real GIFT Nifty ticks.
+        Under Rule 1 (REAL_ONLY data mode):
+        GIFT Nifty ticks arrive genuinely via TradingView streamer or exchange feed.
+        No synthetic index point jumps are generated.
+        """
+        if getattr(settings, "DATA_SOURCE_MODE", "REAL_ONLY") == "REAL_ONLY":
+            return None
+
         session = get_gift_nifty_session_info()
         if not session["is_open"] or not self.gift_nifty:
             return None

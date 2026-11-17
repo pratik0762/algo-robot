@@ -20,8 +20,10 @@ import {
   Download,
   Calendar,
   Clock,
-  ExternalLink
+  ExternalLink,
+  ChevronRight
 } from 'lucide-react';
+import IndexConstituentsModal from '@/components/IndexConstituentsModal';
 import { getApiBase } from '@/config/api';
 
 export interface IndexData {
@@ -105,8 +107,9 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<string>('change_desc');
   const [marketBreadth, setMarketBreadth] = useState<{ advances: number; declines: number; unchanged: number; ratio: number } | null>(null);
-  const [timestamp, setTimestamp] = useState<string>('');
+  const [timestamp, setTimestamp] = useState<string>(() => '');
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [selectedConstituentIndex, setSelectedConstituentIndex] = useState<string | null>(null);
 
   const fetchIndicesData = async (force: boolean = false) => {
     if (force) setRefreshing(true);
@@ -203,8 +206,8 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
       <div
         className="glass-panel"
         style={{
-          width: '100%',
-          maxWidth: '1380px',
+          width: '96vw',
+          maxWidth: '1480px',
           height: '92vh',
           display: 'flex',
           flexDirection: 'column',
@@ -670,23 +673,23 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
               overflow: 'hidden',
             }}
           >
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'right' }}>
+            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '1150px', borderCollapse: 'collapse', fontSize: '0.82rem', textAlign: 'right' }}>
                 <thead>
                   <tr style={{ background: 'rgba(255, 255, 255, 0.04)', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
-                    <th style={{ textAlign: 'left', padding: '14px 18px', fontWeight: 700 }}>INDEX NAME</th>
-                    <th style={{ textAlign: 'left', padding: '14px 14px', fontWeight: 700 }}>CATEGORY</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>LAST PRICE</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>CHANGE (PTS)</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>% CHANGE</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>DAY RANGE</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>52W HIGH / LOW</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>P/E</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>P/B</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>DIV YIELD</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>A / D</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>30D %</th>
-                    <th style={{ padding: '14px 16px', fontWeight: 700 }}>365D %</th>
+                    <th style={{ textAlign: 'left', padding: '14px 14px', fontWeight: 700, whiteSpace: 'nowrap', width: '220px', minWidth: '180px' }}>INDEX NAME</th>
+                    <th style={{ textAlign: 'left', padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '85px' }}>CATEGORY</th>
+                    <th style={{ padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '85px' }}>LAST PRICE</th>
+                    <th style={{ padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '80px' }}>CHANGE (PTS)</th>
+                    <th style={{ padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '80px' }}>% CHANGE</th>
+                    <th style={{ padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '105px' }}>DAY RANGE</th>
+                    <th style={{ padding: '14px 8px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '105px' }}>52W HIGH / LOW</th>
+                    <th style={{ padding: '14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '55px' }}>P/E</th>
+                    <th style={{ padding: '14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '55px' }}>P/B</th>
+                    <th style={{ padding: '14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '70px' }}>DIV YIELD</th>
+                    <th style={{ padding: '14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '60px' }}>A / D</th>
+                    <th style={{ padding: '14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '65px' }}>30D %</th>
+                    <th style={{ padding: '14px 18px 14px 6px', fontWeight: 700, whiteSpace: 'nowrap', minWidth: '75px', textAlign: 'right' }}>365D %</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -695,28 +698,59 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
                     return (
                       <tr
                         key={idx.index}
+                        onClick={() => setSelectedConstituentIndex(idx.index)}
                         style={{
                           borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                          background: index % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.01)',
+                          background: index % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.015)',
                           transition: 'background 0.15s ease',
+                          cursor: 'pointer',
                         }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(99, 102, 241, 0.10)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.015)';
+                        }}
+                        title={`Click on ${idx.index} to view all constituent stocks`}
                       >
-                        <td style={{ textAlign: 'left', padding: '14px 18px' }}>
-                          <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '0.85rem' }}>
-                            {idx.index}
-                          </div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '1px' }}>
-                            {idx.index_symbol}
+                        <td style={{ textAlign: 'left', padding: '12px 14px', whiteSpace: 'nowrap', maxWidth: '240px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                            <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                              <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '0.86rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {idx.index}
+                              </div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {idx.index_symbol}
+                              </div>
+                            </div>
+                            <span
+                              style={{
+                                flexShrink: 0,
+                                fontSize: '0.62rem',
+                                fontWeight: 700,
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                background: 'rgba(99, 102, 241, 0.12)',
+                                color: '#a5b4fc',
+                                border: '1px solid rgba(99, 102, 241, 0.25)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '2px',
+                              }}
+                            >
+                              <span>Stocks</span>
+                              <ChevronRight size={10} />
+                            </span>
                           </div>
                         </td>
 
-                        <td style={{ textAlign: 'left', padding: '14px 14px' }}>
+                        <td style={{ textAlign: 'left', padding: '12px 8px', whiteSpace: 'nowrap' }}>
                           <span
                             style={{
-                              fontSize: '0.65rem',
+                              fontSize: '0.66rem',
                               fontWeight: 700,
-                              padding: '2px 8px',
-                              borderRadius: '6px',
+                              padding: '2px 7px',
+                              borderRadius: '5px',
                               background: 'rgba(99, 102, 241, 0.12)',
                               color: '#a5b4fc',
                               border: '1px solid rgba(99, 102, 241, 0.25)',
@@ -727,53 +761,54 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
                           </span>
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontWeight: 800, color: '#ffffff', fontSize: '0.9rem' }}>
+                        <td style={{ padding: '12px 8px', fontWeight: 800, color: '#ffffff', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
                           ₹{idx.last_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontWeight: 700, color: isPositive ? '#34d399' : '#f87171' }}>
+                        <td style={{ padding: '12px 8px', fontWeight: 700, color: isPositive ? '#34d399' : '#f87171', whiteSpace: 'nowrap' }}>
                           {isPositive ? '+' : ''}{idx.variation.toFixed(2)}
                         </td>
 
-                        <td style={{ padding: '14px 16px' }}>
+                        <td style={{ padding: '12px 8px', whiteSpace: 'nowrap' }}>
                           <span
                             style={{
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '2px',
                               fontWeight: 800,
-                              padding: '3px 8px',
-                              borderRadius: '6px',
+                              padding: '3px 7px',
+                              borderRadius: '5px',
                               background: isPositive ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                               color: isPositive ? '#34d399' : '#f87171',
+                              fontSize: '0.8rem',
                             }}
                           >
-                            {isPositive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+                            {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                             {isPositive ? '+' : ''}{idx.percent_change.toFixed(2)}%
                           </span>
                         </td>
 
-                        <td style={{ padding: '14px 16px', color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
+                        <td style={{ padding: '12px 8px', color: 'var(--text-secondary)', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
                           {idx.high.toLocaleString('en-IN', { maximumFractionDigits: 1 })} / {idx.low.toLocaleString('en-IN', { maximumFractionDigits: 1 })}
                         </td>
 
-                        <td style={{ padding: '14px 16px', color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
+                        <td style={{ padding: '12px 8px', color: 'var(--text-secondary)', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
                           {idx.year_high.toLocaleString('en-IN', { maximumFractionDigits: 1 })} / {idx.year_low.toLocaleString('en-IN', { maximumFractionDigits: 1 })}
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontWeight: 600, color: '#93c5fd' }}>
+                        <td style={{ padding: '12px 6px', fontWeight: 600, color: '#93c5fd', whiteSpace: 'nowrap' }}>
                           {idx.pe}
                         </td>
 
-                        <td style={{ padding: '14px 16px', color: 'var(--text-secondary)' }}>
+                        <td style={{ padding: '12px 6px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                           {idx.pb}
                         </td>
 
-                        <td style={{ padding: '14px 16px', color: 'var(--text-secondary)' }}>
+                        <td style={{ padding: '12px 6px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                           {idx.dy !== '-' ? `${idx.dy}%` : '-'}
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontSize: '0.75rem' }}>
+                        <td style={{ padding: '12px 6px', fontSize: '0.76rem', whiteSpace: 'nowrap' }}>
                           {idx.advances !== '0' || idx.declines !== '0' ? (
                             <span>
                               <span style={{ color: '#34d399', fontWeight: 700 }}>{idx.advances}</span>
@@ -785,11 +820,11 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
                           )}
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontWeight: 600, color: idx.per_change_30d >= 0 ? '#34d399' : '#f87171' }}>
+                        <td style={{ padding: '12px 6px', fontWeight: 600, color: idx.per_change_30d >= 0 ? '#34d399' : '#f87171', whiteSpace: 'nowrap' }}>
                           {idx.per_change_30d !== 0 ? `${idx.per_change_30d >= 0 ? '+' : ''}${idx.per_change_30d.toFixed(1)}%` : '-'}
                         </td>
 
-                        <td style={{ padding: '14px 16px', fontWeight: 600, color: idx.per_change_365d >= 0 ? '#34d399' : '#f87171' }}>
+                        <td style={{ padding: '12px 18px 12px 6px', fontWeight: 600, color: idx.per_change_365d >= 0 ? '#34d399' : '#f87171', whiteSpace: 'nowrap', textAlign: 'right' }}>
                           {idx.per_change_365d !== 0 ? `${idx.per_change_365d >= 0 ? '+' : ''}${idx.per_change_365d.toFixed(1)}%` : '-'}
                         </td>
                       </tr>
@@ -800,6 +835,13 @@ export default function AllIndicesModal({ isOpen, onClose, onSelectIndexForCompa
             </div>
           </div>
         </div>
+
+        {/* Index Constituents Modal */}
+        <IndexConstituentsModal
+          indexName={selectedConstituentIndex}
+          isOpen={!!selectedConstituentIndex}
+          onClose={() => setSelectedConstituentIndex(null)}
+        />
 
         {/* Footer */}
         <div

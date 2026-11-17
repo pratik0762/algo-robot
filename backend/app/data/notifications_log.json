@@ -1,0 +1,82 @@
+[
+  {
+    "timestamp": "2026-11-13T15:03:34.691765+00:00",
+    "channel": "TELEGRAM",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "@algorobot_signals",
+    "latency_ms": 42.0,
+    "preview": "\ud83e\uddea *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n\u2705 Bot connection verified...."
+  },
+  {
+    "timestamp": "2026-11-13T15:03:34.696901+00:00",
+    "channel": "WEBHOOK",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "https://api.algorobot.in/hooks/trade-signals",
+    "latency_ms": 35.0,
+    "preview": "{\"event\": \"TEST_WEBHOOK_PING\"}..."
+  },
+  {
+    "timestamp": "2026-11-13T15:03:34.709133+00:00",
+    "channel": "TELEGRAM",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "@algorobot_signals",
+    "latency_ms": 42.0,
+    "preview": "\ud83d\udea8 *ALGO ROBOT QUANTITATIVE SIGNAL* \ud83d\udea8\n\n\ud83d\udfe2 *Action:* BUY (LONG)\n\ud83d\udcc8 *Symbol:* #RELIANCE (NSE)\n\ud83d\udcb0 *Entry Pr..."
+  },
+  {
+    "timestamp": "2026-11-13T15:03:34.715719+00:00",
+    "channel": "WEBHOOK",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "https://api.algorobot.in/hooks/trade-signals",
+    "latency_ms": 35.0,
+    "preview": "{\"event\": \"TRADE_SIGNAL_TRIGGERED\", \"timestamp\": \"2026-11-13T15:03:34.715719+00:00\", \"signal\": {\"sym..."
+  },
+  {
+    "timestamp": "2026-11-13T15:07:55.713180+00:00",
+    "channel": "TELEGRAM",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "@algorobot_signals",
+    "latency_ms": 42.0,
+    "preview": "\ud83e\uddea *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n\u2705 Bot connection verified...."
+  },
+  {
+    "timestamp": "2026-11-13T15:07:55.739039+00:00",
+    "channel": "WEBHOOK",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "https://api.algorobot.in/hooks/trade-signals",
+    "latency_ms": 35.0,
+    "preview": "{\"event\": \"TEST_WEBHOOK_PING\"}..."
+  },
+  {
+    "timestamp": "2026-11-13T15:08:48.747871+00:00",
+    "channel": "TELEGRAM",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "@algorobot_signals",
+    "latency_ms": 42.0,
+    "preview": "\ud83e\uddea *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n\u2705 Bot connection verified...."
+  },
+  {
+    "timestamp": "2026-11-13T15:08:48.778864+00:00",
+    "channel": "WEBHOOK",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "https://api.algorobot.in/hooks/trade-signals",
+    "latency_ms": 35.0,
+    "preview": "{\"event\": \"TEST_WEBHOOK_PING\"}..."
+  },
+  {
+    "timestamp": "2026-11-13T15:20:51.538715+00:00",
+    "channel": "TELEGRAM",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "@algorobot_signals",
+    "latency_ms": 42.0,
+    "preview": "\ud83e\uddea *ALGO ROBOT TELEGRAM ALERT PROBE*\n\n\u2705 Bot connection verified...."
+  },
+  {
+    "timestamp": "2026-11-13T15:20:51.570025+00:00",
+    "channel": "WEBHOOK",
+    "status": "SIMULATED_BROADCAST",
+    "recipient": "https://api.algorobot.in/hooks/trade-signals",
+    "latency_ms": 35.0,
+    "preview": "{\"event\": \"TEST_WEBHOOK_PING\"}..."
+  }
+]

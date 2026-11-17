@@ -89,3 +89,4 @@ services:
       - frontend
     networks:
       - algo-network
+

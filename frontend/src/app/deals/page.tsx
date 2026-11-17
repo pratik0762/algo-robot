@@ -1352,8 +1352,8 @@ function DealsPageContent() {
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
               }}
             >
-              <div style={{ overflowX: 'auto' }} className="no-scrollbar">
-                <table style={{ width: '100%', minWidth: '1220px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table style={{ width: '100%', minWidth: '1080px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                   <thead>
                     <tr
                       style={{
@@ -1366,16 +1366,16 @@ function DealsPageContent() {
                         letterSpacing: '0.04em',
                       }}
                     >
-                      <th style={{ padding: '12px 14px', width: '130px', color: '#38bdf8' }}>DATE &amp; TIME</th>
-                      <th style={{ padding: '12px 14px', width: '160px' }}>COMPANY &amp; SECTOR</th>
-                      <th style={{ padding: '12px 14px', width: '200px' }}>CLIENT / TRADER NAME</th>
-                      <th style={{ padding: '12px 14px', width: '135px', textAlign: 'center' }}>DEAL TYPE &amp; ACTION</th>
-                      <th style={{ padding: '12px 14px', width: '120px', textAlign: 'right' }}>VOLUME (SHARES)</th>
-                      <th style={{ padding: '12px 14px', width: '135px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
-                      <th style={{ padding: '12px 14px', width: '115px', textAlign: 'right' }}>TOTAL VALUE</th>
-                      <th style={{ padding: '12px 14px', width: '85px', textAlign: 'center' }}>EQUITY %</th>
-                      <th style={{ padding: '12px 14px', minWidth: '230px' }}>SIGNAL &amp; STRATEGY TAKEAWAY</th>
-                      <th style={{ padding: '12px 14px', width: '105px', textAlign: 'center' }}>NSE DISCLOSURE</th>
+                      <th style={{ padding: '12px 10px', width: '110px', color: '#38bdf8' }}>DATE &amp; TIME</th>
+                      <th style={{ padding: '12px 10px', width: '145px' }}>COMPANY &amp; SECTOR</th>
+                      <th style={{ padding: '12px 10px', width: '165px' }}>CLIENT / TRADER NAME</th>
+                      <th style={{ padding: '12px 8px', width: '115px', textAlign: 'center' }}>DEAL TYPE &amp; ACTION</th>
+                      <th style={{ padding: '12px 8px', width: '100px', textAlign: 'right' }}>VOLUME (SHARES)</th>
+                      <th style={{ padding: '12px 8px', width: '115px', textAlign: 'right' }}>DEAL PRICE vs LTP</th>
+                      <th style={{ padding: '12px 8px', width: '95px', textAlign: 'right' }}>TOTAL VALUE</th>
+                      <th style={{ padding: '12px 6px', width: '70px', textAlign: 'center' }}>EQUITY %</th>
+                      <th style={{ padding: '12px 10px', minWidth: '180px' }}>SIGNAL &amp; STRATEGY TAKEAWAY</th>
+                      <th style={{ padding: '12px 10px', width: '85px', textAlign: 'center' }}>NSE LINK</th>
                     </tr>
                   </thead>
                   <tbody>

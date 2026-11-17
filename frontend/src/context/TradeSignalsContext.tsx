@@ -125,7 +125,7 @@ const getTradeKey = (sig: TradeSignalItem): string => {
 const getDismissedTrades = (): Set<string> => {
   if (typeof window === 'undefined') return new Set();
   try {
-    const raw = sessionStorage.getItem('algo_acknowledged_trades');
+    const raw = localStorage.getItem('algo_acknowledged_trades');
     if (raw) {
       const arr = JSON.parse(raw);
       if (Array.isArray(arr)) return new Set(arr);
@@ -140,7 +140,10 @@ const recordDismissedTrade = (sig: TradeSignalItem) => {
     const dismissed = getDismissedTrades();
     dismissed.add(sig.id);
     dismissed.add(getTradeKey(sig));
-    sessionStorage.setItem('algo_acknowledged_trades', JSON.stringify(Array.from(dismissed)));
+    if (sig.symbol) {
+      dismissed.add(`${sig.symbol}__${sig.strategy_id}`);
+    }
+    localStorage.setItem('algo_acknowledged_trades', JSON.stringify(Array.from(dismissed)));
   } catch (_) {}
 };
 
@@ -192,14 +195,28 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
           incoming.forEach((s) => {
             seenSignalIds.current.add(s.id);
             seenTradeKeys.current.add(getTradeKey(s));
+            if (s.symbol) {
+              seenTradeKeys.current.add(`${s.symbol}__${s.strategy_id}`);
+            }
           });
           isInitialLoad.current = false;
         } else {
           // Detect genuine new incoming signals (never re-toast already signaled/dismissed trades)
+          // STRICT RULE: Only toast signals that were generated within the last 60 seconds (genuinely new)!
+          const nowMs = Date.now();
           const newSignals = incoming.filter((s) => {
             const key = getTradeKey(s);
-            if (dismissed.has(s.id) || dismissed.has(key)) return false;
-            if (seenSignalIds.current.has(s.id) || seenTradeKeys.current.has(key)) return false;
+            const stratKey = `${s.symbol}__${s.strategy_id}`;
+            if (dismissed.has(s.id) || dismissed.has(key) || dismissed.has(stratKey)) return false;
+            if (seenSignalIds.current.has(s.id) || seenTradeKeys.current.has(key) || seenTradeKeys.current.has(stratKey)) return false;
+            // Freshness guard: must be younger than 60 seconds
+            const ageMs = s.timestamp_ms ? (nowMs - s.timestamp_ms) : 999999;
+            if (ageMs > 60000) {
+              seenSignalIds.current.add(s.id);
+              seenTradeKeys.current.add(key);
+              seenTradeKeys.current.add(stratKey);
+              return false;
+            }
             return true;
           });
 
@@ -207,6 +224,9 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
             newSignals.forEach((s) => {
               seenSignalIds.current.add(s.id);
               seenTradeKeys.current.add(getTradeKey(s));
+              if (s.symbol) {
+                seenTradeKeys.current.add(`${s.symbol}__${s.strategy_id}`);
+              }
             });
             setToastQueue((prev) => [...prev, ...newSignals]);
             playAudioChime();
@@ -245,16 +265,19 @@ export function TradeSignalsProvider({ children }: { children: React.ReactNode }
                 const key = getTradeKey(sig);
                 const dismissed = getDismissedTrades();
 
+                const stratKey = `${sig.symbol}__${sig.strategy_id}`;
+
                 // If user already acknowledged or trade was already signaled, never show toast again
-                if (dismissed.has(sig.id) || dismissed.has(key)) {
+                if (dismissed.has(sig.id) || dismissed.has(key) || dismissed.has(stratKey)) {
                   return;
                 }
-                if (seenSignalIds.current.has(sig.id) || seenTradeKeys.current.has(key)) {
+                if (seenSignalIds.current.has(sig.id) || seenTradeKeys.current.has(key) || seenTradeKeys.current.has(stratKey)) {
                   return;
                 }
 
                 seenSignalIds.current.add(sig.id);
                 seenTradeKeys.current.add(key);
+                seenTradeKeys.current.add(stratKey);
                 setSignals((prev) => [sig, ...prev.filter((item) => item.id !== sig.id)]);
                 setToastQueue((prev) => [...prev, sig]);
                 playAudioChime();

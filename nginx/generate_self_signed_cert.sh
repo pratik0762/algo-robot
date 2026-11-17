@@ -9,3 +9,4 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -subj "/C=IN/ST=Maharashtra/L=Mumbai/O=AlgoRobot/OU=Trading/CN=algo-robot.local"
 
 echo "SSL Certificate generated in nginx/ssl/"
+

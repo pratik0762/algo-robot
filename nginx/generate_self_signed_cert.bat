@@ -15,3 +15,4 @@ if %ERRORLEVEL% EQU 0 (
     echo OpenSSL not in PATH. Generating via PowerShell...
     powershell -Command "New-SelfSignedCertificate -DnsName 'algo-robot.local' -CertStoreLocation 'cert:\LocalMachine\My'"
 )
+

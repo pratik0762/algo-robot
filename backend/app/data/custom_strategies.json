@@ -88,75 +88,122 @@
     "updated_at": "2026-11-13T10:53:17.505698+00:00"
   },
   {
-    "id": "custom_phase_10_momentum_breakout_ea91dd",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T12:13:19.582108+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
+    "id": "ema_cross",
+    "name": "EMA 9/21 Trend Crossover",
+    "category": "Moving Averages",
+    "badge": "CUSTOM MOVING AVERA",
+    "win_rate": "68%",
+    "version": "1.3.0",
     "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
+    "is_enabled": true,
+    "description": "Fast 9-period EMA crosses 21-period EMA on confirmed closed candle with momentum confirmation.",
+    "trading_objective": "Capture medium-term institutional momentum shifts early while filtering out low-volume market chop.",
     "supported_instruments": [
       "Equity Stocks",
       "Index Futures",
-      "Index Options"
+      "Stock Futures"
     ],
     "supported_timeframes": [
-      "5m",
       "15m",
-      "1H"
+      "1H",
+      "1D",
+      "5m"
     ],
     "indicators": [
       {
-        "name": "EMA 20",
-        "symbol": "EMA20",
+        "name": "EMA 9 (Fast Exponential Moving Average)",
+        "symbol": "EMA9",
         "parameters": {
-          "period": 20
+          "period": 9,
+          "smoothing": 2
         },
-        "purpose": "Trend filter"
+        "purpose": "Measures short-term directional price acceleration"
       },
       {
-        "name": "RSI 14",
-        "symbol": "RSI14",
+        "name": "EMA 21 (Slow Exponential Moving Average)",
+        "symbol": "EMA21",
         "parameters": {
-          "period": 14
+          "period": 21,
+          "smoothing": 2
         },
-        "purpose": "Momentum oscillator"
+        "purpose": "Establishes baseline institutional trend structure"
       }
     ],
     "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
+      "EMA 9 crosses above EMA 21 on a confirmed closed candle (Golden Cross): EMA9[t-1] <= EMA21[t-1] and EMA9[t] > EMA21[t]",
+      "OR Price bounces off EMA 9 support in established uptrend: EMA9[t] > EMA21[t] and Close[t] > EMA9[t] and Close[t-1] <= EMA9[t-1]",
+      "Closed candle must be bullish with Close > Open",
+      "Higher timeframe (HTF 21-EMA) must confirm trend direction (Close >= HTF 21-EMA)"
     ],
     "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
+      "EMA 9 crosses below EMA 21 on a confirmed closed candle (Death Cross): EMA9[t-1] >= EMA21[t-1] and EMA9[t] < EMA21[t]",
+      "OR Price rejects from EMA 9 resistance in established downtrend: EMA9[t] < EMA21[t] and Close[t] < EMA9[t] and Close[t-1] >= EMA9[t-1]",
+      "Closed candle must be bearish with Close < Open",
+      "Higher timeframe (HTF 21-EMA) must confirm trend direction (Close <= HTF 21-EMA)"
+    ],
+    "stop_loss_logic": "Positioned just below the recent 8-candle swing low (swing_low * 0.998) or 1.5x ATR trailing buffer, strictly clamped between 1.2% (min) and 2.5% (max) to prevent abnormal capital drawdown.",
+    "target_calculation": {
+      "target_1": "Entry + (Risk * 2.0) \u2014 Strict 1:2.0 Risk-to-Reward ratio (book 50% partial profit and trail stop to breakeven)",
+      "target_2": "Entry + (Risk * 3.5) \u2014 Extended 1:3.5 Risk-to-Reward ratio (runner target)",
+      "target_3": "Discretionary trend trailing stop along the rising 21-EMA"
+    },
+    "risk_reward": "1 : 2.0 minimum structural ratio (1 : 3.5 runner target)",
+    "exit_conditions": [
+      "Price hits Target 1 (+2.0R): Secure 50% profit, move Stop-Loss to Breakeven (Entry Price)",
+      "Price hits Target 2 (+3.5R): Close remaining position fully",
+      "Price hits Hard Stop-Loss: Non-negotiable immediate risk cut",
+      "Opposite EMA crossover signal triggered on confirmed closed candle",
+      "Time-based invalidation: 48 hours without reaching Target 1 or Stop Loss (EXPIRED)"
+    ],
+    "confirmation_rules": [
+      "Confirmed Closed Candle: Signals evaluate strictly after the timeframe candle completes (Zero intrabar repainting)",
+      "Higher-Timeframe Alignment: 15m signals must align with 1H 21-EMA; 1H signals must align with 1D 21-EMA (+4% confidence boost)",
+      "Volume Filter: Active candle volume must exceed 20-period baseline volume to prevent low-liquidity traps"
+    ],
+    "status": {
+      "is_enabled": true,
+      "status_label": "ACTIVE & OPERATIONAL",
+      "applicable_instruments": "NSE Equities, NIFTY Futures, Stock Futures",
+      "last_evaluated": "Continuous (Every 30s scan cycle)",
+      "last_signal_generated": "Live Market Verified",
+      "data_status": "AUTHENTIC NSE LIVE FEED"
+    },
+    "version_history": [
+      {
+        "version": "1.0.0",
+        "created_at": "2026-11-13T17:02:26.457522+00:00",
+        "notes": "Baseline model customized by user"
+      },
+      {
+        "version": "1.1.0",
+        "created_at": "2026-11-13T17:02:26.457522+00:00",
+        "notes": "Strategy modified via Strategy Builder"
+      },
+      {
+        "version": "1.2.0",
+        "created_at": "2026-11-13T17:04:38.786357+00:00",
+        "notes": "Strategy modified via Strategy Builder"
+      },
+      {
+        "version": "1.3.0",
+        "created_at": "2026-11-13T17:12:37.910633+00:00",
+        "notes": "Strategy modified via Strategy Builder"
+      }
     ],
     "condition_rules": {},
     "risk_management": {
       "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
+      "stop_loss_type": "Swing Low / High Invalidation",
       "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
+      "target_1_ratio": 2,
+      "target_2_ratio": 3.5,
+      "target_3_ratio": 4,
+      "risk_reward_ratio": "1 : 2.0 minimum structural ratio",
       "max_risk_per_trade_pct": 1.5,
       "signal_validity_bars": 3
     },
     "advanced_settings": {
-      "higher_timeframe_confirmation": false,
+      "higher_timeframe_confirmation": true,
       "volume_filter": true,
       "volume_filter_multiplier": 1.5,
       "candle_close_confirmation": true,
@@ -165,736 +212,7 @@
       "cooldown_bars": 3,
       "duplicate_signal_prevention": true
     },
-    "created_at": "2026-11-13T12:13:19.582108+00:00",
-    "updated_at": "2026-11-13T12:13:19.582108+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_5ba6ec",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T12:14:12.745418+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T12:14:12.745418+00:00",
-    "updated_at": "2026-11-13T12:14:12.745418+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_6c9eef",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T12:14:36.214698+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T12:14:36.214698+00:00",
-    "updated_at": "2026-11-13T12:14:36.214698+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_97cf3c",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:30:29.079949+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:30:29.079949+00:00",
-    "updated_at": "2026-11-13T13:30:29.079949+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_040eae",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:31:08.668689+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:31:08.668689+00:00",
-    "updated_at": "2026-11-13T13:31:08.668689+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_0d88ea",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:31:26.258604+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:31:26.258604+00:00",
-    "updated_at": "2026-11-13T13:31:26.258604+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_f01188",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:32:26.631529+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:32:26.631529+00:00",
-    "updated_at": "2026-11-13T13:32:26.631529+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_78d4b0",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:32:41.459107+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:32:41.459107+00:00",
-    "updated_at": "2026-11-13T13:32:41.459107+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_125dc7",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:33:04.855707+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:33:04.855707+00:00",
-    "updated_at": "2026-11-13T13:33:04.855707+00:00"
-  },
-  {
-    "id": "custom_phase_10_momentum_breakout_3b7012",
-    "name": "Phase 10 Momentum Breakout",
-    "category": "Momentum",
-    "badge": "CUSTOM MOMENTUM",
-    "win_rate": "65%",
-    "version": "1.0.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T13:33:24.530118+00:00",
-        "notes": "Initial custom strategy creation"
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": false,
-    "is_draft": true,
-    "is_archived": false,
-    "description": "Validation test strategy",
-    "trading_objective": "Capture statistical edge through multi-indicator rules.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "EMA 20",
-        "symbol": "EMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Trend filter"
-      },
-      {
-        "name": "RSI 14",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14
-        },
-        "purpose": "Momentum oscillator"
-      }
-    ],
-    "buy_conditions": [
-      "Price closes above 20 EMA",
-      "RSI(14) > 55"
-    ],
-    "sell_conditions": [
-      "Price closes below 20 EMA",
-      "RSI(14) < 45"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "ATR Multiplier",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": false,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T13:33:24.530118+00:00",
-    "updated_at": "2026-11-13T13:33:24.530118+00:00"
+    "is_draft": false,
+    "updated_at": "2026-11-13T17:12:37.910633+00:00"
   }
 ]

@@ -627,3 +627,156 @@ class NseClient:
         self._fii_dii_cache_time = now
         return result
 
+    # -------------------------------------------------------------------------
+    # OFFICIAL NSE OPTION CHAIN & CONTRACT MASTER INTEGRATION
+    # -------------------------------------------------------------------------
+
+    INDEX_DERIVATIVES = {'NIFTY', 'BANKNIFTY', 'FINNIFTY', 'MIDCPNIFTY', 'NIFTYNXT50', 'NIFTYFPI'}
+
+    def fetch_fo_contract_master(self, force_refresh: bool = False) -> List[Dict[str, Any]]:
+        """Fetch complete official NSE F&O contract master covering all eligible stocks and indices."""
+        now = time.time()
+        if not hasattr(self, '_fo_master_cache'):
+            self._fo_master_cache = None
+            self._fo_master_cache_time = 0.0
+
+        if not force_refresh and self._fo_master_cache and (now - self._fo_master_cache_time < 43200):  # 12h cache
+            return self._fo_master_cache
+
+        # Check disk cache first
+        cache_file = "backend/app/data/nse_fo_contract_master.json"
+        import os, json
+        if not force_refresh and os.path.exists(cache_file):
+            try:
+                mtime = os.path.getmtime(cache_file)
+                if now - mtime < 43200:
+                    with open(cache_file, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if data and len(data) > 50:
+                            self._fo_master_cache = data
+                            self._fo_master_cache_time = now
+                            return data
+            except Exception as e:
+                logger.warning("Error reading fo_master disk cache: %s", e)
+
+        # Fetch official exchange CSV
+        csv_url = "https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv"
+        try:
+            if not self.session:
+                self._init_session()
+            res = self.session.get(csv_url, timeout=self.timeout + 4)
+            if res.status_code == 200 and "UNDERLYING" in res.text:
+                lines = [l.strip() for l in res.text.strip().split('\n') if l.strip()]
+                instruments = []
+                for line in lines[1:]:
+                    cols = [c.strip() for c in line.split(',')]
+                    if len(cols) >= 3 and cols[1]:
+                        name = cols[0]
+                        sym = cols[1].upper()
+                        lot_str = cols[2]
+                        if sym in ['SYMBOL', 'UNDERLYING', '']:
+                            continue
+                        if not lot_str.isdigit():
+                            continue
+                        lot = int(lot_str)
+                        is_index = sym in self.INDEX_DERIVATIVES
+
+                        # Default strike interval estimate by lot size & type
+                        interval = 50 if is_index and sym == 'NIFTY' else 100 if is_index and sym == 'BANKNIFTY' else 25 if is_index else 20
+
+                        instruments.append({
+                            "symbol": sym,
+                            "name": name,
+                            "type": "INDEX" if is_index else "STOCK",
+                            "lot_size": lot,
+                            "interval": interval,
+                            "active_status": True
+                        })
+
+                if instruments:
+                    # Sort indices first, then alphabetically
+                    instruments.sort(key=lambda x: (0 if x["type"] == "INDEX" else 1, x["symbol"]))
+                    os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+                    with open(cache_file, "w", encoding="utf-8") as f:
+                        json.dump(instruments, f, indent=2)
+                    self._fo_master_cache = instruments
+                    self._fo_master_cache_time = now
+                    logger.info("Synchronized %d official NSE F&O instruments from exchange master.", len(instruments))
+                    return instruments
+        except Exception as e:
+            logger.warning("Failed to fetch official fo_mktlots.csv from NSE: %s", e)
+
+        # Fallback to disk cache if available
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+
+        return []
+
+    def fetch_option_chain_contract_info(self, symbol: str) -> Dict[str, Any]:
+        """Fetch actual listed expiry dates and strike prices for a specific symbol from NSE."""
+        sym_clean = symbol.upper()
+        now = time.time()
+        if not hasattr(self, '_contract_info_cache'):
+            self._contract_info_cache = {}
+
+        cached = self._contract_info_cache.get(sym_clean)
+        if cached and (now - cached[0] < 300):  # 5 min cache
+            return cached[1]
+
+        url = f"{self.BASE_URL}/api/option-chain-contract-info?symbol={sym_clean}"
+        try:
+            if not self.session:
+                self._init_session()
+            self.session.headers.update({"Referer": "https://www.nseindia.com/option-chain"})
+            res = self.session.get(url, timeout=self.timeout + 3)
+            if res.status_code == 200:
+                data = res.json()
+                result = {
+                    "symbol": sym_clean,
+                    "expiryDates": data.get("expiryDates", []),
+                    "strikePrices": data.get("strikePrices", []),
+                    "fetched_at": time.strftime("%Y-%m-%d %H:%M:%S IST")
+                }
+                self._contract_info_cache[sym_clean] = (now, result)
+                return result
+        except Exception as e:
+            logger.warning("Error fetching option-chain-contract-info for %s: %s", sym_clean, e)
+
+        return {"symbol": sym_clean, "expiryDates": [], "strikePrices": []}
+
+    def fetch_live_option_chain_raw(self, symbol: str, expiry: str) -> Optional[Dict[str, Any]]:
+        """Fetch genuine real-time option chain matrix for a symbol and expiry from NSE API v3."""
+        sym_clean = symbol.upper()
+        now = time.time()
+        cache_key = f"{sym_clean}_{expiry}"
+        if not hasattr(self, '_option_chain_cache'):
+            self._option_chain_cache = {}
+
+        cached = self._option_chain_cache.get(cache_key)
+        if cached and (now - cached[0] < 3.0):  # 3s real-time cache
+            return cached[1]
+
+        is_index = sym_clean in self.INDEX_DERIVATIVES
+        typ = "Indices" if is_index else "Equity"
+        url = f"{self.BASE_URL}/api/option-chain-v3?type={typ}&symbol={sym_clean}&expiry={expiry}"
+
+        try:
+            if not self.session:
+                self._init_session()
+            self.session.headers.update({"Referer": "https://www.nseindia.com/option-chain"})
+            res = self.session.get(url, timeout=self.timeout + 4)
+            if res.status_code == 200:
+                data = res.json()
+                if data and ("records" in data or "filtered" in data):
+                    self._option_chain_cache[cache_key] = (now, data)
+                    return data
+        except Exception as e:
+            logger.warning("Error querying live option-chain-v3 for %s (%s): %s", sym_clean, expiry, e)
+
+        return None
+
+

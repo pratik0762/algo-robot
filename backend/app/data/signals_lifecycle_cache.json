@@ -3862,5 +3862,572 @@
     "pnl_percent": "+2.99%",
     "time_to_target": "1s",
     "outcome_time": "13-Nov-2026 03:05:10 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794812532461": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "23h 32m",
+    "outcome_time": "17-Nov-2026 10:44:08 AM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794806999808": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "23h 50m",
+    "outcome_time": "17-Nov-2026 10:44:08 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1794806999826": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "24h 5m",
+    "outcome_time": "17-Nov-2026 10:44:09 AM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794806999826": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "25h 54m",
+    "outcome_time": "17-Nov-2026 11:18:44 AM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794812532601": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26h 37m",
+    "outcome_time": "17-Nov-2026 11:18:44 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794894660767": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 11:21:01 AM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794894660714": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 11:21:01 AM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794737084468": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "43h 52m",
+    "outcome_time": "17-Nov-2026 11:21:01 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1794737084484": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "44h 7m",
+    "outcome_time": "17-Nov-2026 11:21:01 AM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794737084523": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "45h 22m",
+    "outcome_time": "17-Nov-2026 11:21:01 AM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794812532451": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "23h 28m",
+    "outcome_time": "17-Nov-2026 11:24:24 AM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794812532483": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "24h 20m",
+    "outcome_time": "17-Nov-2026 12:31:16 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794902555210": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794902555207": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794902555202": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794902555224": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794636542675": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "73h 59m",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794636542655": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "74h 14m",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794636542694": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "75h 29m",
+    "outcome_time": "17-Nov-2026 01:32:36 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794903211234": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794903211180": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794903211219": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794903211263": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794570325313": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "92h 34m",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794569350124": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "93h 5m",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794569350172": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "94h 20m",
+    "outcome_time": "17-Nov-2026 01:43:32 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794903758186": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794903758372": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794903758332": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794903758192": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794903758392": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794903758350": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "17-Nov-2026 01:52:39 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794903758445": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "17-Nov-2026 01:52:40 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794904455068": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794904455247": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794904455271": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794904455145": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794904455252": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794904455269": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794904455344": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 1s",
+    "outcome_time": "17-Nov-2026 02:04:17 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794907280217": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794907280344": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794907280355": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794907280213": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794907280328": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794907280337": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794907280410": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 1s",
+    "outcome_time": "17-Nov-2026 02:51:22 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794908117397": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908117441": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908117474": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794908117416": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794908117472": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794908117515": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794908117540": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 1s",
+    "outcome_time": "17-Nov-2026 03:05:19 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794908230016": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908230087": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908230086": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794908230028": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794908230109": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794908230097": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794908230125": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 1s",
+    "outcome_time": "17-Nov-2026 03:07:12 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794908857991": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908858102": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794908858084": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794908858033": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794908858136": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794908858107": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "17-Nov-2026 03:17:39 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794909341881": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794909342067": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794909342048": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794909341902": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794909342084": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794909342056": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794909342103": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 1s",
+    "outcome_time": "17-Nov-2026 03:25:43 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794931683814": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "17-Nov-2026 09:38:04 PM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794931683931": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794931683961": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-SBIN-ema_cross-1794931683811": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794931683925": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794931683914": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794931683949": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "17-Nov-2026 09:38:05 PM IST"
   }
 }

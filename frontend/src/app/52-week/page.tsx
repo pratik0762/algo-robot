@@ -218,7 +218,11 @@ export default function Week52Page() {
       .map((item) => {
         // Overlay live tick if present
         const live = liveTicks[item.symbol];
-        if (!live) return item;
+        if (!live || !live.ltp || live.ltp <= 0) return item;
+        // Sanity check: do not let a severely deviated/corrupt tick (>25%) overwrite authentic price
+        if (item.current_price > 0 && Math.abs(live.ltp - item.current_price) / item.current_price > 0.25) {
+          return item;
+        }
 
         const liveLtp = live.ltp;
         const liveChg = live.change;
@@ -1136,8 +1140,8 @@ export default function Week52Page() {
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
             }}
           >
-            <div style={{ overflowX: 'auto' }} className="no-scrollbar">
-              <table style={{ width: '100%', minWidth: '1240px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '1060px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
                   <tr
                     style={{
@@ -1150,15 +1154,15 @@ export default function Week52Page() {
                       letterSpacing: '0.04em',
                     }}
                   >
-                    <th style={{ padding: '12px 14px', width: '180px' }}>COMPANY &amp; SECTOR</th>
-                    <th style={{ padding: '12px 10px', width: '115px', textAlign: 'center' }}>DUAL SCRIP &amp; EXCH</th>
-                    <th style={{ padding: '12px 12px', width: '125px', textAlign: 'right' }}>NSE LIVE LTP</th>
-                    <th style={{ padding: '12px 12px', width: '125px', textAlign: 'right' }}>BSE LTP &amp; SPREAD</th>
-                    <th style={{ padding: '12px 12px', width: '135px', textAlign: 'right' }}>52W HIGH (NSE/BSE)</th>
-                    <th style={{ padding: '12px 12px', width: '135px', textAlign: 'right' }}>52W LOW (NSE/BSE)</th>
-                    <th style={{ padding: '12px 14px', width: '170px' }}>52W SPECTRUM</th>
-                    <th style={{ padding: '12px 10px', width: '135px', textAlign: 'center' }}>SIGNAL RADAR</th>
-                    <th style={{ padding: '12px 10px', width: '130px', textAlign: 'center' }}>ACTIONS &bull; EXCH</th>
+                    <th style={{ padding: '12px 10px', width: '155px' }}>COMPANY &amp; SECTOR</th>
+                    <th style={{ padding: '12px 8px', width: '95px', textAlign: 'center' }}>DUAL SCRIP &amp; EXCH</th>
+                    <th style={{ padding: '12px 10px', width: '110px', textAlign: 'right' }}>NSE LIVE LTP</th>
+                    <th style={{ padding: '12px 10px', width: '110px', textAlign: 'right' }}>BSE LTP &amp; SPREAD</th>
+                    <th style={{ padding: '12px 10px', width: '115px', textAlign: 'right' }}>52W HIGH (NSE/BSE)</th>
+                    <th style={{ padding: '12px 10px', width: '115px', textAlign: 'right' }}>52W LOW (NSE/BSE)</th>
+                    <th style={{ padding: '12px 10px', width: '145px' }}>52W SPECTRUM</th>
+                    <th style={{ padding: '12px 8px', width: '115px', textAlign: 'center' }}>SIGNAL RADAR</th>
+                    <th style={{ padding: '12px 8px', width: '100px', textAlign: 'center' }}>ACTIONS &bull; EXCH</th>
                   </tr>
                 </thead>
                 <tbody>

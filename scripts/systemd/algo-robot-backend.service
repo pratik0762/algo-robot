@@ -25,3 +25,4 @@ SyslogIdentifier=algo-robot-backend
 
 [Install]
 WantedBy=multi-user.target
+

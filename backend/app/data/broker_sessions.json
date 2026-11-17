@@ -1,0 +1,33 @@
+{
+  "active_broker": "UPSTOX",
+  "brokers": {
+    "ZERODHA": {
+      "name": "Zerodha Kite Connect",
+      "api_key": "kite_prod_api_key",
+      "client_id": "ZR9081",
+      "is_enabled": false,
+      "is_connected": true
+    },
+    "ANGEL_ONE": {
+      "name": "Angel One SmartAPI",
+      "api_key": "smart_api_key_angel",
+      "client_code": "A10842",
+      "is_enabled": false,
+      "is_connected": true
+    },
+    "DHAN": {
+      "name": "Dhan HQ API v2",
+      "client_id": "DHAN1008",
+      "is_enabled": false,
+      "is_connected": true
+    },
+    "UPSTOX": {
+      "name": "Upstox API v2",
+      "api_key": "upstox_app_key",
+      "client_id": "UP2084",
+      "is_enabled": false,
+      "is_connected": true
+    }
+  },
+  "updated_at": "2026-11-14T13:00:12.093226+00:00"
+}

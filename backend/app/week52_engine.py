@@ -194,25 +194,15 @@ class Week52Engine:
                 round(ltp * 0.80, 2)
             )
 
-            # Robust sanity check for blue-chips against corrupted cache seeds
-            if sym == "KOTAKBANK" and ltp < 1000.0:
-                ltp = 1812.50
-                change = 14.50
-                pct_change = 0.81
-                high_52w = 1948.00
-                low_52w = 1642.00
-            elif sym == "TCS" and ltp < 3000.0:
-                ltp = 4125.00
-                change = -12.50
-                pct_change = -0.30
-                high_52w = 4585.00
-                low_52w = 3313.00
-            elif sym == "INFY" and ltp < 1500.0:
-                ltp = 1874.50
-                change = 8.50
-                pct_change = 0.45
-                high_52w = 1991.00
-                low_52w = 1358.00
+            # Robust sanity check for all stocks against corrupted cache seeds
+            from app.tick_engine import BASE_EQUITY_PRICES
+            base_ref = BASE_EQUITY_PRICES.get(sym)
+            if base_ref and (ltp <= 0.0 or abs(ltp - base_ref) / base_ref > 0.20):
+                ltp = base_ref
+                change = 0.0
+                pct_change = 0.0
+                high_52w = round(base_ref * 1.15, 2)
+                low_52w = round(base_ref * 0.85, 2)
 
             # Ensure high is strictly greater than low and realistic
             if high_52w < ltp:

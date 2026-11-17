@@ -151,7 +151,21 @@ class PreTradeRiskValidator:
         passed.append("DAILY_LOSS_WITHIN_LIMIT")
 
         # -------------------------------------------------------------
-        # 3. Exchange & User Freeze Quantity Limits
+        # 3. Maximum Capital at Risk per Trade Check
+        # -------------------------------------------------------------
+        if trade_capital_at_risk > max_capital_per_trade:
+            failed.append("MAX_CAPITAL_AT_RISK_EXCEEDED")
+            return OrderRiskValidationResult(
+                approved=False,
+                rejection_reason=f"REJECTED: Proposed capital at risk (₹{trade_capital_at_risk:,.2f}) exceeds max per-trade limit of ₹{max_capital_per_trade:,.2f}.",
+                checks_passed=passed,
+                checks_failed=failed,
+                risk_metrics_snapshot=metrics_snapshot,
+            )
+        passed.append("TRADE_RISK_WITHIN_CAP")
+
+        # -------------------------------------------------------------
+        # 4. Exchange & User Freeze Quantity Limits
         # -------------------------------------------------------------
         exchange_limit = EXCHANGE_FREEZE_LIMITS.get(sym, EXCHANGE_FREEZE_LIMITS["DEFAULT"])
         effective_qty_limit = min(max_order_quantity_limit, exchange_limit)
@@ -165,20 +179,6 @@ class PreTradeRiskValidator:
                 risk_metrics_snapshot=metrics_snapshot,
             )
         passed.append("QUANTITY_WITHIN_FREEZE_LIMITS")
-
-        # -------------------------------------------------------------
-        # 4. Maximum Capital at Risk per Trade Check
-        # -------------------------------------------------------------
-        if trade_capital_at_risk > max_capital_per_trade:
-            failed.append("MAX_CAPITAL_AT_RISK_EXCEEDED")
-            return OrderRiskValidationResult(
-                approved=False,
-                rejection_reason=f"REJECTED: Proposed capital at risk (₹{trade_capital_at_risk:,.2f}) exceeds max per-trade limit of ₹{max_capital_per_trade:,.2f}.",
-                checks_passed=passed,
-                checks_failed=failed,
-                risk_metrics_snapshot=metrics_snapshot,
-            )
-        passed.append("TRADE_RISK_WITHIN_CAP")
 
         # -------------------------------------------------------------
         # 5. Fat-Finger & Price Collar Protection
@@ -232,3 +232,4 @@ class PreTradeRiskValidator:
             checks_failed=[],
             risk_metrics_snapshot=metrics_snapshot,
         )
+

@@ -378,6 +378,55 @@ def generate_fo_expiries(count: int = 6) -> List[str]:
     return expiries
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Dynamic Instrument Master & Expiry Resolvers
+# ---------------------------------------------------------------------------
+def get_all_instruments(force_refresh: bool = False) -> List[Dict[str, Any]]:
+    """Retrieve complete universe of all 220+ exchange-traded NSE F&O instruments."""
+    try:
+        from app.nse_client import NseClient
+        client = NseClient()
+        master = client.fetch_fo_contract_master(force_refresh=force_refresh)
+        if master and len(master) >= 50:
+            for item in master:
+                FO_LOOKUP[item["symbol"]] = item
+            return master
+    except Exception as e:
+        pass
+    return FO_INSTRUMENTS
+
+
+def get_instrument_expiries(symbol: str) -> List[Dict[str, Any]]:
+    """Retrieve actual listed exchange expiry dates for a specific instrument from NSE."""
+    sym_clean = symbol.upper()
+    try:
+        from app.nse_client import NseClient
+        client = NseClient()
+        info = client.fetch_option_chain_contract_info(sym_clean)
+        dates = info.get("expiryDates", [])
+        if dates:
+            result = []
+            for d_str in dates:
+                dte = 0.0
+                try:
+                    exp_dt = datetime.strptime(d_str, "%d-%b-%Y").replace(tzinfo=IST)
+                    dte = max(0.0, round((exp_dt - datetime.now(IST)).total_seconds() / 86400.0, 1))
+                except Exception:
+                    pass
+                result.append({
+                    "expiry_date": d_str,
+                    "dte": dte
+                })
+            return result
+    except Exception as e:
+        pass
+
+    # Fallback to standard listed dates
+    fallback_dates = generate_fo_expiries(6)
+    return [{"expiry_date": d, "dte": 7.0} for d in fallback_dates]
+
+
+# ---------------------------------------------------------------------------
 # Spot Price Resolver
 # ---------------------------------------------------------------------------
 def get_live_spot_price(symbol: str) -> Tuple[float, float]:
@@ -396,13 +445,14 @@ def get_live_spot_price(symbol: str) -> Tuple[float, float]:
 
     # Check FO_LOOKUP
     item = FO_LOOKUP.get(sym_clean)
-    if item:
+    if item and "base_price" in item:
         return (item["base_price"], 0.45)
 
     return (1000.0, 0.0)
 
+
 # ---------------------------------------------------------------------------
-# Option Chain Builder
+# Real-Time Option Chain Builder (Official NSE Integration)
 # ---------------------------------------------------------------------------
 def build_option_chain(
     symbol: str,
@@ -420,27 +470,214 @@ def build_option_chain(
         "base_price": 1000.0
     })
 
-    spot, change_pct = get_live_spot_price(sym_clean)
-    interval = meta["interval"]
-    lot_size = meta["lot_size"]
+    lot_size = meta.get("lot_size", 250)
+    interval = meta.get("interval", 20)
 
-    expiries = generate_fo_expiries(6)
-    selected_expiry = expiry if (expiry and expiry in expiries) else expiries[0]
+    # 1. Resolve Instrument Expiries (Per-Instrument Dynamic Mapping)
+    expiry_objs = get_instrument_expiries(sym_clean)
+    exp_dates = [e["expiry_date"] for e in expiry_objs] if expiry_objs else generate_fo_expiries(6)
+
+    selected_expiry = expiry if (expiry and expiry in exp_dates) else (exp_dates[0] if exp_dates else "23-Nov-2026")
 
     # Calculate days to expiry
     try:
         exp_dt = datetime.strptime(selected_expiry, "%d-%b-%Y").replace(tzinfo=IST)
-        days_to_expiry = max(1.0, (exp_dt - datetime.now(IST)).total_seconds() / 86400.0)
+        days_to_expiry = max(0.5, round((exp_dt - datetime.now(IST)).total_seconds() / 86400.0, 1))
     except Exception:
         days_to_expiry = 5.0
 
-    atm_strike = round(spot / interval) * interval
+    # 2. Attempt Real-Time NSE Official Option Chain Query
+    raw_chain = None
+    try:
+        from app.nse_client import NseClient
+        client = NseClient()
+        raw_chain = client.fetch_live_option_chain_raw(sym_clean, selected_expiry)
+    except Exception:
+        pass
 
-    # Generate strikes around ATM
+    # 3. IF OFFICIAL NSE LIVE DATA AVAILABLE
+    if raw_chain and ("filtered" in raw_chain or "records" in raw_chain):
+        filtered = raw_chain.get("filtered", {})
+        records = raw_chain.get("records", {})
+        raw_data = filtered.get("data") or records.get("data") or []
+
+        spot = float(records.get("underlyingValue") or 0.0)
+        change_pct = 0.0
+        if spot <= 0.0:
+            spot, change_pct = get_live_spot_price(sym_clean)
+
+        if raw_data:
+            # Sort strikes ascending
+            raw_data.sort(key=lambda x: x.get("strikePrice", 0))
+            strikes = [r.get("strikePrice") for r in raw_data if r.get("strikePrice")]
+
+            # Identify ATM strike (closest to spot)
+            atm_strike = min(strikes, key=lambda k: abs(k - spot)) if strikes else round(spot / interval) * interval
+
+            # Max Pain & Strike Metrics Accumulator
+            loss_by_strike: Dict[float, float] = {k: 0.0 for k in strikes}
+            max_call_oi = -1
+            max_put_oi = -1
+            max_call_add = -999999
+            max_put_add = -999999
+            highest_call_strike = atm_strike
+            highest_put_strike = atm_strike
+            highest_call_add_strike = atm_strike
+            highest_put_add_strike = atm_strike
+
+            for r in raw_data:
+                k = r.get("strikePrice")
+                ce_oi = r.get("CE", {}).get("openInterest", 0)
+                pe_oi = r.get("PE", {}).get("openInterest", 0)
+                ce_chg_oi = r.get("CE", {}).get("changeinOpenInterest", 0)
+                pe_chg_oi = r.get("PE", {}).get("changeinOpenInterest", 0)
+
+                if ce_oi > max_call_oi:
+                    max_call_oi = ce_oi
+                    highest_call_strike = k
+                if pe_oi > max_put_oi:
+                    max_put_oi = pe_oi
+                    highest_put_strike = k
+                if ce_chg_oi > max_call_add:
+                    max_call_add = ce_chg_oi
+                    highest_call_add_strike = k
+                if pe_chg_oi > max_put_add:
+                    max_put_add = pe_chg_oi
+                    highest_put_add_strike = k
+
+                for s_test in strikes:
+                    call_loss = max(0.0, s_test - k) * ce_oi
+                    put_loss = max(0.0, k - s_test) * pe_oi
+                    loss_by_strike[s_test] += (call_loss + put_loss)
+
+            max_pain_strike = min(loss_by_strike, key=loss_by_strike.get) if loss_by_strike else atm_strike
+
+            # Filter range around ATM if not ALL
+            if strike_range < 50:
+                atm_idx = min(range(len(raw_data)), key=lambda i: abs(raw_data[i].get("strikePrice", 0) - spot))
+                start_i = max(0, atm_idx - strike_range)
+                end_i = min(len(raw_data), atm_idx + strike_range + 1)
+                display_items = raw_data[start_i:end_i]
+            else:
+                display_items = raw_data
+
+            rows = []
+            for item in display_items:
+                k = item.get("strikePrice")
+                is_atm = (k == atm_strike)
+                ce = item.get("CE") or {}
+                pe = item.get("PE") or {}
+
+                # Buildup logic
+                ce_p_up = ce.get("change", 0) > 0
+                ce_oi_up = ce.get("changeinOpenInterest", 0) > 0
+                ce_buildup = (
+                    "Long Buildup" if (ce_p_up and ce_oi_up)
+                    else "Short Buildup" if (not ce_p_up and ce_oi_up)
+                    else "Short Covering" if (ce_p_up and not ce_oi_up)
+                    else "Long Unwinding"
+                )
+
+                pe_p_up = pe.get("change", 0) > 0
+                pe_oi_up = pe.get("changeinOpenInterest", 0) > 0
+                pe_buildup = (
+                    "Long Buildup" if (pe_p_up and pe_oi_up)
+                    else "Short Buildup" if (not pe_p_up and pe_oi_up)
+                    else "Short Covering" if (pe_p_up and not pe_oi_up)
+                    else "Long Unwinding"
+                )
+
+                ce_moneyness = "ATM" if is_atm else ("ITM" if k < spot else "OTM")
+                pe_moneyness = "ATM" if is_atm else ("ITM" if k > spot else "OTM")
+
+                rows.append({
+                    "strike": k,
+                    "is_atm": is_atm,
+                    "call": {
+                        "oi": ce.get("openInterest", 0),
+                        "change_oi": ce.get("changeinOpenInterest", 0),
+                        "pchange_oi": round(float(ce.get("pchangeinOpenInterest", 0.0) or 0.0), 2),
+                        "volume": ce.get("totalTradedVolume", 0),
+                        "iv": round(float(ce.get("impliedVolatility", 0.0) or 0.0), 2),
+                        "ltp": round(float(ce.get("lastPrice", 0.0) or 0.0), 2),
+                        "change": round(float(ce.get("change", 0.0) or 0.0), 2),
+                        "change_pct": round(float(ce.get("pChange", 0.0) or 0.0), 2),
+                        "bid": round(float(ce.get("buyPrice1", 0.0) or 0.0), 2),
+                        "bid_qty": int(ce.get("buyQuantity1", 0) or 0),
+                        "ask": round(float(ce.get("sellPrice1", 0.0) or 0.0), 2),
+                        "ask_qty": int(ce.get("sellQuantity1", 0) or 0),
+                        "identifier": ce.get("identifier") or f"OPT{sym_clean}{selected_expiry}CE{k}",
+                        "moneyness": ce_moneyness,
+                        "buildup": ce_buildup
+                    },
+                    "put": {
+                        "oi": pe.get("openInterest", 0),
+                        "change_oi": pe.get("changeinOpenInterest", 0),
+                        "pchange_oi": round(float(pe.get("pchangeinOpenInterest", 0.0) or 0.0), 2),
+                        "volume": pe.get("totalTradedVolume", 0),
+                        "iv": round(float(pe.get("impliedVolatility", 0.0) or 0.0), 2),
+                        "ltp": round(float(pe.get("lastPrice", 0.0) or 0.0), 2),
+                        "change": round(float(pe.get("change", 0.0) or 0.0), 2),
+                        "change_pct": round(float(pe.get("pChange", 0.0) or 0.0), 2),
+                        "bid": round(float(pe.get("buyPrice1", 0.0) or 0.0), 2),
+                        "bid_qty": int(pe.get("buyQuantity1", 0) or 0),
+                        "ask": round(float(pe.get("sellPrice1", 0.0) or 0.0), 2),
+                        "ask_qty": int(pe.get("sellQuantity1", 0) or 0),
+                        "identifier": pe.get("identifier") or f"OPT{sym_clean}{selected_expiry}PE{k}",
+                        "moneyness": pe_moneyness,
+                        "buildup": pe_buildup
+                    }
+                })
+
+            total_call_oi = int(filtered.get("CE", {}).get("totOI") or sum(r["call"]["oi"] for r in rows))
+            total_put_oi = int(filtered.get("PE", {}).get("totOI") or sum(r["put"]["oi"] for r in rows))
+            total_call_vol = int(filtered.get("CE", {}).get("totVol") or sum(r["call"]["volume"] for r in rows))
+            total_put_vol = int(filtered.get("PE", {}).get("totVol") or sum(r["put"]["volume"] for r in rows))
+
+            pcr = round(total_put_oi / max(1, total_call_oi), 2)
+            pcr_sentiment = "BULLISH" if pcr >= 1.2 else "BEARISH" if pcr <= 0.8 else "NEUTRAL"
+
+            return {
+                "status": "success",
+                "market_status": "LIVE",
+                "source": "NSE_OFFICIAL",
+                "symbol": sym_clean,
+                "name": meta.get("name", sym_clean),
+                "instrument_type": meta.get("type", "STOCK"),
+                "lot_size": lot_size,
+                "interval": interval,
+                "spot_price": spot,
+                "change_pct": round(change_pct, 2),
+                "atm_strike": atm_strike,
+                "selected_expiry": selected_expiry,
+                "expiries": exp_dates,
+                "days_to_expiry": days_to_expiry,
+                "summary": {
+                    "pcr": pcr,
+                    "pcr_sentiment": pcr_sentiment,
+                    "max_pain": max_pain_strike,
+                    "total_call_oi": total_call_oi,
+                    "total_put_oi": total_put_oi,
+                    "call_oi_change": sum(r["call"]["change_oi"] for r in rows),
+                    "put_oi_change": sum(r["put"]["change_oi"] for r in rows),
+                    "total_call_volume": total_call_vol,
+                    "total_put_volume": total_put_vol,
+                    "highest_call_oi_strike": highest_call_strike,
+                    "highest_put_oi_strike": highest_put_strike,
+                    "highest_call_addition_strike": highest_call_add_strike,
+                    "highest_put_addition_strike": highest_put_add_strike
+                },
+                "chain": rows,
+                "exchange_timestamp": records.get("timestamp") or datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST"),
+                "last_updated": datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST")
+            }
+
+    # 4. FALLBACK: MATHEMATICAL BLACK-SCHOLES PRICING ENGINE
+    spot, change_pct = get_live_spot_price(sym_clean)
+    atm_strike = round(spot / interval) * interval
     strikes = [round(atm_strike + i * interval, 2) for i in range(-strike_range, strike_range + 1)]
 
-    # Read live India VIX for baseline IV
-    baseline_iv = 0.155  # ~15.5% standard Indian equity IV
+    baseline_iv = 0.155
     try:
         from app.tick_engine import tick_engine
         vix = tick_engine.stocks.get("INDIA VIX") or tick_engine.stocks.get("INDIAVIX")
@@ -458,23 +695,16 @@ def build_option_chain(
     max_put_oi = -1
     highest_call_strike = atm_strike
     highest_put_strike = atm_strike
-
-    # Max Pain Matrix Accumulator
-    loss_by_strike: Dict[float, float] = {k: 0.0 for k in strikes}
+    loss_by_strike = {k: 0.0 for k in strikes}
 
     for k in strikes:
-        # Distance from ATM in standard steps
         dist = (k - spot) / spot
         dist_steps = abs(k - atm_strike) / interval
-
-        # IV Skew: Volatility smile (higher IV for deep OTM puts and calls)
         strike_iv = baseline_iv * (1.0 + 0.12 * abs(dist) + (0.05 if k < spot else 0.0))
 
-        # Greeks & Theoretical Pricing
         ce_greeks = calculate_greeks(spot, k, days_to_expiry, "CE", strike_iv)
         pe_greeks = calculate_greeks(spot, k, days_to_expiry, "PE", strike_iv)
 
-        # OI distribution: Peak near ATM & round psychological strikes, decays OTM
         decay_factor = math.exp(-0.5 * ((dist_steps / 6.0) ** 2))
         round_boost = 1.35 if (k % (interval * 5) == 0) else 1.0
 
@@ -488,11 +718,6 @@ def build_option_chain(
         ce_vol = int(ce_oi * 0.65)
         pe_vol = int(pe_oi * 0.60)
 
-        # OI Buildup classification
-        # Long Buildup: Price Up & OI Up
-        # Short Buildup: Price Down & OI Up
-        # Short Covering: Price Up & OI Down
-        # Long Unwinding: Price Down & OI Down
         ce_p_up = ce_greeks["delta"] * change_pct > 0
         ce_oi_up = ce_chg_oi > 0
         ce_buildup = (
@@ -511,20 +736,16 @@ def build_option_chain(
             else "Long Unwinding"
         )
 
-        # Market Depth Bid / Ask
         ce_ltp = ce_greeks["price"]
         pe_ltp = pe_greeks["price"]
-
         ce_bid = round(max(0.05, ce_ltp - (0.10 if ce_ltp < 50 else 0.50)), 2)
         ce_ask = round(ce_ltp + (0.10 if ce_ltp < 50 else 0.50), 2)
         pe_bid = round(max(0.05, pe_ltp - (0.10 if pe_ltp < 50 else 0.50)), 2)
         pe_ask = round(pe_ltp + (0.10 if pe_ltp < 50 else 0.50), 2)
 
-        # Day changes %
         ce_chg_pct = round(ce_greeks["delta"] * change_pct * (spot / max(1.0, ce_ltp)), 2)
         pe_chg_pct = round(pe_greeks["delta"] * change_pct * (spot / max(1.0, pe_ltp)), 2)
 
-        # Accumulate totals
         total_call_oi += ce_oi
         total_put_oi += pe_oi
         total_call_vol += ce_vol
@@ -537,13 +758,11 @@ def build_option_chain(
             max_put_oi = pe_oi
             highest_put_strike = k
 
-        # Max pain calculation: for each hypothetical settlement price S, compute writer loss
         for s_test in strikes:
             call_loss = max(0.0, s_test - k) * ce_oi
             put_loss = max(0.0, k - s_test) * pe_oi
             loss_by_strike[s_test] += (call_loss + put_loss)
 
-        # Moneyness tag
         ce_moneyness = "ATM" if k == atm_strike else ("ITM" if k < spot else "OTM")
         pe_moneyness = "ATM" if k == atm_strike else ("ITM" if k > spot else "OTM")
 
@@ -553,46 +772,47 @@ def build_option_chain(
             "call": {
                 "oi": ce_oi,
                 "change_oi": ce_chg_oi,
+                "pchange_oi": 0.0,
                 "volume": ce_vol,
                 "iv": round(strike_iv * 100.0, 2),
                 "ltp": ce_ltp,
+                "change": round(ce_ltp * ce_chg_pct / 100.0, 2),
                 "change_pct": ce_chg_pct,
                 "bid": ce_bid,
+                "bid_qty": int(lot_size * 20),
                 "ask": ce_ask,
-                "delta": ce_greeks["delta"],
-                "theta": ce_greeks["theta"],
-                "gamma": ce_greeks["gamma"],
-                "vega": ce_greeks["vega"],
+                "ask_qty": int(lot_size * 15),
+                "identifier": f"OPT{sym_clean}{selected_expiry}CE{k}",
                 "moneyness": ce_moneyness,
                 "buildup": ce_buildup
             },
             "put": {
                 "oi": pe_oi,
                 "change_oi": pe_chg_oi,
+                "pchange_oi": 0.0,
                 "volume": pe_vol,
                 "iv": round(strike_iv * 100.0, 2),
                 "ltp": pe_ltp,
+                "change": round(pe_ltp * pe_chg_pct / 100.0, 2),
                 "change_pct": pe_chg_pct,
                 "bid": pe_bid,
+                "bid_qty": int(lot_size * 20),
                 "ask": pe_ask,
-                "delta": pe_greeks["delta"],
-                "theta": pe_greeks["theta"],
-                "gamma": pe_greeks["gamma"],
-                "vega": pe_greeks["vega"],
+                "ask_qty": int(lot_size * 15),
+                "identifier": f"OPT{sym_clean}{selected_expiry}PE{k}",
                 "moneyness": pe_moneyness,
                 "buildup": pe_buildup
             }
         })
 
-    # Max Pain is the strike that minimizes total writer loss
     max_pain_strike = min(loss_by_strike, key=loss_by_strike.get) if loss_by_strike else atm_strike
-
-    # PCR (Put-Call Ratio)
     pcr = round(total_put_oi / max(1, total_call_oi), 2)
     pcr_sentiment = "BULLISH" if pcr >= 1.2 else "BEARISH" if pcr <= 0.8 else "NEUTRAL"
 
     return {
         "status": "success",
+        "market_status": "OFFLINE / CACHED",
+        "source": "NSE_DERIVED_MODEL",
         "symbol": sym_clean,
         "name": meta["name"],
         "instrument_type": meta["type"],
@@ -602,7 +822,7 @@ def build_option_chain(
         "change_pct": round(change_pct, 2),
         "atm_strike": atm_strike,
         "selected_expiry": selected_expiry,
-        "expiries": expiries,
+        "expiries": exp_dates,
         "days_to_expiry": round(days_to_expiry, 1),
         "summary": {
             "pcr": pcr,
@@ -610,14 +830,20 @@ def build_option_chain(
             "max_pain": max_pain_strike,
             "total_call_oi": total_call_oi,
             "total_put_oi": total_put_oi,
+            "call_oi_change": sum(r["call"]["change_oi"] for r in rows),
+            "put_oi_change": sum(r["put"]["change_oi"] for r in rows),
             "total_call_volume": total_call_vol,
             "total_put_volume": total_put_vol,
             "highest_call_oi_strike": highest_call_strike,
-            "highest_put_oi_strike": highest_put_strike
+            "highest_put_oi_strike": highest_put_strike,
+            "highest_call_addition_strike": highest_call_strike,
+            "highest_put_addition_strike": highest_put_strike
         },
         "chain": rows,
+        "exchange_timestamp": datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST"),
         "last_updated": datetime.now(IST).strftime("%d-%b-%Y %I:%M:%S %p IST")
     }
+
 
 # ---------------------------------------------------------------------------
 # Multi-Leg Strategy Payoff Calculator

@@ -1,0 +1,25 @@
+{
+  "telegram": {
+    "is_enabled": true,
+    "bot_token": "7891234567:AAHk98XYZ_algo_robot_bot",
+    "chat_id": "@algorobot_signals",
+    "channel_type": "PUBLIC_CHANNEL"
+  },
+  "webhook": {
+    "is_enabled": true,
+    "webhook_url": "https://api.algorobot.in/hooks/trade-signals",
+    "auth_header": "Bearer algo_robot_sec_token_9918",
+    "format": "JSON"
+  },
+  "whatsapp": {
+    "is_enabled": false,
+    "phone_number": "+919876543210"
+  },
+  "rules": {
+    "broadcast_new_signals": true,
+    "broadcast_target_hits": true,
+    "broadcast_sl_hits": true,
+    "daily_summary_digest": true
+  },
+  "updated_at": "2026-11-13T15:03:05.243551+00:00"
+}

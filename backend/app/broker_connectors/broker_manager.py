@@ -15,6 +15,17 @@ from app.broker_connectors.zerodha_adapter import ZerodhaAdapter
 from app.broker_connectors.angel_one_adapter import AngelOneAdapter
 from app.broker_connectors.dhan_adapter import DhanAdapter
 from app.broker_connectors.upstox_adapter import UpstoxAdapter
+from app.core.security import encryption_service
+
+SENSITIVE_CREDENTIAL_FIELDS = {
+    "api_key",
+    "api_secret",
+    "access_token",
+    "pin",
+    "totp_key",
+    "password",
+    "factor2",
+}
 
 SESSIONS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "broker_sessions.json")
 
@@ -71,14 +82,39 @@ class BrokerManager:
     def _load_raw(self) -> Dict[str, Any]:
         try:
             with open(SESSIONS_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                # Automatically decrypt sensitive fields if encrypted
+                brokers = data.get("brokers", {})
+                for b_id, b_meta in brokers.items():
+                    if isinstance(b_meta, dict):
+                        for field in SENSITIVE_CREDENTIAL_FIELDS:
+                            enc_val = b_meta.get(f"{field}_encrypted")
+                            if enc_val:
+                                try:
+                                    b_meta[field] = encryption_service.decrypt(enc_val)
+                                except Exception:
+                                    pass
+                return data
         except Exception:
             return dict(DEFAULT_SESSIONS)
 
     def _save_raw(self, data: Dict[str, Any]):
         data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        # Prepare encrypted payload for disk storage
+        disk_data = json.loads(json.dumps(data))
+        brokers = disk_data.get("brokers", {})
+        for b_id, b_meta in brokers.items():
+            if isinstance(b_meta, dict):
+                for field in list(b_meta.keys()):
+                    if field in SENSITIVE_CREDENTIAL_FIELDS:
+                        raw_val = b_meta.pop(field)
+                        if raw_val:
+                            try:
+                                b_meta[f"{field}_encrypted"] = encryption_service.encrypt(str(raw_val))
+                            except Exception:
+                                pass
         with open(SESSIONS_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            json.dump(disk_data, f, indent=2)
 
     def get_status(self) -> Dict[str, Any]:
         """Return status, funds, and profile for all supported brokers."""
@@ -134,7 +170,7 @@ class BrokerManager:
         # Update saved sessions
         data = self._load_raw()
         b_entry = data.setdefault("brokers", {}).setdefault(broker_id, {})
-        for k in ["client_id", "client_code", "api_key"]:
+        for k in ["client_id", "client_code", "api_key", "api_secret", "access_token", "pin", "totp_key", "password"]:
             if k in credentials:
                 b_entry[k] = credentials[k]
         b_entry["is_connected"] = True

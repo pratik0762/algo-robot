@@ -2396,3 +2396,4 @@ with open(target_path, "w", encoding="utf-8") as f:
     f.write(code)
 
 print(f"Successfully generated Sensibull-style Workstation in {target_path} ({len(code)} bytes)")
+
