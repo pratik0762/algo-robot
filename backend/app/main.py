@@ -1747,7 +1747,8 @@ async def api_trigger_new_signal():
 @app.post("/api/backtest/run")
 async def api_run_backtest(payload: Dict[str, Any]):
     """Run realistic backtest simulation with zero lookahead bias and authentic transaction costs."""
-    from app.backtesting_engine import backtesting_engine
+    from app.backtesting.engine import backtest_engine
+    from app.backtesting_engine import backtesting_engine as legacy_backtesting_engine
     from app.backtest_storage import backtest_storage
     strategy_id = payload.get("strategy_id", "ema_cross")
     symbols = payload.get("symbols", ["RELIANCE", "TCS", "HDFCBANK", "INFY"])
@@ -1760,23 +1761,71 @@ async def api_run_backtest(payload: Dict[str, Any]):
     end_date = payload.get("end_date")
 
     try:
-        result = backtesting_engine.run_backtest(
-            strategy_id=strategy_id,
-            symbols=symbols,
-            timeframe=timeframe,
-            instrument_type=instrument_type,
-            initial_capital=initial_capital,
-            risk_per_trade_pct=risk_per_trade_pct,
-            slippage_pct=slippage_pct,
-            start_date=start_date,
-            end_date=end_date
-        )
+        # Route to modern Phase 7 engine if SMC/QUANT strategy, otherwise legacy
+        if strategy_id.startswith(("SMC_", "QUANT_")):
+            result = backtest_engine.run_backtest(
+                strategy_id=strategy_id,
+                symbols=symbols,
+                timeframe=timeframe,
+                instrument_type=instrument_type,
+                initial_capital=initial_capital,
+                risk_per_trade_pct=risk_per_trade_pct,
+                slippage_pct=slippage_pct,
+                start_date=start_date,
+                end_date=end_date
+            )
+        else:
+            result = legacy_backtesting_engine.run_backtest(
+                strategy_id=strategy_id,
+                symbols=symbols,
+                timeframe=timeframe,
+                instrument_type=instrument_type,
+                initial_capital=initial_capital,
+                risk_per_trade_pct=risk_per_trade_pct,
+                slippage_pct=slippage_pct,
+                start_date=start_date,
+                end_date=end_date
+            )
         # Phase 9: Persist backtest run into storage
         run_id = backtest_storage.save_run(result)
         result["backtest_id"] = run_id
         return result
     except Exception as e:
         logger.error("Backtest execution failed: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/backtest/walk-forward")
+async def api_run_walk_forward(payload: Dict[str, Any]):
+    """Run institutional Walk-Forward Optimization across sequential In-Sample and Out-of-Sample windows."""
+    from app.backtesting.walk_forward import walk_forward_optimizer
+
+    strategy_id = payload.get("strategy_id", "SMC_ORDER_BLOCK")
+    symbols = payload.get("symbols", ["RELIANCE", "TCS", "HDFCBANK", "INFY"])
+    timeframe = payload.get("timeframe", "15m")
+    instrument_type = payload.get("instrument_type", "EQUITY_INTRADAY")
+    initial_capital = float(payload.get("initial_capital", 500000.0))
+    n_windows = int(payload.get("n_windows", 3))
+    train_ratio = float(payload.get("train_ratio", 0.70))
+    param_grid = payload.get("param_grid")
+
+    try:
+        wfa_result = walk_forward_optimizer.run_walk_forward_optimization(
+            strategy_id=strategy_id,
+            symbols=symbols,
+            timeframe=timeframe,
+            instrument_type=instrument_type,
+            initial_capital=initial_capital,
+            n_windows=n_windows,
+            train_ratio=train_ratio,
+            param_grid=param_grid,
+        )
+        return {
+            "status": "success",
+            **wfa_result
+        }
+    except Exception as e:
+        logger.error("Walk-Forward Optimization failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/backtest/history")

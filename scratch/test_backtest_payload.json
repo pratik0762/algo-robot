@@ -1,0 +1,9 @@
+{
+  "strategy_id": "SMC_ORDER_BLOCK",
+  "symbols": ["RELIANCE"],
+  "timeframe": "15m",
+  "instrument_type": "EQUITY_INTRADAY",
+  "initial_capital": 500000.0,
+  "risk_per_trade_pct": 1.5,
+  "slippage_pct": 0.0003
+}
