@@ -2,25 +2,27 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { 
-  Building2, 
-  Search, 
-  Filter, 
-  TrendingUp, 
-  TrendingDown, 
-  Globe, 
-  Database, 
-  Layers, 
-  ArrowUpDown, 
-  ExternalLink, 
-  ShoppingCart, 
+import {
+  Building2,
+  Search,
+  Filter,
+  TrendingUp,
+  TrendingDown,
+  Globe,
+  Database,
+  Layers,
+  ArrowUpDown,
+  ExternalLink,
+  ShoppingCart,
   RefreshCw,
   CheckCircle2,
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
-  BarChart3
+  BarChart3,
+  Sliders,
+  Boxes
 } from "lucide-react";
 import PaperOrderModal from "@/components/PaperOrderModal";
 import { getApiBase } from "@/config/api";
@@ -129,101 +131,431 @@ export default function AllListedCompaniesPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "LIVE":
-        return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">● LIVE</span>;
+        return (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              background: "rgba(16, 185, 129, 0.15)",
+              color: "#34d399",
+              border: "1px solid rgba(16, 185, 129, 0.3)"
+            }}
+          >
+            ● LIVE
+          </span>
+        );
       case "EOD":
-        return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">EOD CLOSE</span>;
+        return (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              background: "rgba(59, 130, 246, 0.15)",
+              color: "#60a5fa",
+              border: "1px solid rgba(59, 130, 246, 0.3)"
+            }}
+          >
+            EOD CLOSE
+          </span>
+        );
       case "DELAYED":
-        return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">DELAYED</span>;
+        return (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              background: "rgba(245, 158, 11, 0.15)",
+              color: "#fbbf24",
+              border: "1px solid rgba(245, 158, 11, 0.3)"
+            }}
+          >
+            DELAYED
+          </span>
+        );
       default:
-        return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20">CLOSED</span>;
+        return (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              background: "rgba(100, 116, 139, 0.15)",
+              color: "#94a3b8",
+              border: "1px solid rgba(100, 116, 139, 0.3)"
+            }}
+          >
+            REAL_CLOSED
+          </span>
+        );
     }
   };
 
   const getBoardBadge = (board: string) => {
     if (board === "SME") {
-      return <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30">SME</span>;
+      return (
+        <span
+          style={{
+            padding: "2px 6px",
+            borderRadius: "4px",
+            fontSize: "0.65rem",
+            fontWeight: 800,
+            background: "rgba(168, 85, 247, 0.2)",
+            color: "#c084fc",
+            border: "1px solid rgba(168, 85, 247, 0.4)",
+            letterSpacing: "0.04em"
+          }}
+        >
+          SME
+        </span>
+      );
     }
-    return <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">MAIN</span>;
+    return (
+      <span
+        style={{
+          padding: "2px 6px",
+          borderRadius: "4px",
+          fontSize: "0.65rem",
+          fontWeight: 700,
+          background: "rgba(255, 255, 255, 0.08)",
+          color: "#cbd5e1",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          letterSpacing: "0.04em"
+        }}
+      >
+        MAIN
+      </span>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col font-sans">
-      {/* Top Banner / Breadcrumb */}
-      <div className="border-b border-slate-800/80 bg-[#0C1019] px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-medium text-emerald-400 uppercase tracking-widest mb-1">
-              <Database className="w-3.5 h-3.5" />
-              <span>National Securities Master & Listed Equity Universe</span>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#080b12",
+        color: "#f8fafc",
+        fontFamily: "var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif)",
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      {/* Top Header Banner */}
+      <header
+        style={{
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(15, 21, 35, 0.85)",
+          backdropFilter: "blur(16px)",
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+          padding: "16px 28px"
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1600px",
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "16px"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <div
+              style={{
+                width: "44px",
+                height: "44px",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #059669 0%, #10b981 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.35)",
+                flexShrink: 0
+              }}
+            >
+              <Boxes size={22} color="white" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
-              All Listed Companies
-              <span className="text-xs font-normal px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                NSE + BSE | Mainboard + SME
-              </span>
-            </h1>
+
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                <span
+                  style={{
+                    fontSize: "0.68rem",
+                    fontWeight: 800,
+                    color: "#34d399",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px"
+                  }}
+                >
+                  <Database size={13} />
+                  National Securities Master &amp; Listed Equity Universe
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 800, letterSpacing: "-0.01em" }}>
+                  All Listed Companies
+                </h1>
+                <span
+                  style={{
+                    background: "rgba(16, 185, 129, 0.15)",
+                    border: "1px solid rgba(16, 185, 129, 0.4)",
+                    color: "#34d399",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
+                    padding: "3px 10px",
+                    borderRadius: "20px",
+                    letterSpacing: "0.04em"
+                  }}
+                >
+                  NSE + BSE | Mainboard + SME
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <Link
               href="/data-center"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "7px",
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "#e2e8f0",
+                padding: "8px 14px",
+                borderRadius: "8px",
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                transition: "all 0.15s ease"
+              }}
             >
-              <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
+              <BarChart3 size={15} color="#38bdf8" />
               <span>Data Center Telemetry</span>
             </Link>
+
             <button
               onClick={() => fetchUniverse()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-xs font-semibold text-emerald-300 transition"
+              disabled={loading}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "7px",
+                background: "linear-gradient(135deg, #059669 0%, #10b981 100%)",
+                border: "none",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                cursor: loading ? "not-allowed" : "pointer",
+                boxShadow: "0 2px 10px rgba(16, 185, 129, 0.35)",
+                transition: "all 0.15s ease"
+              }}
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-              <span>Refresh Universe</span>
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+              <span>{loading ? "Refreshing..." : "Refresh Universe"}</span>
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1 flex flex-col gap-6">
-        {/* Metric Cards Row */}
+      {/* Main Page Body */}
+      <main
+        style={{
+          maxWidth: "1600px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "24px 24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          flex: 1
+        }}
+      >
+        {/* Metric Summary Cards */}
         {metrics && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Total Companies</div>
-              <div className="text-xl font-bold text-white mt-1">{metrics.total_listed_companies.toLocaleString()}</div>
-              <div className="text-[10px] text-emerald-400 mt-0.5">Canonical Entities</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "14px"
+            }}
+          >
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                Total Listed Companies
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                {metrics.total_listed_companies.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#34d399", marginTop: "3px" }}>
+                Canonical ISIN Entities
+              </div>
             </div>
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">NSE Instruments</div>
-              <div className="text-xl font-bold text-blue-400 mt-1">{metrics.nse_instruments.toLocaleString()}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">Equities Listed</div>
+
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                NSE Instruments
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#38bdf8", marginTop: "4px" }}>
+                {metrics.nse_instruments.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "3px" }}>
+                Active Equities Traded
+              </div>
             </div>
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">BSE Instruments</div>
-              <div className="text-xl font-bold text-purple-400 mt-1">{metrics.bse_instruments.toLocaleString()}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">Scrips Listed</div>
+
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                BSE Instruments
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#c084fc", marginTop: "4px" }}>
+                {metrics.bse_instruments.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "3px" }}>
+                Active Scrips Traded
+              </div>
             </div>
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Mainboard Equities</div>
-              <div className="text-xl font-bold text-amber-400 mt-1">{metrics.mainboard_instruments.toLocaleString()}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">EQ / Series A, B</div>
+
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                Mainboard Equities
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#fbbf24", marginTop: "4px" }}>
+                {metrics.mainboard_instruments.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "3px" }}>
+                NSE EQ / BSE Series A, B
+              </div>
             </div>
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">SME Equities</div>
-              <div className="text-xl font-bold text-pink-400 mt-1">{metrics.sme_instruments.toLocaleString()}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">EMERGE / BSE SME</div>
+
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                SME Equities
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#f472b6", marginTop: "4px" }}>
+                {metrics.sme_instruments.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "3px" }}>
+                NSE EMERGE / BSE SME
+              </div>
             </div>
-            <div className="bg-[#0F1420] border border-slate-800/80 rounded-xl p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Active Trading</div>
-              <div className="text-xl font-bold text-emerald-400 mt-1">{metrics.active_companies.toLocaleString()}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">{metrics.suspended_companies} Suspended</div>
+
+            <div
+              style={{
+                background: "rgba(18, 24, 38, 0.75)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "12px",
+                padding: "16px 18px",
+                backdropFilter: "blur(12px)"
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase" }}>
+                Active Securities
+              </div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#34d399", marginTop: "4px" }}>
+                {metrics.active_companies.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "3px" }}>
+                {metrics.suspended_companies} Suspended
+              </div>
             </div>
           </div>
         )}
 
-        {/* Filter Toolbar */}
-        <div className="bg-[#0E131E] border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        {/* Filter & Search Toolbar */}
+        <div
+          style={{
+            background: "rgba(18, 24, 38, 0.8)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            padding: "16px 18px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "14px"
+          }}
+        >
+          {/* Search Box */}
+          <div style={{ position: "relative", flex: 1, minWidth: "280px" }}>
+            <Search
+              size={16}
+              color="#94a3b8"
+              style={{
+                position: "absolute",
+                left: "14px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none"
+              }}
+            />
             <input
               type="text"
               value={searchTerm}
@@ -231,12 +563,22 @@ export default function AllListedCompaniesPage() {
                 setSearchTerm(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search by company name, NSE symbol, BSE code, or ISIN..."
-              className="w-full bg-[#080B11] border border-slate-700/80 rounded-lg pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              placeholder="Search by legal name, NSE symbol (RELIANCE), BSE scrip code (500325), or ISIN..."
+              style={{
+                width: "100%",
+                padding: "10px 16px 10px 40px",
+                background: "#0b0f19",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                borderRadius: "8px",
+                color: "#ffffff",
+                fontSize: "0.85rem",
+                outline: "none"
+              }}
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          {/* Dropdown Filters */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             {/* Exchange Filter */}
             <select
               value={selectedExchange}
@@ -244,7 +586,16 @@ export default function AllListedCompaniesPage() {
                 setSelectedExchange(e.target.value);
                 setPage(1);
               }}
-              className="bg-[#080B11] border border-slate-700 text-xs text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500"
+              style={{
+                background: "#0b0f19",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "#f1f5f9",
+                fontSize: "0.82rem",
+                borderRadius: "8px",
+                padding: "9px 12px",
+                outline: "none",
+                cursor: "pointer"
+              }}
             >
               <option value="ALL">All Exchanges (NSE + BSE)</option>
               <option value="NSE">NSE Only</option>
@@ -259,7 +610,16 @@ export default function AllListedCompaniesPage() {
                 setSelectedBoard(e.target.value);
                 setPage(1);
               }}
-              className="bg-[#080B11] border border-slate-700 text-xs text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500"
+              style={{
+                background: "#0b0f19",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "#f1f5f9",
+                fontSize: "0.82rem",
+                borderRadius: "8px",
+                padding: "9px 12px",
+                outline: "none",
+                cursor: "pointer"
+              }}
             >
               <option value="ALL">All Boards (Mainboard + SME)</option>
               <option value="MAINBOARD">Mainboard Only</option>
@@ -273,7 +633,16 @@ export default function AllListedCompaniesPage() {
                 setSelectedCap(e.target.value);
                 setPage(1);
               }}
-              className="bg-[#080B11] border border-slate-700 text-xs text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-emerald-500"
+              style={{
+                background: "#0b0f19",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "#f1f5f9",
+                fontSize: "0.82rem",
+                borderRadius: "8px",
+                padding: "9px 12px",
+                outline: "none",
+                cursor: "pointer"
+              }}
             >
               <option value="ALL">All Market Caps</option>
               <option value="LARGE_CAP">Large Cap (&gt;₹20k Cr)</option>
@@ -281,159 +650,302 @@ export default function AllListedCompaniesPage() {
               <option value="SMALL_CAP">Small Cap (₹1k-5k Cr)</option>
               <option value="MICRO_CAP">Micro Cap (&lt;₹1k Cr)</option>
             </select>
+
+            {searchTerm && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setPage(1);
+                }}
+                style={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  color: "#cbd5e1",
+                  fontSize: "0.8rem",
+                  padding: "9px 12px",
+                  borderRadius: "8px",
+                  cursor: "pointer"
+                }}
+              >
+                Clear Search
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Companies Table */}
-        <div className="bg-[#0D121D] border border-slate-800 rounded-xl overflow-hidden shadow-xl flex-1 flex flex-col">
-          <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left text-xs border-collapse">
+        {/* Company Universe Data Table */}
+        <div
+          style={{
+            background: "rgba(18, 24, 38, 0.75)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", textAlign: "left" }}>
               <thead>
-                <tr className="bg-[#121724] border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-4 cursor-pointer hover:text-white" onClick={() => handleSort("legal_name")}>
-                    <div className="flex items-center gap-1.5">
-                      <span>Company / Entity</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                <tr
+                  style={{
+                    background: "#0c111d",
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                    color: "#94a3b8",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em"
+                  }}
+                >
+                  <th
+                    style={{ padding: "14px 16px", cursor: "pointer", userSelect: "none" }}
+                    onClick={() => handleSort("legal_name")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>Company / Canonical Entity</span>
+                      <ArrowUpDown size={13} color="#64748b" />
                     </div>
                   </th>
-                  <th className="py-3 px-3">Identifiers</th>
-                  <th className="py-3 px-3">Board & Sector</th>
-                  <th className="py-3 px-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort("market_cap_cr")}>
-                    <div className="flex items-center justify-end gap-1.5">
+                  <th style={{ padding: "14px 12px" }}>Exchange Identifiers</th>
+                  <th style={{ padding: "14px 12px" }}>Board &amp; Sector</th>
+                  <th
+                    style={{ padding: "14px 12px", textAlign: "right", cursor: "pointer", userSelect: "none" }}
+                    onClick={() => handleSort("market_cap_cr")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "6px" }}>
                       <span>Market Cap</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
+                      <ArrowUpDown size={13} color="#64748b" />
                     </div>
                   </th>
-                  <th className="py-3 px-3 text-right">LTP (₹)</th>
-                  <th className="py-3 px-3 text-right">Change %</th>
-                  <th className="py-3 px-3 text-center">Data Feed</th>
-                  <th className="py-3 px-4 text-center">Actions</th>
+                  <th style={{ padding: "14px 12px", textAlign: "right" }}>LTP (₹)</th>
+                  <th style={{ padding: "14px 12px", textAlign: "right" }}>Change %</th>
+                  <th style={{ padding: "14px 12px", textAlign: "center" }}>Data Feed</th>
+                  <th style={{ padding: "14px 16px", textAlign: "center" }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-medium">
+              <tbody>
                 {loading && items.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
-                      <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400" />
-                      Loading securities from All-India universe...
+                    <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#94a3b8" }}>
+                      <RefreshCw size={26} className="animate-spin" color="#10b981" style={{ margin: "0 auto 10px auto" }} />
+                      <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#f1f5f9" }}>
+                        Loading securities from All-India universe...
+                      </div>
                     </td>
                   </tr>
                 ) : items.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-400">
-                      No securities matching your search criteria.
+                    <td colSpan={8} style={{ padding: "60px 20px", textAlign: "center", color: "#94a3b8" }}>
+                      <AlertTriangle size={26} color="#fbbf24" style={{ margin: "0 auto 10px auto" }} />
+                      <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#f1f5f9" }}>
+                        No securities matching your search criteria.
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "#64748b", marginTop: "4px" }}>
+                        Try adjusting your search terms or clearing exchange filters.
+                      </div>
                     </td>
                   </tr>
                 ) : (
                   items.map((item) => (
-                    <tr key={item.company_id} className="hover:bg-slate-800/40 transition">
-                      {/* Company Name */}
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-white text-xs hover:text-emerald-400 transition">
-                          <Link href={`/company/${item.nse_symbol || item.company_id}`}>
+                    <tr
+                      key={item.company_id}
+                      style={{
+                        borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                        transition: "background 0.15s ease"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      {/* Legal Name & ISIN */}
+                      <td style={{ padding: "14px 16px" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#ffffff" }}>
+                          <Link
+                            href={`/company/${item.nse_symbol || item.company_id}`}
+                            style={{ color: "#ffffff", textDecoration: "none" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = "#34d399")}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = "#ffffff")}
+                          >
                             {item.legal_name}
                           </Link>
                         </div>
-                        <div className="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center gap-2">
+                        <div
+                          style={{
+                            fontSize: "0.72rem",
+                            color: "#94a3b8",
+                            fontFamily: "var(--font-mono, monospace)",
+                            marginTop: "3px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px"
+                          }}
+                        >
                           <span>ISIN: {item.primary_isin}</span>
                           {item.is_fno_eligible && (
-                            <span className="px-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[9px] font-bold">
-                              F&O
+                            <span
+                              style={{
+                                padding: "1px 5px",
+                                borderRadius: "3px",
+                                background: "rgba(59, 130, 246, 0.15)",
+                                color: "#60a5fa",
+                                border: "1px solid rgba(59, 130, 246, 0.3)",
+                                fontSize: "0.62rem",
+                                fontWeight: 800
+                              }}
+                            >
+                              F&amp;O
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Identifiers */}
-                      <td className="py-3 px-3">
-                        <div className="flex items-center gap-2 font-mono">
+                      <td style={{ padding: "14px 12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", fontFamily: "var(--font-mono, monospace)" }}>
                           {item.nse_symbol ? (
-                            <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 font-bold text-[11px]">
+                            <span
+                              style={{
+                                padding: "2px 7px",
+                                borderRadius: "4px",
+                                background: "rgba(59, 130, 246, 0.12)",
+                                color: "#93c5fd",
+                                border: "1px solid rgba(59, 130, 246, 0.25)",
+                                fontSize: "0.75rem",
+                                fontWeight: 700
+                              }}
+                            >
                               NSE: {item.nse_symbol}
                             </span>
                           ) : (
-                            <span className="text-slate-600 text-[10px]">—</span>
+                            <span style={{ color: "#475569", fontSize: "0.75rem" }}>—</span>
                           )}
-                          {item.bse_code && (
-                            <span className="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20 text-[11px]">
+
+                          {item.bse_code ? (
+                            <span
+                              style={{
+                                padding: "2px 7px",
+                                borderRadius: "4px",
+                                background: "rgba(168, 85, 247, 0.12)",
+                                color: "#d8b4fe",
+                                border: "1px solid rgba(168, 85, 247, 0.25)",
+                                fontSize: "0.75rem",
+                                fontWeight: 700
+                              }}
+                            >
                               BSE: {item.bse_code}
                             </span>
+                          ) : (
+                            <span style={{ color: "#475569", fontSize: "0.75rem" }}>—</span>
                           )}
                         </div>
                       </td>
 
                       {/* Board & Sector */}
-                      <td className="py-3 px-3">
-                        <div className="flex items-center gap-1.5 mb-1">
+                      <td style={{ padding: "14px 12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
                           {getBoardBadge(item.board_type)}
-                          <span className="text-[11px] text-slate-300 font-medium truncate max-w-[150px]">
+                          <span style={{ fontSize: "0.78rem", color: "#e2e8f0", fontWeight: 600 }}>
                             {item.sector}
                           </span>
                         </div>
-                        <div className="text-[10px] text-slate-500 truncate max-w-[180px]">
+                        <div style={{ fontSize: "0.7rem", color: "#64748b" }}>
                           {item.industry}
                         </div>
                       </td>
 
                       {/* Market Cap */}
-                      <td className="py-3 px-3 text-right">
-                        <div className="font-semibold text-white font-mono">
-                          {item.market_cap_cr > 0 ? `₹${item.market_cap_cr.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr` : "—"}
+                      <td style={{ padding: "14px 12px", textAlign: "right" }}>
+                        <div style={{ fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-mono, monospace)" }}>
+                          {item.market_cap_cr > 0
+                            ? `₹${item.market_cap_cr.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
+                            : "—"}
                         </div>
-                        <div className="text-[10px] text-slate-400 font-medium">
+                        <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
                           {item.market_cap_category.replace("_", " ")}
                         </div>
                       </td>
 
                       {/* LTP */}
-                      <td className="py-3 px-3 text-right font-mono font-bold text-white">
-                        {item.ltp > 0 ? `₹${item.ltp.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+                      <td style={{ padding: "14px 12px", textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: 800, fontSize: "0.9rem", color: "#ffffff" }}>
+                        {item.ltp > 0
+                          ? `₹${item.ltp.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : "—"}
                       </td>
 
                       {/* Change % */}
-                      <td className="py-3 px-3 text-right font-mono font-semibold">
+                      <td style={{ padding: "14px 12px", textAlign: "right", fontFamily: "var(--font-mono, monospace)", fontWeight: 700 }}>
                         {item.percent_change >= 0 ? (
-                          <span className="text-emerald-400 flex items-center justify-end gap-0.5">
-                            <TrendingUp className="w-3 h-3" />
+                          <span style={{ color: "#34d399", display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                            <TrendingUp size={13} />
                             +{item.percent_change.toFixed(2)}%
                           </span>
                         ) : (
-                          <span className="text-rose-400 flex items-center justify-end gap-0.5">
-                            <TrendingDown className="w-3 h-3" />
+                          <span style={{ color: "#f87171", display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                            <TrendingDown size={13} />
                             {item.percent_change.toFixed(2)}%
                           </span>
                         )}
                       </td>
 
-                      {/* Data Status */}
-                      <td className="py-3 px-3 text-center">
+                      {/* Data Feed Status */}
+                      <td style={{ padding: "14px 12px", textAlign: "center" }}>
                         {getStatusBadge(item.data_status)}
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3 px-4 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
+                      <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
                           <Link
                             href={`/chart?symbol=${item.nse_symbol || item.company_id}`}
                             title="Open TradingView Chart"
-                            className="p-1.5 rounded-md hover:bg-slate-700 text-slate-300 hover:text-white transition"
+                            style={{
+                              padding: "6px 8px",
+                              borderRadius: "6px",
+                              background: "rgba(255, 255, 255, 0.05)",
+                              color: "#38bdf8",
+                              display: "inline-flex",
+                              alignItems: "center"
+                            }}
                           >
-                            <BarChart3 className="w-3.5 h-3.5" />
+                            <BarChart3 size={15} />
                           </Link>
+
                           <Link
                             href={`/company/${item.nse_symbol || item.company_id}`}
                             title="Open Company Dossier"
-                            className="p-1.5 rounded-md hover:bg-slate-700 text-slate-300 hover:text-white transition"
+                            style={{
+                              padding: "6px 8px",
+                              borderRadius: "6px",
+                              background: "rgba(255, 255, 255, 0.05)",
+                              color: "#cbd5e1",
+                              display: "inline-flex",
+                              alignItems: "center"
+                            }}
                           >
-                            <ExternalLink className="w-3.5 h-3.5" />
+                            <ExternalLink size={15} />
                           </Link>
+
                           {item.nse_symbol && (
                             <button
                               onClick={() => setOrderModalStock({ symbol: item.nse_symbol!, ltp: item.ltp || 100.0 })}
-                              title="Instant Paper Order"
-                              className="p-1.5 rounded-md hover:bg-emerald-600/30 text-emerald-400 transition"
+                              title="Instant Paper Order Execution"
+                              style={{
+                                padding: "6px 8px",
+                                borderRadius: "6px",
+                                background: "rgba(16, 185, 129, 0.15)",
+                                border: "1px solid rgba(16, 185, 129, 0.3)",
+                                color: "#34d399",
+                                cursor: "pointer",
+                                display: "inline-flex",
+                                alignItems: "center"
+                              }}
                             >
-                              <ShoppingCart className="w-3.5 h-3.5" />
+                              <ShoppingCart size={15} />
                             </button>
                           )}
                         </div>
@@ -445,40 +957,77 @@ export default function AllListedCompaniesPage() {
             </table>
           </div>
 
-          {/* Pagination Bar */}
-          <div className="bg-[#101420] border-t border-slate-800 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          {/* Pagination Controls */}
+          <div
+            style={{
+              padding: "14px 18px",
+              background: "#0c111d",
+              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
+              fontSize: "0.8rem",
+              color: "#94a3b8"
+            }}
+          >
             <div>
-              Showing <span className="text-white font-medium">{Math.min(total, (page - 1) * limit + 1)}</span> to{" "}
-              <span className="text-white font-medium">{Math.min(total, page * limit)}</span> of{" "}
-              <span className="text-white font-medium">{total.toLocaleString()}</span> securities
+              Showing <span style={{ color: "#ffffff", fontWeight: 700 }}>{total === 0 ? 0 : (page - 1) * limit + 1}</span> to{" "}
+              <span style={{ color: "#ffffff", fontWeight: 700 }}>{Math.min(total, page * limit)}</span> of{" "}
+              <span style={{ color: "#ffffff", fontWeight: 700 }}>{total.toLocaleString()}</span> securities
             </div>
 
-            <div className="flex items-center gap-2">
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page <= 1 || loading}
-                className="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-medium transition flex items-center gap-1"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  background: page <= 1 ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: page <= 1 ? "#475569" : "#ffffff",
+                  cursor: page <= 1 ? "not-allowed" : "pointer",
+                  fontSize: "0.78rem",
+                  fontWeight: 600
+                }}
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
+                <ChevronLeft size={14} />
                 Previous
               </button>
 
-              <span className="px-3 py-1 font-mono text-slate-300">
+              <span style={{ padding: "0 8px", fontFamily: "var(--font-mono, monospace)", color: "#cbd5e1" }}>
                 Page {page} of {totalPages}
               </span>
 
               <button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page >= totalPages || loading}
-                className="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-medium transition flex items-center gap-1"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  background: page >= totalPages ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: page >= totalPages ? "#475569" : "#ffffff",
+                  cursor: page >= totalPages ? "not-allowed" : "pointer",
+                  fontSize: "0.78rem",
+                  fontWeight: 600
+                }}
               >
                 Next
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight size={14} />
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Instant Paper Order Placement Modal */}
       {orderModalStock && (
