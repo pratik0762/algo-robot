@@ -649,6 +649,15 @@ def toggle_kill_switch_endpoint(action: str = Query("ACTIVATE", description="ACT
             rationale="Manual Admin Deactivation",
         )
 
+    try:
+        from app.alerting import alert_service
+        alert_service.send_kill_switch_alert(
+            engaged=(act_upper == "ACTIVATE"),
+            reason=getattr(ev, "reason", "Manual trigger"),
+        )
+    except Exception as alert_err:
+        logger.warning("Could not dispatch kill switch alert: %s", alert_err)
+
     return {
         "status": "success",
         "event": ev.to_dict(),
@@ -727,6 +736,22 @@ def place_order_endpoint(
         sector=payload.get("sector"),
         tag=payload.get("tag", "ALGO_ROBOT"),
     )
+
+    # Phase 12: Automated Alerting Dispatch
+    try:
+        from app.alerting import alert_service
+        if order.state.value == "REJECTED":
+            alert_service.send_risk_breach_alert({
+                "symbol": order.symbol,
+                "gate": "PRE_TRADE_RISK",
+                "reason": order.rejection_reason or "Risk policy violation",
+                "order_id": order.order_id,
+            })
+        elif order.state.value == "FILLED":
+            alert_service.send_order_fill_alert(order.to_dict())
+    except Exception as e:
+        logger.warning("Could not dispatch OMS alert: %s", e)
+
     return {
         "status": "success" if order.state.value != "REJECTED" else "rejected",
         "order": order.to_dict(),
@@ -1101,6 +1126,63 @@ def admin_update_user_role_endpoint(
         raise HTTPException(status_code=400, detail=str(e))
     finally:
         db.close()
+
+
+# =========================================================================
+# Phase 12: Automated Alerting & Webhook Infrastructure REST APIs
+# =========================================================================
+
+@app.get("/api/alerts/config")
+def get_alerts_config_endpoint():
+    """Retrieves current alerting configuration with tokens safely masked."""
+    from app.alerting import alert_service
+    return {
+        "status": "success",
+        "config": alert_service.get_public_config(),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/alerts/config")
+def update_alerts_config_endpoint(payload: Dict[str, Any]):
+    """Updates alerting channel parameters, webhook URLs, and broadcast rules."""
+    from app.alerting import alert_service
+    alert_service.update_config(payload)
+    return {
+        "status": "success",
+        "message": "Alerting configuration updated and saved successfully.",
+        "config": alert_service.get_public_config(),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/alerts/test")
+def test_alert_channel_endpoint(payload: Dict[str, Any]):
+    """Sends a test ping to verify connectivity of Telegram, Discord, or Webhook."""
+    from app.alerting import alert_service
+    channel = payload.get("channel", "TELEGRAM")
+    try:
+        log_res = alert_service.send_test_alert(channel)
+        return {
+            "status": "success" if log_res.status.value == "DELIVERED" else "failed",
+            "delivery": log_res.to_dict(),
+            "timestamp": time.time(),
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+
+
+@app.get("/api/alerts/logs")
+def get_alert_delivery_logs_endpoint(limit: int = 50):
+    """Retrieves audit trail of dispatched notifications and HTTP delivery logs."""
+    from app.alerting import alert_service
+    logs = alert_service.get_delivery_logs(limit=limit)
+    return {
+        "status": "success",
+        "logs": logs,
+        "count": len(logs),
+        "timestamp": time.time(),
+    }
 
 
 # =========================================================================
