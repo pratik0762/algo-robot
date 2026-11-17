@@ -20,7 +20,8 @@ import {
   Boxes,
   BarChart2,
   Grid,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Target
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -339,6 +340,22 @@ export default function NavigationDrawer({
   const handleSelectHeatmap = () => {
     onClose();
     router.push('/heatmap');
+  };
+
+  const prefetchOrderBlock = () => {
+    try {
+      fetch(`${getApiBase()}/api/order-block/scan`).catch(() => {});
+    } catch (_) {}
+  };
+
+  const handleSelectOrderBlock = () => {
+    onClose();
+    router.push('/order-block');
+  };
+
+  const handleSelectTerminal = () => {
+    onClose();
+    router.push('/terminal');
   };
 
   return (
@@ -1134,6 +1151,147 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#06b6d4" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 12: ORDER-BLOCK (Real-time SMC, Liquidity Pools & Stock Ranking Terminal) */}
+          <div
+            id="nav-order-block"
+            data-nav-item="order-block"
+            onClick={handleSelectOrderBlock}
+            onMouseEnter={prefetchOrderBlock}
+            style={{
+              background: pathname === '/order-block'
+                ? 'linear-gradient(135deg, rgba(234, 88, 12, 0.24) 0%, rgba(245, 158, 11, 0.20) 100%)'
+                : 'linear-gradient(135deg, rgba(234, 88, 12, 0.08) 0%, rgba(245, 158, 11, 0.06) 100%)',
+              border: pathname === '/order-block' ? '1px solid #ea580c' : '1px solid rgba(234, 88, 12, 0.35)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '12px 16px',
+              minHeight: '56px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              boxShadow: pathname === '/order-block' ? '0 4px 20px -2px rgba(234, 88, 12, 0.25)' : 'none',
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #ea580c 0%, #f59e0b 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  flexShrink: 0,
+                  boxShadow: '0 0 16px rgba(234, 88, 12, 0.4)',
+                }}
+              >
+                <Target size={18} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.90rem',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '0.01em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ORDER-BLOCK
+              </span>
+
+              {pathname === '/order-block' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#ea580c', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#f59e0b" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 13: TERMINAL (TradingView Canvas, SMC Overlays & Paper OMS Execution Desk) */}
+          <div
+            id="nav-terminal"
+            data-nav-item="terminal"
+            className="nav-hub-card"
+            style={{
+              padding: '10px 14px',
+              background: pathname === '/terminal'
+                ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.28) 0%, rgba(15, 23, 42, 0.95) 100%)'
+                : 'linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%)',
+              border: pathname === '/terminal' ? '1px solid #3b82f6' : '1px solid rgba(59, 130, 246, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              boxSizing: 'border-box',
+              width: '100%',
+              minHeight: '44px',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              transition: 'all 0.15s ease',
+              boxShadow: pathname === '/terminal' ? '0 4px 20px -2px rgba(59, 130, 246, 0.25)' : 'none',
+              marginTop: '6px',
+            }}
+            onClick={handleSelectTerminal}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelectTerminal();
+              }
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1, overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(37, 99, 235, 0.35)',
+                }}
+              >
+                <Activity size={15} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.80rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                TRADING TERMINAL
+              </span>
+
+              {pathname === '/terminal' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#2563eb', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
           </div>
         </div>
 
