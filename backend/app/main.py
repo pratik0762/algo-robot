@@ -6,9 +6,10 @@ import asyncio
 from contextlib import asynccontextmanager
 import json
 import logging
+import sys
 import time
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException, Query, Request, Response, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse, ORJSONResponse
@@ -143,33 +144,39 @@ async def lifespan(app: FastAPI):
             await tick_engine.broadcast_gift_nifty_update(tick_engine.get_gift_nifty())
 
     tv_streamer.on_tick_callback = on_tradingview_tick
-    tv_streamer.start()
+    tick_task = None
+    if "pytest" not in sys.modules and not os.environ.get("TESTING"):
+        tv_streamer.start()
 
-    # Pre-warm FII/DII, Indices, News, and Live Quotes cache asynchronously without delaying server startup
-    asyncio.create_task(asyncio.to_thread(nse_client.fetch_fii_dii_data))
-    asyncio.create_task(asyncio.to_thread(nse_client.fetch_all_indices))
-    asyncio.create_task(news_engine.refresh_live_news())
-    asyncio.create_task(tick_engine.sync_initial_live_quotes())
+        # Pre-warm FII/DII, Indices, News, and Live Quotes cache asynchronously without delaying server startup
+        asyncio.create_task(asyncio.to_thread(nse_client.fetch_fii_dii_data))
+        asyncio.create_task(asyncio.to_thread(nse_client.fetch_all_indices))
+        asyncio.create_task(news_engine.refresh_live_news())
+        asyncio.create_task(tick_engine.sync_initial_live_quotes())
 
-    # Register candle aggregator, signal service, and OMS listener on market data router
-    async def on_stream_tick(tick: NormalizedTick):
-        candle_aggregator.add_tick(tick)
-        from app.strategies import signal_service
-        events = signal_service.process_tick(tick)
-        for ev in events:
-            asyncio.create_task(signal_service.broadcast_event(ev))
-        from app.oms import order_management_service
-        order_management_service.on_tick(tick)
-    market_data_router.register_listener(on_stream_tick)
+        # Register candle aggregator, signal service, and OMS listener on market data router
+        async def on_stream_tick(tick: NormalizedTick):
+            candle_aggregator.add_tick(tick)
+            from app.strategies import signal_service
+            events = signal_service.process_tick(tick)
+            for ev in events:
+                asyncio.create_task(signal_service.broadcast_event(ev))
+            from app.oms import order_management_service
+            order_management_service.on_tick(tick)
+        market_data_router.register_listener(on_stream_tick)
 
-    # Startup: spawn tick background loop & market data router
-    asyncio.create_task(market_data_router.start())
-    tick_task = asyncio.create_task(tick_background_loop())
+        # Startup: spawn tick background loop & market data router
+        asyncio.create_task(market_data_router.start())
+        tick_task = asyncio.create_task(tick_background_loop())
+
     yield
+
     # Shutdown: cancel task & stop TradingView streamer & market data router
-    asyncio.create_task(market_data_router.stop())
-    tv_streamer.stop()
-    tick_task.cancel()
+    if "pytest" not in sys.modules and not os.environ.get("TESTING"):
+        asyncio.create_task(market_data_router.stop())
+        tv_streamer.stop()
+        if tick_task:
+            tick_task.cancel()
 
 app = FastAPI(
     title="Nifty 50 & Indian Indices Financial Platform (NSE India)",
@@ -677,9 +684,33 @@ async def websocket_risk_alerts(websocket: WebSocket):
 # =========================================================================
 
 @app.post("/api/orders/place")
-def place_order_endpoint(payload: Dict[str, Any]):
+def place_order_endpoint(
+    payload: Dict[str, Any],
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
     """Places order via OMS: evaluates pre-trade risk gates, dispatches to broker, and records fills."""
     from app.oms import order_management_service
+
+    # Enforce RBAC if authorization header is provided
+    user_id = None
+    if authorization:
+        from app.auth.dependencies import get_current_user, ROLE_HIERARCHY
+        from app.db.models import UserRole
+        from app.db.session import SessionLocal
+        db = SessionLocal()
+        try:
+            user = get_current_user(credentials=None, authorization=authorization, db=db)
+            if not user.is_active:
+                raise HTTPException(status_code=403, detail="User account is inactive.")
+            if ROLE_HIERARCHY.get(user.role, 0) < ROLE_HIERARCHY[UserRole.TRADER]:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Access denied. Trader privileges required to place orders. Current role: {user.role.value}",
+                )
+            user_id = user.id
+        finally:
+            db.close()
+
     order = order_management_service.place_order(
         symbol=payload.get("symbol", ""),
         transaction_type=payload.get("transaction_type", payload.get("side", "BUY")),
@@ -822,6 +853,254 @@ async def websocket_orders(websocket: WebSocket):
             await websocket.receive_text()
     except (WebSocketDisconnect, Exception):
         order_management_service.unregister_websocket(websocket)
+
+
+# =========================================================================
+# Phase 10: Multi-User Architecture, RBAC & Authentication REST APIs
+# =========================================================================
+
+@app.post("/api/auth/register", status_code=201)
+def auth_register_endpoint(payload: Dict[str, Any]):
+    """Registers a new user account with default TRADER role and risk limits."""
+    from app.auth import auth_service, AuthException, UserAlreadyExistsException
+    email = payload.get("email", "")
+    password = payload.get("password", "")
+    full_name = payload.get("full_name")
+    role = payload.get("role", "TRADER")
+
+    try:
+        user_dict = auth_service.register_user(
+            email=email,
+            password=password,
+            full_name=full_name,
+            role=role,
+        )
+        return {
+            "status": "success",
+            "message": "User registered successfully.",
+            "user": user_dict,
+        }
+    except UserAlreadyExistsException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/auth/login")
+def auth_login_endpoint(payload: Dict[str, Any]):
+    """Authenticates credentials and returns JWT access + refresh tokens."""
+    from app.auth import (
+        auth_service,
+        InvalidCredentialsException,
+        UserInactiveException,
+        AuthException,
+    )
+    email = payload.get("email", "")
+    password = payload.get("password", "")
+
+    try:
+        token_data = auth_service.authenticate_user(email=email, password=password)
+        return {
+            "status": "success",
+            **token_data,
+        }
+    except InvalidCredentialsException as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except UserInactiveException as e:
+        raise HTTPException(status_code=403, detail=str(e))
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/auth/refresh")
+def auth_refresh_endpoint(payload: Dict[str, Any]):
+    """Rotates refresh token and issues a fresh short-lived access token."""
+    from app.auth import auth_service, AuthException, InvalidCredentialsException
+    refresh_token = payload.get("refresh_token", "")
+    if not refresh_token:
+        raise HTTPException(status_code=400, detail="Missing 'refresh_token' parameter.")
+
+    try:
+        token_data = auth_service.refresh_access_token(refresh_token)
+        return {
+            "status": "success",
+            **token_data,
+        }
+    except InvalidCredentialsException as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/auth/logout")
+def auth_logout_endpoint(payload: Dict[str, Any]):
+    """Revokes refresh token to immediately terminate active session."""
+    from app.auth import auth_service
+    refresh_token = payload.get("refresh_token", "")
+    if refresh_token:
+        auth_service.revoke_refresh_token(refresh_token)
+    return {
+        "status": "success",
+        "message": "Successfully logged out.",
+    }
+
+
+@app.get("/api/auth/me")
+def auth_get_me_endpoint(
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """Retrieves authenticated user profile and permissions."""
+    from app.auth.dependencies import get_current_user
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = get_current_user(credentials=None, authorization=authorization, db=db)
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="User account is inactive.")
+        return {
+            "status": "success",
+            "user": user.to_dict(),
+        }
+    finally:
+        db.close()
+
+
+@app.put("/api/auth/profile")
+def auth_update_profile_endpoint(
+    payload: Dict[str, Any],
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """Updates user full name."""
+    from app.auth.dependencies import get_current_user
+    from app.auth import auth_service
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = get_current_user(credentials=None, authorization=authorization, db=db)
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="User account is inactive.")
+        updated = auth_service.update_user_profile(
+            user_id=user.id,
+            full_name=payload.get("full_name"),
+            db=db,
+        )
+        return {
+            "status": "success",
+            "user": updated,
+        }
+    finally:
+        db.close()
+
+
+@app.post("/api/auth/change-password")
+def auth_change_password_endpoint(
+    payload: Dict[str, Any],
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """Changes user password and invalidates all existing refresh tokens."""
+    from app.auth.dependencies import get_current_user
+    from app.auth import auth_service, AuthException, InvalidCredentialsException
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = get_current_user(credentials=None, authorization=authorization, db=db)
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="User account is inactive.")
+
+        old_password = payload.get("old_password", "")
+        new_password = payload.get("new_password", "")
+
+        auth_service.change_password(
+            user_id=user.id,
+            old_password=old_password,
+            new_password=new_password,
+            db=db,
+        )
+        return {
+            "status": "success",
+            "message": "Password updated successfully. All active sessions have been revoked.",
+        }
+    except InvalidCredentialsException as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        db.close()
+
+
+@app.get("/api/admin/users")
+def admin_list_users_endpoint(
+    skip: int = 0,
+    limit: int = 50,
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """Admin endpoint to retrieve paginated list of registered users."""
+    from app.auth.dependencies import get_current_user, ROLE_HIERARCHY
+    from app.auth import auth_service
+    from app.db.models import UserRole
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = get_current_user(credentials=None, authorization=authorization, db=db)
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="User account is inactive.")
+        if ROLE_HIERARCHY.get(user.role, 0) < ROLE_HIERARCHY[UserRole.ADMIN]:
+            raise HTTPException(status_code=403, detail="Access denied. Administrator privileges required.")
+
+        users = auth_service.list_users(skip=skip, limit=limit, db=db)
+        return {
+            "status": "success",
+            "users": users,
+            "count": len(users),
+        }
+    finally:
+        db.close()
+
+
+@app.put("/api/admin/users/{user_id}/role")
+def admin_update_user_role_endpoint(
+    user_id: int,
+    payload: Dict[str, Any],
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """SuperAdmin endpoint to elevate or modify user roles."""
+    from app.auth.dependencies import get_current_user, ROLE_HIERARCHY
+    from app.auth import auth_service, AuthException, PermissionDeniedException, UserNotFoundException
+    from app.db.models import UserRole
+    from app.db.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = get_current_user(credentials=None, authorization=authorization, db=db)
+        if not user.is_active:
+            raise HTTPException(status_code=403, detail="User account is inactive.")
+        if ROLE_HIERARCHY.get(user.role, 0) < ROLE_HIERARCHY[UserRole.SUPER_ADMIN]:
+            raise HTTPException(status_code=403, detail="Access denied. Only SUPER_ADMIN can modify user roles.")
+
+        admin_dict = user.to_dict()
+        new_role = payload.get("role", "")
+        updated_user = auth_service.update_user_role(
+            admin_user=admin_dict,
+            target_user_id=user_id,
+            new_role=new_role,
+            db=db,
+        )
+        return {
+            "status": "success",
+            "user": updated_user,
+        }
+    except PermissionDeniedException as e:
+        raise HTTPException(status_code=403, detail=str(e))
+    except UserNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except AuthException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        db.close()
 
 
 # =========================================================================
