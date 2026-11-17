@@ -561,6 +561,114 @@ async def websocket_signals_stream(websocket: WebSocket):
     except (WebSocketDisconnect, Exception):
         signal_service.unregister_websocket(websocket)
 
+# =========================================================================
+# PHASE 8: PRE-TRADE RISK ENGINE & PORTFOLIO CONTROLS
+# =========================================================================
+
+@app.get("/api/risk/settings")
+def get_risk_settings_endpoint():
+    """Returns active risk parameters, daily loss thresholds, and kill-switch state."""
+    from app.risk import risk_service
+    return {
+        "status": "success",
+        "settings": risk_service.get_risk_settings(),
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/risk/settings")
+def update_risk_settings_endpoint(payload: Dict[str, Any]):
+    """Updates in-memory and database risk thresholds."""
+    from app.risk import risk_service
+    updated = risk_service.update_risk_settings(
+        max_daily_loss=payload.get("max_daily_loss"),
+        max_single_stock_pct=payload.get("max_single_stock_pct"),
+        max_sector_pct=payload.get("max_sector_pct"),
+        portfolio_equity=payload.get("portfolio_equity"),
+    )
+    return {
+        "status": "success",
+        "settings": updated,
+        "message": "Risk settings successfully updated and persisted.",
+        "timestamp": time.time(),
+    }
+
+
+@app.post("/api/risk/validate-order")
+def validate_proposed_order_endpoint(payload: Dict[str, Any]):
+    """Mandatory pre-trade validation gate checking 8 institutional risk parameters."""
+    from app.risk import risk_service, ProposedOrder
+    from app.tick_engine import tick_engine
+
+    sym = payload.get("symbol", "").upper()
+    quote = tick_engine.stocks.get(sym, {})
+    current_ltp = float(quote.get("ltp", payload.get("price", 100.0)))
+
+    order = ProposedOrder(
+        symbol=sym,
+        transaction_type=payload.get("transaction_type", "BUY"),
+        order_type=payload.get("order_type", "LIMIT"),
+        quantity=int(payload.get("quantity", 1)),
+        price=float(payload.get("price", current_ltp)),
+        stop_loss=payload.get("stop_loss"),
+        target=payload.get("target"),
+        instrument_type=payload.get("instrument_type", "EQUITY"),
+        sector=payload.get("sector"),
+        required_margin=payload.get("required_margin"),
+    )
+
+    result = risk_service.validate_proposed_order(order=order, current_ltp=current_ltp)
+    return {
+        "status": "success",
+        **result.to_dict(),
+    }
+
+
+@app.post("/api/risk/kill-switch")
+def toggle_kill_switch_endpoint(action: str = Query("ACTIVATE", description="ACTIVATE or RESET")):
+    """Engages or resets the emergency master kill switch."""
+    from app.risk import risk_service
+    act_upper = action.upper()
+    if act_upper == "ACTIVATE":
+        ev = risk_service.kill_switch.activate_manual_kill_switch(
+            reason="Manual User Emergency Trigger",
+            user_id="ADMIN",
+        )
+    else:
+        ev = risk_service.kill_switch.reset(
+            user_id="ADMIN",
+            rationale="Manual Admin Deactivation",
+        )
+
+    return {
+        "status": "success",
+        "event": ev.to_dict(),
+        "kill_switch_status": risk_service.kill_switch.get_status(),
+        "timestamp": time.time(),
+    }
+
+
+@app.get("/api/risk/status")
+def get_live_portfolio_risk_status():
+    """Returns live portfolio-level risk metrics, sector concentrations, and drawdown."""
+    from app.risk import risk_service
+    return {
+        "status": "success",
+        **risk_service.portfolio_risk.get_portfolio_risk_status(),
+    }
+
+
+@app.websocket("/ws/risk-alerts")
+async def websocket_risk_alerts(websocket: WebSocket):
+    """Real-time streaming WebSocket broadcasting risk breach alerts and kill-switch events."""
+    from app.risk import risk_service
+    await risk_service.register_websocket(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except (WebSocketDisconnect, Exception):
+        risk_service.unregister_websocket(websocket)
+
 
 # =========================================================================
 # REAL-TIME LIVE STOCK TICKS (WEBSOCKET, SSE, & REST)
