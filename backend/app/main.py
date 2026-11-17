@@ -133,6 +133,15 @@ async def lifespan(app: FastAPI):
     try:
         init_db()
         logger.info("SQLAlchemy database schema initialized successfully.")
+        from app.market_data import symbol_resolver, live_quote_service, universe_manager
+        from app.db.session import SessionLocal
+        from app.db.models import Company
+        with SessionLocal() as db:
+            if db.query(Company).count() == 0:
+                logger.info("Fresh database detected; seeding all-India company universe...")
+                universe_manager.sync_universe(db=db)
+            symbol_resolver.hydrate_cache(db=db)
+            live_quote_service.hydrate_initial_quotes(db=db)
     except Exception as e:
         logger.error("Database initialization failed: %s", e)
 
@@ -213,6 +222,10 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Response-Time"] = f"{duration_ms:.2f}ms"
     response.headers["X-Platform"] = "AlgoRobot-HighPerformance"
     return response
+
+# Register All-India Market Data Engine API Router (Phase 10)
+from app.market_data.api_router import router as market_data_api_router
+app.include_router(market_data_api_router)
 
 nse_client = NseClient()
 

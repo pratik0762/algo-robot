@@ -21,7 +21,8 @@ import {
   BarChart2,
   Grid,
   SlidersHorizontal,
-  Target
+  Target,
+  Database
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -356,6 +357,16 @@ export default function NavigationDrawer({
   const handleSelectTerminal = () => {
     onClose();
     router.push('/terminal');
+  };
+
+  const handleSelectCompanies = () => {
+    onClose();
+    router.push('/companies');
+  };
+
+  const handleSelectDataCenter = () => {
+    onClose();
+    router.push('/data-center');
   };
 
   return (
@@ -1292,6 +1303,158 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 14: ALL LISTED COMPANIES */}
+          <div
+            id="nav-companies"
+            data-nav-item="companies"
+            className="nav-hub-card"
+            style={{
+              padding: '10px 14px',
+              background: pathname === '/companies'
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(15, 23, 42, 0.95) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%)',
+              border: pathname === '/companies' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              boxSizing: 'border-box',
+              width: '100%',
+              minHeight: '44px',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              transition: 'all 0.15s ease',
+              boxShadow: pathname === '/companies' ? '0 4px 20px -2px rgba(16, 185, 129, 0.25)' : 'none',
+              marginTop: '6px',
+            }}
+            onClick={handleSelectCompanies}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelectCompanies();
+              }
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1, overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.35)',
+                }}
+              >
+                <Boxes size={15} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.80rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ALL LISTED COMPANIES
+              </span>
+
+              {pathname === '/companies' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#10b981', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#34d399" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* Option 15: MARKET DATA CENTER */}
+          <div
+            id="nav-data-center"
+            data-nav-item="data-center"
+            className="nav-hub-card"
+            style={{
+              padding: '10px 14px',
+              background: pathname === '/data-center'
+                ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.28) 0%, rgba(15, 23, 42, 0.95) 100%)'
+                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%)',
+              border: pathname === '/data-center' ? '1px solid #a855f7' : '1px solid rgba(168, 85, 247, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              boxSizing: 'border-box',
+              width: '100%',
+              minHeight: '44px',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              transition: 'all 0.15s ease',
+              boxShadow: pathname === '/data-center' ? '0 4px 20px -2px rgba(168, 85, 247, 0.25)' : 'none',
+              marginTop: '6px',
+            }}
+            onClick={handleSelectDataCenter}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelectDataCenter();
+              }
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1, overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(168, 85, 247, 0.35)',
+                }}
+              >
+                <Database size={15} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.80rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                MARKET DATA CENTER
+              </span>
+
+              {pathname === '/data-center' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#a855f7', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#c084fc" style={{ flexShrink: 0 }} />
           </div>
         </div>
 
