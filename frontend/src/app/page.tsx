@@ -122,7 +122,7 @@ export default function HomePage() {
           fetchCompanies(hubId, forceRefresh, retries - 1);
         }, 600);
       } else {
-        console.error('Failed to fetch companies from backend:', err);
+        console.warn('Companies catalog waiting for backend on port 8000:', err);
       }
     } finally {
       setLoading(false);
@@ -198,7 +198,7 @@ export default function HomePage() {
         if (retries > 0) {
           setTimeout(() => fetchIndicesHero(retries - 1), 700);
         } else {
-          console.error('Failed to fetch indices hero data:', err);
+          console.warn('Indices hero data waiting for backend on port 8000:', err);
         }
       }
     };

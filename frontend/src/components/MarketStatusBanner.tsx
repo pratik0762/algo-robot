@@ -55,7 +55,7 @@ export default function MarketStatusBanner({ statusDetail: propDetail, compact =
           setDetail(json);
         }
       } catch (e) {
-        console.error('Failed to fetch market status:', e);
+        console.warn('Market status waiting for backend on port 8000:', e);
       }
     };
 

@@ -66,7 +66,8 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
         }
       }
     } catch (err) {
-      console.error('Failed to fetch live indices ticker:', err);
+      // Graceful offline fallback: log warning without triggering Turbopack red console overlay
+      console.warn('Live indices ticker waiting for backend on port 8000:', err);
     } finally {
       setLoading(false);
     }
