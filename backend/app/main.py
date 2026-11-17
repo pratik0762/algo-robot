@@ -41,6 +41,10 @@ from app.week52_engine import week52_engine
 from app.signals_heatmap_engine import signals_heatmap_engine
 from app.trade_signals_engine import get_trade_signals, generate_live_signal_event, AVAILABLE_STRATEGIES
 from app.dashboard_html import get_backend_dashboard_html
+from app.db.session import init_db
+from app.config import settings
+from app.market_data import market_data_router, NormalizedTick
+from app.indicators import candle_aggregator
 try:
     from app.tickertape_client import tickertape_client
 except ImportError:
@@ -124,6 +128,13 @@ async def tick_background_loop():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Initialize SQLAlchemy database tables
+    try:
+        init_db()
+        logger.info("SQLAlchemy database schema initialized successfully.")
+    except Exception as e:
+        logger.error("Database initialization failed: %s", e)
+
     # Setup TradingView real-time WebSocket tick stream for GIFT Nifty (NSEIX:NIFTY1!)
     async def on_tradingview_tick(tv_data: Dict[str, Any]):
         session = get_gift_nifty_session_info()
@@ -140,10 +151,17 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(news_engine.refresh_live_news())
     asyncio.create_task(tick_engine.sync_initial_live_quotes())
 
-    # Startup: spawn tick background loop
+    # Register candle aggregator listener on market data router
+    async def on_stream_tick(tick: NormalizedTick):
+        candle_aggregator.add_tick(tick)
+    market_data_router.register_listener(on_stream_tick)
+
+    # Startup: spawn tick background loop & market data router
+    asyncio.create_task(market_data_router.start())
     tick_task = asyncio.create_task(tick_background_loop())
     yield
-    # Shutdown: cancel task & stop TradingView streamer
+    # Shutdown: cancel task & stop TradingView streamer & market data router
+    asyncio.create_task(market_data_router.stop())
     tv_streamer.stop()
     tick_task.cancel()
 
@@ -226,6 +244,210 @@ def root(request: Request):
 def get_dashboard():
     """Direct route to the interactive FastAPI Backend Control Center UI."""
     return HTMLResponse(get_backend_dashboard_html())
+
+@app.get("/api/health")
+def get_health():
+    """System health check and Phase 1 configuration verification."""
+    from sqlalchemy import text
+    from app.db.session import engine
+    from app.core.security import encryption_service
+
+    # Test database connectivity
+    db_status = "connected"
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+
+    # Test encryption roundtrip
+    enc_status = "operational"
+    try:
+        sample = "health-check-token"
+        enc = encryption_service.encrypt(sample)
+        dec = encryption_service.decrypt(enc)
+        if dec != sample:
+            enc_status = "mismatch"
+    except Exception as e:
+        enc_status = f"error: {str(e)}"
+
+    return {
+        "status": "healthy" if db_status == "connected" and enc_status == "operational" else "degraded",
+        "app_name": settings.APP_NAME,
+        "environment": settings.ENV,
+        "database": db_status,
+        "encryption": f"AES-256-GCM ({enc_status})",
+        "redis_caching": "REDIS_ACTIVE" if settings.REDIS_ENABLED else "IN_MEMORY_FALLBACK",
+        "ssrf_protection": "ACTIVE",
+        "rule_1_data_mode": settings.DATA_SOURCE_MODE,
+        "timestamp": time.time()
+    }
+
+@app.get("/api/market-data/status")
+def get_market_data_telemetry():
+    """Returns diagnostic telemetry of multi-broker streaming feeds and Rule 1 compliance."""
+    return market_data_router.get_diagnostics()
+
+@app.get("/api/candles/{symbol}")
+def get_symbol_candles(symbol: str, timeframe: str = "5m", limit: int = 100):
+    """Returns real-time streaming multi-timeframe OHLCV candles (1s, 1m, 5m, 15m, 1h, 1d)."""
+    candles = candle_aggregator.get_candles(symbol, timeframe, limit)
+    return {
+        "symbol": symbol.upper(),
+        "timeframe": timeframe,
+        "count": len(candles),
+        "candles": candles,
+    }
+
+# =========================================================================
+# REAL-TIME MARKET SCANNER & SCREENER ENDPOINTS (PHASE 4)
+# =========================================================================
+
+@app.get("/api/scanner/presets")
+def get_scanner_presets():
+    """Returns available institutional screener presets."""
+    from app.scanner import market_scanner
+    return {
+        "count": len(presets := market_scanner.get_presets()),
+        "presets": presets,
+    }
+
+@app.get("/api/scanner/scan")
+def run_market_scan(
+    preset_id: Optional[str] = Query(None, description="Preset ID (e.g. BULLISH_MOMENTUM, BREAKOUT_52W)"),
+    condition: Optional[str] = Query(None, description="Custom boolean expression (e.g. price > vwap AND rsi > 60)"),
+    sector: Optional[str] = Query(None, description="Optional sector filter"),
+):
+    """Executes real-time market scan across all equities."""
+    from app.scanner import market_scanner
+    try:
+        matches = market_scanner.scan(preset_id=preset_id, custom_condition=condition, sector_filter=sector)
+        return {
+            "status": "success",
+            "preset_applied": preset_id or "CUSTOM",
+            "total_matches": len(matches),
+            "matches": matches,
+            "timestamp": time.time(),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/scanner/breadth")
+def get_market_breadth_metrics():
+    """Returns real-time authentic advance/decline market breadth and 52W stats."""
+    from app.scanner import market_scanner
+    return market_scanner.get_market_breadth()
+
+@app.get("/api/scanner/sector-flows")
+def get_sector_flows_metrics():
+    """Returns real-time performance and volume flows across all 15 sectors."""
+    from app.scanner import market_scanner
+    return {
+        "flows": market_scanner.get_sector_flows(),
+        "timestamp": time.time(),
+    }
+
+@app.websocket("/ws/scanner")
+async def websocket_scanner_alerts(websocket: WebSocket):
+    """Real-time WebSocket stream broadcasting screener trigger alerts."""
+    from app.scanner import market_scanner
+    await market_scanner.register_websocket(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except (WebSocketDisconnect, Exception):
+        market_scanner.unregister_websocket(websocket)
+
+# =========================================================================
+# PHASE 5: REAL-TIME DERIVATIVES & ADVANCED OPTIONS CHAIN INTELLIGENCE
+# =========================================================================
+
+@app.get("/api/derivatives/greeks")
+def get_option_greeks_calc(
+    spot: float = Query(..., description="Spot/Underlying price"),
+    strike: float = Query(..., description="Strike price"),
+    expiry_days: float = Query(..., description="Days to expiration (DTE)"),
+    iv: Optional[float] = Query(None, description="Implied Volatility (e.g. 0.18 or 18.0)"),
+    market_price: Optional[float] = Query(None, description="Option market price to solve IV"),
+    option_type: str = Query("CE", description="CE or PE"),
+    risk_free_rate: float = Query(0.07, description="Annualized risk-free rate (RBI repo approx 6.5-7.0%)")
+):
+    """Calculates Black-Scholes theoretical price, Greeks, and solves numerical IV."""
+    from app.derivatives.black_scholes import BlackScholesEngine
+    opt_type = option_type.upper()
+    if iv is None and market_price is not None:
+        solved_iv = BlackScholesEngine.calculate_implied_volatility(
+            market_price=market_price,
+            spot=spot,
+            strike=strike,
+            days_to_expiry=expiry_days,
+            option_type=opt_type,
+            r=risk_free_rate
+        )
+        eff_iv = solved_iv
+    elif iv is not None:
+        eff_iv = iv / 100.0 if iv > 1.0 else iv
+        solved_iv = eff_iv
+    else:
+        eff_iv = 0.18
+        solved_iv = 0.18
+
+    greeks = BlackScholesEngine.calculate_greeks(
+        spot=spot,
+        strike=strike,
+        days_to_expiry=expiry_days,
+        iv=eff_iv,
+        option_type=opt_type,
+        r=risk_free_rate
+    )
+    theo_price = BlackScholesEngine.calculate_price(
+        spot=spot,
+        strike=strike,
+        days_to_expiry=expiry_days,
+        iv=eff_iv,
+        option_type=opt_type,
+        r=risk_free_rate
+    )
+    return {
+        "status": "success",
+        "spot": spot,
+        "strike": strike,
+        "expiry_days": expiry_days,
+        "option_type": opt_type,
+        "iv": round(eff_iv * 100.0, 2),
+        "theoretical_price": round(theo_price, 2),
+        "greeks": greeks,
+        "timestamp": time.time()
+    }
+
+
+@app.get("/api/derivatives/chain/{symbol}")
+def get_options_chain_analytics(
+    symbol: str,
+    expiry_date: Optional[str] = Query(None, description="Expiry date string (YYYY-MM-DD)"),
+    strike_count: int = Query(30, description="Number of strikes to return around ATM")
+):
+    """Returns enriched real-time options chain with Black-Scholes Greeks, IV skew, Max Pain, and OI buildup."""
+    from app.derivatives.options_chain_service import options_chain_service
+    chain = options_chain_service.get_live_chain_analytics(
+        symbol=symbol,
+        expiry_date=expiry_date,
+        strike_count=strike_count
+    )
+    return chain
+
+
+@app.websocket("/ws/options/{symbol}")
+async def websocket_options_chain_stream(websocket: WebSocket, symbol: str):
+    """Real-time streaming options chain updates for symbol."""
+    from app.derivatives.options_chain_service import options_chain_service
+    await options_chain_service.register_websocket(symbol, websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except (WebSocketDisconnect, Exception):
+        options_chain_service.unregister_websocket(symbol, websocket)
+
 
 # =========================================================================
 # REAL-TIME LIVE STOCK TICKS (WEBSOCKET, SSE, & REST)
@@ -489,6 +711,38 @@ async def get_india_vix_detail():
     """Direct standalone endpoint for INDIA VIX live data."""
     feed = nse_client.fetch_all_indices(force_refresh=False)
     return feed.get("india_vix", {})
+
+@app.get("/api/indices/{index_name:path}/constituents")
+async def get_index_constituents_route(index_name: str):
+    """Retrieve full constituent stock list for any index with real-time live prices."""
+    from app.index_constituents_data import get_hydrated_index_constituents
+    import urllib.parse
+
+    clean_name = urllib.parse.unquote(index_name).strip()
+    target = clean_name.upper()
+
+    feed = nse_client.fetch_all_indices()
+    matched_idx = None
+    for idx in feed.get("indices", []):
+        if idx["index"].upper() == target or idx["index_symbol"].upper() == target:
+            matched_idx = idx
+            break
+
+    res = get_hydrated_index_constituents(clean_name, tick_stocks=tick_engine.stocks)
+    if matched_idx:
+        res["index_info"] = matched_idx
+        res["category"] = matched_idx.get("category_group") or matched_idx.get("category")
+        res["last_price"] = matched_idx.get("last_price")
+        res["variation"] = matched_idx.get("variation")
+        res["percent_change"] = matched_idx.get("percent_change")
+        res["high"] = matched_idx.get("high")
+        res["low"] = matched_idx.get("low")
+        res["year_high"] = matched_idx.get("year_high")
+        res["year_low"] = matched_idx.get("year_low")
+        res["pe"] = matched_idx.get("pe")
+        res["pb"] = matched_idx.get("pb")
+        res["dy"] = matched_idx.get("dy")
+    return res
 
 @app.get("/api/indices/{index_name}")
 async def get_single_index(index_name: str):
@@ -1848,20 +2102,105 @@ async def get_smart_strike_analysis(
     return result
 
 
-@app.post("/api/options/smart-selector/recommend")
-async def post_smart_strike_recommendation(payload: Dict[str, Any]):
-    """AI-Powered Smart Strike Selector manual filter analysis & custom plan generator."""
-    from app.smart_strike_selector import SmartStrikeSelectorEngine
-    symbol = payload.get("symbol", "NIFTY")
-    expiry = payload.get("expiry")
-    mode = payload.get("mode", "manual")
-    result = SmartStrikeSelectorEngine.evaluate_strikes_and_strategies(
-        symbol=symbol,
-        expiry=expiry,
-        mode=mode,
-        manual_params=payload
-    )
-    return result
+# ---------------------------------------------------------------------------
+# Order Block & Liquidity Intelligence Module Endpoints
+# ---------------------------------------------------------------------------
+@app.get("/api/order-block/overview")
+async def get_order_block_overview():
+    """Retrieve live market overview, breadth, advance/decline ratio & volatility regime."""
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.scan_all_order_blocks()
+    return {
+        "status": "success",
+        "market_overview": data["market_overview"],
+        "timestamp": data["timestamp"]
+    }
+
+
+@app.get("/api/order-block/boards")
+async def get_order_block_boards(
+    universe: str = "ALL",
+    sector: str = "ALL",
+    min_strength: float = 0.0,
+    min_rvol: float = 0.0
+):
+    """Retrieve Bullish and Bearish stock boards sorted by Intraday Strength & RVol."""
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.scan_all_order_blocks()
+    bullish = data["bullish_board"]
+    bearish = data["bearish_board"]
+
+    if sector != "ALL":
+        bullish = [b for b in bullish if sector.lower() in b["sector"].lower()]
+        bearish = [b for b in bearish if sector.lower() in b["sector"].lower()]
+
+    if min_strength > 0:
+        bullish = [b for b in bullish if b["strength_score"] >= min_strength]
+        bearish = [b for b in bearish if b["strength_score"] >= min_strength]
+
+    if min_rvol > 0:
+        bullish = [b for b in bullish if b["rvol"] >= min_rvol]
+        bearish = [b for b in bearish if b["rvol"] >= min_rvol]
+
+    return {
+        "status": "success",
+        "total_bullish": len(bullish),
+        "total_bearish": len(bearish),
+        "bullish_board": bullish,
+        "bearish_board": bearish,
+        "timestamp": data["timestamp"]
+    }
+
+
+@app.get("/api/order-block/liquidity")
+async def get_order_block_liquidity():
+    """Retrieve Liquidity board: sweeps, equal highs/lows, BSL/SSL pools."""
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.scan_all_order_blocks()
+    return {
+        "status": "success",
+        "count": len(data["liquidity_board"]),
+        "liquidity_board": data["liquidity_board"],
+        "timestamp": data["timestamp"]
+    }
+
+
+@app.get("/api/order-block/sectors")
+async def get_order_block_sectors():
+    """Retrieve sector flow analysis, relative strength, advancing/declining counts."""
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.scan_all_order_blocks()
+    return {
+        "status": "success",
+        "total_sectors": len(data["sector_flow"]),
+        "sector_flow": data["sector_flow"],
+        "timestamp": data["timestamp"]
+    }
+
+
+@app.get("/api/order-block/scan")
+async def get_order_block_full_scan():
+    """Fast all-in-one terminal scan endpoint returning all Order Block module intelligence."""
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.scan_all_order_blocks()
+    return {
+        "status": "success",
+        **data
+    }
+
+
+@app.get("/api/order-block/stock/{symbol}")
+async def get_order_block_single_stock(symbol: str, timeframe: str = "15m"):
+    """Retrieve full Order Block zones, Four Critical Levels (Z, S1, R1, R2),
+    liquidity pools, and candlestick history for a single symbol.
+    """
+    from app.order_block_engine import order_block_engine
+    data = order_block_engine.get_stock_order_block_details(symbol, timeframe=timeframe)
+    return {
+        "status": "success",
+        **data
+    }
+
 
 
 
