@@ -98,17 +98,21 @@ async def tick_background_loop():
 
             # 1. Domestic equity cash stocks (09:15 - 15:30 IST)
             if is_indian_market_open():
-                if now - last_stock_sync >= 8.0:
-                    await tick_engine.refresh_live_quotes()
+                if now - last_stock_sync >= 4.0:
+                    updated_quotes = await tick_engine.refresh_live_quotes()
+                    if updated_quotes:
+                        await tick_engine.broadcast_tick_update(updated_quotes)
                     last_stock_sync = now
 
                 ticks = tick_engine.update_ticks()
                 if ticks:
                     await tick_engine.broadcast_tick_update(ticks)
             else:
-                # Outside active market hours: sync official closing/settlement prices every 180s
-                if now - last_stock_sync >= 180.0:
-                    await tick_engine.sync_initial_live_quotes()
+                # Outside active market hours: sync official closing/settlement prices every 60s
+                if now - last_stock_sync >= 60.0:
+                    closing_quotes = await tick_engine.sync_initial_live_quotes()
+                    if closing_quotes:
+                        await tick_engine.broadcast_tick_update(closing_quotes)
                     last_stock_sync = now
 
             # 2. GIFT Nifty Multi-Session Trading: Session 1 (06:30 - 15:40) & Session 2 (16:35 - 02:45 IST)

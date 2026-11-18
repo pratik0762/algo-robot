@@ -94,11 +94,6 @@ export function useLiveStockTicks() {
   const rafIdRef = useRef<number | null>(null);
 
   const handleIncomingTicks = useCallback((updatedList: StockTickData[]) => {
-    // If the Indian stock market is closed, strictly prevent any price updates or visual flashes
-    if (!isMarketOpenRef.current) {
-      setFlashMap({});
-      return;
-    }
     if (!updatedList || updatedList.length === 0) return;
 
     const newFlash: Record<string, 'UP' | 'DOWN'> = {};
@@ -107,7 +102,7 @@ export function useLiveStockTicks() {
       const next = { ...prev };
       for (const item of updatedList) {
         const old = prev[item.symbol];
-        if (old && old.ltp !== item.ltp) {
+        if (old && old.ltp !== item.ltp && isMarketOpenRef.current) {
           const dir = item.ltp > old.ltp ? 'UP' : 'DOWN';
           newFlash[item.symbol] = dir;
         }
@@ -117,7 +112,7 @@ export function useLiveStockTicks() {
     });
 
     // Trigger visual tick flash animation only during active market hours
-    if (Object.keys(newFlash).length > 0) {
+    if (isMarketOpenRef.current && Object.keys(newFlash).length > 0) {
       setFlashMap((prev) => ({ ...prev, ...newFlash }));
 
       for (const sym of Object.keys(newFlash)) {
@@ -140,7 +135,7 @@ export function useLiveStockTicks() {
 
   // RequestAnimationFrame (RAF) Micro-Batcher (Zero main-thread blocking, 60 FPS synchronized)
   const scheduleBatchFlush = useCallback((ticks: StockTickData[]) => {
-    if (!isMarketOpenRef.current || !ticks || ticks.length === 0) return;
+    if (!ticks || ticks.length === 0) return;
     pendingTicksRef.current.push(...ticks);
 
     if (rafIdRef.current === null && typeof window !== 'undefined') {
@@ -148,7 +143,7 @@ export function useLiveStockTicks() {
         rafIdRef.current = null;
         const currentBatch = pendingTicksRef.current;
         pendingTicksRef.current = [];
-        if (currentBatch.length > 0 && isMarketOpenRef.current) {
+        if (currentBatch.length > 0) {
           handleIncomingTicks(currentBatch);
         }
       });
@@ -162,45 +157,62 @@ export function useLiveStockTicks() {
     const apiBase = getApiBase();
     const wsBase = getWsBase();
 
+    let reconnectTimer: NodeJS.Timeout | null = null;
+    let isCleanedUp = false;
+
     // 1. Initial REST snapshot to instantly populate prices with 0ms delay
-    fetch(`${apiBase}/api/stocks/live-ticks`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.stocks) {
-          const initialMap: Record<string, StockTickData> = {};
-          data.stocks.forEach((s: StockTickData) => {
-            initialMap[s.symbol] = s;
-          });
-          setTicks(initialMap);
-          setIsConnected(true);
-          if (data.gift_nifty) {
-            setGiftNifty(data.gift_nifty);
-          }
-          const openState = Boolean(data.is_market_open);
-          setIsMarketOpen(openState);
-          isMarketOpenRef.current = openState;
-          if (!openState) {
-            setFlashMap({});
-            setGiftFlash(null);
-          }
-          if (data.market_status) {
-            setMarketStatus(data.market_status);
-          }
-          if (data.market_status_detail) {
-            setMarketStatusDetail(data.market_status_detail);
+    const fetchInitialSnapshot = async () => {
+      try {
+        const res = await fetch(`${apiBase}/api/stocks/live-ticks`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.stocks) {
+            const initialMap: Record<string, StockTickData> = {};
+            data.stocks.forEach((s: StockTickData) => {
+              initialMap[s.symbol] = s;
+            });
+            setTicks(initialMap);
+            setIsConnected(true);
+            if (data.gift_nifty) {
+              setGiftNifty(data.gift_nifty);
+            }
+            const openState = Boolean(data.is_market_open);
+            setIsMarketOpen(openState);
+            isMarketOpenRef.current = openState;
+            if (!openState) {
+              setFlashMap({});
+              setGiftFlash(null);
+            }
+            if (data.market_status) {
+              setMarketStatus(data.market_status);
+            }
+            if (data.market_status_detail) {
+              setMarketStatusDetail(data.market_status_detail);
+            }
           }
         }
-      })
-      .catch((err) => console.error('Initial tick snapshot error:', err));
+      } catch (err) {
+        console.warn('Initial tick snapshot waiting for backend:', err);
+      }
+    };
 
-    // 2. Try WebSocket for sub-second bidirectional streaming
+    fetchInitialSnapshot();
+
+    // 2. WebSocket connection with automatic exponential-free reconnection loop
     const connectWebSocket = () => {
+      if (isCleanedUp) return;
+
       try {
         const ws = new WebSocket(`${wsBase}/ws/live-ticks`);
         wsRef.current = ws;
 
         ws.onopen = () => {
           setIsConnected(true);
+          // If polling fallback was active, clear it now that WebSocket is alive
+          if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+          }
         };
 
         ws.onmessage = (event) => {
@@ -231,9 +243,7 @@ export function useLiveStockTicks() {
                 setMarketStatusDetail(data.market_status_detail);
               }
             } else if (data.type === 'TICK' && data.ticks) {
-              if (isMarketOpenRef.current) {
-                scheduleBatchFlush(data.ticks);
-              }
+              scheduleBatchFlush(data.ticks);
             } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
               const g = data.gift_nifty;
               setGiftNifty((prev) => {
@@ -252,109 +262,71 @@ export function useLiveStockTicks() {
         };
 
         ws.onerror = () => {
-          fallbackToSSE();
+          fallbackToPolling();
+          scheduleReconnect();
         };
 
         ws.onclose = () => {
           setIsConnected(false);
-          // Try SSE on close
-          fallbackToSSE();
-        };
-      } catch (e) {
-        fallbackToSSE();
-      }
-    };
-
-    // 3. Fallback to Server-Sent Events (SSE) if WebSocket is unavailable
-    const fallbackToSSE = () => {
-      if (sse) return;
-      try {
-        sse = new EventSource(`${apiBase}/api/ticks/stream`);
-        sse.onopen = () => setIsConnected(true);
-        sse.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === 'SNAPSHOT') {
-              if (data.stocks) {
-                const snapshotMap: Record<string, StockTickData> = {};
-                data.stocks.forEach((s: StockTickData) => {
-                  snapshotMap[s.symbol] = s;
-                });
-                setTicks(snapshotMap);
-              }
-              if (data.gift_nifty) {
-                setGiftNifty(data.gift_nifty);
-              }
-              const openState = Boolean(data.is_market_open);
-              setIsMarketOpen(openState);
-              isMarketOpenRef.current = openState;
-              if (!openState) {
-                setFlashMap({});
-                setGiftFlash(null);
-              }
-              if (data.market_status) {
-                setMarketStatus(data.market_status);
-              }
-              if (data.market_status_detail) {
-                setMarketStatusDetail(data.market_status_detail);
-              }
-            } else if (data.type === 'TICK' && data.ticks) {
-              if (isMarketOpenRef.current) {
-                scheduleBatchFlush(data.ticks);
-              }
-            } else if (data.type === 'GIFT_NIFTY_TICK' && data.gift_nifty) {
-              const g = data.gift_nifty;
-              setGiftNifty((prev) => {
-                if (prev && prev.last_price !== g.last_price) {
-                  const dir = g.last_price > prev.last_price ? 'UP' : 'DOWN';
-                  setGiftFlash(dir);
-                  if (giftFlashTimeout.current) clearTimeout(giftFlashTimeout.current);
-                  giftFlashTimeout.current = setTimeout(() => setGiftFlash(null), 600);
-                }
-                return g;
-              });
-            }
-          } catch (e) {}
-        };
-        sse.onerror = () => {
-          setIsConnected(false);
           fallbackToPolling();
+          scheduleReconnect();
         };
       } catch (e) {
         fallbackToPolling();
+        scheduleReconnect();
       }
     };
 
-    // 4. Fallback to polling
+    const scheduleReconnect = () => {
+      if (isCleanedUp || reconnectTimer) return;
+      reconnectTimer = setTimeout(() => {
+        reconnectTimer = null;
+        if (!isCleanedUp) {
+          connectWebSocket();
+        }
+      }, 2500);
+    };
+
+    // 3. Fallback to polling when WebSocket is temporarily offline
     const fallbackToPolling = () => {
-      if (pollInterval) return;
+      if (pollInterval || isCleanedUp) return;
       pollInterval = setInterval(async () => {
         try {
           const res = await fetch(`${apiBase}/api/stocks/live-ticks`);
           if (res.ok) {
             const data = await res.json();
-            handleIncomingTicks(data.stocks || []);
+            const openState = Boolean(data.is_market_open);
+            setIsMarketOpen(openState);
+            isMarketOpenRef.current = openState;
+
+            if (data.stocks && data.stocks.length > 0) {
+              handleIncomingTicks(data.stocks);
+            }
             if (data.gift_nifty) {
               setGiftNifty(data.gift_nifty);
             }
             setIsConnected(true);
-            if (data.is_market_open !== undefined) {
-              setIsMarketOpen(Boolean(data.is_market_open));
+            if (data.market_status) {
+              setMarketStatus(data.market_status);
+            }
+            if (data.market_status_detail) {
+              setMarketStatusDetail(data.market_status_detail);
             }
           }
         } catch (e) {}
-      }, 1000);
+      }, 1500);
     };
 
     connectWebSocket();
 
     return () => {
+      isCleanedUp = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
       if (rafIdRef.current !== null && typeof window !== 'undefined') {
         window.cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
       if (wsRef.current) wsRef.current.close();
-      if (sse) sse.close();
       if (pollInterval) clearInterval(pollInterval);
       if (giftFlashTimeout.current) clearTimeout(giftFlashTimeout.current);
       Object.values(flashTimeouts.current).forEach(clearTimeout);

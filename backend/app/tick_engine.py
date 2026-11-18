@@ -546,6 +546,8 @@ class LiveTickEngine:
 
             self._save_cache()
             self._last_live_sync_time = time.time()
+            if updated_stocks:
+                await self.broadcast_tick_update(updated_stocks)
             return updated_stocks
         except Exception as e:
             logger.error("Error refreshing live quotes: %s", e)
