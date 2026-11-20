@@ -79,9 +79,17 @@ class HistoricalDataService:
                 if candles_derived:
                     return candles_derived
 
-            return [
-                {
-                    "timestamp": c.timestamp.isoformat(),
+            results = []
+            for c in candles:
+                ts_utc = c.timestamp if c.timestamp.tzinfo else c.timestamp.replace(tzinfo=timezone.utc)
+                ts_ist = ts_utc.astimezone(IST)
+                results.append({
+                    "date": ts_ist.strftime("%Y-%m-%d"),
+                    "time": ts_ist.strftime("%H:%M:%S"),
+                    "timeframe": c.timeframe.upper(),
+                    "datetime": ts_ist.strftime("%Y-%m-%d %H:%M:%S"),
+                    "timestamp": ts_utc.isoformat(),
+                    "timestamp_epoch": int(ts_utc.timestamp() * 1000),
                     "open": c.open,
                     "high": c.high,
                     "low": c.low,
@@ -89,11 +97,9 @@ class HistoricalDataService:
                     "volume": c.volume,
                     "turnover": c.turnover,
                     "vwap": c.vwap,
-                    "timeframe": c.timeframe,
                     "data_status": c.data_status.value if hasattr(c.data_status, "value") else str(c.data_status),
-                }
-                for c in candles
-            ]
+                })
+            return results
         finally:
             if close_db:
                 db.close()

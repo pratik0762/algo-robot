@@ -27,7 +27,8 @@ import {
   BookOpen,
   Calendar,
   XCircle,
-  ArrowDownRight
+  ArrowDownRight,
+  Menu
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import NavigationDrawer from '@/components/NavigationDrawer';
@@ -314,10 +315,8 @@ function DealsPageContent() {
                 fontSize: '0.8rem',
                 padding: '8px 12px',
               }}
-              title="Return to Main Dashboard"
             >
-              <ArrowLeft size={14} />
-              Dashboard
+              &larr; Back
             </Link>
 
             <button
@@ -326,18 +325,18 @@ function DealsPageContent() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.8rem',
+                gap: '8px',
+                fontSize: '0.82rem',
                 padding: '8px 14px',
-                background: 'rgba(6, 182, 212, 0.1)',
-                border: '1px solid rgba(6, 182, 212, 0.35)',
-                color: '#22d3ee',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                fontWeight: 700,
                 cursor: 'pointer',
               }}
-              title="Open Navigation Hub Drawer"
             >
-              <Layers size={14} />
-              <span>Market Hubs</span>
+              <Menu size={16} />
+              <span>Drawer</span>
             </button>
 
             <div>

@@ -46,11 +46,19 @@ class LiveQuoteService:
 
             existing = self._quotes.get(inst_key)
             prev_close = existing.get("previous_close", tick.close) if existing else tick.close
-            change = round(tick.ltp - prev_close, 2)
-            pct_change = round((change / prev_close) * 100.0, 2) if prev_close > 0 else 0.0
+            if tick.change != 0.0:
+                change = tick.change
+                pct_change = tick.percent_change if tick.percent_change != 0.0 else (round((change / prev_close) * 100.0, 2) if prev_close > 0 else 0.0)
+            else:
+                change = round(tick.ltp - prev_close, 2)
+                pct_change = round((change / prev_close) * 100.0, 2) if prev_close > 0 else 0.0
 
-            high_52w = max(existing.get("high_52w", 0.0), tick.high, tick.ltp) if existing else tick.high
-            low_52w = min(existing.get("low_52w", 9999999.0), tick.low, tick.ltp) if existing else tick.low
+            tick_h52 = getattr(tick, "high_52w", None)
+            tick_l52 = getattr(tick, "low_52w", None)
+            high_52w = tick_h52 if (tick_h52 is not None and tick_h52 > 0) else (max(existing.get("high_52w", 0.0), tick.high, tick.ltp) if existing else tick.high)
+            low_52w = tick_l52 if (tick_l52 is not None and tick_l52 > 0) else (min(existing.get("low_52w", 9999999.0), tick.low, tick.ltp) if existing else tick.low)
+
+            feed_source = getattr(tick, "feed_source", None) or "OFFICIAL_SNAPSHOT"
 
             snapshot = {
                 "instrument_id": inst_key,
@@ -72,6 +80,7 @@ class LiveQuoteService:
                 "avg_price": round((tick.high + tick.low + tick.ltp) / 3.0, 2),
                 "high_52w": high_52w,
                 "low_52w": low_52w,
+                "feed_source": feed_source,
                 "data_status": status.value,
                 "freshness_age_ms": round(freshness_age_ms, 1),
                 "timestamp": tick.timestamp,
@@ -79,16 +88,28 @@ class LiveQuoteService:
             }
             self._quotes[inst_key] = snapshot
 
-            # Periodically sync to DB (every 5 seconds)
-            if now - self._last_db_sync >= 5.0 and db:
-                self._sync_dirty_quotes_to_db(db)
-                self._last_db_sync = now
+            # Asynchronously enqueue dirty quote to batch persistence worker
+            try:
+                from app.market_data.batch_persistence_worker import batch_persistence_worker
+                batch_persistence_worker.enqueue_quote(snapshot)
+            except Exception:
+                pass
 
             return snapshot
 
     def get_quote(self, instrument_key: str) -> Optional[Dict[str, Any]]:
         with self._lock:
-            return self._quotes.get(instrument_key.upper())
+            k = instrument_key.upper()
+            if k in self._quotes:
+                return self._quotes[k]
+            if f"NSE_{k}" in self._quotes:
+                return self._quotes[f"NSE_{k}"]
+            if f"BSE_{k}" in self._quotes:
+                return self._quotes[f"BSE_{k}"]
+            for key, val in self._quotes.items():
+                if key.endswith(f"_{k}"):
+                    return val
+            return None
 
     def get_quotes_batch(self, instrument_keys: List[str]) -> Dict[str, Dict[str, Any]]:
         with self._lock:
@@ -111,7 +132,8 @@ class LiveQuoteService:
             close_db = True
 
         try:
-            quotes = db.query(MarketQuote).all()
+            from sqlalchemy.orm import joinedload
+            quotes = db.query(MarketQuote).options(joinedload(MarketQuote.instrument)).all()
             with self._lock:
                 for q in quotes:
                     inst = q.instrument

@@ -48,6 +48,8 @@ class NormalizedTick:
     oi: int
     timestamp: float
     feed_source: str
+    high_52w: Optional[float] = None
+    low_52w: Optional[float] = None
     data_status: DataAuthenticity = DataAuthenticity.REAL_LIVE
     is_simulated: bool = False  # Strictly False under Rule 1
 

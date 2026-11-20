@@ -325,7 +325,7 @@ export default function Week52Page() {
                 padding: '8px 12px',
               }}
             >
-              &larr; Hub
+              &larr; Back
             </Link>
 
             <button

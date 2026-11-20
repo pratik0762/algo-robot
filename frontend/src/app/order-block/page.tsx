@@ -309,25 +309,38 @@ export default function OrderBlockPage() {
       >
         <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button
-              onClick={() => setDrawerOpen(true)}
+            <Link
+              href="/"
+              className="btn btn-secondary"
               style={{
-                background: 'rgba(234, 88, 12, 0.12)',
-                border: '1px solid rgba(234, 88, 12, 0.35)',
-                color: '#ea580c',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: '0.82rem',
-                fontWeight: 700,
+                fontSize: '0.8rem',
+                padding: '8px 12px',
               }}
-              title="Open Navigation Hub"
+            >
+              &larr; Back
+            </Link>
+
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
             >
               <Menu size={16} />
-              <span>Menu</span>
+              <span>Drawer</span>
             </button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

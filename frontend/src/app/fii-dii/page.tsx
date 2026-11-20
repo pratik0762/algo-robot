@@ -429,16 +429,12 @@ export default function FiiDiiPage() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '8px 14px',
-                borderRadius: '10px',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                color: '#a5b4fc',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
               }}
             >
-              <ArrowLeft size={16} />
-              <span>Back to Financial Hub</span>
+              &larr; Back
             </Link>
 
             <button
@@ -448,16 +444,14 @@ export default function FiiDiiPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
+                fontSize: '0.82rem',
                 padding: '8px 14px',
-                borderRadius: '10px',
-                fontSize: '0.85rem',
-                fontWeight: 700,
                 border: '1px solid rgba(16, 185, 129, 0.4)',
                 background: 'rgba(16, 185, 129, 0.1)',
                 color: '#34d399',
+                fontWeight: 700,
                 cursor: 'pointer',
               }}
-              title="Open Navigation Drawer"
             >
               <Menu size={16} />
               <span>Drawer</span>

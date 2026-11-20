@@ -30,7 +30,8 @@ import {
   Clock,
   Sparkles,
   ArrowRight,
-  Bell
+  Bell,
+  Menu
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
@@ -620,12 +621,9 @@ export default function StrategyPage() {
                 gap: '6px',
                 fontSize: '0.8rem',
                 padding: '8px 12px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: 'var(--text-secondary)'
               }}
-              title="Return to Financial Hub"
             >
-              &larr; Hub
+              &larr; Back
             </Link>
 
             <button
@@ -635,16 +633,17 @@ export default function StrategyPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
+                fontSize: '0.82rem',
                 padding: '8px 14px',
-                border: '1px solid rgba(99, 102, 241, 0.4)',
-                background: 'rgba(99, 102, 241, 0.12)',
-                color: '#a5b4fc'
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                fontWeight: 700,
+                cursor: 'pointer',
               }}
             >
-              <SlidersHorizontal size={15} />
-              <span>MARKET HUBS</span>
+              <Menu size={16} />
+              <span>Drawer</span>
             </button>
 
             <div>
@@ -1958,7 +1957,10 @@ export default function StrategyPage() {
                       <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', textAlign: 'left' }}>
                         <th style={{ padding: '8px' }}>Trade ID</th>
                         <th style={{ padding: '8px' }}>Symbol</th>
+                        <th style={{ padding: '8px' }}>TF</th>
                         <th style={{ padding: '8px' }}>Side</th>
+                        <th style={{ padding: '8px' }}>Entry Time (IST)</th>
+                        <th style={{ padding: '8px' }}>Exit Time (IST)</th>
                         <th style={{ padding: '8px' }}>Entry</th>
                         <th style={{ padding: '8px' }}>Exit</th>
                         <th style={{ padding: '8px' }}>Qty</th>
@@ -1975,6 +1977,11 @@ export default function StrategyPage() {
                             <td style={{ padding: '8px', color: '#818cf8', fontWeight: 700 }}>{t.trade_id}</td>
                             <td style={{ padding: '8px', fontWeight: 800 }}>{t.contract_symbol || t.symbol}</td>
                             <td style={{ padding: '8px' }}>
+                              <span style={{ padding: '2px 5px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', fontWeight: 800, fontSize: '0.68rem' }}>
+                                {(t.timeframe || btResults.timeframe || '15m').toUpperCase()}
+                              </span>
+                            </td>
+                            <td style={{ padding: '8px' }}>
                               <span
                                 style={{
                                   background: t.side === 'BUY' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
@@ -1986,6 +1993,14 @@ export default function StrategyPage() {
                               >
                                 {t.side}
                               </span>
+                            </td>
+                            <td style={{ padding: '8px', color: '#cbd5e1', whiteSpace: 'nowrap' }}>
+                              <span style={{ color: '#f8fafc', fontWeight: 700 }}>{t.entry_time ? t.entry_time.split(' ')[0] : '—'}</span>{' '}
+                              <span style={{ color: '#38bdf8' }}>{t.entry_time ? t.entry_time.split(' ')[1] : ''}</span>
+                            </td>
+                            <td style={{ padding: '8px', color: '#cbd5e1', whiteSpace: 'nowrap' }}>
+                              <span style={{ color: '#f8fafc', fontWeight: 700 }}>{t.exit_time ? t.exit_time.split(' ')[0] : '—'}</span>{' '}
+                              <span style={{ color: '#94a3b8' }}>{t.exit_time ? t.exit_time.split(' ')[1] : ''}</span>
                             </td>
                             <td style={{ padding: '8px' }}>₹{t.entry_price}</td>
                             <td style={{ padding: '8px' }}>₹{t.exit_price}</td>

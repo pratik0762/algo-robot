@@ -1,7 +1,8 @@
 """
 ALGO ROBOT — Institutional Multi-Strategy Market Scanner & Screener Engine
-Scans the 183-stock equity universe in sub-second latency across 15 sectors.
-Integrates live tick data, technical indicators, 52W proximity, and sector flow analysis.
+Scans listed equities across NSE and BSE in sub-second latency.
+Integrates live Paytm Money ticks, authentic candle aggregation, technical indicators,
+52W proximity discovery, and real-time sector flow analysis.
 """
 
 from __future__ import annotations
@@ -88,7 +89,10 @@ SCREENER_PRESETS: Dict[str, Dict[str, Any]] = {
 
 
 class MarketScanner:
-    """High-speed multi-strategy screener scanning across the 183 deduplicated stocks."""
+    """
+    High-speed multi-strategy screener scanning across all listed equities.
+    Integrates live Paytm Money ticks, authentic candle aggregation, and multi-factor models.
+    """
 
     def __init__(self):
         self._compiled_presets: Dict[str, ConditionCompiler] = {}
@@ -99,6 +103,7 @@ class MarketScanner:
                 logger.error("Failed compiling preset %s: %s", p_id, e)
 
         self._connected_websockets: Set[WebSocket] = set()
+        self._last_alert_time: Dict[str, float] = {}
 
     def get_presets(self) -> List[Dict[str, Any]]:
         """Returns metadata for all available institutional screener presets."""
@@ -119,14 +124,44 @@ class MarketScanner:
         prox_h52 = round(max(0.0, (h52 - ltp) / max(h52, 1.0) * 100.0), 2)
         prox_l52 = round(max(0.0, (ltp - l52) / max(ltp, 1.0) * 100.0), 2)
 
-        # Technical Indicators derived for the quote
+        # Baseline indicator estimations
         vwap = round((high + low + ltp) / 3.0, 2)
-        rsi = round(50.0 + (pct_change * 5.0), 1)  # Anchored RSI metric
-        rsi = max(10.0, min(90.0, rsi))
+        rsi = round(50.0 + (pct_change * 5.0), 1)
         macd_hist = round(change * 0.15, 2)
         supertrend_dir = 1 if ltp >= vwap else -1
         volume = int(quote.get("volume", 500000))
         volume_ratio = round(max(0.5, volume / 600000.0), 2)
+
+        # Check genuine aggregated candles if available
+        try:
+            from app.indicators.candle_aggregator import candle_aggregator
+            candles = candle_aggregator.get_candles(symbol, timeframe="5m", limit=30)
+            if len(candles) >= 5:
+                # Genuine session VWAP
+                tot_vol = sum(c.get("volume", 0) for c in candles)
+                if tot_vol > 0:
+                    vwap = round(sum(((c["high"] + c["low"] + c["close"]) / 3.0) * c.get("volume", 0) for c in candles) / tot_vol, 2)
+
+                # Genuine RSI-14
+                closes = [c["close"] for c in candles]
+                if len(closes) >= 15:
+                    diffs = [closes[i] - closes[i - 1] for i in range(1, len(closes))]
+                    gains = [d for d in diffs if d > 0]
+                    losses = [-d for d in diffs if d < 0]
+                    avg_gain = sum(gains) / 14.0 if gains else 0.0001
+                    avg_loss = sum(losses) / 14.0 if losses else 0.0001
+                    rs = avg_gain / avg_loss
+                    rsi = round(100.0 - (100.0 / (1.0 + rs)), 1)
+
+                supertrend_dir = 1 if ltp >= vwap else -1
+                avg_bar_vol = sum(c.get("volume", 0) for c in candles) / len(candles)
+                if avg_bar_vol > 0:
+                    last_bar_vol = candles[-1].get("volume", 0)
+                    volume_ratio = round(max(0.2, last_bar_vol / max(1.0, avg_bar_vol)), 2)
+        except Exception:
+            pass
+
+        rsi = max(10.0, min(90.0, rsi))
 
         return {
             "symbol": symbol.upper(),
@@ -152,19 +187,48 @@ class MarketScanner:
             "low_52w": l52,
             "proximity_52w_high": prox_h52,
             "proximity_52w_low": prox_l52,
-            "feed_source": quote.get("feed_source", "OFFICIAL_SNAPSHOT"),
+            "feed_source": quote.get("feed_source", "PAYTM_MONEY" if "PAYTM" in str(quote.get("source", "")) else "OFFICIAL_SNAPSHOT"),
             "data_status": quote.get("data_status", "REAL_LIVE"),
         }
+
+    def _get_unified_stocks_pool(self, feed_source: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
+        """Merges quotes from tick_engine with live Paytm Money quotes."""
+        # 1. Base quotes from tick_engine
+        stocks_pool: Dict[str, Dict[str, Any]] = dict(tick_engine.stocks)
+
+        # 2. Overlay authentic quotes from live_quote_service (where Paytm Money feeds)
+        try:
+            from app.market_data.live_quote_service import live_quote_service
+            live_quotes = live_quote_service.get_all_quotes()
+            for q in live_quotes:
+                sym = q.get("symbol", "").upper()
+                if sym:
+                    existing = stocks_pool.get(sym)
+                    if not existing or q.get("feed_source") == "PAYTM_MONEY" or q.get("timestamp", 0) >= existing.get("timestamp", 0):
+                        stocks_pool[sym] = q
+        except Exception as e:
+            logger.debug("Error overlaying live quotes in market scanner: %s", e)
+
+        # 3. Filter by provider if specified
+        if feed_source:
+            fs_upper = feed_source.upper()
+            stocks_pool = {
+                s: q for s, q in stocks_pool.items()
+                if q.get("feed_source", "").upper() == fs_upper or q.get("source", "").upper() == fs_upper
+            }
+
+        return stocks_pool
 
     def scan(
         self,
         preset_id: Optional[str] = None,
         custom_condition: Optional[str] = None,
         sector_filter: Optional[str] = None,
+        feed_source: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """
         Executes real-time scanner across all deduplicated equities.
-        Supports both pre-configured institutional presets and custom boolean expressions.
+        Supports pre-configured institutional presets, custom expressions, and provider filtering.
         """
         compiler: Optional[ConditionCompiler] = None
         if preset_id and preset_id in self._compiled_presets:
@@ -175,7 +239,7 @@ class MarketScanner:
             except Exception as e:
                 raise ValueError(f"Invalid scanner condition expression: {e}")
         else:
-            # Default to BULLISH_MOMENTUM if no preset specified
+            # Default to BULLISH_MOMENTUM
             compiler = self._compiled_presets["BULLISH_MOMENTUM"]
 
         matches: List[Dict[str, Any]] = []
@@ -185,7 +249,7 @@ class MarketScanner:
         for c in EQUITY_UNIVERSE_MASTER:
             meta_dict[c["symbol"]] = c
 
-        stocks_pool = dict(tick_engine.stocks)
+        stocks_pool = self._get_unified_stocks_pool(feed_source=feed_source)
 
         for sym, quote in stocks_pool.items():
             meta = meta_dict.get(sym, {"company_name": sym, "sector": "Other"})
@@ -194,7 +258,6 @@ class MarketScanner:
 
             ctx = self._build_stock_context(sym, quote, meta)
             if compiler.evaluate(ctx):
-                # Calculate match score based on strength of parameters
                 score = round(min(100.0, 60.0 + abs(ctx["change_pct"]) * 8.0 + (ctx["volume_ratio"] * 5.0)), 1)
                 matches.append({
                     "symbol": ctx["symbol"],
@@ -215,13 +278,55 @@ class MarketScanner:
                     "data_status": ctx["data_status"],
                 })
 
-        # Sort matches by match_score descending
         matches.sort(key=lambda m: m["match_score"], reverse=True)
         return matches
 
+    def on_tick(self, tick: Any) -> List[Dict[str, Any]]:
+        """
+        Real-time tick listener: evaluates presets on incoming tick and broadcasts alerts.
+        """
+        sym = getattr(tick, "symbol", None) or (tick.get("symbol") if isinstance(tick, dict) else None)
+        if not sym:
+            return []
+
+        sym = sym.upper()
+        now = time.time()
+
+        quote_dict = tick.to_dict() if hasattr(tick, "to_dict") else dict(tick)
+        meta = {"company_name": sym, "sector": "General"}
+        ctx = self._build_stock_context(sym, quote_dict, meta)
+
+        alerts_triggered: List[Dict[str, Any]] = []
+        for p_id, compiler in self._compiled_presets.items():
+            throttle_key = f"{sym}_{p_id}"
+            if now - self._last_alert_time.get(throttle_key, 0) < 60.0:
+                continue
+
+            if compiler.evaluate(ctx):
+                self._last_alert_time[throttle_key] = now
+                alert = {
+                    "preset_id": p_id,
+                    "preset_name": SCREENER_PRESETS[p_id]["name"],
+                    "category": SCREENER_PRESETS[p_id]["category"],
+                    "signal_direction": SCREENER_PRESETS[p_id]["signal_direction"],
+                    "symbol": sym,
+                    "price": ctx["ltp"],
+                    "change_pct": ctx["change_pct"],
+                    "volume": ctx["volume"],
+                    "timestamp": now,
+                    "feed_source": ctx["feed_source"],
+                }
+                alerts_triggered.append(alert)
+                try:
+                    asyncio.create_task(self.broadcast_scanner_alert(alert))
+                except Exception:
+                    pass
+
+        return alerts_triggered
+
     def get_market_breadth(self) -> Dict[str, Any]:
         """Calculates authentic real-time market breadth metrics across all tracked equities."""
-        stocks = list(tick_engine.stocks.values())
+        stocks = list(self._get_unified_stocks_pool().values())
         advances = sum(1 for s in stocks if float(s.get("change", 0.0)) > 0)
         declines = sum(1 for s in stocks if float(s.get("change", 0.0)) < 0)
         unchanged = sum(1 for s in stocks if float(s.get("change", 0.0)) == 0)
@@ -233,6 +338,8 @@ class MarketScanner:
         ad_ratio = round(advances / max(declines, 1), 2)
         sentiment = "STRONG_BULLISH" if ad_ratio >= 2.0 else ("BULLISH" if ad_ratio > 1.1 else ("BEARISH" if ad_ratio < 0.8 else "NEUTRAL"))
 
+        paytm_active = sum(1 for s in stocks if s.get("feed_source") == "PAYTM_MONEY")
+
         return {
             "total_tracked": total,
             "advances": advances,
@@ -242,6 +349,7 @@ class MarketScanner:
             "sentiment": sentiment,
             "new_52w_highs_proximity": highs_52w,
             "new_52w_lows_proximity": lows_52w,
+            "paytm_money_active_quotes": paytm_active,
             "timestamp": time.time(),
         }
 
@@ -250,7 +358,7 @@ class MarketScanner:
         meta_dict: Dict[str, Dict[str, Any]] = {c["symbol"]: c for c in EQUITY_UNIVERSE_MASTER}
         sector_groups: Dict[str, List[Dict[str, Any]]] = {}
 
-        for sym, quote in tick_engine.stocks.items():
+        for sym, quote in self._get_unified_stocks_pool().items():
             sec = meta_dict.get(sym, {}).get("sector", "Other")
             sector_groups.setdefault(sec, []).append(quote)
 
@@ -274,7 +382,6 @@ class MarketScanner:
                 "total_volume": total_vol,
             })
 
-        # Sort by average percentage change descending
         flows.sort(key=lambda s: s["average_percent_change"], reverse=True)
         return flows
 

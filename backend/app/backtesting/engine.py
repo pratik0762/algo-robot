@@ -83,6 +83,7 @@ class QuantitativeBacktestingEngine:
         })
 
         strat_cls = self._strategy_registry.get(strategy_id)
+        total_candles_processed = 0
 
         for sym in symbols:
             candles = self.market_data.get_candles(sym, timeframe=timeframe, limit=300)
@@ -96,6 +97,8 @@ class QuantitativeBacktestingEngine:
 
             if len(candles) < 30:
                 continue
+
+            total_candles_processed += len(candles)
 
             active_trade: Optional[Dict[str, Any]] = None
 
@@ -296,6 +299,10 @@ class QuantitativeBacktestingEngine:
             equity_curve=equity_curve,
         )
 
+        # Step 11 Rule: Flag INCOMPLETE_DATA if genuine data was insufficient
+        data_status = "VALID" if total_candles_processed >= 30 else "INCOMPLETE_DATA"
+        data_warning = None if data_status == "VALID" else "Insufficient genuine historical candlestick records found for requested parameters. No synthetic candles were fabricated."
+
         return {
             "strategy_id": strategy_id,
             "strategy_name": getattr(strat_cls, "NAME", strategy_id),
@@ -304,6 +311,8 @@ class QuantitativeBacktestingEngine:
             "instrument_type": inst_class.value,
             "initial_capital": initial_capital,
             "final_capital": round(capital, 2),
+            "data_status": data_status,
+            "data_warning": data_warning,
             "metrics": metrics,
             "equity_curve": equity_curve,
             "trades": trades,

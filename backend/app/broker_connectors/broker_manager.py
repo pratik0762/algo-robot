@@ -15,6 +15,7 @@ from app.broker_connectors.zerodha_adapter import ZerodhaAdapter
 from app.broker_connectors.angel_one_adapter import AngelOneAdapter
 from app.broker_connectors.dhan_adapter import DhanAdapter
 from app.broker_connectors.upstox_adapter import UpstoxAdapter
+from app.broker_connectors.paytm_adapter import PaytmMoneyBrokerAdapter
 from app.core.security import encryption_service
 
 SENSITIVE_CREDENTIAL_FIELDS = {
@@ -58,6 +59,13 @@ DEFAULT_SESSIONS = {
             "client_id": "UP2084",
             "is_enabled": False,
             "is_connected": True
+        },
+        "PAYTM_MONEY": {
+            "name": "Paytm Money Open API",
+            "api_key": "",
+            "client_id": "PAYTM_USER",
+            "is_enabled": True,
+            "is_connected": False
         }
     }
 }
@@ -68,6 +76,7 @@ class BrokerManager:
     def __init__(self):
         self._ensure_storage()
         self.adapters: Dict[str, BaseBrokerClient] = {
+            "PAYTM_MONEY": PaytmMoneyBrokerAdapter(),
             "ZERODHA": ZerodhaAdapter(),
             "ANGEL_ONE": AngelOneAdapter(),
             "DHAN": DhanAdapter(),
@@ -146,7 +155,7 @@ class BrokerManager:
     def set_active_broker(self, broker_id: str) -> Dict[str, Any]:
         """Switch active execution target (PAPER_TRADING, ZERODHA, ANGEL_ONE, DHAN, UPSTOX)."""
         broker_id = broker_id.upper()
-        if broker_id not in ["PAPER_TRADING", "ZERODHA", "ANGEL_ONE", "DHAN", "UPSTOX"]:
+        if broker_id not in ["PAPER_TRADING", "PAYTM_MONEY", "ZERODHA", "ANGEL_ONE", "DHAN", "UPSTOX"]:
             raise ValueError(f"Invalid broker '{broker_id}'")
 
         data = self._load_raw()

@@ -1,93 +1,5 @@
 [
   {
-    "id": "custom_nifty_mean_reversion_alpha_0e96a1",
-    "name": "Nifty Mean Reversion Alpha",
-    "category": "Mean Reversion",
-    "badge": "CUSTOM MEAN REVERSI",
-    "win_rate": "65%",
-    "version": "1.1.0",
-    "version_history": [
-      {
-        "version": "1.0.0",
-        "created_at": "2026-11-13T10:53:17.329165+00:00",
-        "notes": "Initial custom strategy creation"
-      },
-      {
-        "version": "1.1.0",
-        "created_at": "2026-11-13T10:53:17.446009+00:00",
-        "notes": "Enhanced risk management buffer."
-      }
-    ],
-    "is_custom": true,
-    "is_enabled": true,
-    "is_draft": false,
-    "is_archived": false,
-    "description": "Updated institutional mean reversion model with improved stop loss.",
-    "trading_objective": "Capture statistical reversion to the 20-period moving average with tight risk.",
-    "supported_instruments": [
-      "Equity Stocks",
-      "Index Futures",
-      "Index Options"
-    ],
-    "supported_timeframes": [
-      "5m",
-      "15m",
-      "1H"
-    ],
-    "indicators": [
-      {
-        "name": "RSI 14 (Relative Strength Index)",
-        "symbol": "RSI14",
-        "parameters": {
-          "period": 14,
-          "oversold": 30,
-          "overbought": 70
-        },
-        "purpose": "Oversold exhaustion detection"
-      },
-      {
-        "name": "SMA 20 (Baseline Mean)",
-        "symbol": "SMA20",
-        "parameters": {
-          "period": 20
-        },
-        "purpose": "Mean reversion target"
-      }
-    ],
-    "buy_conditions": [
-      "RSI(14) crosses below 30 and hooks back up on confirmed closed bar",
-      "Price closes above 8-period low support band"
-    ],
-    "sell_conditions": [
-      "RSI(14) crosses above 70 and hooks down on confirmed closed bar",
-      "Price rejects from upper volatility band"
-    ],
-    "condition_rules": {},
-    "risk_management": {
-      "entry_type": "Market on Candle Close",
-      "stop_loss_type": "Swing Low / High Invalidation",
-      "stop_loss_multiplier": 1.5,
-      "target_1_ratio": 1.5,
-      "target_2_ratio": 2.5,
-      "target_3_ratio": 4.0,
-      "risk_reward_ratio": "1 : 2.0",
-      "max_risk_per_trade_pct": 1.5,
-      "signal_validity_bars": 3
-    },
-    "advanced_settings": {
-      "higher_timeframe_confirmation": true,
-      "volume_filter": true,
-      "volume_filter_multiplier": 1.5,
-      "candle_close_confirmation": true,
-      "trading_session_start": "09:30",
-      "trading_session_end": "15:15",
-      "cooldown_bars": 3,
-      "duplicate_signal_prevention": true
-    },
-    "created_at": "2026-11-13T10:53:17.329165+00:00",
-    "updated_at": "2026-11-13T10:53:17.505698+00:00"
-  },
-  {
     "id": "ema_cross",
     "name": "EMA 9/21 Trend Crossover",
     "category": "Moving Averages",
@@ -214,5 +126,251 @@
     },
     "is_draft": false,
     "updated_at": "2026-11-13T17:12:37.910633+00:00"
+  },
+  {
+    "id": "supertrend",
+    "name": "Supertrend (10, 3) Breakout",
+    "category": "Trend & ATR",
+    "badge": "VOLATILITY BAND",
+    "win_rate": "72%",
+    "version": "1.0.0",
+    "is_custom": false,
+    "is_enabled": false,
+    "description": "Adaptive ATR trailing stop volatility envelope capturing institutional trend transitions.",
+    "trading_objective": "Ride strong high-volatility directional expansions while providing an objective mathematical trailing stop.",
+    "supported_instruments": [
+      "Equity Stocks",
+      "Index Futures",
+      "Stock Futures",
+      "Options (CE/PE via Delta)"
+    ],
+    "supported_timeframes": [
+      "15m",
+      "1H",
+      "1D"
+    ],
+    "indicators": [
+      {
+        "name": "Supertrend (10, 3)",
+        "symbol": "ST(10,3)",
+        "parameters": {
+          "period": 10,
+          "multiplier": 3.0
+        },
+        "purpose": "Calculates dynamic volatility bands: HL2 +/- 3.0 * ATR(10)"
+      },
+      {
+        "name": "Wilder's ATR 10",
+        "symbol": "ATR10",
+        "parameters": {
+          "period": 10
+        },
+        "purpose": "Measures True Range volatility for adaptive band placement"
+      }
+    ],
+    "buy_conditions": [
+      "Supertrend Direction flips from -1 (Bearish) to +1 (Bullish) on a confirmed closed candle",
+      "OR Price closes above Supertrend support band after a test: Direction == 1 and Close[t] > ST[t] and Close[t-1] <= ST[t-1] * 1.002",
+      "Candle Close must be firmly above the trailing pivot line"
+    ],
+    "sell_conditions": [
+      "Supertrend Direction flips from +1 (Bullish) to -1 (Bearish) on a confirmed closed candle",
+      "OR Price rejects from Supertrend resistance band after a test: Direction == -1 and Close[t] < ST[t] and Close[t-1] >= ST[t-1] * 0.998",
+      "Candle Close must be firmly below the trailing pivot line"
+    ],
+    "stop_loss_logic": "Directly anchored to the active Supertrend band line (ST value) or recent 8-candle swing extreme, clamped between 1.2% and 2.5% max risk.",
+    "target_calculation": {
+      "target_1": "Entry + (Risk * 2.0) \u2014 Strict 1:2.0 R:R",
+      "target_2": "Entry + (Risk * 3.5) \u2014 Extended 1:3.5 R:R",
+      "target_3": "Trail stop along the upward-ratcheting Supertrend support line"
+    },
+    "risk_reward": "1 : 2.0 minimum structural ratio",
+    "exit_conditions": [
+      "Target 1 hit (+2.0R): Take 50% profit, trail remainder",
+      "Target 2 hit (+3.5R): Complete exit",
+      "Supertrend flip in opposite direction on candle close (instant exit)",
+      "Stop Loss hit"
+    ],
+    "confirmation_rules": [
+      "Candle Close Rule: Direction flip only verified upon complete candle timestamp closure",
+      "No Repainting: Band values lock upon candle close",
+      "HTF 21-EMA confluence alignment"
+    ],
+    "status": {
+      "is_enabled": true,
+      "status_label": "ACTIVE & OPERATIONAL",
+      "applicable_instruments": "NSE Equities, Index Futures, Stock Futures",
+      "last_evaluated": "Continuous (Every 30s scan cycle)",
+      "last_signal_generated": "Live Market Verified",
+      "data_status": "AUTHENTIC NSE LIVE FEED"
+    },
+    "is_archived": true,
+    "updated_at": "2026-11-19T05:36:29.421813+00:00"
+  },
+  {
+    "id": "macd_cross",
+    "name": "MACD Histogram Expansion",
+    "category": "Moving Average Convergence",
+    "badge": "MOMENTUM ACCELERATION",
+    "win_rate": "67%",
+    "version": "1.0.0",
+    "is_custom": false,
+    "is_enabled": false,
+    "description": "MACD zero-line and signal crossover with expanding positive/negative histogram acceleration.",
+    "trading_objective": "Identify momentum acceleration phases where trend strength is actively expanding.",
+    "supported_instruments": [
+      "Equity Stocks",
+      "Index Futures",
+      "Stock Futures"
+    ],
+    "supported_timeframes": [
+      "15m",
+      "1H",
+      "1D"
+    ],
+    "indicators": [
+      {
+        "name": "MACD Line (12, 26)",
+        "symbol": "MACD_LINE",
+        "parameters": {
+          "fast": 12,
+          "slow": 26
+        },
+        "purpose": "Difference between 12-period EMA and 26-period EMA"
+      },
+      {
+        "name": "Signal Line (9)",
+        "symbol": "MACD_SIG",
+        "parameters": {
+          "period": 9
+        },
+        "purpose": "9-period EMA of MACD Line"
+      },
+      {
+        "name": "MACD Histogram",
+        "symbol": "MACD_HIST",
+        "parameters": {},
+        "purpose": "MACD Line minus Signal Line measuring acceleration rate"
+      }
+    ],
+    "buy_conditions": [
+      "MACD Line crosses above Signal Line: MACD[t-1] <= Sig[t-1] and MACD[t] > Sig[t]",
+      "OR Histogram flips from negative to positive territory: Hist[t-1] < 0 and Hist[t] > 0",
+      "Closed candle must be bullish with Close > Open"
+    ],
+    "sell_conditions": [
+      "MACD Line crosses below Signal Line: MACD[t-1] >= Sig[t-1] and MACD[t] < Sig[t]",
+      "OR Histogram flips from positive to negative territory: Hist[t-1] > 0 and Hist[t] < 0",
+      "Closed candle must be bearish with Close < Open"
+    ],
+    "stop_loss_logic": "Placed below recent 8-candle swing extreme or 1.5x ATR trailing buffer (1.2%\u20132.5% max risk).",
+    "target_calculation": {
+      "target_1": "Entry + (Risk * 2.0) \u2014 1:2.0 Risk-to-Reward ratio",
+      "target_2": "Entry + (Risk * 3.5) \u2014 1:3.5 Risk-to-Reward ratio",
+      "target_3": "Exit on histogram contraction"
+    },
+    "risk_reward": "1 : 2.0 minimum structural ratio",
+    "exit_conditions": [
+      "Target 1 hit (+2.0R)",
+      "Target 2 hit (+3.5R)",
+      "Histogram flips color (momentum deceleration)",
+      "Stop Loss hit"
+    ],
+    "confirmation_rules": [
+      "Histogram Expansion: Verified positive/negative slope expansion",
+      "Closed candle confirmation",
+      "HTF 21-EMA alignment"
+    ],
+    "status": {
+      "is_enabled": true,
+      "status_label": "ACTIVE & OPERATIONAL",
+      "applicable_instruments": "NSE Equities, Index Futures, Stock Futures",
+      "last_evaluated": "Continuous (Every 30s scan cycle)",
+      "last_signal_generated": "Live Market Verified",
+      "data_status": "AUTHENTIC NSE LIVE FEED"
+    },
+    "is_archived": true,
+    "updated_at": "2026-11-19T05:36:39.357071+00:00"
+  },
+  {
+    "id": "bollinger_squeeze",
+    "name": "Bollinger Bands Squeeze",
+    "category": "Volatility Channels",
+    "badge": "VOLATILITY EXPANSION",
+    "win_rate": "70%",
+    "version": "1.0.0",
+    "is_custom": false,
+    "is_enabled": false,
+    "description": "Band contraction squeeze breakout signaling an impending explosive volatility expansion move.",
+    "trading_objective": "Catch violent directional breakouts from tight consolidation before general market participants detect the move.",
+    "supported_instruments": [
+      "Equity Stocks",
+      "Index Futures",
+      "Stock Futures",
+      "Options (Straddle/Strangle)"
+    ],
+    "supported_timeframes": [
+      "15m",
+      "1H",
+      "1D"
+    ],
+    "indicators": [
+      {
+        "name": "Bollinger Bands (20, 2.0)",
+        "symbol": "BB(20,2)",
+        "parameters": {
+          "period": 20,
+          "std_dev": 2.0
+        },
+        "purpose": "Calculates upper, middle SMA(20), and lower volatility envelopes"
+      },
+      {
+        "name": "Bandwidth Squeeze Ratio",
+        "symbol": "BANDWIDTH",
+        "parameters": {
+          "lookback": 15,
+          "squeeze_factor": 1.15
+        },
+        "purpose": "Measures (Upper - Lower) / Middle relative to 15-period minimum bandwidth"
+      }
+    ],
+    "buy_conditions": [
+      "Bandwidth Squeeze is active: Bandwidth[t-1] <= recent 15-period minimum bandwidth * 1.15",
+      "Explosive Bullish Breakout: Close[t] breaks above Upper Bollinger Band on confirmed closed candle",
+      "Volume confirmation confirming institutional expansion"
+    ],
+    "sell_conditions": [
+      "Bandwidth Squeeze is active: Bandwidth[t-1] <= recent 15-period minimum bandwidth * 1.15",
+      "Explosive Bearish Breakdown: Close[t] breaks below Lower Bollinger Band on confirmed closed candle",
+      "Volume confirmation confirming institutional distribution"
+    ],
+    "stop_loss_logic": "Placed at the Middle Bollinger Band (SMA 20 line) or 1.5x ATR trailing buffer.",
+    "target_calculation": {
+      "target_1": "Entry + (Risk * 2.0) \u2014 Volatility expansion target",
+      "target_2": "Entry + (Risk * 3.5) \u2014 Extended directional run",
+      "target_3": "Trail stop along the Middle SMA 20 band"
+    },
+    "risk_reward": "1 : 2.0 minimum structural ratio",
+    "exit_conditions": [
+      "Target 1 hit (+2.0R)",
+      "Target 2 hit (+3.5R)",
+      "Price crosses back across Middle SMA 20 band",
+      "Stop Loss hit"
+    ],
+    "confirmation_rules": [
+      "Squeeze Threshold: Validates that bandwidth was genuinely compressed in the preceding 15 bars",
+      "Closed candle must be outside the outer band",
+      "Volume expansion confirmation"
+    ],
+    "status": {
+      "is_enabled": true,
+      "status_label": "ACTIVE & OPERATIONAL",
+      "applicable_instruments": "NSE Equities, Index Futures, Stock Futures",
+      "last_evaluated": "Continuous (Every 30s scan cycle)",
+      "last_signal_generated": "Live Market Verified",
+      "data_status": "AUTHENTIC NSE LIVE FEED"
+    },
+    "is_archived": true,
+    "updated_at": "2026-11-19T05:36:58.540396+00:00"
   }
 ]

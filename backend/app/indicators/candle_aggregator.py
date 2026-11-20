@@ -14,8 +14,11 @@ from app.market_data.base_adapter import NormalizedTick
 TIMEFRAME_SECONDS: Dict[str, int] = {
     "1s": 1,
     "1m": 60,
+    "3m": 180,
     "5m": 300,
+    "10m": 600,
     "15m": 900,
+    "30m": 1800,
     "1h": 3600,
     "1d": 86400,
 }
@@ -117,6 +120,13 @@ class StreamingCandleAggregator:
 
                     # Start new active bar
                     self._active_bars[symbol][tf] = CandleBar(symbol, tf, bucket_ts, price, 1)
+
+        if closed_candles:
+            try:
+                from app.market_data.batch_persistence_worker import batch_persistence_worker
+                batch_persistence_worker.enqueue_candles_batch(closed_candles)
+            except Exception:
+                pass
 
         return closed_candles
 

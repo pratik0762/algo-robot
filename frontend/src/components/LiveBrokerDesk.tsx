@@ -154,7 +154,7 @@ export default function LiveBrokerDesk() {
               Live Broker API Integration Hub
             </h3>
             <p style={{ margin: '4px 0 0 0', fontSize: '0.80rem', color: 'var(--text-muted)' }}>
-              Unified OMS/RMS order routing bridge supporting Zerodha Kite, Angel One, Dhan, and Upstox with TOTP automation.
+              Unified OMS/RMS order routing bridge supporting Paytm Money, Zerodha Kite, Angel One, Dhan, and Upstox with TOTP &amp; OAuth automation.
             </p>
           </div>
 
@@ -326,12 +326,19 @@ export default function LiveBrokerDesk() {
                 className="select-field"
                 style={{ width: '100%', marginTop: '4px', padding: '8px' }}
               >
+                <option value="PAYTM_MONEY">Paytm Money Open API (Primary Data &amp; Execution)</option>
                 <option value="ZERODHA">Zerodha Kite Connect v3</option>
                 <option value="ANGEL_ONE">Angel One SmartAPI</option>
                 <option value="DHAN">Dhan HQ v2</option>
                 <option value="UPSTOX">Upstox API v2</option>
               </select>
             </div>
+
+            {selectedBrokerForAuth === 'PAYTM_MONEY' && (
+              <div style={{ padding: '8px 12px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 'var(--radius-md)', fontSize: '0.75rem', color: '#93c5fd' }}>
+                Paytm Money uses OAuth 2.0. If you have generated a <code>request_token</code> via browser login, paste it into the Request Token field below.
+              </div>
+            )}
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>

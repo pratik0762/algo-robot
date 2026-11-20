@@ -359,12 +359,9 @@ function TradeSignalsContent() {
                 gap: '6px',
                 fontSize: '0.8rem',
                 padding: '8px 12px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: 'var(--text-secondary)',
               }}
-              title="Return to Financial Hub"
             >
-              &larr; Hub
+              &larr; Back
             </Link>
 
             <button
@@ -375,17 +372,15 @@ function TradeSignalsContent() {
                 alignItems: 'center',
                 gap: '8px',
                 fontSize: '0.82rem',
-                padding: '8px 16px',
-                border: '1px solid rgba(239, 68, 68, 0.45)',
-                background: 'rgba(239, 68, 68, 0.12)',
-                color: '#f87171',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
                 fontWeight: 700,
-                boxShadow: '0 0 15px rgba(239, 68, 68, 0.25)',
                 cursor: 'pointer',
               }}
-              title="Open Market Hubs Navigator Drawer"
             >
-              <Menu size={16} color="#f87171" />
+              <Menu size={16} />
               <span>Drawer</span>
             </button>
 

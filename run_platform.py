@@ -14,7 +14,8 @@ import time
 
 def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
-    python_exe = os.path.join(root_dir, ".venv", "Scripts", "python.exe")
+    venv_python = "Scripts/python.exe" if os.name == "nt" else "bin/python"
+    python_exe = os.path.join(root_dir, ".venv", *venv_python.split("/"))
     frontend_dir = os.path.join(root_dir, "frontend")
 
     print("=" * 70)

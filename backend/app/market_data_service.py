@@ -216,6 +216,55 @@ class MarketDataService:
         sym_clean = symbol.upper().replace(".NS", "").replace("-EQ", "")
         candles: List[Dict[str, Any]] = []
 
+        # Check normalized historical database first unless force_live is requested
+        if not force_live:
+            # Check Paytm historical adapter first (Rule 1 primary provider)
+            try:
+                from app.market_data.historical.paytm_historical_adapter import paytm_historical_adapter
+                paytm_candles = paytm_historical_adapter.fetch_candles(
+                    symbol=sym_clean,
+                    exchange="NSE",
+                    timeframe=timeframe.lower(),
+                    limit=limit or 500
+                )
+                if paytm_candles and len(paytm_candles) >= 5:
+                    return [
+                        {
+                            "time": c.get("time", c.get("timestamp_iso", "")),
+                            "timestamp": c.get("timestamp_epoch", 0),
+                            "open": c["open"],
+                            "high": c["high"],
+                            "low": c["low"],
+                            "close": c["close"],
+                            "volume": c.get("volume", 0),
+                        }
+                        for c in paytm_candles
+                    ]
+            except Exception as e:
+                logger.debug("Paytm historical adapter fallback: %s", e)
+
+            try:
+                from app.market_data.historical.data_manager import historical_data_manager
+                db_res = historical_data_manager.get_candles(sym_clean, exchange="NSE", timeframe=timeframe, limit=limit or 500)
+                if db_res.get("status") == "VALID" and db_res.get("candles"):
+                    return [
+                        {
+                            "date": c.get("date", c["timestamp"][:10]),
+                            "time": c.get("time", c["timestamp"][11:19] if len(c["timestamp"]) > 18 else "15:30:00"),
+                            "timeframe": timeframe.upper(),
+                            "datetime": c.get("datetime", f"{c.get('date', c['timestamp'][:10])} {c.get('time', '15:30:00')}"),
+                            "timestamp": c.get("timestamp_epoch", int(datetime.fromisoformat(c["timestamp"].replace("Z", "+00:00")).timestamp() * 1000)),
+                            "open": c["open"],
+                            "high": c["high"],
+                            "low": c["low"],
+                            "close": c["close"],
+                            "volume": c["volume"],
+                        }
+                        for c in db_res["candles"]
+                    ]
+            except Exception as e:
+                logger.debug("Historical data manager query fallback: %s", e)
+
         if force_live:
             candles = self.fetch_live_candles(sym_clean, timeframe)
         else:
@@ -232,9 +281,17 @@ class MarketDataService:
 
     def get_live_quote(self, symbol: str) -> Optional[Dict[str, Any]]:
         """Ultra-low latency in-memory live quote accessor (< 0.005ms).
-        Directly checks tick_engine in-memory store first, falls back to internal memory cache.
+        Directly checks live_quote_service (Paytm Money) first, then tick_engine.
         """
         sym_clean = symbol.upper().replace(".NS", "").replace("-EQ", "")
+        try:
+            from app.market_data.live_quote_service import live_quote_service
+            lq = live_quote_service.get_quote(sym_clean)
+            if lq:
+                return lq
+        except Exception:
+            pass
+
         try:
             from app.tick_engine import tick_engine
             q = tick_engine.get_stock_quote(sym_clean)

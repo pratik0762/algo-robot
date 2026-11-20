@@ -26,6 +26,7 @@ import {
   Sliders
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { getApiBase } from '@/config/api';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import MarketStatusBanner from '@/components/MarketStatusBanner';
@@ -668,6 +669,50 @@ function HeatmapContent() {
     return currentSectors.flatMap((s) => s.stocks);
   }, [currentSectors]);
 
+  // Support ?symbol= query parameter
+  const searchParams = useSearchParams();
+  const querySymbol = searchParams?.get('symbol');
+
+  useEffect(() => {
+    if (querySymbol) {
+      const q = querySymbol.toUpperCase().trim();
+      const found = allStocks.find((s) => s.symbol.toUpperCase() === q);
+      if (found) {
+        setSelectedStock(found);
+      } else {
+        const apiBase = getApiBase();
+        fetch(`${apiBase}/api/companies/${q}`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data) {
+              const ltp = data.current_price || data.face_value_inr || 100.0;
+              const chg = data.price_change || 0.0;
+              const pct = data.percent_change || 0.0;
+              setSelectedStock({
+                symbol: data.symbol,
+                company_name: data.company_name,
+                sector: data.sector || 'NSE Equity',
+                industry: data.industry || 'Listed Equity',
+                ltp: ltp,
+                change: chg,
+                percent_change: pct,
+                market_cap_cr: data.market_cap_cr || 1000.0,
+                index_weight_pct: 1.0,
+                signal: pct >= 0 ? 'BUY' : 'SELL',
+                heat_grade: pct >= 0 ? 'MILD_BUY' : 'MILD_SELL',
+                color: pct >= 0 ? '#059669' : '#dc2626',
+                pe_ratio: data.pe_ratio || 20.0,
+                high_52w: data.high_52w || (ltp * 1.2),
+                low_52w: data.low_52w || (ltp * 0.8),
+                nse_official_url: `https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(data.symbol)}`
+              });
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [querySymbol, allStocks]);
+
   // Market Breadth computation
   const breadthStats = useMemo(() => {
     if (heatmapData?.breadth) return heatmapData.breadth;
@@ -807,12 +852,9 @@ function HeatmapContent() {
                 gap: '6px',
                 fontSize: '0.8rem',
                 padding: '8px 12px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: 'var(--text-secondary)'
               }}
-              title="Return to Financial Hub"
             >
-              &larr; Hub
+              &larr; Back
             </Link>
 
             <button
@@ -824,16 +866,14 @@ function HeatmapContent() {
                 gap: '8px',
                 fontSize: '0.82rem',
                 padding: '8px 14px',
-                border: '1px solid rgba(56, 189, 248, 0.45)',
-                background: 'rgba(56, 189, 248, 0.12)',
-                color: '#38bdf8',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
                 fontWeight: 700,
-                boxShadow: '0 0 15px rgba(56, 189, 248, 0.25)',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
-              title="Open Market Hubs Navigator Drawer"
             >
-              <Menu size={16} color="#38bdf8" />
+              <Menu size={16} />
               <span>Drawer</span>
             </button>
 
@@ -1171,6 +1211,28 @@ function HeatmapContent() {
               >
                 <TrendingUp size={15} color="#10b981" />
                 <span>52W Radar</span>
+              </Link>
+
+              <Link
+                href={`/terminal?symbol=${encodeURIComponent(selectedStock.symbol)}`}
+                className="btn"
+                style={{
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  color: '#38bdf8',
+                  padding: '9px 16px',
+                  borderRadius: '8px',
+                  fontSize: '0.80rem',
+                  fontWeight: 800,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer'
+                }}
+                title={`Open Institutional TradingView Canvas for ${selectedStock.symbol}`}
+              >
+                <BarChart2 size={15} />
+                <span>TradingView Chart &rarr;</span>
               </Link>
 
               <a

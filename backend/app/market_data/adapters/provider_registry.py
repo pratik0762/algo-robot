@@ -22,7 +22,7 @@ class ProviderRegistryManager:
     def __init__(self):
         self._lock = threading.RLock()
         self.providers: Dict[str, BaseMarketDataProvider] = {}
-        self.priority_order: List[str] = ["ZERODHA", "ANGEL_ONE", "UPSTOX", "DHAN", "NSE", "BSE"]
+        self.priority_order: List[str] = ["PAYTM_MONEY", "ZERODHA", "ANGEL_ONE", "UPSTOX", "DHAN", "NSE", "BSE"]
 
     def register_provider(self, provider: BaseMarketDataProvider) -> None:
         with self._lock:

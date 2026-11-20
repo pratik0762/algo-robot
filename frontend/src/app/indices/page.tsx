@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
   Search,
@@ -18,11 +19,17 @@ import {
   ShieldCheck,
   Clock,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Menu
 } from 'lucide-react';
 import IndicesBarometer from '@/components/IndicesBarometer';
 import IndexConstituentsModal from '@/components/IndexConstituentsModal';
 import { getApiBase } from '@/config/api';
+
+const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
+  ssr: false,
+  loading: () => null
+});
 
 export interface IndexData {
   index: string;
@@ -105,6 +112,7 @@ export default function AllIndicesPage() {
   const [timestamp, setTimestamp] = useState<string>(() => globalIndicesCache?.timestamp || '');
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [selectedConstituentIndex, setSelectedConstituentIndex] = useState<string | null>(null);
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
 
   // Ensure body scroll is never blocked on this separate page
   useEffect(() => {
@@ -236,17 +244,33 @@ export default function AllIndicesPage() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '8px 14px',
-                borderRadius: '10px',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                color: '#a5b4fc',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
               }}
             >
-              <ArrowLeft size={16} />
-              <span>Back to Financial Hub</span>
+              &larr; Back
             </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              <Menu size={16} />
+              <span>Drawer</span>
+            </button>
 
             <div
               style={{
@@ -834,6 +858,9 @@ export default function AllIndicesPage() {
         isOpen={!!selectedConstituentIndex}
         onClose={() => setSelectedConstituentIndex(null)}
       />
+
+      {/* Navigation Hub Drawer */}
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
 
       {/* Page Footer */}
       <footer

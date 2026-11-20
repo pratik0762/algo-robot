@@ -78,6 +78,7 @@ def setup_market_data_universe():
         )
         symbol_resolver.hydrate_cache(db=db)
         live_quote_service.hydrate_initial_quotes(db=db)
+        db.commit()
     yield
 
 

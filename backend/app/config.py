@@ -81,6 +81,13 @@ class Settings(BaseSettings):
     SHOONYA_VC: str = ""
     SHOONYA_API_KEY: str = ""
 
+    # Paytm Money Open API
+    PAYTM_MONEY_API_KEY: str = ""
+    PAYTM_MONEY_API_SECRET: str = ""
+    PAYTM_MONEY_REQUEST_TOKEN: str = ""
+    PAYTM_MONEY_ACCESS_TOKEN: str = ""
+    PAYTM_MONEY_PUBLIC_ACCESS_TOKEN: str = ""
+
     # Alert Channels
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_CHAT_ID: str = ""

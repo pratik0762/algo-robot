@@ -4429,5 +4429,523 @@
     "pnl_percent": "-2.5%",
     "time_to_target": "36m 0s",
     "outcome_time": "17-Nov-2026 09:38:05 PM IST"
+  },
+  "SIG-HDFCBANK-macd_cross-1794940223323": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 819.6,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "18-Nov-2026 12:00:24 AM IST"
+  },
+  "SIG-HDFCBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794940223479": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 820.41,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "18-Nov-2026 12:00:24 AM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794940223469": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "18-Nov-2026 12:00:24 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1794940223328": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "18-Nov-2026 12:00:24 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794940223477": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "18-Nov-2026 12:00:24 AM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794940223437": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "18-Nov-2026 12:00:25 AM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794940223489": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "18-Nov-2026 12:00:25 AM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794976678851": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 2s",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1794976678646": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "21m 2s",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794976678821": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 2s",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1794806999822": {
+    "status": "EXPIRED",
+    "exit_price": 4778.2,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1794812532532": {
+    "status": "EXPIRED",
+    "exit_price": 4778.2,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-SUNPHARMA-rsi_reversal-1794806999824": {
+    "status": "EXPIRED",
+    "exit_price": 1871.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-SUNPHARMA-custom_nifty_mean_reversion_alpha_0e96a1-1794812532572": {
+    "status": "EXPIRED",
+    "exit_price": 1871.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:08:01 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1794806999820": {
+    "status": "EXPIRED",
+    "exit_price": 12682.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:09:01 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1794812532575": {
+    "status": "EXPIRED",
+    "exit_price": 12695.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:11:14 AM IST"
+  },
+  "SIG-LT-supertrend-1794806999814": {
+    "status": "EXPIRED",
+    "exit_price": 4168.7,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:24:06 AM IST"
+  },
+  "SIG-ICICIBANK-custom_nifty_mean_reversion_alpha_0e96a1-1794978117256": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1606.48,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "6m 1s",
+    "outcome_time": "18-Nov-2026 10:31:59 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1794978117126": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1107.26,
+    "pnl_percent": "+2.4%",
+    "time_to_target": "11m 1s",
+    "outcome_time": "18-Nov-2026 10:31:59 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1794978117286": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 1s",
+    "outcome_time": "18-Nov-2026 10:31:59 AM IST"
+  },
+  "SIG-LT-supertrend-1794737084500": {
+    "status": "EXPIRED",
+    "exit_price": 4166.7,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:31:59 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1794737084526": {
+    "status": "EXPIRED",
+    "exit_price": 12658.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:32:00 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1794737084511": {
+    "status": "EXPIRED",
+    "exit_price": 4745.5,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:32:00 AM IST"
+  },
+  "SIG-SUNPHARMA-rsi_reversal-1794737084516": {
+    "status": "EXPIRED",
+    "exit_price": 1866.0,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:32:00 AM IST"
+  },
+  "SIG-LT-custom_nifty_mean_reversion_alpha_0e96a1-1794812532474": {
+    "status": "EXPIRED",
+    "exit_price": 4171.8,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 10:41:33 AM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1794812532449": {
+    "status": "EXPIRED",
+    "exit_price": 1116.3,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "18-Nov-2026 11:41:21 AM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1794976678866": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "2h 52m",
+    "outcome_time": "18-Nov-2026 12:29:07 PM IST"
+  },
+  "SIG-TRENT-custom_nifty_mean_reversion_alpha_0e96a1-1794976678934": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "2h 57m",
+    "outcome_time": "18-Nov-2026 12:29:08 PM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1794978117359": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4666.2,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "4h 57m",
+    "outcome_time": "18-Nov-2026 03:03:48 PM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1795065903866": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1098.59,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "11m 2s",
+    "outcome_time": "19-Nov-2026 10:55:07 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795065903589": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "16m 2s",
+    "outcome_time": "19-Nov-2026 10:55:07 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1795065903797": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 3s",
+    "outcome_time": "19-Nov-2026 10:55:07 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1795065903936": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 4545.0,
+    "pnl_percent": "+6.25%",
+    "time_to_target": "31m 3s",
+    "outcome_time": "19-Nov-2026 10:55:07 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1794978117336": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "24h 44m",
+    "outcome_time": "19-Nov-2026 10:55:07 AM IST"
+  },
+  "SIG-LT-supertrend-1794636542679": {
+    "status": "EXPIRED",
+    "exit_price": 4166.6,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "19-Nov-2026 10:55:08 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1794636542684": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "120h 7m",
+    "outcome_time": "19-Nov-2026 10:55:08 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1794636542685": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "120h 22m",
+    "outcome_time": "19-Nov-2026 10:55:08 AM IST"
+  },
+  "SIG-SUNPHARMA-rsi_reversal-1794636542688": {
+    "status": "EXPIRED",
+    "exit_price": 1887.4,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "19-Nov-2026 10:55:08 AM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1795066592323": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1098.59,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795066592261": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1795066592333": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1795066592348": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1795066592376": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 4545.0,
+    "pnl_percent": "+6.25%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1794569350135": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "138h 58m",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1794569350143": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "139h 13m",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-SUNPHARMA-rsi_reversal-1794569350141": {
+    "status": "EXPIRED",
+    "exit_price": 1887.9,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "19-Nov-2026 11:06:33 AM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1795066604597": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1098.59,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795066604413": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1795066605000": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1795066604665": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1795066605125": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1795066604614": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1795066605060": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 4545.0,
+    "pnl_percent": "+6.25%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "19-Nov-2026 11:06:46 AM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1795066610346": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1098.59,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795066610244": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1795066610349": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1795066610296": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1795066610331": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1795066610337": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1795066610402": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 4545.0,
+    "pnl_percent": "+6.25%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "19-Nov-2026 11:06:51 AM IST"
+  },
+  "SIG-INFY-custom_nifty_mean_reversion_alpha_0e96a1-1795066619564": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 1098.59,
+    "pnl_percent": "+3.75%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "19-Nov-2026 11:07:00 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795066619526": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-SBIN-custom_nifty_mean_reversion_alpha_0e96a1-1795066619614": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1108.33,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1795066619583": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "21m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-MARUTI-custom_nifty_mean_reversion_alpha_0e96a1-1795066619632": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "26m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1795066619589": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "31m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-TITAN-custom_nifty_mean_reversion_alpha_0e96a1-1795066619635": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 4545.0,
+    "pnl_percent": "+6.25%",
+    "time_to_target": "36m 0s",
+    "outcome_time": "19-Nov-2026 11:07:01 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795066631536": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "6m 0s",
+    "outcome_time": "19-Nov-2026 11:07:12 AM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1795066631544": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 0s",
+    "outcome_time": "19-Nov-2026 11:07:12 AM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1795066631550": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "16m 0s",
+    "outcome_time": "19-Nov-2026 11:07:12 AM IST"
+  },
+  "SIG-SBIN-ema_cross-1795101991985": {
+    "status": "TARGET_2_HIT",
+    "exit_price": 1126.73,
+    "pnl_percent": "+4.2%",
+    "time_to_target": "6m 2s",
+    "outcome_time": "19-Nov-2026 08:56:34 PM IST"
+  },
+  "SIG-MARUTI-rsi_reversal-1795101992002": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 13212.25,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "11m 2s",
+    "outcome_time": "19-Nov-2026 08:56:35 PM IST"
+  },
+  "SIG-TITAN-rsi_reversal-1795101991993": {
+    "status": "TARGET_1_HIT",
+    "exit_price": 4605.6,
+    "pnl_percent": "+5.0%",
+    "time_to_target": "16m 2s",
+    "outcome_time": "19-Nov-2026 08:56:35 PM IST"
+  },
+  "SIG-TRENT-rsi_reversal-1795065903900": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 3251.2,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "25h 36m",
+    "outcome_time": "20-Nov-2026 11:55:53 AM IST"
   }
 }

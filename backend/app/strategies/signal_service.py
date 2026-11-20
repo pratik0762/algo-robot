@@ -184,21 +184,35 @@ class SignalService:
         sym = symbol.upper()
         ltf_candles = candle_aggregator.get_candles(sym, timeframe=timeframe, limit=100)
         if len(ltf_candles) < 20:
+            try:
+                from app.market_data.historical.paytm_historical_adapter import paytm_historical_adapter
+                ltf_candles = paytm_historical_adapter.fetch_candles(sym, exchange="NSE", timeframe=timeframe, limit=100)
+            except Exception:
+                pass
+
+        if len(ltf_candles) < 20:
             return []
 
         import numpy as np
-        opens = np.array([c.open for c in ltf_candles], dtype=np.float64)
-        highs = np.array([c.high for c in ltf_candles], dtype=np.float64)
-        lows = np.array([c.low for c in ltf_candles], dtype=np.float64)
-        closes = np.array([c.close for c in ltf_candles], dtype=np.float64)
-        volumes = np.array([c.volume for c in ltf_candles], dtype=np.float64)
+        opens = np.array([c["open"] if isinstance(c, dict) else c.open for c in ltf_candles], dtype=np.float64)
+        highs = np.array([c["high"] if isinstance(c, dict) else c.high for c in ltf_candles], dtype=np.float64)
+        lows = np.array([c["low"] if isinstance(c, dict) else c.low for c in ltf_candles], dtype=np.float64)
+        closes = np.array([c["close"] if isinstance(c, dict) else c.close for c in ltf_candles], dtype=np.float64)
+        volumes = np.array([c.get("volume", 0) if isinstance(c, dict) else getattr(c, "volume", 0) for c in ltf_candles], dtype=np.float64)
 
         # HTF confluence
         htf_candles = candle_aggregator.get_candles(sym, timeframe=htf_timeframe, limit=60)
+        if len(htf_candles) < 20:
+            try:
+                from app.market_data.historical.paytm_historical_adapter import paytm_historical_adapter
+                htf_candles = paytm_historical_adapter.fetch_candles(sym, exchange="NSE", timeframe=htf_timeframe, limit=60)
+            except Exception:
+                pass
+
         if len(htf_candles) >= 20:
-            h_closes = np.array([c.close for c in htf_candles], dtype=np.float64)
-            h_highs = np.array([c.high for c in htf_candles], dtype=np.float64)
-            h_lows = np.array([c.low for c in htf_candles], dtype=np.float64)
+            h_closes = np.array([c["close"] if isinstance(c, dict) else c.close for c in htf_candles], dtype=np.float64)
+            h_highs = np.array([c["high"] if isinstance(c, dict) else c.high for c in htf_candles], dtype=np.float64)
+            h_lows = np.array([c["low"] if isinstance(c, dict) else c.low for c in htf_candles], dtype=np.float64)
             htf_report = MultiTimeframeConfluence.evaluate_htf_regime(sym, h_closes, h_highs, h_lows, htf_timeframe)
         else:
             htf_report = None

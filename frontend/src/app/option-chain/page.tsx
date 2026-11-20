@@ -1299,34 +1299,42 @@ export default function OptionChainPage() {
 
       <div style={{ maxWidth: '1800px', margin: '0 auto', padding: '16px 20px' }}>
 
-        {/* Top Breadcrumb & Navigation Drawer Trigger */}
+        {/* Top Header & Navigation Drawer Trigger */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Link
+              href="/"
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
+              }}
+            >
+              &larr; Back
+            </Link>
+
             <button
               onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
               style={{
-                background: 'rgba(99, 102, 241, 0.14)',
-                border: '1px solid rgba(99, 102, 241, 0.35)',
-                borderRadius: '8px',
-                padding: '6px 14px',
-                color: '#a5b4fc',
-                cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                fontSize: '0.78rem',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
                 fontWeight: 700,
-                transition: 'all 0.2s ease',
+                cursor: 'pointer',
               }}
-              title="Open Navigation Menu"
             >
-              <Menu size={15} />
-              <span>Menu</span>
+              <Menu size={16} />
+              <span>Drawer</span>
             </button>
-            <ChevronRight size={14} />
-            <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link>
-            <ChevronRight size={14} />
-            <span style={{ color: '#38bdf8', fontWeight: 600 }}>Option Chain & Strategy Builder</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
@@ -1354,29 +1362,6 @@ export default function OptionChainPage() {
         }}>
           {/* Left: Searchable Symbol Picker */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            {/* Drawer Menu Button */}
-            <button
-              onClick={() => setNavDrawerOpen(true)}
-              style={{
-                background: 'rgba(99, 102, 241, 0.12)',
-                border: '1px solid rgba(99, 102, 241, 0.35)',
-                borderRadius: '8px',
-                padding: '7px 12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#a5b4fc',
-                fontSize: '0.82rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              title="Open Navigation Menu"
-            >
-              <Menu size={16} />
-              <span style={{ display: 'inline-block' }}>Menu</span>
-            </button>
-
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setSymbolDropdownOpen(!symbolDropdownOpen)}

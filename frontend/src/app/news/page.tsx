@@ -212,14 +212,11 @@ export default function NewsPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '8px 14px',
                 fontSize: '0.8rem',
-                textDecoration: 'none',
+                padding: '8px 12px',
               }}
-              title="Return to Financial Hub"
             >
-              <ArrowLeft size={16} />
-              <span>Back to Hub</span>
+              &larr; Back
             </Link>
 
             <button
@@ -229,15 +226,14 @@ export default function NewsPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 14px',
                 fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
                 fontWeight: 700,
-                border: '1px solid rgba(245, 158, 11, 0.4)',
-                background: 'rgba(245, 158, 11, 0.1)',
-                color: '#fbbf24',
                 cursor: 'pointer',
               }}
-              title="Open Navigation Hub Drawer"
             >
               <Menu size={16} />
               <span>Drawer</span>

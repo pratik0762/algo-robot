@@ -543,35 +543,43 @@ export default function MarketHeatmapPage() {
         padding: isFullScreen ? '12px' : '16px 20px'
       }}>
 
-        {/* Top Breadcrumb & Drawer Trigger */}
+        {/* Top Header & Drawer Trigger */}
         {!isFullScreen && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Link
+                href="/"
+                className="btn btn-secondary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '0.8rem',
+                  padding: '8px 12px',
+                }}
+              >
+                &larr; Back
+              </Link>
+
               <button
                 onClick={() => setNavDrawerOpen(true)}
+                className="btn btn-secondary"
                 style={{
-                  background: 'rgba(6, 182, 212, 0.14)',
-                  border: '1px solid rgba(6, 182, 212, 0.35)',
-                  borderRadius: '8px',
-                  padding: '6px 14px',
-                  color: '#22d3ee',
-                  cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  fontSize: '0.78rem',
+                  fontSize: '0.82rem',
+                  padding: '8px 14px',
+                  border: '1px solid rgba(16, 185, 129, 0.4)',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  color: '#34d399',
                   fontWeight: 700,
-                  transition: 'all 0.2s ease',
+                  cursor: 'pointer',
                 }}
-                title="Open Navigation Menu"
               >
-                <Menu size={15} />
-                <span>Menu</span>
+                <Menu size={16} />
+                <span>Drawer</span>
               </button>
-              <ChevronRight size={14} />
-              <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link>
-              <ChevronRight size={14} />
-              <span style={{ color: '#06b6d4', fontWeight: 600 }}>Market Heatmap & Scanner</span>
             </div>
 
             {/* Session Indicator Badge */}

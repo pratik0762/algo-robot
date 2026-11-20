@@ -18,6 +18,7 @@ from sqlalchemy import (
     String,
     Text,
     Enum,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -37,6 +38,7 @@ class BrokerName(str, enum.Enum):
     UPSTOX = "UPSTOX"
     DHAN = "DHAN"
     SHOONYA = "SHOONYA"
+    PAYTM_MONEY = "PAYTM_MONEY"
     PAPER = "PAPER"
 
 
@@ -751,4 +753,188 @@ class DataSubscriptionStatus(Base):
     subscribers_count = Column(Integer, default=0, nullable=False)
 
     instrument = relationship("Instrument", back_populates="subscription_status")
+
+
+# =====================================================================
+# HISTORICAL MARKET DATA INFRASTRUCTURE MODELS (STEP 5)
+# =====================================================================
+
+class QualityStatus(str, enum.Enum):
+    VALID = "VALID"
+    WARNING = "WARNING"
+    INVALID = "INVALID"
+    DATA_UNAVAILABLE = "DATA_UNAVAILABLE"
+    SUBSCRIPTION_REQUIRED = "SUBSCRIPTION_REQUIRED"
+    INCOMPLETE_DATA = "INCOMPLETE_DATA"
+
+
+class ExchangeMaster(Base):
+    """Normalized national exchange registry (NSE, BSE)."""
+    __tablename__ = "exchanges"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    code = Column(String(20), unique=True, nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    country = Column(String(50), default="India", nullable=False)
+    timezone = Column(String(50), default="Asia/Kolkata", nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class InstrumentSymbolHistory(Base):
+    """Preserves historical symbol migrations, company name changes, and de-listings."""
+    __tablename__ = "instrument_symbol_history"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    instrument_id = Column(Integer, ForeignKey("instruments.id", ondelete="CASCADE"), nullable=False, index=True)
+    old_symbol = Column(String(50), nullable=False, index=True)
+    new_symbol = Column(String(50), nullable=False, index=True)
+    effective_date = Column(DateTime, nullable=False, index=True)
+    reason = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class InstrumentExpiry(Base):
+    """Contract-specific expiries, strikes, and option types for NSE/BSE derivatives."""
+    __tablename__ = "instrument_expiries"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    instrument_id = Column(Integer, ForeignKey("instruments.id", ondelete="CASCADE"), nullable=True, index=True)
+    exchange = Column(String(20), default="NSE", nullable=False, index=True)
+    underlying_symbol = Column(String(50), nullable=False, index=True)
+    contract_identifier = Column(String(100), unique=True, nullable=False, index=True)
+    expiry_date = Column(DateTime, nullable=False, index=True)
+    strike_price = Column(Float, nullable=True, index=True)
+    option_type = Column(String(10), nullable=True, index=True)  # 'CE', 'PE', or 'XX' for Futures
+    lot_size = Column(Integer, default=1, nullable=False)
+    tick_size = Column(Float, default=0.05, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class HistoricalCandle(Base):
+    """Normalized multi-timeframe historical candlestick repository (1D, 1h, 30m, 15m, 5m, 1m)."""
+    __tablename__ = "historical_candles"
+    __table_args__ = (
+        UniqueConstraint("exchange", "symbol", "timeframe", "timestamp", "is_adjusted", name="uq_hist_candle_bar"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    instrument_id = Column(Integer, nullable=True, index=True)
+    exchange = Column(String(20), default="NSE", nullable=False, index=True)
+    symbol = Column(String(50), nullable=False, index=True)
+    timeframe = Column(String(10), nullable=False, index=True)  # '1d', '1h', '30m', '15m', '5m', '1m'
+    timestamp = Column(DateTime, nullable=False, index=True)  # Stored in UTC
+    open = Column(Float, nullable=False)
+    high = Column(Float, nullable=False)
+    low = Column(Float, nullable=False)
+    close = Column(Float, nullable=False)
+    volume = Column(Float, default=0.0, nullable=False)
+    turnover = Column(Float, default=0.0, nullable=False)
+    vwap = Column(Float, nullable=True)
+    trades = Column(Integer, default=0, nullable=False)
+    is_adjusted = Column(Boolean, default=False, nullable=False)
+    data_status = Column(Enum(QualityStatus), default=QualityStatus.VALID, nullable=False, index=True)
+    source = Column(String(50), default="OFFICIAL_BHAVCOPY", nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class HistoricalOpenInterest(Base):
+    """Contract-specific historical Open Interest, Change in OI, and settlement prices for F&O."""
+    __tablename__ = "historical_open_interest"
+    __table_args__ = (
+        UniqueConstraint("exchange", "contract_identifier", "timestamp", name="uq_hist_oi_bar"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    symbol = Column(String(50), nullable=False, index=True)
+    exchange = Column(String(20), default="NSE", nullable=False, index=True)
+    contract_identifier = Column(String(100), nullable=False, index=True)
+    expiry_date = Column(DateTime, nullable=False, index=True)
+    strike_price = Column(Float, nullable=True, index=True)
+    option_type = Column(String(10), nullable=True, index=True)  # 'CE', 'PE', 'XX'
+    timestamp = Column(DateTime, nullable=False, index=True)  # Stored in UTC
+    open_interest = Column(Float, default=0.0, nullable=False)
+    change_in_oi = Column(Float, default=0.0, nullable=False)
+    settlement_price = Column(Float, default=0.0, nullable=False)
+    volume = Column(Float, default=0.0, nullable=False)
+    turnover_lakhs = Column(Float, default=0.0, nullable=False)
+    contracts = Column(Integer, default=0, nullable=False)
+    source = Column(String(50), default="OFFICIAL_NSE_FO", nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class DataSource(Base):
+    """Registered official and licensed data sources (NSE, BSE, broker historical feeds)."""
+    __tablename__ = "data_sources"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    source_code = Column(String(50), unique=True, nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    exchange = Column(String(20), nullable=False, index=True)
+    segment = Column(String(50), nullable=False)  # 'EQUITY', 'DERIVATIVES', 'INDICES'
+    base_url = Column(String(255), nullable=True)
+    licensing_tier = Column(String(50), default="PUBLIC_ARCHIVE", nullable=False)
+    is_subscription_required = Column(Boolean, default=False, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    last_sync_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+class DataImportJob(Base):
+    """Tracks resumable historical backfill and daily synchronization jobs with provenance."""
+    __tablename__ = "data_import_jobs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    source_code = Column(String(50), nullable=False, index=True)
+    job_type = Column(String(50), nullable=False, index=True)  # 'HISTORICAL_BACKFILL', 'DAILY_SYNC', 'GAP_RECOVERY'
+    exchange = Column(String(20), nullable=False, index=True)
+    segment = Column(String(50), nullable=False, index=True)
+    date_range_start = Column(DateTime, nullable=True)
+    date_range_end = Column(DateTime, nullable=True)
+    source_file_ref = Column(String(255), nullable=True)
+    records_imported = Column(Integer, default=0, nullable=False)
+    records_rejected = Column(Integer, default=0, nullable=False)
+    status = Column(String(50), default="RUNNING", nullable=False, index=True)  # 'RUNNING', 'COMPLETED', 'FAILED', 'PAUSED'
+    error_details = Column(Text, nullable=True)
+    started_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    completed_at = Column(DateTime, nullable=True)
+
+
+class DataQualityIssue(Base):
+    """Detailed audit log of data quality anomalies, invalid OHLC, negative prices/OI, and gaps."""
+    __tablename__ = "data_quality_issues"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    exchange = Column(String(20), nullable=False, index=True)
+    symbol = Column(String(50), nullable=False, index=True)
+    contract_identifier = Column(String(100), nullable=True, index=True)
+    timeframe = Column(String(10), nullable=True)
+    timestamp = Column(DateTime, nullable=True)
+    issue_type = Column(String(50), nullable=False, index=True)  # 'INVALID_OHLC', 'NEGATIVE_PRICE', 'NEGATIVE_OI', 'MISSING_CANDLE', 'SESSION_LEAK'
+    severity = Column(String(20), default="WARNING", nullable=False, index=True)  # 'WARNING', 'ERROR', 'CRITICAL'
+    description = Column(Text, nullable=False)
+    status = Column(String(20), default="OPEN", nullable=False, index=True)  # 'OPEN', 'RESOLVED', 'IGNORED'
+    detected_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, index=True)
+    resolved_at = Column(DateTime, nullable=True)
+
+
+class DataCoverage(Base):
+    """Coverage summary per exchange, segment, instrument and timeframe."""
+    __tablename__ = "data_coverage"
+    __table_args__ = (
+        UniqueConstraint("exchange", "segment", "symbol", "timeframe", name="uq_coverage_record"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    exchange = Column(String(20), nullable=False, index=True)
+    segment = Column(String(50), nullable=False, index=True)
+    symbol = Column(String(50), nullable=False, index=True)
+    timeframe = Column(String(10), nullable=False, index=True)
+    earliest_date = Column(DateTime, nullable=True)
+    latest_date = Column(DateTime, nullable=True)
+    total_candles = Column(Integer, default=0, nullable=False)
+    completeness_pct = Column(Float, default=100.0, nullable=False)
+    data_status = Column(Enum(QualityStatus), default=QualityStatus.VALID, nullable=False, index=True)
+    last_verified_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+
 

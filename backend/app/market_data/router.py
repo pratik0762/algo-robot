@@ -19,6 +19,7 @@ from app.market_data.base_adapter import (
 from app.market_data.kite_adapter import ZerodhaKiteTickerAdapter
 from app.market_data.angel_adapter import AngelOneSmartStreamAdapter
 from app.market_data.upstox_adapter import UpstoxWebSocketAdapter
+from app.market_data.paytm_adapter import paytm_adapter
 
 logger = logging.getLogger("algo_robot.market_data.router")
 
@@ -28,6 +29,7 @@ class MarketDataRouter:
 
     def __init__(self):
         self.adapters: Dict[str, BaseMarketDataFeedAdapter] = {
+            "PAYTM_MONEY": paytm_adapter,
             "ZERODHA_KITE": ZerodhaKiteTickerAdapter(),
             "ANGEL_ONE": AngelOneSmartStreamAdapter(),
             "UPSTOX": UpstoxWebSocketAdapter(),

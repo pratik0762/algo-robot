@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import {
   TrendingUp,
   TrendingDown,
@@ -63,9 +65,17 @@ const SYMBOL_LIST = [
   { symbol: 'MARUTI', name: 'Maruti Suzuki India Ltd.', sector: 'Automobile' },
 ];
 
-export default function TerminalPage() {
+function TerminalInner() {
+  const searchParams = useSearchParams();
+  const querySymbol = searchParams?.get('symbol');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeSymbol, setActiveSymbol] = useState('RELIANCE');
+  const [activeSymbol, setActiveSymbol] = useState(querySymbol ? querySymbol.toUpperCase() : 'RELIANCE');
+
+  useEffect(() => {
+    if (querySymbol && querySymbol.toUpperCase() !== activeSymbol) {
+      setActiveSymbol(querySymbol.toUpperCase());
+    }
+  }, [querySymbol]);
   const [activeTimeframe, setActiveTimeframe] = useState('15m');
   const [symbolSearch, setSymbolSearch] = useState('');
 
@@ -193,20 +203,38 @@ export default function TerminalPage() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <button
-            onClick={() => setDrawerOpen(true)}
+          <Link
+            href="/"
+            className="btn btn-secondary"
             style={{
-              padding: '8px',
-              borderRadius: '8px',
-              background: 'rgba(30, 41, 59, 0.6)',
-              border: '1px solid rgba(51, 65, 85, 0.6)',
-              color: '#f8fafc',
-              cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
+              gap: '6px',
+              fontSize: '0.8rem',
+              padding: '8px 12px',
             }}
           >
-            <Menu size={18} />
+            &larr; Back
+          </Link>
+
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="btn btn-secondary"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.82rem',
+              padding: '8px 14px',
+              border: '1px solid rgba(16, 185, 129, 0.4)',
+              background: 'rgba(16, 185, 129, 0.1)',
+              color: '#34d399',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            <Menu size={16} />
+            <span>Drawer</span>
           </button>
 
           <div>
@@ -704,5 +732,19 @@ export default function TerminalPage() {
       {/* 6. Navigation Drawer */}
       <NavigationDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
+  );
+}
+
+export default function TerminalPage() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ minHeight: '100vh', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+          Loading Institutional TradingView Canvas...
+        </div>
+      }
+    >
+      <TerminalInner />
+    </Suspense>
   );
 }

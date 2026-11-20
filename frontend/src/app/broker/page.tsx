@@ -34,25 +34,6 @@ function BrokerContent() {
       <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
         {/* Breadcrumb Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          <button
-            onClick={() => setNavDrawerOpen(true)}
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '6px',
-              padding: '4px 8px',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '0.74rem'
-            }}
-          >
-            <Menu size={13} />
-            <span>Navigation Hub</span>
-          </button>
-          <ChevronRight size={14} />
           <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
             Algo Robot
           </Link>
@@ -72,6 +53,40 @@ function BrokerContent() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <Link
+              href="/"
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                padding: '8px 12px',
+              }}
+            >
+              &larr; Back
+            </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              <Menu size={16} />
+              <span>Drawer</span>
+            </button>
+
             <div
               style={{
                 width: '46px',

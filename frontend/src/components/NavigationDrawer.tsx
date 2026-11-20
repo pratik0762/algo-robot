@@ -22,7 +22,8 @@ import {
   Grid,
   SlidersHorizontal,
   Target,
-  Database
+  Database,
+  HardDrive
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -367,6 +368,11 @@ export default function NavigationDrawer({
   const handleSelectDataCenter = () => {
     onClose();
     router.push('/data-center');
+  };
+
+  const handleSelectHistoricalData = () => {
+    onClose();
+    router.push('/historical-data');
   };
 
   return (
@@ -1455,6 +1461,77 @@ export default function NavigationDrawer({
             </div>
 
             <ChevronRight size={16} color="#c084fc" style={{ flexShrink: 0 }} />
+          </div>
+
+          {/* HISTORICAL DATA CENTER */}
+          <div
+            style={{
+              display: 'flex',
+              padding: '10px 14px',
+              background: pathname === '/historical-data' ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(14, 165, 233, 0.15) 100%)' : 'rgba(15, 23, 42, 0.6)',
+              border: pathname === '/historical-data' ? '1px solid #06b6d4' : '1px solid rgba(255, 255, 255, 0.08)',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+              boxSizing: 'border-box',
+              width: '100%',
+              minHeight: '44px',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              transition: 'all 0.15s ease',
+              boxShadow: pathname === '/historical-data' ? '0 4px 20px -2px rgba(6, 182, 212, 0.25)' : 'none',
+              marginTop: '6px',
+            }}
+            onClick={handleSelectHistoricalData}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelectHistoricalData();
+              }
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1, overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(6, 182, 212, 0.35)',
+                }}
+              >
+                <HardDrive size={15} />
+              </div>
+
+              <span
+                style={{
+                  fontSize: '0.80rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                HISTORICAL DATA CENTER
+              </span>
+
+              {pathname === '/historical-data' && (
+                <span className="badge badge-primary" style={{ padding: '2px 7px', fontSize: '0.60rem', fontWeight: 800, background: '#06b6d4', color: '#ffffff' }}>
+                  ACTIVE
+                </span>
+              )}
+            </div>
+
+            <ChevronRight size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
           </div>
         </div>
 

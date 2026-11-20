@@ -442,38 +442,23 @@ export default function HomePage() {
             {/* Navigation Drawer Trigger Button */}
             <button
               onClick={() => setNavDrawerOpen(true)}
-              className="btn"
+              className="btn btn-secondary"
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '9px 16px',
-                background: 'rgba(99, 102, 241, 0.16)',
-                border: '1px solid rgba(99, 102, 241, 0.4)',
-                borderRadius: '10px',
-                color: '#a5b4fc',
+                fontSize: '0.82rem',
+                padding: '8px 14px',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#34d399',
                 fontWeight: 700,
-                fontSize: '0.85rem',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 0 15px rgba(99, 102, 241, 0.15)',
               }}
-              title="Open Navigation Drawer to navigate all websites & financial hubs"
+              title="Open Navigation Drawer"
             >
-              <Menu size={18} />
-              <span>EXPLORE HUBS</span>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  padding: '2px 6px',
-                  borderRadius: '6px',
-                  background: currentHubMeta.color,
-                  color: '#fff',
-                  fontWeight: 700,
-                }}
-              >
-                {currentHubMeta.exchange}
-              </span>
+              <Menu size={16} />
+              <span>Drawer</span>
             </button>
 
             {/* Direct Link to Dedicated All Indices Page */}

@@ -9,9 +9,38 @@ import logging
 import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import func, or_, desc, asc
+
+_UNIVERSE_METRICS_CACHE: Dict[str, Any] = {"timestamp": 0.0, "metrics": {}}
+
+def _get_universe_metrics(db: Session) -> Dict[str, int]:
+    now = time.time()
+    if now - _UNIVERSE_METRICS_CACHE.get("timestamp", 0.0) < 60.0 and _UNIVERSE_METRICS_CACHE.get("metrics"):
+        return _UNIVERSE_METRICS_CACHE["metrics"]
+    
+    total_listed = db.query(Company).count()
+    nse_count = db.query(Instrument).filter(Instrument.exchange == ExchangeCode.NSE).count()
+    bse_count = db.query(Instrument).filter(Instrument.exchange == ExchangeCode.BSE).count()
+    sme_count = db.query(Instrument).filter(Instrument.board_type == BoardType.SME).count()
+    mainboard_count = db.query(Instrument).filter(Instrument.board_type == BoardType.MAINBOARD).count()
+    active_count = db.query(Company).filter(Company.listing_status == InstrumentStatus.ACTIVE).count()
+    suspended_count = db.query(Company).filter(Company.listing_status == InstrumentStatus.SUSPENDED).count()
+
+    metrics = {
+        "total_listed_companies": total_listed,
+        "nse_instruments": nse_count,
+        "bse_instruments": bse_count,
+        "mainboard_instruments": mainboard_count,
+        "sme_instruments": sme_count,
+        "active_companies": active_count,
+        "suspended_companies": suspended_count,
+    }
+    _UNIVERSE_METRICS_CACHE["timestamp"] = now
+    _UNIVERSE_METRICS_CACHE["metrics"] = metrics
+    return metrics
 
 from app.db.models import (
     Company,
@@ -43,6 +72,10 @@ from app.market_data.subscription_manager import subscription_manager
 from app.market_data.historical_data_service import historical_data_service
 from app.market_data.live_quote_service import live_quote_service
 from app.market_data.adapters.provider_registry import provider_registry_manager
+from app.market_data.paytm_auth import paytm_auth_service
+from app.market_data.paytm_security_master import paytm_security_master
+from app.market_data.historical.paytm_historical_adapter import paytm_historical_adapter
+from app.market_data.paytm_adapter import paytm_adapter
 
 logger = logging.getLogger("algo_robot.market_data.api")
 
@@ -143,7 +176,7 @@ def get_all_companies_universe(
     """Paginated, filtered list of all listed equity companies across NSE and BSE."""
     base_query = db.query(Company)
 
-    if search:
+    if search and isinstance(search, str) and search.strip():
         s = f"%{search.strip().upper()}%"
         base_query = base_query.filter(
             or_(
@@ -156,52 +189,53 @@ def get_all_companies_universe(
             )
         )
 
-    if sector and sector.upper() != "ALL":
+    if sector and isinstance(sector, str) and sector.upper() != "ALL":
         base_query = base_query.filter(Company.sector.ilike(f"%{sector.strip()}%"))
 
-    if market_cap and market_cap.upper() != "ALL":
+    if market_cap and isinstance(market_cap, str) and market_cap.upper() != "ALL":
         try:
             mcap_enum = MarketCapCategory(market_cap.upper())
             base_query = base_query.filter(Company.market_cap_category == mcap_enum)
         except ValueError:
             pass
 
-    if status and status.upper() != "ALL":
+    if status and isinstance(status, str) and status.upper() != "ALL":
         try:
             status_enum = InstrumentStatus(status.upper())
             base_query = base_query.filter(Company.listing_status == status_enum)
         except ValueError:
             pass
 
-    if exchange and exchange.upper() in ("NSE", "BSE"):
+    if exchange and isinstance(exchange, str) and exchange.upper() in ("NSE", "BSE"):
         ex_enum = ExchangeCode(exchange.upper())
         base_query = base_query.filter(Company.instruments.any(Instrument.exchange == ex_enum))
-    elif exchange and exchange.upper() == "BOTH":
+    elif exchange and isinstance(exchange, str) and exchange.upper() == "BOTH":
         # Companies listed on both NSE and BSE
         base_query = base_query.filter(
             Company.instruments.any(Instrument.exchange == ExchangeCode.NSE),
             Company.instruments.any(Instrument.exchange == ExchangeCode.BSE),
         )
 
-    if board_type and board_type.upper() in ("MAINBOARD", "SME"):
+    if board_type and isinstance(board_type, str) and board_type.upper() in ("MAINBOARD", "SME"):
         b_enum = BoardType(board_type.upper())
         base_query = base_query.filter(Company.instruments.any(Instrument.board_type == b_enum))
 
-    # Overall Metrics
-    total_listed = db.query(Company).count()
-    nse_count = db.query(Instrument).filter(Instrument.exchange == ExchangeCode.NSE).count()
-    bse_count = db.query(Instrument).filter(Instrument.exchange == ExchangeCode.BSE).count()
-    sme_count = db.query(Instrument).filter(Instrument.board_type == BoardType.SME).count()
-    mainboard_count = db.query(Instrument).filter(Instrument.board_type == BoardType.MAINBOARD).count()
-    active_count = db.query(Company).filter(Company.listing_status == InstrumentStatus.ACTIVE).count()
-    suspended_count = db.query(Company).filter(Company.listing_status == InstrumentStatus.SUSPENDED).count()
+    # Overall Metrics (Cached)
+    metrics = _get_universe_metrics(db)
 
     total_filtered = base_query.count()
 
     # Sorting
-    sort_column = getattr(Company, sort_by, Company.market_cap_cr)
-    order_func = desc if sort_dir.lower() == "desc" else asc
-    paginated_query = base_query.order_by(order_func(sort_column)).offset((page - 1) * limit).limit(limit)
+    sort_column = getattr(Company, sort_by, Company.market_cap_cr) if isinstance(sort_by, str) else Company.market_cap_cr
+    order_func = desc if (isinstance(sort_dir, str) and sort_dir.lower() == "desc") else asc
+    paginated_query = (
+        base_query.options(
+            selectinload(Company.instruments).selectinload(Instrument.quote)
+        )
+        .order_by(order_func(sort_column))
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
     companies = paginated_query.all()
 
     items = []
@@ -240,15 +274,7 @@ def get_all_companies_universe(
         "page": page,
         "limit": limit,
         "total_pages": (total_filtered + limit - 1) // limit if limit > 0 else 1,
-        "metrics": {
-            "total_listed_companies": total_listed,
-            "nse_instruments": nse_count,
-            "bse_instruments": bse_count,
-            "mainboard_instruments": mainboard_count,
-            "sme_instruments": sme_count,
-            "active_companies": active_count,
-            "suspended_companies": suspended_count,
-        },
+        "metrics": metrics,
         "items": items,
     }
 
@@ -705,3 +731,281 @@ def get_corporate_actions(identifier: str, db: Session = Depends(get_db)):
         "legal_name": comp["legal_name"],
         "corporate_actions": actions,
     }
+
+
+# =========================================================================
+# 11. Paytm Money Authentication & Session Management Endpoints
+# =========================================================================
+
+class PaytmSessionRequest(BaseModel):
+    request_token: Optional[str] = None
+    api_key: Optional[str] = None
+    api_secret: Optional[str] = None
+
+
+@router.get("/api/broker/paytm/status")
+def get_paytm_status():
+    """Returns Paytm Money authentication status, masked keys, and connectivity."""
+    return paytm_auth_service.get_status()
+
+
+@router.get("/api/broker/paytm/login-url")
+def get_paytm_login_url(state: Optional[str] = Query(None)):
+    """Returns official Paytm Money merchant login URL for trader browser sign-in."""
+    try:
+        url = paytm_auth_service.get_login_url(state=state)
+        return {"status": "success", "login_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/broker/paytm/session")
+def generate_paytm_session(payload: PaytmSessionRequest):
+    """
+    Exchanges request_token for JWT access tokens.
+    Credentials can be provided in request body or loaded from .env.
+    """
+    if payload.api_key or payload.api_secret:
+        paytm_auth_service.configure_credentials(
+            api_key=payload.api_key,
+            api_secret=payload.api_secret,
+            request_token=payload.request_token,
+        )
+    try:
+        res = paytm_auth_service.generate_session(request_token=payload.request_token)
+        return res
+    except Exception as e:
+        logger.error("Paytm session exchange failed: %s", str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/broker/paytm/logout")
+def logout_paytm(revoke_remote: bool = Query(False)):
+    """Clears local tokens and invalidates Paytm Money session."""
+    return paytm_auth_service.logout(revoke_remote=revoke_remote)
+
+
+# =========================================================================
+# 12. Paytm Money Security Master Ingestion & Canonical Resolution
+# =========================================================================
+
+@router.get("/api/broker/paytm/security-master/stats")
+def get_paytm_security_master_stats():
+    """Returns Paytm Money security master statistics, parsed counts, and coverage metrics."""
+    return paytm_security_master.get_stats()
+
+
+@router.get("/api/broker/paytm/security-master/resolve")
+def resolve_paytm_security(
+    exchange: str = Query(..., description="Exchange code, e.g. NSE or BSE"),
+    symbol: str = Query(..., description="Trading symbol, scrip code, or index name"),
+):
+    """Resolves an exchange + symbol or index name to Paytm Money security_id."""
+    sec_id = paytm_security_master.resolve_paytm_id(exchange=exchange, symbol=symbol)
+    if not sec_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Security not found in Paytm Money master for {exchange}:{symbol}",
+        )
+    info = paytm_security_master.get_security_info(sec_id)
+    return {
+        "status": "success",
+        "exchange": exchange.upper(),
+        "symbol": symbol.upper(),
+        "security_id": sec_id,
+        "details": info,
+    }
+
+
+@router.get("/api/broker/paytm/security-master/lookup/{security_id}")
+def lookup_paytm_security(security_id: str):
+    """Reverse resolves a Paytm Money security_id back to canonical instrument and company."""
+    canonical = paytm_security_master.resolve_canonical(security_id=security_id)
+    if not canonical:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Paytm security_id '{security_id}' not found in Security Master.",
+        )
+    info = paytm_security_master.get_security_info(security_id)
+    return {
+        "status": "success",
+        "canonical": canonical,
+        "details": info,
+    }
+
+
+@router.post("/api/broker/paytm/security-master/sync")
+def sync_paytm_security_master(
+    force_download: bool = Query(False, description="Force re-download from Paytm portal"),
+    db: Session = Depends(get_db),
+):
+    """
+    Downloads / updates official Paytm security master and maps to all
+    canonical DB instruments and companies.
+    """
+    if force_download:
+        paytm_security_master.download_security_master(force=True)
+    paytm_security_master.load_security_master(force_reload=force_download)
+    stats = paytm_security_master.map_to_canonical_universe(db=db)
+    return stats
+
+
+# =========================================================================
+# 13. Paytm Money Historical Candlestick & Backfill Endpoints
+# =========================================================================
+
+@router.get("/api/broker/paytm/historical/candles")
+def get_paytm_historical_candles(
+    symbol: str = Query(..., description="Stock symbol, scrip code, or index name"),
+    exchange: str = Query("NSE", description="NSE or BSE"),
+    timeframe: str = Query("1d", description="1m, 3m, 5m, 15m, 30m, 1h, 1d"),
+    from_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
+    to_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
+    limit: int = Query(500, ge=1, le=5000),
+    db: Session = Depends(get_db),
+):
+    """
+    Fetches official historical candlestick bars via Paytm Money.
+    Validates mathematical invariants and persists to local repository.
+    """
+    try:
+        from_date_clean = from_date if isinstance(from_date, str) else None
+        to_date_clean = to_date if isinstance(to_date, str) else None
+        candles = paytm_historical_adapter.fetch_candles(
+            symbol=symbol,
+            exchange=exchange,
+            timeframe=timeframe,
+            from_date=from_date_clean,
+            to_date=to_date_clean,
+            limit=limit,
+            persist=True,
+            db=db,
+        )
+        return {
+            "status": "success",
+            "symbol": symbol.upper(),
+            "exchange": exchange.upper(),
+            "timeframe": timeframe.upper(),
+            "count": len(candles),
+            "candles": candles,
+        }
+    except Exception as e:
+        logger.error("Paytm historical candles error: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/broker/paytm/historical/backfill")
+def backfill_paytm_historical(
+    symbol: str = Query(..., description="Stock symbol or index name"),
+    exchange: str = Query("NSE", description="NSE or BSE"),
+    timeframe: str = Query("1d", description="Timeframe to backfill"),
+    days: int = Query(180, ge=1, le=1000),
+    db: Session = Depends(get_db),
+):
+    """Backfills historical candles into platform database for a target instrument."""
+    try:
+        res = paytm_historical_adapter.backfill_instrument(
+            symbol=symbol,
+            exchange=exchange,
+            timeframe=timeframe,
+            days=days,
+            db=db,
+        )
+        return res
+    except Exception as e:
+        logger.error("Paytm historical backfill error: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# =========================================================================
+# 14. Paytm Money Live WebSocket Streaming Telemetry & Subscription Endpoints
+# =========================================================================
+
+class PaytmStreamSubscribeRequest(BaseModel):
+    symbols: Optional[List[str]] = None
+    tokens: Optional[List[int]] = None
+    exchange: str = "NSE"
+    mode: str = "FULL"  # "FULL", "QUOTE", or "LTP"
+
+
+@router.get("/api/broker/paytm/stream/status")
+def get_paytm_stream_status():
+    """Returns Paytm Money WebSocket streaming status, connection state, and throughput."""
+    return paytm_adapter.get_status()
+
+
+@router.post("/api/broker/paytm/stream/connect")
+async def connect_paytm_stream():
+    """Connects to Paytm Money Live Broadcast WebSocket."""
+    connected = await paytm_adapter.connect()
+    return {"status": "success" if connected else "failed", "connected": connected}
+
+
+@router.post("/api/broker/paytm/stream/disconnect")
+async def disconnect_paytm_stream():
+    """Gracefully terminates Paytm Money WebSocket connection."""
+    await paytm_adapter.disconnect()
+    return {"status": "success", "connected": False}
+
+
+@router.post("/api/broker/paytm/stream/subscribe")
+async def subscribe_paytm_stream(payload: PaytmStreamSubscribeRequest):
+    """Subscribes to live market ticks for symbols or security tokens."""
+    tokens_to_sub = list(payload.tokens or [])
+    if payload.symbols:
+        for sym in payload.symbols:
+            sec_id = paytm_security_master.resolve_paytm_id(payload.exchange, sym)
+            if sec_id:
+                try:
+                    tokens_to_sub.append(int(sec_id))
+                except ValueError:
+                    pass
+
+    if not tokens_to_sub:
+        raise HTTPException(status_code=400, detail="No valid symbols or tokens provided.")
+
+    success = await paytm_adapter.subscribe(tokens_to_sub, symbols=payload.symbols, mode=payload.mode)
+    return {
+        "status": "success" if success else "queued",
+        "subscribed_count": len(tokens_to_sub),
+        "tokens": tokens_to_sub,
+        "mode": payload.mode,
+    }
+
+
+@router.post("/api/broker/paytm/stream/unsubscribe")
+async def unsubscribe_paytm_stream(tokens: List[int]):
+    """Unsubscribes from live ticks for specified tokens."""
+    success = await paytm_adapter.unsubscribe(tokens)
+    return {"status": "success" if success else "failed", "unsubscribed_count": len(tokens)}
+
+
+# =========================================================================
+# 7. Asynchronous Batch Database Persistence Endpoints
+# =========================================================================
+
+@router.get("/api/broker/paytm/persistence/metrics")
+def get_paytm_persistence_metrics():
+    """Returns real-time telemetry from the batch persistence and deduplication worker."""
+    from app.market_data.batch_persistence_worker import batch_persistence_worker
+    return {
+        "status": "success",
+        "metrics": batch_persistence_worker.get_metrics()
+    }
+
+
+@router.post("/api/broker/paytm/persistence/flush")
+def trigger_paytm_persistence_flush(db: Session = Depends(get_db)):
+    """Manually triggers an immediate synchronous flush of pending candles and quotes."""
+    from app.market_data.batch_persistence_worker import batch_persistence_worker
+    res = batch_persistence_worker.flush(db=db)
+    return {
+        "status": "success",
+        "result": res,
+        "metrics": batch_persistence_worker.get_metrics()
+    }
+
+
+
+
+

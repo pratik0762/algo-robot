@@ -43,11 +43,12 @@ yarn-error.log*
 
 # Environment & credentials
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 *.pem
+.paytm_tokens.json
+*.token
+*.tokens.json
 
 # IDE & OS
 .vscode/

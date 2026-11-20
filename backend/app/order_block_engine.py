@@ -578,8 +578,10 @@ class OrderBlockEngine:
         above_20_ema_count = 0
 
         # Scan each stock in UNIVERSE_MAP
+        from app.market_data.live_quote_service import live_quote_service
         for sym, meta in UNIVERSE_MAP.items():
-            live = tick_engine.stocks.get(sym)
+            paytm_q = live_quote_service.get_quote(sym)
+            live = paytm_q or tick_engine.stocks.get(sym)
             base_ref = BASE_EQUITY_PRICES.get(sym, 1000.0)
 
             ltp = float(live.get("ltp") if live else base_ref)

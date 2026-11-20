@@ -6,7 +6,9 @@ and dynamic market-cap categorization.
 """
 
 from __future__ import annotations
+import json
 import logging
+import os
 import re
 import time
 import uuid
@@ -101,22 +103,32 @@ class UniverseManager:
         }
 
         try:
-            # Seed from existing high-fidelity registries first to retain rich sectors and fundamentals
-            self._seed_curated_companies(db, stats)
+            cache_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "all_india_company_universe.json")
+            if not nse_records and not bse_records and os.path.exists(cache_path):
+                from app.market_data.seed_all_india_universe import populate_database_universe
+                logger.info("Syncing universe from persistent all-India master cache %s...", cache_path)
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    cached_companies = json.load(f)
+                populate_database_universe(cached_companies)
+                stats["companies_created"] = len(cached_companies)
+                stats["processed"] = len(cached_companies)
+            else:
+                # Seed from existing high-fidelity registries first to retain rich sectors and fundamentals
+                self._seed_curated_companies(db, stats)
 
-            all_raw = []
-            if nse_records:
-                all_raw.extend(nse_records)
-            if bse_records:
-                all_raw.extend(bse_records)
+                all_raw = []
+                if nse_records:
+                    all_raw.extend(nse_records)
+                if bse_records:
+                    all_raw.extend(bse_records)
 
-            for rec in all_raw:
-                stats["processed"] += 1
-                try:
-                    self._ingest_single_record(db, rec, stats)
-                except Exception as e:
-                    stats["errors"] += 1
-                    logger.warning("Error ingesting record %s: %s", rec.get("exchange_symbol"), e)
+                for rec in all_raw:
+                    stats["processed"] += 1
+                    try:
+                        self._ingest_single_record(db, rec, stats)
+                    except Exception as e:
+                        stats["errors"] += 1
+                        logger.warning("Error ingesting record %s: %s", rec.get("exchange_symbol"), e)
 
             # Re-classify market caps dynamically
             self.refresh_market_cap_categories(db)
@@ -160,7 +172,7 @@ class UniverseManager:
         for reg in NIFTY_50_REGISTRY:
             sym = reg["symbol"].upper()
             isin = reg["isin"].upper()
-            comp = db.query(Company).filter(Company.primary_isin == isin).first()
+            comp = db.query(Company).filter((Company.primary_isin == isin) | (Company.company_id == f"COMP_{sym}")).first()
             if not comp:
                 comp = Company(
                     company_id=f"COMP_{sym}",
@@ -361,15 +373,17 @@ class UniverseManager:
         for idx, comp in enumerate(companies):
             if comp.market_cap_cr > 0:
                 if idx < 100:
-                    comp.market_cap_category = MarketCapCategory.LARGE_CAP
+                    target_cat = MarketCapCategory.LARGE_CAP
                 elif idx < 250:
-                    comp.market_cap_category = MarketCapCategory.MID_CAP
+                    target_cat = MarketCapCategory.MID_CAP
                 elif idx < 500:
-                    comp.market_cap_category = MarketCapCategory.SMALL_CAP
+                    target_cat = MarketCapCategory.SMALL_CAP
                 else:
-                    comp.market_cap_category = MarketCapCategory.MICRO_CAP
+                    target_cat = MarketCapCategory.MICRO_CAP
             else:
-                comp.market_cap_category = MarketCapCategory.SMALL_CAP
+                target_cat = MarketCapCategory.SMALL_CAP
+            if comp.market_cap_category != target_cat:
+                comp.market_cap_category = target_cat
 
 
 universe_manager = UniverseManager()

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import {
   ArrowLeft,
@@ -12,15 +13,22 @@ import {
   TrendingUp,
   BarChart3,
   Scale,
-  RefreshCw
+  RefreshCw,
+  Menu
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
+
+const NavigationDrawer = dynamic(() => import('@/components/NavigationDrawer'), {
+  ssr: false,
+  loading: () => null
+});
 
 function CompanyDetailInner() {
   const params = useParams();
   const symbol = params?.symbol as string;
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [navDrawerOpen, setNavDrawerOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'quarterly' | 'annual' | 'balance' | 'filings'>('quarterly');
 
   useEffect(() => {
@@ -63,10 +71,41 @@ function CompanyDetailInner() {
 
   return (
     <main style={{ minHeight: '100vh', padding: '32px 24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <Link href="/" className="btn btn-secondary" style={{ marginBottom: '24px', display: 'inline-flex' }}>
-        <ArrowLeft size={16} />
-        Back to All 50 Companies
-      </Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+        <Link
+          href="/"
+          className="btn btn-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '0.8rem',
+            padding: '8px 12px',
+          }}
+        >
+          &larr; Back
+        </Link>
+
+        <button
+          onClick={() => setNavDrawerOpen(true)}
+          className="btn btn-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '0.82rem',
+            padding: '8px 14px',
+            border: '1px solid rgba(16, 185, 129, 0.4)',
+            background: 'rgba(16, 185, 129, 0.1)',
+            color: '#34d399',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          <Menu size={16} />
+          <span>Drawer</span>
+        </button>
+      </div>
 
       <div className="glass-panel" style={{ padding: '32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
@@ -486,6 +525,8 @@ function CompanyDetailInner() {
           </div>
         )}
       </div>
+      {/* Navigation Hub Drawer */}
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import {
   Building2,
   Search,
@@ -22,10 +23,16 @@ import {
   ShieldCheck,
   BarChart3,
   Sliders,
-  Boxes
+  Boxes,
+  Menu
 } from "lucide-react";
 import PaperOrderModal from "@/components/PaperOrderModal";
 import { getApiBase } from "@/config/api";
+
+const NavigationDrawer = dynamic(() => import("@/components/NavigationDrawer"), {
+  ssr: false,
+  loading: () => null
+});
 
 interface CompanyItem {
   company_id: string;
@@ -68,6 +75,7 @@ export default function AllListedCompaniesPage() {
   const [limit, setLimit] = useState(50);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [navDrawerOpen, setNavDrawerOpen] = useState(false);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
@@ -281,6 +289,40 @@ export default function AllListedCompaniesPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <Link
+              href="/"
+              className="btn btn-secondary"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "0.8rem",
+                padding: "8px 12px",
+              }}
+            >
+              &larr; Back
+            </Link>
+
+            <button
+              onClick={() => setNavDrawerOpen(true)}
+              className="btn btn-secondary"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "0.82rem",
+                padding: "8px 14px",
+                border: "1px solid rgba(16, 185, 129, 0.4)",
+                background: "rgba(16, 185, 129, 0.1)",
+                color: "#34d399",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              <Menu size={16} />
+              <span>Drawer</span>
+            </button>
+
             <div
               style={{
                 width: "44px",
@@ -766,7 +808,7 @@ export default function AllListedCompaniesPage() {
                       <td style={{ padding: "14px 16px" }}>
                         <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#ffffff" }}>
                           <Link
-                            href={`/company/${item.nse_symbol || item.company_id}`}
+                            href={`/company/${item.nse_symbol || item.bse_code || item.company_id}`}
                             style={{ color: "#ffffff", textDecoration: "none" }}
                             onMouseEnter={(e) => (e.currentTarget.style.color = "#34d399")}
                             onMouseLeave={(e) => (e.currentTarget.style.color = "#ffffff")}
@@ -901,7 +943,7 @@ export default function AllListedCompaniesPage() {
                       <td style={{ padding: "14px 16px", textAlign: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
                           <Link
-                            href={`/chart?symbol=${item.nse_symbol || item.company_id}`}
+                            href={`/terminal?symbol=${encodeURIComponent(item.nse_symbol || item.bse_code || item.company_id)}`}
                             title="Open TradingView Chart"
                             style={{
                               padding: "6px 8px",
@@ -916,7 +958,7 @@ export default function AllListedCompaniesPage() {
                           </Link>
 
                           <Link
-                            href={`/company/${item.nse_symbol || item.company_id}`}
+                            href={`/company/${item.nse_symbol || item.bse_code || item.company_id}`}
                             title="Open Company Dossier"
                             style={{
                               padding: "6px 8px",
@@ -1042,6 +1084,9 @@ export default function AllListedCompaniesPage() {
           }}
         />
       )}
+
+      {/* Navigation Hub Drawer */}
+      <NavigationDrawer isOpen={navDrawerOpen} onClose={() => setNavDrawerOpen(false)} />
     </div>
   );
 }

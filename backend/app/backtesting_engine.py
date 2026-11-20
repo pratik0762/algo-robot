@@ -436,6 +436,8 @@ class BacktestingEngine:
 
         return {
             "status": "success",
+            "data_status": "VALID" if len(trades) > 0 or len(equity_curve) > 1 else "INCOMPLETE_DATA",
+            "data_warning": None if len(trades) > 0 or len(equity_curve) > 1 else "Insufficient genuine historical data records. No synthetic candles were fabricated.",
             "strategy_id": strategy_id,
             "strategy_name": custom_strat["name"] if custom_strat else strategy_id,
             "timeframe": timeframe,
