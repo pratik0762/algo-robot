@@ -4,7 +4,6 @@ and official NSE Nifty 50 Market Heat Map data.
 
 from __future__ import annotations
 import math
-import random
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
 

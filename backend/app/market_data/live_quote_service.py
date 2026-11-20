@@ -88,6 +88,34 @@ class LiveQuoteService:
             }
             self._quotes[inst_key] = snapshot
 
+            # Synchronize to legacy tick_engine.stocks dictionary for downstream engines
+            try:
+                from app.tick_engine import tick_engine
+                sym_upper = tick.symbol.upper()
+                tick_engine.stocks[sym_upper] = {
+                    "symbol": sym_upper,
+                    "ltp": tick.ltp,
+                    "change": change,
+                    "percent_change": pct_change,
+                    "open": tick.open,
+                    "high": max(tick.high, tick.ltp),
+                    "low": min(tick.low, tick.ltp) if tick.low > 0 else tick.ltp,
+                    "high_52w": high_52w,
+                    "low_52w": low_52w,
+                    "previous_close": prev_close,
+                    "volume": tick.volume,
+                    "bid": tick.bid,
+                    "ask": tick.ask,
+                    "bid_qty": tick.bid_qty,
+                    "ask_qty": tick.ask_qty,
+                    "feed_source": feed_source,
+                    "data_status": status.value,
+                    "last_tick_direction": "UP" if change > 0 else ("DOWN" if change < 0 else "FLAT"),
+                    "last_tick_time": time.strftime("%H:%M:%S", time.localtime(tick.timestamp)),
+                }
+            except Exception:
+                pass
+
             # Asynchronously enqueue dirty quote to batch persistence worker
             try:
                 from app.market_data.batch_persistence_worker import batch_persistence_worker

@@ -163,3 +163,22 @@ def test_api_broker_paytm_endpoints():
     logout_data = logout_paytm(revoke_remote=False)
     assert logout_data["status"] == "success"
     assert paytm_auth_service.is_authenticated() is False
+
+
+def test_auth_callback_registration_and_trigger():
+    """Verify that registering an auth callback triggers when session is established."""
+    service = PaytmMoneyAuthService()
+    callback_fired = False
+
+    def dummy_callback():
+        nonlocal callback_fired
+        callback_fired = True
+
+    service.register_auth_callback(dummy_callback)
+    service.set_tokens(access_token="test_jwt_callback_token")
+
+    assert callback_fired is True
+    assert service.is_authenticated() is True
+
+    # Cleanup
+    service.logout(revoke_remote=False)

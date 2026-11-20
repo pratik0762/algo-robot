@@ -7,11 +7,12 @@ lifecycle, security masking, and session persistence without exposing secrets.
 from __future__ import annotations
 import os
 import json
+import asyncio
 import logging
 import threading
 import time
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional
 import urllib.request
 import urllib.error
 
@@ -63,6 +64,7 @@ class PaytmMoneyAuthService:
             self._read_access_token: str = ""
             self._last_auth_time: Optional[float] = None
             self._token_file = os.path.join(os.path.dirname(__file__), ".paytm_tokens.json")
+            self._auth_callbacks: List[Callable[[], Any]] = []
 
             # Try to load existing cached session tokens if present
             self._load_cached_session()
@@ -72,6 +74,28 @@ class PaytmMoneyAuthService:
                 self._last_auth_time = time.time()
 
             self._initialized = True
+
+    def register_auth_callback(self, callback: Callable[[], Any]) -> None:
+        """Register a callback triggered whenever authentication succeeds."""
+        with self._lock:
+            if callback not in self._auth_callbacks:
+                self._auth_callbacks.append(callback)
+
+    def _notify_auth_success(self) -> None:
+        """Invokes all registered post-authentication callbacks."""
+        with self._lock:
+            callbacks = list(self._auth_callbacks)
+        for cb in callbacks:
+            try:
+                res = cb()
+                if asyncio.iscoroutine(res):
+                    try:
+                        loop = asyncio.get_running_loop()
+                        loop.create_task(res)
+                    except RuntimeError:
+                        res.close()
+            except Exception as e:
+                logger.warning("Error in Paytm auth callback: %s", e)
 
     def configure_credentials(
         self,
@@ -166,6 +190,9 @@ class PaytmMoneyAuthService:
             # Persist tokens locally
             self._save_cached_session()
 
+            # Trigger registered post-authentication callbacks
+            self._notify_auth_success()
+
             return {
                 "status": "success",
                 "message": "Paytm Money session successfully established.",
@@ -189,6 +216,7 @@ class PaytmMoneyAuthService:
                 self._read_access_token = read_access_token.strip()
             self._last_auth_time = time.time()
             self._save_cached_session()
+            self._notify_auth_success()
 
     def is_authenticated(self) -> bool:
         """Checks if a valid access token or public token is currently loaded."""

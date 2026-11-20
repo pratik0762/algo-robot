@@ -95,3 +95,40 @@ def test_stage6_endpoint_symbol_resolution_non_404(monkeypatch):
         assert "Reliance" in res_bse["company_name"]
     finally:
         db.close()
+
+
+def test_quote_bridge_to_tick_engine_stocks():
+    """Verify that Paytm ticks processed through live_quote_service update tick_engine.stocks."""
+    from app.tick_engine import tick_engine
+
+    test_sym = "PAYTM_BRIDGE_TEST"
+    tick = {
+        "symbol": test_sym,
+        "exchange": "NSE",
+        "ltp": 1234.5,
+        "open": 1200.0,
+        "high": 1240.0,
+        "low": 1195.0,
+        "close": 1210.0,
+        "volume": 75000,
+        "bid": 1234.0,
+        "ask": 1235.0,
+        "bid_qty": 500,
+        "ask_qty": 300,
+        "source": "PAYTM_MONEY"
+    }
+
+    paytm_adapter.on_tick(tick)
+
+    # 1. Verify in live_quote_service
+    q = live_quote_service.get_quote(test_sym)
+    assert q is not None
+    assert q["ltp"] == 1234.5
+
+    # 2. Verify mirrored into tick_engine.stocks
+    assert test_sym in tick_engine.stocks
+    stock_q = tick_engine.stocks[test_sym]
+    assert stock_q["symbol"] == test_sym
+    assert stock_q["ltp"] == 1234.5
+    assert stock_q["volume"] == 75000
+    assert stock_q["feed_source"] == "PAYTM_MONEY"

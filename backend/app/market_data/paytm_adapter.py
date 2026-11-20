@@ -80,6 +80,16 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             self._byte_count: int = 0
             self._last_tick_time: float = 0.0
             self._initialized = True
+            paytm_auth_service.register_auth_callback(self._on_auth_success)
+
+    async def _on_auth_success(self) -> None:
+        """Auto-connects stream when an OAuth session token is issued or refreshed."""
+        if not self.is_connected():
+            logger.info("Paytm Money session token available; triggering live stream connection...")
+            success = await self.connect()
+            if success:
+                priority_tokens = [13, 51, 2885, 11536, 1594]  # NIFTY, SENSEX, RELIANCE, TCS, INFY
+                await self.subscribe(priority_tokens, mode="FULL")
 
     def get_capabilities(self) -> ProviderCapabilities:
         """Returns provider capabilities and maximum subscription capacities."""
@@ -147,7 +157,11 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             try:
                 res = self.on_tick_callback(norm_tick if isinstance(tick, NormalizedTick) else tick)
                 if asyncio.iscoroutine(res):
-                    asyncio.create_task(res)
+                    try:
+                        loop = asyncio.get_running_loop()
+                        loop.create_task(res)
+                    except RuntimeError:
+                        res.close()
             except Exception as e:
                 logger.debug("Error in on_tick_callback: %s", e)
 
