@@ -6,14 +6,14 @@
       "client_id": "ZR9081",
       "is_enabled": false,
       "is_connected": true,
-      "api_key_encrypted": "-wSpm7AATDAm_JejrwGiN920B8f2rYW2bnH5W53TQne5I4ilS-ykR5p3iBrB"
+      "api_key_encrypted": "QRtZikBKfvyvvH9QUiPzgU1ldAUehQPdNviFvxAh8CU8qg0e7-s0UiXJLJdd"
     },
     "ANGEL_ONE": {
       "name": "Angel One SmartAPI",
       "client_code": "A10842",
       "is_enabled": false,
       "is_connected": true,
-      "api_key_encrypted": "Ae2Mx0Ptuq9N6t25HACzdoG4c1HZdmLoUB30kCC88sFooP3dxlreWhdhgvIhHRc="
+      "api_key_encrypted": "3hhfFy9F7-u4I3GHQJL-FXAjtJmSoJw2KYQm6s3Q88_GjyMQPmAsKA5Ohu2LDxM="
     },
     "DHAN": {
       "name": "Dhan HQ API v2",
@@ -26,8 +26,8 @@
       "client_id": "UP2084",
       "is_enabled": false,
       "is_connected": true,
-      "api_key_encrypted": "idQYcGbpfAacVkFR80r9DtexRZrJl2vdzorKk5SU8nEEIzha8m__eJbG"
+      "api_key_encrypted": "6kg6GEhBKB5Bht4XmD3H_t-j7OPvqsBE_6j4dzaSGjecDlin0HevRrtd"
     }
   },
-  "updated_at": "2026-11-20T13:17:52.409478+00:00"
+  "updated_at": "2026-11-20T14:20:30.148282+00:00"
 }

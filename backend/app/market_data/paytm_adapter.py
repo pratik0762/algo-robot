@@ -174,14 +174,12 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
         if not paytm_auth_service.is_authenticated():
             logger.info("Paytm Money session not active; adapter in STANDBY mode.")
             self.status = FeedStatus.UNAUTHORIZED
-            self.is_connected = False
             return False
 
         public_token = paytm_auth_service.get_public_access_token()
         if not public_token:
             logger.warning("No public access token available for Paytm WebSocket.")
             self.status = FeedStatus.UNAUTHORIZED
-            self.is_connected = False
             return False
 
         ws_url = f"{PAYTM_WS_BASE_URL}?x_jwt_token={public_token}"
@@ -196,7 +194,6 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
                 close_timeout=5,
             )
             self.status = FeedStatus.CONNECTED
-            self.is_connected = True
             logger.info("Connected to Paytm Money Live Broadcast WebSocket.")
 
             # Resubscribe to existing tokens if any
@@ -209,7 +206,6 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
         except Exception as e:
             logger.warning("Failed to connect to Paytm Money WebSocket: %s", e)
             self.status = FeedStatus.ERROR
-            self.is_connected = False
             return False
 
     async def disconnect(self) -> None:
@@ -225,7 +221,6 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
                 pass
             self._ws = None
         self.status = FeedStatus.DISCONNECTED
-        self.is_connected = False
         logger.info("Disconnected from Paytm Money WebSocket.")
 
     async def subscribe(self, tokens: List[int], symbols: Optional[List[str]] = None, mode: str = "FULL") -> bool:
@@ -346,7 +341,6 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             except Exception as e:
                 logger.warning("Paytm WS read error (%s). Reconnecting in 5s...", e)
                 self.status = FeedStatus.RECONNECTING
-                self.is_connected = False
                 await asyncio.sleep(5.0)
                 if self._is_running:
                     await self.connect()

@@ -1006,6 +1006,119 @@ def trigger_paytm_persistence_flush(db: Session = Depends(get_db)):
     }
 
 
+# =========================================================================
+# 12. Paytm Money Full-Universe (5,000+ Companies) Batch & Live Endpoints
+# =========================================================================
+
+class PaytmBatchDownloadRequest(BaseModel):
+    universe: str = "ALL"
+    timeframe: str = "1d"
+    lookback_days: int = 365
+    concurrency: int = 4
+    rate_limit_rps: float = 6.0
+    reset_checkpoint: bool = False
+
+
+class PaytmPresetSubscribeRequest(BaseModel):
+    preset: str = "CORE_NIFTY50"
+
+
+class PaytmOnDemandSubscribeRequest(BaseModel):
+    symbol: str
+    exchange: str = "NSE"
+    mode: str = "FULL"
+
+
+@router.post("/api/broker/paytm/historical/batch-start")
+def start_paytm_batch_download(payload: Optional[PaytmBatchDownloadRequest] = None):
+    """
+    Initiates asynchronous bulk historical download across 5,000+ companies.
+    Supports checkpointing, pause/resume, and rate-governed polite pacing.
+    """
+    req = payload or PaytmBatchDownloadRequest()
+    from app.market_data.paytm_bulk_downloader import paytm_bulk_downloader
+    res = paytm_bulk_downloader.start_batch_download(
+        universe=req.universe,
+        timeframe=req.timeframe,
+        lookback_days=req.lookback_days,
+        concurrency=req.concurrency,
+        rate_limit_rps=req.rate_limit_rps,
+        reset_checkpoint=req.reset_checkpoint,
+    )
+    return {
+        "status": "success",
+        "job": res,
+        "current_status": paytm_bulk_downloader.get_status(),
+    }
+
+
+@router.get("/api/broker/paytm/historical/batch-status")
+def get_paytm_batch_download_status():
+    """Returns real-time progress, speed, ETA, and completed targets count."""
+    from app.market_data.paytm_bulk_downloader import paytm_bulk_downloader
+    return {
+        "status": "success",
+        "progress": paytm_bulk_downloader.get_status(),
+    }
+
+
+@router.post("/api/broker/paytm/historical/batch-stop")
+def stop_paytm_batch_download():
+    """Gracefully pauses the bulk historical download job."""
+    from app.market_data.paytm_bulk_downloader import paytm_bulk_downloader
+    res = paytm_bulk_downloader.stop_batch_download()
+    return {
+        "status": "success",
+        "result": res,
+    }
+
+
+@router.get("/api/broker/paytm/universe/live-status")
+def get_paytm_universe_live_status():
+    """Returns streaming capacity utilization and active pools across the 5,000+ universe."""
+    from app.market_data.paytm_live_manager import paytm_live_manager
+    return {
+        "status": "success",
+        "telemetry": paytm_live_manager.get_live_status(),
+    }
+
+
+@router.post("/api/broker/paytm/universe/subscribe-preset")
+async def switch_paytm_universe_preset(payload: PaytmPresetSubscribeRequest):
+    """Switches the active real-time WebSocket universe preset (CORE_NIFTY50, TOP_100, FNO_200, NIFTY_500)."""
+    from app.market_data.paytm_live_manager import paytm_live_manager
+    res = await paytm_live_manager.switch_universe_preset(payload.preset)
+    return {
+        "status": "success",
+        "result": res,
+        "telemetry": paytm_live_manager.get_live_status(),
+    }
+
+
+@router.post("/api/broker/paytm/universe/subscribe-on-demand")
+async def subscribe_paytm_on_demand(payload: PaytmOnDemandSubscribeRequest):
+    """Dynamically subscribes a single security with LRU capacity management."""
+    from app.market_data.paytm_live_manager import paytm_live_manager
+    token = await paytm_live_manager.subscribe_on_demand(
+        symbol=payload.symbol,
+        exchange=payload.exchange,
+        mode=payload.mode,
+    )
+    if not token:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Security '{payload.exchange}:{payload.symbol}' could not be resolved in Paytm Security Master.",
+        )
+    return {
+        "status": "success",
+        "symbol": payload.symbol.upper(),
+        "exchange": payload.exchange.upper(),
+        "token": token,
+        "telemetry": paytm_live_manager.get_live_status(),
+    }
+
+
+
 
 
 
