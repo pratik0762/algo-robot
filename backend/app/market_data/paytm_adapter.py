@@ -79,6 +79,9 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             self._tick_count: int = 0
             self._byte_count: int = 0
             self._last_tick_time: float = 0.0
+            self._reconnect_count: int = 0
+            self._first_tick_time: float = 0.0
+            self._last_sub_ack_time: float = 0.0
             self._initialized = True
             paytm_auth_service.register_auth_callback(self._on_auth_success)
 
@@ -287,6 +290,7 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
         ]
         try:
             await self._ws.send(json.dumps(payload))
+            self._last_sub_ack_time = time.time()
             logger.info("Sent Paytm subscription payload (%s %d scrips, mode=%s)", action, len(tokens), mode)
             return True
         except Exception as e:
@@ -304,6 +308,8 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
                     self._byte_count += len(raw_msg)
                     ticks = self.decode_binary_packets(raw_msg)
                     now_ts = time.time()
+                    if not self._first_tick_time and ticks:
+                        self._first_tick_time = now_ts
                     for tick in ticks:
                         self._tick_count += 1
                         self.last_tick_time = now_ts
@@ -339,7 +345,8 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                logger.warning("Paytm WS read error (%s). Reconnecting in 5s...", e)
+                self._reconnect_count += 1
+                logger.warning("Paytm WS read error (%s). Reconnecting in 5s (attempt %d)...", e, self._reconnect_count)
                 self.status = FeedStatus.RECONNECTING
                 await asyncio.sleep(5.0)
                 if self._is_running:
@@ -601,6 +608,9 @@ class PaytmMoneyMarketDataAdapter(BaseMarketDataFeedAdapter, BaseMarketDataProvi
             "subscribed_scrips_count": len(self._subscribed_security_ids),
             "total_ticks_received": self._tick_count,
             "total_bytes_received": self._byte_count,
+            "reconnection_count": self._reconnect_count,
+            "first_tick_time": self._first_tick_time,
+            "last_subscription_ack_time": self._last_sub_ack_time,
             "last_tick_time": self._last_tick_time,
             "last_tick_iso": (
                 datetime.fromtimestamp(self._last_tick_time, tz=timezone.utc).isoformat()
