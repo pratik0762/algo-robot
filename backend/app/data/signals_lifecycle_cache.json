@@ -4947,5 +4947,26 @@
     "pnl_percent": "-2.5%",
     "time_to_target": "25h 36m",
     "outcome_time": "20-Nov-2026 11:55:53 AM IST"
+  },
+  "SIG-BHARTIARTL-macd_cross-1795181364989": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 464.44,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "1s",
+    "outcome_time": "20-Nov-2026 06:59:25 PM IST"
+  },
+  "SIG-ICICIBANK-macd_cross-1795181392186": {
+    "status": "STOP_LOSS_HIT",
+    "exit_price": 1294.9,
+    "pnl_percent": "-2.5%",
+    "time_to_target": "1s",
+    "outcome_time": "20-Nov-2026 06:59:52 PM IST"
+  },
+  "SIG-SUNPHARMA-rsi_reversal-1795066605219": {
+    "status": "EXPIRED",
+    "exit_price": 1884.9,
+    "pnl_percent": "0.0%",
+    "time_to_target": "Expired (48h)",
+    "outcome_time": "21-Nov-2026 10:25:55 AM IST"
   }
 }

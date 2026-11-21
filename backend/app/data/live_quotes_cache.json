@@ -10,11 +10,11 @@
     "high_52w": 1611.8,
     "low_52w": 1152.2,
     "previous_close": 1375.6,
-    "volume": 13166219,
+    "volume": 13167730,
     "bid": 1377.45,
     "ask": 1377.55,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "TCS": {
     "symbol": "TCS",
@@ -27,11 +27,11 @@
     "high_52w": 3350.0,
     "low_52w": 1976.8,
     "previous_close": 2342.7,
-    "volume": 2959814,
+    "volume": 2960416,
     "bid": 2376.15,
     "ask": 2376.25,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "HDFCBANK": {
     "symbol": "HDFCBANK",
@@ -44,11 +44,11 @@
     "high_52w": 1017.5,
     "low_52w": 669.2,
     "previous_close": 821.8,
-    "volume": 70096849,
+    "volume": 70110384,
     "bid": 845.95,
     "ask": 846.05,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "BHARTIARTL": {
     "symbol": "BHARTIARTL",
@@ -61,11 +61,11 @@
     "high_52w": 2174.5,
     "low_52w": 1726.3,
     "previous_close": 2144.0,
-    "volume": 5284045,
+    "volume": 5284404,
     "bid": 2161.65,
     "ask": 2161.75,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "ICICIBANK": {
     "symbol": "ICICIBANK",
@@ -78,11 +78,11 @@
     "high_52w": 1645.0,
     "low_52w": 1187.6,
     "previous_close": 1608.9,
-    "volume": 17972748,
+    "volume": 17973342,
     "bid": 1639.95,
     "ask": 1640.05,
-    "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "UP",
+    "last_tick_time": "16:00:34"
   },
   "INFY": {
     "symbol": "INFY",
@@ -95,11 +95,11 @@
     "high_52w": 1728.0,
     "low_52w": 980.4,
     "previous_close": 1091.9,
-    "volume": 13747211,
+    "volume": 13749744,
     "bid": 1097.95,
     "ask": 1098.05,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "SBIN": {
     "symbol": "SBIN",
@@ -112,11 +112,11 @@
     "high_52w": 1234.7,
     "low_52w": 933.9,
     "previous_close": 1156.0,
-    "volume": 17520251,
+    "volume": 17524838,
     "bid": 1165.05,
     "ask": 1165.15,
-    "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "UP",
+    "last_tick_time": "16:00:34"
   },
   "ITC": {
     "symbol": "ITC",
@@ -129,11 +129,11 @@
     "high_52w": 409.5,
     "low_52w": 252.8,
     "previous_close": 301.0,
-    "volume": 28276514,
+    "volume": 28278608,
     "bid": 299.05,
     "ask": 299.15,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "HINDUNILVR": {
     "symbol": "HINDUNILVR",
@@ -146,11 +146,11 @@
     "high_52w": 2488.0,
     "low_52w": 1758.2,
     "previous_close": 2074.2,
-    "volume": 1575171,
+    "volume": 1575225,
     "bid": 2052.45,
     "ask": 2052.55,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "LT": {
     "symbol": "LT",
@@ -163,11 +163,11 @@
     "high_52w": 4440.0,
     "low_52w": 3288.1,
     "previous_close": 4211.0,
-    "volume": 2154273,
+    "volume": 2154352,
     "bid": 4209.05,
     "ask": 4209.15,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "BAJFINANCE": {
     "symbol": "BAJFINANCE",
@@ -180,11 +180,11 @@
     "high_52w": 1176.4,
     "low_52w": 787.9,
     "previous_close": 1092.85,
-    "volume": 9240694,
+    "volume": 9240902,
     "bid": 1121.95,
     "ask": 1122.05,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "MARUTI": {
     "symbol": "MARUTI",
@@ -197,11 +197,11 @@
     "high_52w": 17370.0,
     "low_52w": 10985.0,
     "previous_close": 13589.0,
-    "volume": 1647972,
+    "volume": 1648162,
     "bid": 14010.95,
     "ask": 14011.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "SUNPHARMA": {
     "symbol": "SUNPHARMA",
@@ -214,11 +214,11 @@
     "high_52w": 2046.9,
     "low_52w": 1583.7,
     "previous_close": 1900.0,
-    "volume": 1915583,
+    "volume": 1916054,
     "bid": 1884.85,
     "ask": 1884.95,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "M&M": {
     "symbol": "M&M",
@@ -231,11 +231,11 @@
     "high_52w": 3839.9,
     "low_52w": 2744.3,
     "previous_close": 3509.0,
-    "volume": 3534752,
+    "volume": 3534774,
     "bid": 3544.95,
     "ask": 3545.05,
-    "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "UP",
+    "last_tick_time": "16:00:34"
   },
   "TITAN": {
     "symbol": "TITAN",
@@ -248,11 +248,11 @@
     "high_52w": 5186.7,
     "low_52w": 3751.0,
     "previous_close": 4700.0,
-    "volume": 1478789,
+    "volume": 1478945,
     "bid": 4619.95,
     "ask": 4620.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "AXISBANK": {
     "symbol": "AXISBANK",
@@ -265,11 +265,11 @@
     "high_52w": 1450.0,
     "low_52w": 1150.3,
     "previous_close": 1380.8,
-    "volume": 21476210,
+    "volume": 21477017,
     "bid": 1445.95,
     "ask": 1446.05,
-    "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "UP",
+    "last_tick_time": "16:00:34"
   },
   "TATASTEEL": {
     "symbol": "TATASTEEL",
@@ -282,11 +282,11 @@
     "high_52w": 224.4,
     "low_52w": 160.06,
     "previous_close": 180.89,
-    "volume": 46159049,
+    "volume": 46172019,
     "bid": 177.95,
     "ask": 178.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "KOTAKBANK": {
     "symbol": "KOTAKBANK",
@@ -299,11 +299,11 @@
     "high_52w": 516.6,
     "low_52w": 345.5,
     "previous_close": 503.0,
-    "volume": 18942554,
+    "volume": 18943576,
     "bid": 515.75,
     "ask": 515.85,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "NTPC": {
     "symbol": "NTPC",
@@ -316,11 +316,11 @@
     "high_52w": 414.4,
     "low_52w": 292.05,
     "previous_close": 325.0,
-    "volume": 9508566,
+    "volume": 9510756,
     "bid": 321.45,
     "ask": 321.55,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "POWERGRID": {
     "symbol": "POWERGRID",
@@ -333,11 +333,11 @@
     "high_52w": 324.95,
     "low_52w": 242.3,
     "previous_close": 264.5,
-    "volume": 13038209,
+    "volume": 13039161,
     "bid": 268.95,
     "ask": 269.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "BAJAJFINSV": {
     "symbol": "BAJAJFINSV",
@@ -350,11 +350,11 @@
     "high_52w": 2118.5,
     "low_52w": 1597.0,
     "previous_close": 1885.0,
-    "volume": 1504283,
+    "volume": 1504294,
     "bid": 1891.95,
     "ask": 1892.05,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "HCLTECH": {
     "symbol": "HCLTECH",
@@ -367,11 +367,11 @@
     "high_52w": 1780.1,
     "low_52w": 1030.0,
     "previous_close": 1332.9,
-    "volume": 3594472,
+    "volume": 3594840,
     "bid": 1344.35,
     "ask": 1344.45,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "ULTRACEMCO": {
     "symbol": "ULTRACEMCO",
@@ -384,11 +384,11 @@
     "high_52w": 13110.0,
     "low_52w": 10325.0,
     "previous_close": 12560.0,
-    "volume": 495168,
+    "volume": 495174,
     "bid": 12938.95,
     "ask": 12939.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "ASIANPAINT": {
     "symbol": "ASIANPAINT",
@@ -401,11 +401,11 @@
     "high_52w": 2985.7,
     "low_52w": 2115.0,
     "previous_close": 2595.0,
-    "volume": 469261,
+    "volume": 469267,
     "bid": 2608.25,
     "ask": 2608.35,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "TRENT": {
     "symbol": "TRENT",
@@ -418,11 +418,11 @@
     "high_52w": 4397.0,
     "low_52w": 2183.667,
     "previous_close": 3225.0,
-    "volume": 1252526,
+    "volume": 1252578,
     "bid": 3256.05,
     "ask": 3256.15,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "JSWSTEEL": {
     "symbol": "JSWSTEEL",
@@ -435,11 +435,11 @@
     "high_52w": 1370.0,
     "low_52w": 1073.2,
     "previous_close": 1336.8,
-    "volume": 2343834,
+    "volume": 2343853,
     "bid": 1336.95,
     "ask": 1337.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "NESTLEIND": {
     "symbol": "NESTLEIND",
@@ -452,11 +452,11 @@
     "high_52w": 1553.0,
     "low_52w": 1147.4,
     "previous_close": 1303.4,
-    "volume": 1800412,
+    "volume": 1801255,
     "bid": 1324.95,
     "ask": 1325.05,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "TECHM": {
     "symbol": "TECHM",
@@ -469,11 +469,11 @@
     "high_52w": 1860.0,
     "low_52w": 1304.1,
     "previous_close": 1723.0,
-    "volume": 3234077,
+    "volume": 3234310,
     "bid": 1746.15,
     "ask": 1746.25,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "INDUSINDBK": {
     "symbol": "INDUSINDBK",
@@ -486,11 +486,11 @@
     "high_52w": 1077.85,
     "low_52w": 750.5,
     "previous_close": 923.65,
-    "volume": 19128829,
+    "volume": 19129803,
     "bid": 1002.95,
     "ask": 1003.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "TATAMOTORS": {
     "symbol": "TATAMOTORS",
@@ -503,11 +503,11 @@
     "high_52w": 408.0,
     "low_52w": 251.5,
     "previous_close": 263.5,
-    "volume": 13659389,
+    "volume": 13667727,
     "bid": 266.3,
     "ask": 266.4,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:35"
   },
   "ADANIENT": {
     "symbol": "ADANIENT",
@@ -520,11 +520,11 @@
     "high_52w": 3245.0,
     "low_52w": 1753.0,
     "previous_close": 2703.1,
-    "volume": 870425,
+    "volume": 870848,
     "bid": 2708.95,
     "ask": 2709.05,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "ADANIPORTS": {
     "symbol": "ADANIPORTS",
@@ -537,11 +537,11 @@
     "high_52w": 1979.0,
     "low_52w": 1292.0,
     "previous_close": 1917.1,
-    "volume": 2280049,
+    "volume": 2280536,
     "bid": 1916.95,
     "ask": 1917.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:35"
   },
   "COALINDIA": {
     "symbol": "COALINDIA",
@@ -554,11 +554,11 @@
     "high_52w": 491.25,
     "low_52w": 369.6,
     "previous_close": 391.5,
-    "volume": 9436814,
+    "volume": 9442717,
     "bid": 389.95,
     "ask": 390.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:35"
   },
   "ONGC": {
     "symbol": "ONGC",
@@ -571,11 +571,11 @@
     "high_52w": 307.5,
     "low_52w": 218.53,
     "previous_close": 224.52,
-    "volume": 14878111,
+    "volume": 14888273,
     "bid": 223.41,
     "ask": 223.51,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "GRASIM": {
     "symbol": "GRASIM",
@@ -588,11 +588,11 @@
     "high_52w": 3411.1,
     "low_52w": 2502.5,
     "previous_close": 3111.1,
-    "volume": 1222391,
+    "volume": 1222396,
     "bid": 3103.65,
     "ask": 3103.75,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:35"
   },
   "WIPRO": {
     "symbol": "WIPRO",
@@ -605,11 +605,11 @@
     "high_52w": 273.1,
     "low_52w": 156.79,
     "previous_close": 183.93,
-    "volume": 14698164,
+    "volume": 14699793,
     "bid": 185.65,
     "ask": 185.75,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "CIPLA": {
     "symbol": "CIPLA",
@@ -622,11 +622,11 @@
     "high_52w": 1539.7,
     "low_52w": 1165.7,
     "previous_close": 1418.5,
-    "volume": 1484422,
+    "volume": 1484426,
     "bid": 1414.95,
     "ask": 1415.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "DRREDDY": {
     "symbol": "DRREDDY",
@@ -639,11 +639,11 @@
     "high_52w": 1414.9,
     "low_52w": 1101.0,
     "previous_close": 1400.9,
-    "volume": 829892,
+    "volume": 830660,
     "bid": 1390.15,
     "ask": 1390.25,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:34"
   },
   "APOLLOHOSP": {
     "symbol": "APOLLOHOSP",
@@ -656,11 +656,11 @@
     "high_52w": 9282.5,
     "low_52w": 6696.5,
     "previous_close": 8738.0,
-    "volume": 1412462,
+    "volume": 1412562,
     "bid": 9199.95,
     "ask": 9200.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:34"
   },
   "HEROMOTOCO": {
     "symbol": "HEROMOTOCO",
@@ -673,11 +673,11 @@
     "high_52w": 6388.5,
     "low_52w": 4671.5,
     "previous_close": 5556.0,
-    "volume": 664167,
+    "volume": 664288,
     "bid": 5535.95,
     "ask": 5536.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:35"
   },
   "EICHERMOT": {
     "symbol": "EICHERMOT",
@@ -690,11 +690,11 @@
     "high_52w": 8230.0,
     "low_52w": 6442.0,
     "previous_close": 8058.5,
-    "volume": 510572,
+    "volume": 510609,
     "bid": 8112.95,
     "ask": 8113.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:20"
+    "last_tick_time": "16:00:35"
   },
   "DIVISLAB": {
     "symbol": "DIVISLAB",
@@ -707,11 +707,11 @@
     "high_52w": 11824.0,
     "low_52w": 5647.5,
     "previous_close": 11178.0,
-    "volume": 404820,
+    "volume": 404825,
     "bid": 11180.45,
     "ask": 11180.55,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "BPCL": {
     "symbol": "BPCL",
@@ -724,11 +724,11 @@
     "high_52w": 391.65,
     "low_52w": 266.6,
     "previous_close": 308.1,
-    "volume": 4036216,
+    "volume": 4037556,
     "bid": 314.05,
     "ask": 314.15,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "BRITANNIA": {
     "symbol": "BRITANNIA",
@@ -741,11 +741,11 @@
     "high_52w": 6271.0,
     "low_52w": 4499.9,
     "previous_close": 4868.0,
-    "volume": 338855,
+    "volume": 338865,
     "bid": 4899.95,
     "ask": 4900.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "SHRIRAMFIN": {
     "symbol": "SHRIRAMFIN",
@@ -758,11 +758,11 @@
     "high_52w": 1153.7,
     "low_52w": 810.1,
     "previous_close": 973.3,
-    "volume": 4785115,
+    "volume": 4785257,
     "bid": 971.95,
     "ask": 972.05,
-    "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_direction": "DOWN",
+    "last_tick_time": "16:00:35"
   },
   "HDFCLIFE": {
     "symbol": "HDFCLIFE",
@@ -775,11 +775,11 @@
     "high_52w": 788.5,
     "low_52w": 508.05,
     "previous_close": 577.05,
-    "volume": 4510470,
+    "volume": 4510623,
     "bid": 588.6,
     "ask": 588.7,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "SBILIFE": {
     "symbol": "SBILIFE",
@@ -792,11 +792,11 @@
     "high_52w": 2132.0,
     "low_52w": 1607.7,
     "previous_close": 1804.6,
-    "volume": 717307,
+    "volume": 717534,
     "bid": 1826.45,
     "ask": 1826.55,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "BEL": {
     "symbol": "BEL",
@@ -809,11 +809,11 @@
     "high_52w": 473.45,
     "low_52w": 354.55,
     "previous_close": 404.2,
-    "volume": 4574048,
+    "volume": 4575190,
     "bid": 401.95,
     "ask": 402.05,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "TATACONSUM": {
     "symbol": "TATACONSUM",
@@ -826,11 +826,11 @@
     "high_52w": 1282.7,
     "low_52w": 916.0,
     "previous_close": 1144.0,
-    "volume": 2102050,
+    "volume": 2102094,
     "bid": 1155.85,
     "ask": 1155.95,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "HINDALCO": {
     "symbol": "HINDALCO",
@@ -843,11 +843,11 @@
     "high_52w": 1176.0,
     "low_52w": 771.85,
     "previous_close": 910.0,
-    "volume": 8885401,
+    "volume": 8885677,
     "bid": 929.45,
     "ask": 929.55,
     "last_tick_direction": "UP",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   },
   "SHREECEM": {
     "symbol": "SHREECEM",
@@ -860,10 +860,10 @@
     "high_52w": 28090.0,
     "low_52w": 21355.0,
     "previous_close": 25115.0,
-    "volume": 87711,
+    "volume": 87715,
     "bid": 25474.95,
     "ask": 25475.05,
     "last_tick_direction": "DOWN",
-    "last_tick_time": "19:51:21"
+    "last_tick_time": "16:00:35"
   }
 }
