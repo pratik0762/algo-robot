@@ -232,6 +232,62 @@ export default function MarketDataCenterPage() {
     return () => clearInterval(interval);
   }, [fetchTelemetry]);
 
+  // Listen for automated backend authentication broadcast from popup window
+  useEffect(() => {
+    const handleAuthMessage = (event: MessageEvent) => {
+      if (event.data?.type === "PAYTM_AUTH_SUCCESS") {
+        setSyncMessage("Paytm Money connected successfully! Access token generated and active in backend.");
+        fetchTelemetry();
+        setTimeout(() => setSyncMessage(null), 5000);
+      }
+    };
+    window.addEventListener("message", handleAuthMessage);
+    return () => window.removeEventListener("message", handleAuthMessage);
+  }, [fetchTelemetry]);
+
+  // Automated fallback: if Paytm redirected to port 3000 instead of backend port 8000
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("requestToken") || params.get("request_token") || params.get("token") || params.get("code");
+      if (token) {
+        setSyncMessage("Exchanging Paytm request token with backend...");
+        fetch(`${getApiBase()}/api/broker/paytm/session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ request_token: token })
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "success") {
+              setSyncMessage("Paytm Money session established successfully!");
+              fetchTelemetry();
+            } else {
+              setSyncMessage(`Paytm Auth Error: ${data.detail || data.message || "Failed"}`);
+            }
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setTimeout(() => setSyncMessage(null), 5000);
+          })
+          .catch((err) => {
+            setSyncMessage(`Error exchanging Paytm token: ${err.message}`);
+          });
+      }
+    }
+  }, [fetchTelemetry]);
+
+  const handleConnectPaytmMoney = () => {
+    const width = 600;
+    const height = 740;
+    const left = typeof window !== "undefined" ? window.screen.width / 2 - width / 2 : 100;
+    const top = typeof window !== "undefined" ? window.screen.height / 2 - height / 2 : 100;
+    const loginUrl = `${getApiBase()}/api/broker/paytm/login`;
+    window.open(
+      loginUrl,
+      "PaytmMoneyAuth",
+      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
+    );
+  };
+
   const handleTriggerSync = async () => {
     setSyncing(true);
     setSyncMessage("Triggering NSE & BSE security master synchronization...");
@@ -596,29 +652,30 @@ export default function MarketDataCenterPage() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-              {paytmAuth?.login_url && !paytmAuth?.session_active && (
-                <a
-                  href={paytmAuth.login_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    background: "rgba(245, 158, 11, 0.15)",
-                    border: "1px solid rgba(245, 158, 11, 0.5)",
-                    color: "#fbbf24",
-                    padding: "7px 14px",
-                    borderRadius: "8px",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    textDecoration: "none"
-                  }}
-                >
-                  <ExternalLink size={14} />
-                  OAuth Login URL
-                </a>
-              )}
+              <button
+                onClick={handleConnectPaytmMoney}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: paytmAuth?.session_active
+                    ? "rgba(16, 185, 129, 0.15)"
+                    : "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+                  border: paytmAuth?.session_active
+                    ? "1px solid rgba(16, 185, 129, 0.5)"
+                    : "1px solid #38bdf8",
+                  color: paytmAuth?.session_active ? "#34d399" : "#ffffff",
+                  padding: "7px 16px",
+                  borderRadius: "8px",
+                  fontSize: "0.78rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: paytmAuth?.session_active ? "none" : "0 0 15px rgba(2, 132, 199, 0.4)"
+                }}
+              >
+                <Zap size={14} className={paytmAuth?.session_active ? "" : "animate-pulse"} />
+                {paytmAuth?.session_active ? "Paytm Connected (Re-Auth)" : "Connect Paytm Money"}
+              </button>
 
               <button
                 onClick={handleTogglePaytmStream}

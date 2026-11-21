@@ -94,6 +94,17 @@ export default function LiveBrokerDesk() {
     fetchActivePositionsAndOrders();
   }, [fetchBrokersStatus, fetchActivePositionsAndOrders]);
 
+  useEffect(() => {
+    const handleAuthMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'PAYTM_AUTH_SUCCESS') {
+        setAuthMsg('Success: Paytm Money OAuth completed! Request token processed and session active.');
+        fetchBrokersStatus();
+      }
+    };
+    window.addEventListener('message', handleAuthMessage);
+    return () => window.removeEventListener('message', handleAuthMessage);
+  }, [fetchBrokersStatus]);
+
   const handleSwitchActiveBroker = async (brokerId: string) => {
     setSwitching(true);
     try {
@@ -334,71 +345,127 @@ export default function LiveBrokerDesk() {
               </select>
             </div>
 
-            {selectedBrokerForAuth === 'PAYTM_MONEY' && (
-              <div style={{ padding: '8px 12px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 'var(--radius-md)', fontSize: '0.75rem', color: '#93c5fd' }}>
-                Paytm Money uses OAuth 2.0. If you have generated a <code>request_token</code> via browser login, paste it into the Request Token field below.
+            {selectedBrokerForAuth === 'PAYTM_MONEY' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '16px', background: 'rgba(2, 132, 199, 0.08)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '#10b981' : '#f59e0b', boxShadow: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '0 0 10px #10b981' : '0 0 10px #f59e0b' }} />
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#f1f5f9' }}>
+                      Paytm Money OAuth 2.0 Engine
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.70rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px', background: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', color: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '#34d399' : '#fbbf24' }}>
+                    {brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? 'SESSION ACTIVE' : 'AWAITING AUTH'}
+                  </span>
+                </div>
+
+                <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8', lineHeight: 1.55 }}>
+                  Clicking below opens the official Paytm Money portal. After you log in with OTP, Paytm redirects back to Algo Robot where the <strong>request token is received and processed directly by the backend</strong>. No manual copy-pasting required!
+                </p>
+
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const width = 600;
+                      const height = 740;
+                      const left = typeof window !== 'undefined' ? window.screen.width / 2 - width / 2 : 100;
+                      const top = typeof window !== 'undefined' ? window.screen.height / 2 - height / 2 : 100;
+                      const loginUrl = `${getApiBase()}/api/broker/paytm/login`;
+                      window.open(loginUrl, 'PaytmMoneyAuth', `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`);
+                    }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                      border: '1px solid #38bdf8',
+                      color: 'white',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '0.84rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 0 20px rgba(2, 132, 199, 0.4)'
+                    }}
+                  >
+                    <Zap size={16} />
+                    Connect Paytm Money
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={fetchBrokersStatus}
+                    className="btn btn-secondary"
+                    style={{ padding: '9px 14px', fontSize: '0.78rem' }}
+                  >
+                    <RefreshCw size={14} /> Refresh Status
+                  </button>
+                </div>
               </div>
+            ) : (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>CLIENT ID / CODE</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. ZR9081"
+                      value={clientId}
+                      onChange={(e) => setClientId(e.target.value)}
+                      className="input-field"
+                      style={{ width: '100%', marginTop: '4px', padding: '8px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>API KEY</label>
+                    <input
+                      type="password"
+                      placeholder="API Key"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      className="input-field"
+                      style={{ width: '100%', marginTop: '4px', padding: '8px' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>API SECRET / ENCTOKEN</label>
+                    <input
+                      type="password"
+                      placeholder="Secret or Enctoken"
+                      value={apiSecret}
+                      onChange={(e) => setApiSecret(e.target.value)}
+                      className="input-field"
+                      style={{ width: '100%', marginTop: '4px', padding: '8px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>TOTP SECRET (2FA)</label>
+                    <input
+                      type="password"
+                      placeholder="Base32 TOTP Key"
+                      value={totpSecret}
+                      onChange={(e) => setTotpSecret(e.target.value)}
+                      className="input-field"
+                      style={{ width: '100%', marginTop: '4px', padding: '8px' }}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ width: '100%', marginTop: '6px', padding: '10px', fontSize: '0.82rem', fontWeight: 700 }}
+                >
+                  Verify &amp; Connect {selectedBrokerForAuth}
+                </button>
+              </>
             )}
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div>
-                <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>CLIENT ID / CODE</label>
-                <input
-                  type="text"
-                  placeholder="e.g. ZR9081"
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  className="input-field"
-                  style={{ width: '100%', marginTop: '4px', padding: '8px' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>API KEY</label>
-                <input
-                  type="password"
-                  placeholder="API Key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="input-field"
-                  style={{ width: '100%', marginTop: '4px', padding: '8px' }}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div>
-                <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>API SECRET / ENCTOKEN</label>
-                <input
-                  type="password"
-                  placeholder="Secret or Enctoken"
-                  value={apiSecret}
-                  onChange={(e) => setApiSecret(e.target.value)}
-                  className="input-field"
-                  style={{ width: '100%', marginTop: '4px', padding: '8px' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '0.70rem', fontWeight: 700, color: 'var(--text-muted)' }}>TOTP SECRET (2FA)</label>
-                <input
-                  type="password"
-                  placeholder="Base32 TOTP Key"
-                  value={totpSecret}
-                  onChange={(e) => setTotpSecret(e.target.value)}
-                  className="input-field"
-                  style={{ width: '100%', marginTop: '4px', padding: '8px' }}
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ width: '100%', marginTop: '6px', padding: '10px', fontSize: '0.82rem', fontWeight: 700 }}
-            >
-              Verify &amp; Connect {selectedBrokerForAuth}
-            </button>
           </form>
         </div>
       </div>

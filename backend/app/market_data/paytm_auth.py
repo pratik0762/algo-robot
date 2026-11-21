@@ -112,7 +112,7 @@ class PaytmMoneyAuthService:
             if request_token is not None:
                 self._request_token = request_token.strip()
 
-    def get_login_url(self, state: Optional[str] = None) -> str:
+    def get_login_url(self, state: Optional[str] = None, redirect_uri: Optional[str] = None) -> str:
         """
         Generates the official Paytm Money browser merchant login URL.
         Trader navigates to this URL to authorize Algo Robot.
@@ -121,8 +121,11 @@ class PaytmMoneyAuthService:
             raise ValueError("Paytm Money API Key is not configured. Set PAYTM_MONEY_API_KEY in .env.")
 
         url = f"{PAYTM_LOGIN_BASE_URL}?apiKey={self._api_key}"
-        if state:
-            url += f"&state={urllib.parse.quote_plus(state)}"
+        if isinstance(state, str) and state.strip():
+            url += f"&state={urllib.parse.quote_plus(state.strip())}"
+        red_uri = redirect_uri if isinstance(redirect_uri, str) else getattr(self._settings, "PAYTM_MONEY_REDIRECT_URI", "")
+        if isinstance(red_uri, str) and red_uri.strip():
+            url += f"&redirect_uri={urllib.parse.quote_plus(red_uri.strip())}"
         return url
 
     def generate_session(self, request_token: Optional[str] = None) -> Dict[str, Any]:
@@ -278,6 +281,10 @@ class PaytmMoneyAuthService:
             )
             val["login_url"] = self.get_login_url() if self._api_key else None
             val["token_expiry_info"] = "Paytm Money access tokens are valid until 06:00 AM IST of the following morning."
+            val["session_active"] = bool(self._access_token or self._public_access_token)
+            val["credentials_configured"] = bool(self._api_key and self._api_secret)
+            val["masked_key"] = mask_credential(self._api_key)
+            val["redirect_uri"] = getattr(self._settings, "PAYTM_MONEY_REDIRECT_URI", "")
             return val
 
     def logout(self, revoke_remote: bool = False) -> Dict[str, Any]:

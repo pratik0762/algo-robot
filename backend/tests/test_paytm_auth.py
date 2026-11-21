@@ -18,6 +18,8 @@ from app.market_data.api_router import (
     get_paytm_login_url,
     generate_paytm_session,
     logout_paytm,
+    login_paytm_redirect,
+    paytm_oauth_callback,
     PaytmSessionRequest,
 )
 
@@ -182,3 +184,70 @@ def test_auth_callback_registration_and_trigger():
 
     # Cleanup
     service.logout(revoke_remote=False)
+
+
+def test_login_paytm_redirect():
+    """Verify login redirect endpoint returns HTTP 307 to Paytm merchant login."""
+    paytm_auth_service.configure_credentials(api_key="redirect_test_key_777")
+    resp = login_paytm_redirect(state="test_redirect_state")
+    assert resp.status_code == 307
+    assert "https://login.paytmmoney.com/merchant-login" in resp.headers["location"]
+    assert "apiKey=redirect_test_key_777" in resp.headers["location"]
+    assert "state=test_redirect_state" in resp.headers["location"]
+
+
+@pytest.mark.asyncio
+async def test_paytm_oauth_callback_direct_backend_processing():
+    """
+    CRITICAL TEST: Verify request_token is received and processed directly in the backend,
+    auto-exchanging for JWT access token and returning success HTML with postMessage.
+    """
+    paytm_auth_service.configure_credentials(
+        api_key="backend_cb_key_888",
+        api_secret="backend_cb_secret_888"
+    )
+
+    mock_response_body = json.dumps({
+        "data": {
+            "accessToken": "backend_received_access_jwt",
+            "publicAccessToken": "backend_received_public_jwt",
+        },
+        "status": "success",
+    }).encode("utf-8")
+
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = mock_response_body
+    mock_resp.__enter__.return_value = mock_resp
+
+    mock_request = MagicMock()
+    mock_request.method = "GET"
+
+    with patch("urllib.request.urlopen", return_value=mock_resp):
+        response = await paytm_oauth_callback(
+            request=mock_request,
+            requestToken="automated_token_from_paytm_browser"
+        )
+        assert response.status_code == 200
+        html = response.body.decode("utf-8")
+        assert "Paytm Money Connected!" in html
+        assert "PAYTM_AUTH_SUCCESS" in html
+        assert paytm_auth_service.is_authenticated() is True
+        assert paytm_auth_service.get_access_token() == "backend_received_access_jwt"
+
+
+@pytest.mark.asyncio
+async def test_paytm_oauth_callback_error_handling():
+    """Verify callback handles denial or error parameters gracefully with 400 HTML page."""
+    mock_request = MagicMock()
+    mock_request.method = "GET"
+
+    response = await paytm_oauth_callback(
+        request=mock_request,
+        error="access_denied",
+        error_description="User cancelled authorization"
+    )
+    assert response.status_code == 400
+    html = response.body.decode("utf-8")
+    assert "Paytm Authentication Denied" in html
+    assert "User cancelled authorization" in html
+

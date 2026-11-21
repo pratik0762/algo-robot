@@ -10,7 +10,8 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import func, or_, desc, asc
 
@@ -757,6 +758,209 @@ def get_paytm_login_url(state: Optional[str] = Query(None)):
         return {"status": "success", "login_url": url}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/broker/paytm/login")
+def login_paytm_redirect(
+    state: Optional[str] = Query(None),
+    redirect_uri: Optional[str] = Query(None),
+):
+    """
+    Direct browser entry point for 1-click 'Connect Paytm Money' button.
+    Redirects trader's browser directly to the official Paytm Money merchant login URL.
+    """
+    try:
+        clean_state = state if isinstance(state, str) else None
+        clean_red_uri = redirect_uri if isinstance(redirect_uri, str) else None
+        url = paytm_auth_service.get_login_url(state=clean_state, redirect_uri=clean_red_uri)
+        return RedirectResponse(url=url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+    except Exception as e:
+        logger.error("Failed to generate Paytm login redirect: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.api_route("/api/broker/paytm/callback", methods=["GET", "POST"])
+async def paytm_oauth_callback(
+    request: Request,
+    requestToken: Optional[str] = Query(None),
+    request_token: Optional[str] = Query(None),
+    token: Optional[str] = Query(None),
+    code: Optional[str] = Query(None),
+    state: Optional[str] = Query(None),
+    error: Optional[str] = Query(None),
+    error_description: Optional[str] = Query(None),
+):
+    """
+    Automated OAuth 2.0 Callback Receiver for Paytm Money.
+    CRITICAL: Receives and processes the request_token entirely in the BACKEND.
+    No manual copying or pasting required by trader.
+    Automatically exchanges request_token for JWT access tokens, starts WebSocket,
+    and returns a clean auto-closing / redirecting status page.
+    """
+    # 1. Handle error cases from Paytm auth server
+    err = error if isinstance(error, str) and error.strip() else None
+    err_desc = error_description if isinstance(error_description, str) and error_description.strip() else None
+    if err or err_desc:
+        err_msg = err_desc or err or "Paytm authorization was denied."
+        logger.warning("Paytm OAuth callback received error: %s", err_msg)
+        html_error = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paytm Authentication Failed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {{ margin: 0; background: #0a0e17; color: #f1f5f9; font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }}
+    .card {{ background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 10px 40px rgba(0,0,0,0.6); border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 90%; text-align: center; }}
+    .icon {{ width: 64px; height: 64px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 2px solid #ef4444; color: #f87171; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }}
+    h2 {{ margin: 0 0 10px; font-size: 1.35rem; color: #ffffff; }}
+    p {{ margin: 0 0 20px; font-size: 0.88rem; color: #94a3b8; line-height: 1.5; }}
+    .btn {{ display: inline-block; background: #334155; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.85rem; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✕</div>
+    <h2>Paytm Authentication Denied</h2>
+    <p>{err_msg}</p>
+    <a href="/api/broker/paytm/login" class="btn">Try Connecting Again</a>
+  </div>
+</body>
+</html>"""
+        return HTMLResponse(content=html_error, status_code=400)
+
+    # 2. Extract request token from query parameters or POST body
+    def _clean_str(val: Any) -> str:
+        return val.strip() if isinstance(val, str) else ""
+
+    extracted_token = (
+        _clean_str(requestToken)
+        or _clean_str(request_token)
+        or _clean_str(token)
+        or _clean_str(code)
+    )
+    if not extracted_token and request.method == "POST":
+        try:
+            body = await request.json()
+            if isinstance(body, dict):
+                extracted_token = _clean_str(body.get("requestToken")) or _clean_str(body.get("request_token")) or _clean_str(body.get("token"))
+        except Exception:
+            pass
+
+    if not extracted_token:
+        logger.warning("Paytm OAuth callback reached without a request_token.")
+        html_missing = """<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paytm Request Token Missing</title>
+  <style>
+    body { margin: 0; background: #0a0e17; color: #f1f5f9; font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .card { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 90%; text-align: center; }
+    h2 { margin: 0 0 10px; font-size: 1.35rem; color: #ffffff; }
+    p { margin: 0 0 20px; font-size: 0.88rem; color: #94a3b8; }
+    .btn { display: inline-block; background: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Missing Request Token</h2>
+    <p>The callback URL was invoked without a valid authorization requestToken query parameter.</p>
+    <a href="/api/broker/paytm/login" class="btn">Click here to Connect Paytm Money</a>
+  </div>
+</body>
+</html>"""
+        return HTMLResponse(content=html_missing, status_code=400)
+
+    # 3. Exchange request token for Access Tokens entirely in the Backend!
+    try:
+        session_res = paytm_auth_service.generate_session(request_token=extracted_token)
+        logger.info("Backend successfully processed Paytm request token and established session.")
+
+        # Update broker manager state
+        try:
+            from app.broker_connectors.broker_manager import broker_manager
+            paytm_adapter_inst = broker_manager.adapters.get("PAYTM_MONEY")
+            if paytm_adapter_inst:
+                paytm_adapter_inst.is_connected = True
+                paytm_adapter_inst.session_token = paytm_auth_service.get_access_token()
+        except Exception:
+            pass
+
+        frontend_url = "http://localhost:3000/data-center"
+        html_success = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paytm Money Connected — Algo Robot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {{ margin: 0; background: #0a0e17; color: #f1f5f9; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }}
+    .card {{ background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.85) 100%); border: 1px solid rgba(16, 185, 129, 0.5); box-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 30px rgba(16, 185, 129, 0.2); border-radius: 16px; padding: 40px 32px; max-width: 480px; width: 90%; text-align: center; }}
+    .icon {{ width: 68px; height: 68px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #34d399; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 34px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }}
+    h2 {{ margin: 0 0 8px; font-size: 1.4rem; font-weight: 800; color: #ffffff; letter-spacing: -0.01em; }}
+    .badge {{ display: inline-block; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; font-size: 0.72rem; font-weight: 800; padding: 4px 12px; border-radius: 6px; margin: 8px 0 18px 0; letter-spacing: 0.05em; }}
+    p {{ margin: 0 0 24px; font-size: 0.88rem; color: #94a3b8; line-height: 1.55; }}
+    .btn {{ display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 11px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.88rem; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }}
+    .timer {{ margin-top: 16px; font-size: 0.78rem; color: #64748b; font-weight: 500; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✓</div>
+    <h2>Paytm Money Connected!</h2>
+    <div class="badge">ACCESS TOKEN GENERATED &bull; LIVE FEED ACTIVE</div>
+    <p>The authorization request token was received and processed directly by the backend. Your session is active and live WebSocket streaming has started.</p>
+    <a href="{frontend_url}" class="btn">Return to Algo Robot</a>
+    <div class="timer" id="countdown">Redirecting to platform in 3 seconds...</div>
+  </div>
+  <script>
+    if (window.opener && !window.opener.closed) {{
+      try {{
+        window.opener.postMessage({{ type: 'PAYTM_AUTH_SUCCESS' }}, '*');
+        setTimeout(() => window.close(), 1200);
+      }} catch(e) {{}}
+    }}
+    let s = 3;
+    const el = document.getElementById('countdown');
+    const iv = setInterval(() => {{
+      s--;
+      if (el) el.innerText = `Redirecting to platform in ${{s}} seconds...`;
+      if (s <= 0) {{
+        clearInterval(iv);
+        window.location.href = '{frontend_url}';
+      }}
+    }}, 1000);
+  </script>
+</body>
+</html>"""
+        return HTMLResponse(content=html_success, status_code=200)
+
+    except Exception as exc:
+        err_str = str(exc)
+        logger.error("Error exchanging Paytm request token: %s", err_str)
+        html_fail = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paytm Token Exchange Failed</title>
+  <style>
+    body {{ margin: 0; background: #0a0e17; color: #f1f5f9; font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }}
+    .card {{ background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 90%; text-align: center; }}
+    h2 {{ margin: 0 0 10px; font-size: 1.35rem; color: #ffffff; }}
+    p {{ margin: 0 0 20px; font-size: 0.88rem; color: #94a3b8; line-height: 1.5; }}
+    .btn {{ display: inline-block; background: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Token Exchange Failed</h2>
+    <p>{err_str}</p>
+    <a href="/api/broker/paytm/login" class="btn">Retry Connecting Paytm Money</a>
+  </div>
+</body>
+</html>"""
+        return HTMLResponse(content=html_fail, status_code=400)
 
 
 @router.post("/api/broker/paytm/session")

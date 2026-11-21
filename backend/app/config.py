@@ -87,6 +87,8 @@ class Settings(BaseSettings):
     PAYTM_MONEY_REQUEST_TOKEN: str = ""
     PAYTM_MONEY_ACCESS_TOKEN: str = ""
     PAYTM_MONEY_PUBLIC_ACCESS_TOKEN: str = ""
+    PAYTM_MONEY_REDIRECT_URI: str = "http://localhost:8000/api/broker/paytm/callback"
+    FRONTEND_BASE_URL: str = "http://localhost:3000"
 
     # Alert Channels
     TELEGRAM_BOT_TOKEN: str = ""
