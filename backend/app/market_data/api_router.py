@@ -1451,6 +1451,17 @@ async def subscribe_paytm_on_demand(payload: PaytmOnDemandSubscribeRequest):
     }
 
 
+@router.get("/api/market/resilience/diagnostics")
+def get_resilience_diagnostics():
+    """Provides circuit breaker health, failure thresholds, and structured error logs."""
+    from app.market_data.resilience import resilience_manager
+    return {
+        "status": "success",
+        "diagnostics": resilience_manager.get_diagnostics(),
+    }
+
+
+
 
 
 
