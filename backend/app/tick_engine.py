@@ -227,8 +227,47 @@ SYMBOL_TICKER_MAP: Dict[str, str] = {
 }
 
 def _fetch_single_quote(symbol: str) -> Optional[Dict[str, Any]]:
-    """Fetch live real-time price quote for a single stock from exchange feed."""
-    ticker = SYMBOL_TICKER_MAP.get(symbol, f"{symbol}.NS")
+    """Fetch live real-time price quote for a single stock from exchange feed.
+    Priority 1: Paytm Money live memory cache & quote provider (if authenticated or available).
+    Priority 2: Primary market data router normalized tick store.
+    Priority 3: Exchange fallback quote with explicit provenance tracking.
+    """
+    clean_sym = symbol.upper().replace(".NS", "").replace("-EQ", "")
+    
+    # 1. Check Paytm Money live quote service first
+    try:
+        from app.market_data.live_quote_service import live_quote_service
+        for ex in ("NSE", "BSE"):
+            q = live_quote_service.get_quote(f"{ex}_{clean_sym}")
+            if q and q.get("ltp", 0.0) > 0.0:
+                ltp = float(q["ltp"])
+                prev_close = float(q.get("previous_close") or ltp)
+                change = round(float(q.get("change", ltp - prev_close)), 2)
+                pct_change = round(float(q.get("percent_change", (change / prev_close) * 100.0 if prev_close else 0.0)), 2)
+                return {
+                    "symbol": clean_sym,
+                    "ltp": ltp,
+                    "change": change,
+                    "percent_change": pct_change,
+                    "open": float(q.get("open") or prev_close),
+                    "high": float(q.get("high") or ltp),
+                    "low": float(q.get("low") or ltp),
+                    "high_52w": float(q.get("high_52w") or round(ltp * 1.15, 2)),
+                    "low_52w": float(q.get("low_52w") or round(ltp * 0.85, 2)),
+                    "previous_close": prev_close,
+                    "volume": int(q.get("volume", 0)),
+                    "bid": float(q.get("bid") or round(ltp - 0.05, 2)),
+                    "ask": float(q.get("ask") or round(ltp + 0.05, 2)),
+                    "last_tick_direction": "UP" if change > 0 else ("DOWN" if change < 0 else "FLAT"),
+                    "last_tick_time": q.get("last_tick_time") or time.strftime("%H:%M:%S"),
+                    "data_status": q.get("data_status", "LIVE"),
+                    "feed_source": "PAYTM_MONEY",
+                }
+    except Exception as ex_paytm:
+        logger.debug("Paytm quote lookup skipped for %s: %s", clean_sym, ex_paytm)
+
+    # 2. Resilient exchange chart feed fallback with explicit provenance
+    ticker = SYMBOL_TICKER_MAP.get(clean_sym, f"{clean_sym}.NS")
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval=1m"
     req = urllib.request.Request(
         url,
@@ -250,12 +289,12 @@ def _fetch_single_quote(symbol: str) -> Optional[Dict[str, Any]]:
             day_high = float(meta.get("regularMarketDayHigh") or ltp)
             day_low = float(meta.get("regularMarketDayLow") or ltp)
             day_open = float(meta.get("regularMarketDayHigh") or prev_close)
-            volume = int(meta.get("regularMarketVolume") or random.randint(500000, 2500000))
+            volume = int(meta.get("regularMarketVolume") or 0)
             fifty_two_high = float(meta.get("fiftyTwoWeekHigh") or 0.0)
             fifty_two_low = float(meta.get("fiftyTwoWeekLow") or 0.0)
 
             return {
-                "symbol": symbol,
+                "symbol": clean_sym,
                 "ltp": ltp,
                 "change": change,
                 "percent_change": pct_change,
@@ -269,10 +308,12 @@ def _fetch_single_quote(symbol: str) -> Optional[Dict[str, Any]]:
                 "bid": round(ltp - 0.05, 2),
                 "ask": round(ltp + 0.05, 2),
                 "last_tick_direction": "UP" if change > 0 else ("DOWN" if change < 0 else "FLAT"),
-                "last_tick_time": time.strftime("%H:%M:%S")
+                "last_tick_time": time.strftime("%H:%M:%S"),
+                "data_status": "DELAYED" if is_indian_market_open() else "EOD",
+                "feed_source": "EXCHANGE_SNAPSHOT_FALLBACK",
             }
     except Exception as e:
-        logger.debug("Failed fetching live quote for %s: %s", symbol, e)
+        logger.debug("Failed fetching live quote for %s: %s", clean_sym, e)
         return None
 
 class LiveTickEngine:

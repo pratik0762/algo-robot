@@ -136,9 +136,38 @@ class MarketDataService:
         timeframe: str = "15m",
         timeout: float = 6.0
     ) -> List[Dict[str, Any]]:
-        """Fetch authentic OHLCV candlestick series from market feed."""
+        """Fetch authentic OHLCV candlestick series.
+        Priority 1: Paytm Money Historical & Intraday Price Chart API.
+        Priority 2: PostgreSQL / Local authentic candle store.
+        Priority 3: Exchange snapshot chart feed fallback with explicit provenance.
+        """
+        clean_symbol = symbol.upper().replace(".NS", "").replace("-EQ", "")
+        
+        # 1. Primary Route: Paytm Money Historical Adapter
+        try:
+            from app.market_data.historical.paytm_historical_adapter import paytm_historical_adapter
+            from app.market_data.paytm_auth import paytm_auth_service
+            if paytm_auth_service.is_authenticated():
+                candles = paytm_historical_adapter.fetch_candles(
+                    symbol=clean_symbol,
+                    exchange="NSE",
+                    timeframe=timeframe,
+                    persist=True
+                )
+                if candles:
+                    self.save_cached_candles(clean_symbol, timeframe, candles)
+                    return candles
+        except Exception as ex_paytm:
+            logger.debug("Paytm historical candle fetch skipped for %s (%s): %s", clean_symbol, timeframe, ex_paytm)
+
+        # 2. Check local authentic cache
+        cached = self.load_cached_candles(clean_symbol, timeframe)
+        if cached:
+            return cached
+
+        # 3. Resilient exchange chart feed fallback
         cfg = TIMEFRAME_CONFIG.get(timeframe, TIMEFRAME_CONFIG["15m"])
-        ticker = self.get_ticker_for_symbol(symbol)
+        ticker = self.get_ticker_for_symbol(clean_symbol)
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?range={cfg['range']}&interval={cfg['interval']}"
 
         req = urllib.request.Request(
