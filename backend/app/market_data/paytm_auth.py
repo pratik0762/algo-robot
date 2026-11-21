@@ -63,6 +63,7 @@ class PaytmMoneyAuthService:
             self._public_access_token: str = self._settings.PAYTM_MONEY_PUBLIC_ACCESS_TOKEN.strip()
             self._read_access_token: str = ""
             self._last_auth_time: Optional[float] = None
+            self._user_details: Optional[Dict[str, Any]] = None
             self._token_file = os.path.join(os.path.dirname(__file__), ".paytm_tokens.json")
             self._auth_callbacks: List[Callable[[], Any]] = []
 
@@ -112,17 +113,41 @@ class PaytmMoneyAuthService:
             if request_token is not None:
                 self._request_token = request_token.strip()
 
+    def get_pm_client(self) -> Any:
+        """Instantiates and returns the official pyPMClient PMClient instance."""
+        try:
+            from pmClient import PMClient
+            if not self._api_key:
+                return None
+            return PMClient(
+                api_key=self._api_key,
+                api_secret=self._api_secret or "placeholder_secret",
+                access_token=self._access_token or None,
+                public_access_token=self._public_access_token or None,
+                read_access_token=self._read_access_token or None,
+            )
+        except Exception as e:
+            logger.debug("Failed to instantiate PMClient: %s", e)
+            return None
+
     def get_login_url(self, state: Optional[str] = None, redirect_uri: Optional[str] = None) -> str:
         """
         Generates the official Paytm Money browser merchant login URL.
-        Trader navigates to this URL to authorize Algo Robot.
+        Uses pyPMClient pm.login(state) with redirect_uri support.
         """
         if not self._api_key:
             raise ValueError("Paytm Money API Key is not configured. Set PAYTM_MONEY_API_KEY in .env.")
 
-        url = f"{PAYTM_LOGIN_BASE_URL}?apiKey={self._api_key}"
-        if isinstance(state, str) and state.strip():
-            url += f"&state={urllib.parse.quote_plus(state.strip())}"
+        clean_state = state.strip() if isinstance(state, str) and state.strip() else "algorobot_auth"
+        pm = self.get_pm_client()
+        if pm is not None:
+            try:
+                url = pm.login(state_key=clean_state)
+            except Exception:
+                url = f"{PAYTM_LOGIN_BASE_URL}?apiKey={self._api_key}&state={urllib.parse.quote_plus(clean_state)}"
+        else:
+            url = f"{PAYTM_LOGIN_BASE_URL}?apiKey={self._api_key}&state={urllib.parse.quote_plus(clean_state)}"
+
         red_uri = redirect_uri if isinstance(redirect_uri, str) else getattr(self._settings, "PAYTM_MONEY_REDIRECT_URI", "")
         if isinstance(red_uri, str) and red_uri.strip():
             url += f"&redirect_uri={urllib.parse.quote_plus(red_uri.strip())}"
@@ -132,6 +157,7 @@ class PaytmMoneyAuthService:
         """
         Exchanges request_token + api_key + api_secret with Paytm Money Open API
         to acquire accessToken and publicAccessToken (used for WebSocket).
+        Reuses official pyPMClient SDK with HTTP fallback.
         """
         with self._lock:
             token_to_use = (request_token or self._request_token or "").strip()
@@ -140,55 +166,81 @@ class PaytmMoneyAuthService:
             if not self._api_key or not self._api_secret:
                 raise ValueError("PAYTM_MONEY_API_KEY and PAYTM_MONEY_API_SECRET must be configured.")
 
-            payload = {
-                "apiKey": self._api_key,
-                "apiSecret": self._api_secret,
-                "requestToken": token_to_use,
-            }
+            access_token = ""
+            public_access_token = ""
+            read_access_token = ""
 
-            url = f"{PAYTM_API_BASE_URL}{SESSION_GENERATE_ENDPOINT}"
-            req_data = json.dumps(payload).encode("utf-8")
-            req = urllib.request.Request(
-                url,
-                data=req_data,
-                headers={"Content-Type": "application/json", "Accept": "application/json"},
-                method="POST",
-            )
-
-            try:
-                with urllib.request.urlopen(req, timeout=15) as resp:
-                    resp_body = resp.read().decode("utf-8")
-                    data = json.loads(resp_body)
-            except urllib.error.HTTPError as e:
-                err_text = e.read().decode("utf-8", errors="ignore")
-                logger.error("Paytm Money session generation failed with HTTP %s", e.code)
+            # 1. Attempt official pyPMClient SDK session generation
+            pm = self.get_pm_client()
+            if pm is not None:
                 try:
-                    err_json = json.loads(err_text)
-                    err_msg = err_json.get("message") or err_json.get("error") or err_text
-                except Exception:
-                    err_msg = err_text
-                raise RuntimeError(f"Paytm Money session generation failed (HTTP {e.code}): {err_msg}")
-            except Exception as e:
-                logger.error("Paytm Money session generation connection error: %s", type(e).__name__)
-                raise RuntimeError(f"Paytm Money session generation network error: {str(e)}")
+                    resp = pm.generate_session(request_token=token_to_use)
+                    if isinstance(resp, dict):
+                        t_data = resp.get("data") if isinstance(resp.get("data"), dict) else resp
+                        access_token = t_data.get("access_token") or t_data.get("accessToken") or ""
+                        public_access_token = t_data.get("public_access_token") or t_data.get("publicAccessToken") or ""
+                        read_access_token = t_data.get("read_access_token") or t_data.get("readAccessToken") or ""
+                except Exception as sdk_err:
+                    logger.debug("pyPMClient SDK generate_session deferred to REST: %s", sdk_err)
 
-            # Parse returned token payload
-            # Response structure can have tokens in 'data' object or at root
-            token_data = data.get("data") if isinstance(data.get("data"), dict) else data
-
-            access_token = token_data.get("accessToken", "")
-            public_access_token = token_data.get("publicAccessToken", "")
-            read_access_token = token_data.get("readAccessToken", "")
-
+            # 2. Resilient fallback to direct Paytm Open API REST endpoint
             if not access_token and not public_access_token:
-                msg = data.get("message", "No tokens found in response payload.")
-                raise RuntimeError(f"Paytm session response did not contain access tokens: {msg}")
+                payload = {
+                    "apiKey": self._api_key,
+                    "apiSecret": self._api_secret,
+                    "requestToken": token_to_use,
+                }
+
+                url = f"{PAYTM_API_BASE_URL}{SESSION_GENERATE_ENDPOINT}"
+                req_data = json.dumps(payload).encode("utf-8")
+                req = urllib.request.Request(
+                    url,
+                    data=req_data,
+                    headers={"Content-Type": "application/json", "Accept": "application/json"},
+                    method="POST",
+                )
+
+                try:
+                    with urllib.request.urlopen(req, timeout=15) as resp:
+                        resp_body = resp.read().decode("utf-8")
+                        data = json.loads(resp_body)
+                except urllib.error.HTTPError as e:
+                    err_text = e.read().decode("utf-8", errors="ignore")
+                    logger.error("Paytm Money session generation failed with HTTP %s", e.code)
+                    try:
+                        err_json = json.loads(err_text)
+                        err_msg = err_json.get("message") or err_json.get("error") or err_text
+                    except Exception:
+                        err_msg = err_text
+                    raise RuntimeError(f"Paytm Money session generation failed (HTTP {e.code}): {err_msg}")
+                except Exception as e:
+                    logger.error("Paytm Money session generation connection error: %s", type(e).__name__)
+                    raise RuntimeError(f"Paytm Money session generation network error: {str(e)}")
+
+                token_data = data.get("data") if isinstance(data.get("data"), dict) else data
+                access_token = token_data.get("accessToken", "") or token_data.get("access_token", "")
+                public_access_token = token_data.get("publicAccessToken", "") or token_data.get("public_access_token", "")
+                read_access_token = token_data.get("readAccessToken", "") or token_data.get("read_access_token", "")
+
+                if not access_token and not public_access_token:
+                    msg = data.get("message", "No tokens found in response payload.")
+                    raise RuntimeError(f"Paytm session response did not contain access tokens: {msg}")
 
             self._access_token = access_token
             self._public_access_token = public_access_token or access_token
             self._read_access_token = read_access_token
             self._last_auth_time = time.time()
             self._request_token = token_to_use
+
+            # 3. Verify connection using official user details API
+            try:
+                pm_verified = self.get_pm_client()
+                if pm_verified is not None:
+                    ud = pm_verified.get_user_details()
+                    if isinstance(ud, dict):
+                        self._user_details = ud.get("data") if isinstance(ud.get("data"), dict) else ud
+            except Exception as e:
+                logger.debug("Could not verify user details via Paytm SDK: %s", e)
 
             # Persist tokens locally
             self._save_cached_session()
@@ -202,6 +254,7 @@ class PaytmMoneyAuthService:
                 "authenticated": True,
                 "has_access_token": bool(self._access_token),
                 "has_public_access_token": bool(self._public_access_token),
+                "user_details": self._user_details,
                 "authenticated_at": datetime.now(timezone.utc).isoformat(),
             }
 
@@ -274,27 +327,40 @@ class PaytmMoneyAuthService:
         """Returns comprehensive authentication and connectivity status."""
         val = self.validate_credentials()
         with self._lock:
+            is_conn = bool(self._access_token or self._public_access_token)
+            val["status"] = "CONNECTED" if is_conn else "DISCONNECTED"
+            val["is_connected"] = is_conn
+            val["session_active"] = is_conn
+            val["credentials_configured"] = bool(self._api_key and self._api_secret)
+            val["masked_key"] = mask_credential(self._api_key)
+            val["redirect_uri"] = getattr(self._settings, "PAYTM_MONEY_REDIRECT_URI", "")
+            val["user_details"] = self._user_details
             val["last_authenticated_at"] = (
                 datetime.fromtimestamp(self._last_auth_time, tz=timezone.utc).isoformat()
                 if self._last_auth_time
                 else None
             )
-            val["login_url"] = self.get_login_url() if self._api_key else None
+            val["last_connection_time"] = val["last_authenticated_at"]
+            val["login_url"] = self.get_login_url(state="default") if self._api_key else None
             val["token_expiry_info"] = "Paytm Money access tokens are valid until 06:00 AM IST of the following morning."
-            val["session_active"] = bool(self._access_token or self._public_access_token)
-            val["credentials_configured"] = bool(self._api_key and self._api_secret)
-            val["masked_key"] = mask_credential(self._api_key)
-            val["redirect_uri"] = getattr(self._settings, "PAYTM_MONEY_REDIRECT_URI", "")
             return val
 
     def logout(self, revoke_remote: bool = False) -> Dict[str, Any]:
-        """Clears local tokens and optionally revokes session remotely."""
+        """Clears local tokens and optionally revokes session remotely via SDK."""
         with self._lock:
             token = self._access_token
+            pm = self.get_pm_client()
+            if pm is not None and revoke_remote:
+                try:
+                    pm.logout()
+                except Exception:
+                    pass
+
             self._access_token = ""
             self._public_access_token = ""
             self._read_access_token = ""
             self._last_auth_time = None
+            self._user_details = None
 
             if os.path.exists(self._token_file):
                 try:
@@ -316,6 +382,45 @@ class PaytmMoneyAuthService:
                     pass
 
             return {"status": "success", "message": "Paytm Money session cleared."}
+
+    def save_session_to_db(self, db: Any) -> None:
+        """Encrypts credentials and tokens and persists to PostgreSQL BrokerCredential table."""
+        try:
+            from app.market_data.paytm_db_service import store_encrypted_paytm_session
+            store_encrypted_paytm_session(
+                db=db,
+                api_key=self._api_key,
+                api_secret=self._api_secret,
+                access_token=self._access_token,
+                public_access_token=self._public_access_token,
+                read_access_token=self._read_access_token,
+                user_details=self._user_details,
+            )
+        except Exception as e:
+            logger.error("Failed to store encrypted session in DB: %s", e)
+
+    def restore_session_from_db(self, db: Any) -> bool:
+        """Loads and decrypts session from PostgreSQL BrokerCredential table."""
+        try:
+            from app.market_data.paytm_db_service import load_encrypted_paytm_session
+            stored = load_encrypted_paytm_session(db)
+            if stored and (stored.get("access_token") or stored.get("public_access_token")):
+                with self._lock:
+                    if stored.get("api_key") and not self._api_key:
+                        self._api_key = stored["api_key"]
+                    if stored.get("api_secret") and not self._api_secret:
+                        self._api_secret = stored["api_secret"]
+                    self._access_token = stored.get("access_token", "")
+                    self._public_access_token = stored.get("public_access_token", "")
+                    self._read_access_token = stored.get("read_access_token", "")
+                    self._user_details = stored.get("user_details")
+                    self._last_auth_time = time.time()
+                logger.info("Restored encrypted Paytm Money session from PostgreSQL successfully")
+                self._notify_auth_success()
+                return True
+        except Exception as e:
+            logger.warning("Could not restore session from DB: %s", e)
+        return False
 
     def _save_cached_session(self) -> None:
         """Saves active tokens to a local session cache file."""

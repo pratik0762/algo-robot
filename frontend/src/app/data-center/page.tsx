@@ -118,12 +118,23 @@ interface ResolvedEntity {
 }
 
 interface PaytmAuthStatus {
+  status?: string;
+  is_connected?: boolean;
   credentials_configured: boolean;
   session_active: boolean;
-  token_issued_at: string | null;
-  token_expires_at: string | null;
-  masked_key: string;
+  token_issued_at?: string | null;
+  token_expires_at?: string | null;
+  last_authenticated_at?: string | null;
+  last_connection_time?: string | null;
+  masked_key?: string;
   login_url?: string;
+  user_details?: {
+    name?: string;
+    userName?: string;
+    email?: string;
+    userId?: string;
+    clientCode?: string;
+  } | null;
 }
 
 interface PaytmMasterStats {
@@ -166,6 +177,7 @@ export default function MarketDataCenterPage() {
 
   // Paytm Money Dedicated Telemetry State
   const [paytmAuth, setPaytmAuth] = useState<PaytmAuthStatus | null>(null);
+  const [authStatusText, setAuthStatusText] = useState<string>("DISCONNECTED");
   const [paytmMaster, setPaytmMaster] = useState<PaytmMasterStats | null>(null);
   const [paytmStream, setPaytmStream] = useState<PaytmStreamStatus | null>(null);
   const [paytmPersistence, setPaytmPersistence] = useState<PaytmPersistenceMetrics | null>(null);
@@ -232,13 +244,26 @@ export default function MarketDataCenterPage() {
     return () => clearInterval(interval);
   }, [fetchTelemetry]);
 
+  // Sync authStatusText with paytmAuth telemetry
+  useEffect(() => {
+    if (paytmAuth?.session_active) {
+      setAuthStatusText("CONNECTED");
+    } else if (authStatusText !== "AUTHENTICATION_PENDING") {
+      setAuthStatusText("DISCONNECTED");
+    }
+  }, [paytmAuth?.session_active]);
+
   // Listen for automated backend authentication broadcast from popup window
   useEffect(() => {
     const handleAuthMessage = (event: MessageEvent) => {
       if (event.data?.type === "PAYTM_AUTH_SUCCESS") {
-        setSyncMessage("Paytm Money connected successfully! Access token generated and active in backend.");
+        setAuthStatusText("LOGIN_SUCCESSFUL");
+        setSyncMessage("Login Successful! Access token generated and active in backend.");
         fetchTelemetry();
-        setTimeout(() => setSyncMessage(null), 5000);
+        setTimeout(() => {
+          setAuthStatusText("CONNECTED");
+          setSyncMessage(null);
+        }, 4000);
       }
     };
     window.addEventListener("message", handleAuthMessage);
@@ -251,8 +276,9 @@ export default function MarketDataCenterPage() {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("requestToken") || params.get("request_token") || params.get("token") || params.get("code");
       if (token) {
+        setAuthStatusText("AUTHENTICATION_PENDING");
         setSyncMessage("Exchanging Paytm request token with backend...");
-        fetch(`${getApiBase()}/api/broker/paytm/session`, {
+        fetch(`${getApiBase()}/api/brokers/paytm/session`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ request_token: token })
@@ -260,32 +286,73 @@ export default function MarketDataCenterPage() {
           .then((res) => res.json())
           .then((data) => {
             if (data.status === "success") {
-              setSyncMessage("Paytm Money session established successfully!");
+              setAuthStatusText("LOGIN_SUCCESSFUL");
+              setSyncMessage("Login Successful! Paytm Money session established.");
               fetchTelemetry();
+              setTimeout(() => setAuthStatusText("CONNECTED"), 3000);
             } else {
+              setAuthStatusText("AUTHENTICATION_FAILED");
               setSyncMessage(`Paytm Auth Error: ${data.detail || data.message || "Failed"}`);
             }
             window.history.replaceState({}, document.title, window.location.pathname);
             setTimeout(() => setSyncMessage(null), 5000);
           })
           .catch((err) => {
+            setAuthStatusText("AUTHENTICATION_FAILED");
             setSyncMessage(`Error exchanging Paytm token: ${err.message}`);
           });
       }
     }
   }, [fetchTelemetry]);
 
-  const handleConnectPaytmMoney = () => {
-    const width = 600;
-    const height = 740;
-    const left = typeof window !== "undefined" ? window.screen.width / 2 - width / 2 : 100;
-    const top = typeof window !== "undefined" ? window.screen.height / 2 - height / 2 : 100;
-    const loginUrl = `${getApiBase()}/api/broker/paytm/login`;
-    window.open(
-      loginUrl,
-      "PaytmMoneyAuth",
-      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
-    );
+  const handleConnectPaytmMoney = async () => {
+    try {
+      setAuthStatusText("AUTHENTICATION_PENDING");
+      setSyncMessage("Generating secure one-time OAuth state with CSRF protection...");
+      const res = await fetch(`${getApiBase()}/api/brokers/paytm/connect`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.login_url) {
+        const width = 600;
+        const height = 740;
+        const left = typeof window !== "undefined" ? window.screen.width / 2 - width / 2 : 100;
+        const top = typeof window !== "undefined" ? window.screen.height / 2 - height / 2 : 100;
+        const popup = window.open(
+          data.login_url,
+          "PaytmMoneyAuth",
+          `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
+        );
+        const poll = setInterval(() => {
+          if (popup && popup.closed) {
+            clearInterval(poll);
+            setTimeout(() => fetchTelemetry(), 1000);
+          }
+        }, 1200);
+      } else {
+        setAuthStatusText("AUTHENTICATION_FAILED");
+        setSyncMessage(`Connect initialization failed: ${data.detail || "Error"}`);
+      }
+    } catch (e: any) {
+      setAuthStatusText("AUTHENTICATION_FAILED");
+      setSyncMessage(`Failed to contact connect endpoint: ${e.message}`);
+    }
+  };
+
+  const handleDisconnectPaytmMoney = async () => {
+    try {
+      setSyncMessage("Terminating Paytm Money session...");
+      const res = await fetch(`${getApiBase()}/api/brokers/paytm/disconnect`, { method: "POST" });
+      if (res.ok) {
+        setAuthStatusText("DISCONNECTED");
+        setSyncMessage("Paytm Money disconnected successfully. Session invalidated.");
+        fetchTelemetry();
+        setTimeout(() => setSyncMessage(null), 3000);
+      } else {
+        const d = await res.json();
+        setSyncMessage(`Disconnect failed: ${d.detail || "Error"}`);
+      }
+    } catch (e: any) {
+      setSyncMessage(`Network error during disconnect: ${e.message}`);
+    }
   };
 
   const handleTriggerSync = async () => {
@@ -674,8 +741,30 @@ export default function MarketDataCenterPage() {
                 }}
               >
                 <Zap size={14} className={paytmAuth?.session_active ? "" : "animate-pulse"} />
-                {paytmAuth?.session_active ? "Paytm Connected (Re-Auth)" : "Connect Paytm Money"}
+                {paytmAuth?.session_active ? "Re-Authenticate" : "Connect Paytm Money"}
               </button>
+
+              {paytmAuth?.session_active && (
+                <button
+                  onClick={handleDisconnectPaytmMoney}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "rgba(239, 68, 68, 0.15)",
+                    border: "1px solid rgba(239, 68, 68, 0.4)",
+                    color: "#f87171",
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer"
+                  }}
+                >
+                  <WifiOff size={14} />
+                  Disconnect
+                </button>
+              )}
 
               <button
                 onClick={handleTogglePaytmStream}
@@ -878,19 +967,49 @@ export default function MarketDataCenterPage() {
                     fontWeight: 800,
                     padding: "2px 6px",
                     borderRadius: "4px",
-                    background: paytmAuth?.session_active ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)",
-                    color: paytmAuth?.session_active ? "#34d399" : "#fbbf24"
+                    background:
+                      authStatusText === "CONNECTED"
+                        ? "rgba(16, 185, 129, 0.2)"
+                        : authStatusText === "LOGIN_SUCCESSFUL"
+                        ? "rgba(16, 185, 129, 0.25)"
+                        : authStatusText === "AUTHENTICATION_PENDING"
+                        ? "rgba(245, 158, 11, 0.2)"
+                        : authStatusText === "AUTHENTICATION_FAILED"
+                        ? "rgba(239, 68, 68, 0.2)"
+                        : "rgba(148, 163, 184, 0.15)",
+                    color:
+                      authStatusText === "CONNECTED"
+                        ? "#34d399"
+                        : authStatusText === "LOGIN_SUCCESSFUL"
+                        ? "#10b981"
+                        : authStatusText === "AUTHENTICATION_PENDING"
+                        ? "#fbbf24"
+                        : authStatusText === "AUTHENTICATION_FAILED"
+                        ? "#f87171"
+                        : "#94a3b8"
                   }}
                 >
-                  {paytmAuth?.session_active ? "AUTHENTICATED" : "AWAITING LOGIN"}
+                  {authStatusText === "CONNECTED"
+                    ? "CONNECTED"
+                    : authStatusText === "LOGIN_SUCCESSFUL"
+                    ? "LOGIN SUCCESSFUL"
+                    : authStatusText === "AUTHENTICATION_PENDING"
+                    ? "AUTH PENDING"
+                    : authStatusText === "AUTHENTICATION_FAILED"
+                    ? "AUTH FAILED"
+                    : "DISCONNECTED"}
                 </span>
               </div>
               <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#ffffff", fontFamily: "monospace" }}>
                 {paytmAuth?.masked_key || "PM_KEY_***"}
               </div>
-              <div style={{ fontSize: "0.72rem", color: "#fbbf24", marginTop: "6px", display: "flex", justifyContent: "space-between" }}>
-                <span>Configured: {paytmAuth?.credentials_configured ? "YES" : "NO"}</span>
-                <span>Expires: {paytmAuth?.token_expires_at ? paytmAuth.token_expires_at.slice(11, 19) + " IST" : "Daily Session"}</span>
+              <div style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: "4px" }}>
+                Last Conn: {paytmAuth?.last_connection_time ? new Date(paytmAuth.last_connection_time).toLocaleTimeString('en-IN') : "None"}
+                {paytmAuth?.user_details?.name ? ` • User: ${paytmAuth.user_details.name}` : ""}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#fbbf24", marginTop: "4px", display: "flex", justifyContent: "space-between" }}>
+                <span>Vault: PostgreSQL (AES-256)</span>
+                <span>Expires: 06:00 AM IST</span>
               </div>
             </div>
           </div>

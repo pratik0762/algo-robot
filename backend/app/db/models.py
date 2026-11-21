@@ -116,6 +116,30 @@ class BrokerCredential(Base):
     )
 
 
+class OAuthState(Base):
+    """
+    Stores cryptographically secure one-time OAuth state parameters in PostgreSQL
+    with expiration timestamp and single-use enforcement to prevent CSRF / replay attacks.
+    """
+    __tablename__ = "oauth_states"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    state = Column(String(128), unique=True, nullable=False, index=True)
+    broker_name = Column(String(50), default="PAYTM_MONEY", nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    is_used = Column(Boolean, default=False, nullable=False)
+
+    def is_valid(self) -> bool:
+        if self.is_used:
+            return False
+        now = datetime.now(timezone.utc)
+        exp = self.expires_at
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        return now < exp
+
+
 class Order(Base):
     __tablename__ = "orders"
 

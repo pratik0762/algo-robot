@@ -12,7 +12,8 @@ import {
   ArrowRight,
   RefreshCw,
   Sliders,
-  Send
+  Send,
+  WifiOff
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
 
@@ -61,6 +62,27 @@ export default function LiveBrokerDesk() {
   const [totpSecret, setTotpSecret] = useState<string>('');
   const [authMsg, setAuthMsg] = useState<string | null>(null);
 
+  // Dedicated Paytm Money state
+  const [paytmStatus, setPaytmStatus] = useState<any>(null);
+  const [paytmAuthFlowState, setPaytmAuthFlowState] = useState<string>('DISCONNECTED');
+
+  const fetchPaytmStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`${getApiBase()}/api/brokers/paytm/status`);
+      if (res.ok) {
+        const d = await res.json();
+        setPaytmStatus(d);
+        if (d.is_connected || d.session_active) {
+          setPaytmAuthFlowState('CONNECTED');
+        } else if (paytmAuthFlowState !== 'AUTHENTICATION_PENDING') {
+          setPaytmAuthFlowState('DISCONNECTED');
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load Paytm status:', e);
+    }
+  }, [paytmAuthFlowState]);
+
   const fetchBrokersStatus = useCallback(async () => {
     try {
       const res = await fetch(`${getApiBase()}/api/brokers/status`);
@@ -92,18 +114,73 @@ export default function LiveBrokerDesk() {
   useEffect(() => {
     fetchBrokersStatus();
     fetchActivePositionsAndOrders();
-  }, [fetchBrokersStatus, fetchActivePositionsAndOrders]);
+    fetchPaytmStatus();
+  }, [fetchBrokersStatus, fetchActivePositionsAndOrders, fetchPaytmStatus]);
 
   useEffect(() => {
     const handleAuthMessage = (event: MessageEvent) => {
       if (event.data?.type === 'PAYTM_AUTH_SUCCESS') {
-        setAuthMsg('Success: Paytm Money OAuth completed! Request token processed and session active.');
+        setPaytmAuthFlowState('LOGIN_SUCCESSFUL');
+        setAuthMsg('Login Successful: Paytm Money OAuth completed! Session active and vaulted in PostgreSQL.');
         fetchBrokersStatus();
+        fetchPaytmStatus();
+        setTimeout(() => setPaytmAuthFlowState('CONNECTED'), 3000);
       }
     };
     window.addEventListener('message', handleAuthMessage);
     return () => window.removeEventListener('message', handleAuthMessage);
-  }, [fetchBrokersStatus]);
+  }, [fetchBrokersStatus, fetchPaytmStatus]);
+
+  const handleConnectPaytm = async () => {
+    try {
+      setPaytmAuthFlowState('AUTHENTICATION_PENDING');
+      setAuthMsg('Generating secure one-time OAuth state with CSRF protection...');
+      const res = await fetch(`${getApiBase()}/api/brokers/paytm/connect`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.login_url) {
+        const width = 600;
+        const height = 740;
+        const left = typeof window !== 'undefined' ? window.screen.width / 2 - width / 2 : 100;
+        const top = typeof window !== 'undefined' ? window.screen.height / 2 - height / 2 : 100;
+        const popup = window.open(
+          data.login_url,
+          'PaytmMoneyAuth',
+          `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
+        );
+        const pollTimer = setInterval(() => {
+          if (popup && popup.closed) {
+            clearInterval(pollTimer);
+            fetchPaytmStatus();
+            fetchBrokersStatus();
+          }
+        }, 1200);
+      } else {
+        setPaytmAuthFlowState('AUTHENTICATION_FAILED');
+        setAuthMsg(`Authentication Failed: ${data.detail || 'Could not generate login URL'}`);
+      }
+    } catch (e: any) {
+      setPaytmAuthFlowState('AUTHENTICATION_FAILED');
+      setAuthMsg(`Authentication Failed: ${e.message}`);
+    }
+  };
+
+  const handleDisconnectPaytm = async () => {
+    try {
+      setAuthMsg('Disconnecting Paytm Money session...');
+      const res = await fetch(`${getApiBase()}/api/brokers/paytm/disconnect`, { method: 'POST' });
+      if (res.ok) {
+        setPaytmAuthFlowState('DISCONNECTED');
+        setAuthMsg('Disconnected: Paytm Money session terminated and tokens cleared.');
+        fetchPaytmStatus();
+        fetchBrokersStatus();
+      } else {
+        const d = await res.json();
+        setAuthMsg(`Disconnect failed: ${d.detail || 'Error'}`);
+      }
+    } catch (e: any) {
+      setAuthMsg(`Disconnect error: ${e.message}`);
+    }
+  };
 
   const handleSwitchActiveBroker = async (brokerId: string) => {
     setSwitching(true);
@@ -349,31 +426,88 @@ export default function LiveBrokerDesk() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '16px', background: 'rgba(2, 132, 199, 0.08)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: 'var(--radius-md)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '#10b981' : '#f59e0b', boxShadow: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '0 0 10px #10b981' : '0 0 10px #f59e0b' }} />
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      background:
+                        paytmAuthFlowState === 'CONNECTED' || paytmAuthFlowState === 'LOGIN_SUCCESSFUL'
+                          ? '#10b981'
+                          : paytmAuthFlowState === 'AUTHENTICATION_PENDING'
+                          ? '#f59e0b'
+                          : paytmAuthFlowState === 'AUTHENTICATION_FAILED'
+                          ? '#ef4444'
+                          : '#94a3b8',
+                      boxShadow:
+                        paytmAuthFlowState === 'CONNECTED'
+                          ? '0 0 10px #10b981'
+                          : '0 0 10px #f59e0b'
+                    }} />
                     <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#f1f5f9' }}>
-                      Paytm Money OAuth 2.0 Engine
+                      Paytm Money Official SDK (pyPMClient)
                     </span>
                   </div>
-                  <span style={{ fontSize: '0.70rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px', background: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', color: brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? '#34d399' : '#fbbf24' }}>
-                    {brokers.find(b => b.id === 'PAYTM_MONEY')?.is_connected ? 'SESSION ACTIVE' : 'AWAITING AUTH'}
+                  <span style={{
+                    fontSize: '0.70rem',
+                    fontWeight: 800,
+                    padding: '3px 10px',
+                    borderRadius: '4px',
+                    background:
+                      paytmAuthFlowState === 'CONNECTED'
+                        ? 'rgba(16, 185, 129, 0.2)'
+                        : paytmAuthFlowState === 'LOGIN_SUCCESSFUL'
+                        ? 'rgba(16, 185, 129, 0.25)'
+                        : paytmAuthFlowState === 'AUTHENTICATION_PENDING'
+                        ? 'rgba(245, 158, 11, 0.2)'
+                        : paytmAuthFlowState === 'AUTHENTICATION_FAILED'
+                        ? 'rgba(239, 68, 68, 0.2)'
+                        : 'rgba(148, 163, 184, 0.15)',
+                    color:
+                      paytmAuthFlowState === 'CONNECTED'
+                        ? '#34d399'
+                        : paytmAuthFlowState === 'LOGIN_SUCCESSFUL'
+                        ? '#10b981'
+                        : paytmAuthFlowState === 'AUTHENTICATION_PENDING'
+                        ? '#fbbf24'
+                        : paytmAuthFlowState === 'AUTHENTICATION_FAILED'
+                        ? '#f87171'
+                        : '#94a3b8'
+                  }}>
+                    {paytmAuthFlowState === 'CONNECTED'
+                      ? 'CONNECTED'
+                      : paytmAuthFlowState === 'LOGIN_SUCCESSFUL'
+                      ? 'LOGIN SUCCESSFUL'
+                      : paytmAuthFlowState === 'AUTHENTICATION_PENDING'
+                      ? 'AUTH PENDING'
+                      : paytmAuthFlowState === 'AUTHENTICATION_FAILED'
+                      ? 'AUTH FAILED'
+                      : 'DISCONNECTED'}
                   </span>
                 </div>
 
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.74rem', background: 'rgba(0,0,0,0.25)', padding: '10px', borderRadius: '6px' }}>
+                  <div>
+                    <span style={{ color: '#94a3b8' }}>Last Connection Time:</span>
+                    <div style={{ color: '#ffffff', fontWeight: 600, marginTop: '2px' }}>
+                      {paytmStatus?.last_connection_time ? new Date(paytmStatus.last_connection_time).toLocaleString('en-IN') : 'Not Connected'}
+                    </div>
+                  </div>
+                  <div>
+                    <span style={{ color: '#94a3b8' }}>Account Verification:</span>
+                    <div style={{ color: '#38bdf8', fontWeight: 600, marginTop: '2px' }}>
+                      {paytmStatus?.user_details?.name || (paytmStatus?.session_active ? 'Verified Account' : 'Awaiting Auth')}
+                    </div>
+                  </div>
+                </div>
+
                 <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8', lineHeight: 1.55 }}>
-                  Clicking below opens the official Paytm Money portal. After you log in with OTP, Paytm redirects back to Algo Robot where the <strong>request token is received and processed directly by the backend</strong>. No manual copy-pasting required!
+                  Clicking below initializes a cryptographically protected OAuth session with one-time state validation. The <strong>request token is processed 100% in the backend</strong> using official <code>pyPMClient</code> and encrypted in PostgreSQL.
                 </p>
 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <button
                     type="button"
-                    onClick={() => {
-                      const width = 600;
-                      const height = 740;
-                      const left = typeof window !== 'undefined' ? window.screen.width / 2 - width / 2 : 100;
-                      const top = typeof window !== 'undefined' ? window.screen.height / 2 - height / 2 : 100;
-                      const loginUrl = `${getApiBase()}/api/broker/paytm/login`;
-                      window.open(loginUrl, 'PaytmMoneyAuth', `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`);
-                    }}
+                    onClick={handleConnectPaytm}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -390,16 +524,41 @@ export default function LiveBrokerDesk() {
                     }}
                   >
                     <Zap size={16} />
-                    Connect Paytm Money
+                    {paytmStatus?.session_active ? 'Re-Authenticate' : 'Connect Paytm Money'}
                   </button>
+
+                  {paytmStatus?.session_active && (
+                    <button
+                      type="button"
+                      onClick={handleDisconnectPaytm}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                        color: '#f87171',
+                        padding: '9px 16px',
+                        borderRadius: '8px',
+                        fontSize: '0.80rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <WifiOff size={14} /> Disconnect
+                    </button>
+                  )}
 
                   <button
                     type="button"
-                    onClick={fetchBrokersStatus}
+                    onClick={() => {
+                      fetchBrokersStatus();
+                      fetchPaytmStatus();
+                    }}
                     className="btn btn-secondary"
                     style={{ padding: '9px 14px', fontSize: '0.78rem' }}
                   >
-                    <RefreshCw size={14} /> Refresh Status
+                    <RefreshCw size={14} /> Refresh
                   </button>
                 </div>
               </div>

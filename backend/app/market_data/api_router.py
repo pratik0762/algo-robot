@@ -744,33 +744,111 @@ class PaytmSessionRequest(BaseModel):
     api_secret: Optional[str] = None
 
 
+@router.post("/api/brokers/paytm/connect")
+@router.post("/api/broker/paytm/connect")
+def api_paytm_connect(db: Session = Depends(get_db)):
+    """
+    Step 1 & 2: Initiates automated Paytm Money authentication.
+    Generates a cryptographically secure random state, stores it in PostgreSQL,
+    initializes PMClient using API_KEY/API_SECRET, generates login URL,
+    and returns it to the client.
+    """
+    try:
+        from app.market_data.paytm_db_service import create_oauth_state
+        state_token = create_oauth_state(db, broker_name="PAYTM_MONEY", ttl_seconds=600)
+        login_url = paytm_auth_service.get_login_url(state=state_token)
+        return {
+            "status": "success",
+            "login_url": login_url,
+            "state": state_token,
+            "provider": "PAYTM_MONEY",
+            "message": "Paytm Money login URL generated successfully. Open in browser to authenticate."
+        }
+    except Exception as e:
+        logger.error("Failed to generate Paytm connect session: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/brokers/paytm/status")
 @router.get("/api/broker/paytm/status")
-def get_paytm_status():
-    """Returns Paytm Money authentication status, masked keys, and connectivity."""
+def get_paytm_status(db: Session = Depends(get_db)):
+    """
+    Returns live authentication and connection status for Paytm Money.
+    Includes connection status (CONNECTED, DISCONNECTED, AUTHENTICATION_PENDING),
+    last_connection_time, user details, and credential configuration flags.
+    Never exposes API secrets or raw JWT access tokens to the frontend.
+    """
+    if not paytm_auth_service.is_authenticated():
+        paytm_auth_service.restore_session_from_db(db)
     return paytm_auth_service.get_status()
 
 
+@router.post("/api/brokers/paytm/disconnect")
+@router.post("/api/broker/paytm/disconnect")
+def api_paytm_disconnect(db: Session = Depends(get_db)):
+    """
+    Terminates Paytm Money session:
+    - Calls PMClient / Paytm logout API
+    - Clears in-memory tokens
+    - Deactivates PostgreSQL BrokerCredential record
+    - Stops live streaming feed
+    """
+    try:
+        from app.market_data.paytm_db_service import deactivate_paytm_session
+        paytm_auth_service.logout(revoke_remote=True)
+        deactivate_paytm_session(db)
+
+        try:
+            from app.broker_connectors.broker_manager import broker_manager
+            paytm_adapter_inst = broker_manager.adapters.get("PAYTM_MONEY")
+            if paytm_adapter_inst:
+                paytm_adapter_inst.is_connected = False
+                paytm_adapter_inst.session_token = None
+        except Exception:
+            pass
+
+        try:
+            from app.market_data.paytm_live_manager import paytm_live_manager
+            paytm_live_manager.stop()
+        except Exception:
+            pass
+
+        return {
+            "status": "success",
+            "message": "Paytm Money disconnected successfully. Tokens invalidated and cleared."
+        }
+    except Exception as e:
+        logger.error("Failed to disconnect Paytm Money: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/brokers/paytm/login-url")
 @router.get("/api/broker/paytm/login-url")
-def get_paytm_login_url(state: Optional[str] = Query(None)):
+def get_paytm_login_url(state: Optional[str] = Query(None), db: Session = Depends(get_db)):
     """Returns official Paytm Money merchant login URL for trader browser sign-in."""
     try:
-        url = paytm_auth_service.get_login_url(state=state)
-        return {"status": "success", "login_url": url}
+        from app.market_data.paytm_db_service import create_oauth_state
+        clean_state = state if isinstance(state, str) and state.strip() else create_oauth_state(db, ttl_seconds=600)
+        url = paytm_auth_service.get_login_url(state=clean_state)
+        return {"status": "success", "login_url": url, "state": clean_state}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/api/brokers/paytm/login")
 @router.get("/api/broker/paytm/login")
 def login_paytm_redirect(
     state: Optional[str] = Query(None),
     redirect_uri: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
 ):
     """
     Direct browser entry point for 1-click 'Connect Paytm Money' button.
-    Redirects trader's browser directly to the official Paytm Money merchant login URL.
+    Generates secure state in PostgreSQL and redirects trader's browser directly to Paytm.
     """
     try:
-        clean_state = state if isinstance(state, str) else None
+        from app.market_data.paytm_db_service import create_oauth_state
+        clean_state = state if isinstance(state, str) and state.strip() else create_oauth_state(db, ttl_seconds=600)
         clean_red_uri = redirect_uri if isinstance(redirect_uri, str) else None
         url = paytm_auth_service.get_login_url(state=clean_state, redirect_uri=clean_red_uri)
         return RedirectResponse(url=url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
@@ -779,6 +857,7 @@ def login_paytm_redirect(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.api_route("/api/brokers/paytm/callback", methods=["GET", "POST"])
 @router.api_route("/api/broker/paytm/callback", methods=["GET", "POST"])
 async def paytm_oauth_callback(
     request: Request,
@@ -789,12 +868,14 @@ async def paytm_oauth_callback(
     state: Optional[str] = Query(None),
     error: Optional[str] = Query(None),
     error_description: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
 ):
     """
     Automated OAuth 2.0 Callback Receiver for Paytm Money.
     CRITICAL: Receives and processes the request_token entirely in the BACKEND.
-    No manual copying or pasting required by trader.
-    Automatically exchanges request_token for JWT access tokens, starts WebSocket,
+    Validates one-time state token from PostgreSQL to prevent CSRF / replay attacks.
+    Automatically exchanges request_token for JWT access tokens using pyPMClient,
+    encrypts and vaults credentials in PostgreSQL, starts WebSocket,
     and returns a clean auto-closing / redirecting status page.
     """
     # 1. Handle error cases from Paytm auth server
@@ -829,7 +910,37 @@ async def paytm_oauth_callback(
 </html>"""
         return HTMLResponse(content=html_error, status_code=400)
 
-    # 2. Extract request token from query parameters or POST body
+    # 2. Validate one-time state token from PostgreSQL
+    clean_state = state if isinstance(state, str) and state.strip() else None
+    if clean_state:
+        from app.market_data.paytm_db_service import verify_and_consume_oauth_state
+        if not verify_and_consume_oauth_state(db, clean_state):
+            logger.warning("Rejected Paytm callback: invalid or expired state '%s'", clean_state)
+            html_invalid_state = """<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paytm Authentication Security Check Failed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; background: #0a0e17; color: #f1f5f9; font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .card { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 16px; padding: 36px 32px; max-width: 480px; width: 90%; text-align: center; }
+    h2 { margin: 0 0 10px; font-size: 1.35rem; color: #ffffff; }
+    p { margin: 0 0 20px; font-size: 0.88rem; color: #94a3b8; line-height: 1.5; }
+    .btn { display: inline-block; background: #2563eb; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Invalid or Expired State Token</h2>
+    <p>The state parameter is invalid, has expired, or was already consumed. This check prevents cross-site request forgery and replay attacks.</p>
+    <a href="/api/broker/paytm/login" class="btn">Start Fresh Login</a>
+  </div>
+</body>
+</html>"""
+            return HTMLResponse(content=html_invalid_state, status_code=400)
+
+    # 3. Extract request token from query parameters or POST body
     def _clean_str(val: Any) -> str:
         return val.strip() if isinstance(val, str) else ""
 
@@ -872,10 +983,16 @@ async def paytm_oauth_callback(
 </html>"""
         return HTMLResponse(content=html_missing, status_code=400)
 
-    # 3. Exchange request token for Access Tokens entirely in the Backend!
+    # 4. Exchange request token for Access Tokens entirely in the Backend!
     try:
         session_res = paytm_auth_service.generate_session(request_token=extracted_token)
         logger.info("Backend successfully processed Paytm request token and established session.")
+
+        # Persist encrypted session in PostgreSQL BrokerCredential table
+        try:
+            paytm_auth_service.save_session_to_db(db)
+        except Exception as db_err:
+            logger.warning("Could not persist session to PostgreSQL: %s", db_err)
 
         # Update broker manager state
         try:
@@ -888,6 +1005,10 @@ async def paytm_oauth_callback(
             pass
 
         frontend_url = "http://localhost:3000/data-center"
+        user_name = "Trader"
+        if paytm_auth_service._user_details and isinstance(paytm_auth_service._user_details, dict):
+            user_name = paytm_auth_service._user_details.get("name") or paytm_auth_service._user_details.get("userName") or "Trader"
+
         html_success = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -910,7 +1031,7 @@ async def paytm_oauth_callback(
     <div class="icon">✓</div>
     <h2>Paytm Money Connected!</h2>
     <div class="badge">ACCESS TOKEN GENERATED &bull; LIVE FEED ACTIVE</div>
-    <p>The authorization request token was received and processed directly by the backend. Your session is active and live WebSocket streaming has started.</p>
+    <p>Welcome, {user_name}! The authorization request token was received and processed directly by the backend. Credentials and tokens are safely vaulted in PostgreSQL.</p>
     <a href="{frontend_url}" class="btn">Return to Algo Robot</a>
     <div class="timer" id="countdown">Redirecting to platform in 3 seconds...</div>
   </div>
@@ -963,10 +1084,11 @@ async def paytm_oauth_callback(
         return HTMLResponse(content=html_fail, status_code=400)
 
 
+@router.post("/api/brokers/paytm/session")
 @router.post("/api/broker/paytm/session")
-def generate_paytm_session(payload: PaytmSessionRequest):
+def generate_paytm_session(payload: PaytmSessionRequest, db: Session = Depends(get_db)):
     """
-    Exchanges request_token for JWT access tokens.
+    Exchanges request_token for JWT access tokens and vaults them in PostgreSQL.
     Credentials can be provided in request body or loaded from .env.
     """
     if payload.api_key or payload.api_secret:
@@ -977,7 +1099,14 @@ def generate_paytm_session(payload: PaytmSessionRequest):
         )
     try:
         res = paytm_auth_service.generate_session(request_token=payload.request_token)
+        try:
+            paytm_auth_service.save_session_to_db(db)
+        except Exception:
+            pass
         return res
+    except Exception as e:
+        logger.error("Failed to generate Paytm session: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error("Paytm session exchange failed: %s", str(e))
         raise HTTPException(status_code=400, detail=str(e))

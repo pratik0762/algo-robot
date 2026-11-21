@@ -20,7 +20,18 @@ from app.market_data.api_router import (
     logout_paytm,
     login_paytm_redirect,
     paytm_oauth_callback,
+    api_paytm_connect,
+    api_paytm_disconnect,
     PaytmSessionRequest,
+)
+from app.db.session import SessionLocal, init_db
+from app.db.models import OAuthState, BrokerCredential, BrokerName
+from app.market_data.paytm_db_service import (
+    create_oauth_state,
+    verify_and_consume_oauth_state,
+    store_encrypted_paytm_session,
+    load_encrypted_paytm_session,
+    deactivate_paytm_session,
 )
 
 
@@ -250,4 +261,195 @@ async def test_paytm_oauth_callback_error_handling():
     html = response.body.decode("utf-8")
     assert "Paytm Authentication Denied" in html
     assert "User cancelled authorization" in html
+
+
+def test_pmclient_official_sdk_login_and_user_details():
+    """Verify official pyPMClient SDK PMClient methods generate URL and handle sessions."""
+    from pmClient import PMClient
+    pm = PMClient(api_key="sdk_test_key_111", api_secret="sdk_test_secret_222")
+    login_url = pm.login("state_xyz_123")
+    assert "apiKey=sdk_test_key_111" in login_url
+    assert "state=state_xyz_123" in login_url
+    assert "login.paytmmoney.com/merchant-login" in login_url
+
+
+def test_oauth_state_persistence_and_one_time_consumption():
+    """
+    CRITICAL SECURITY TEST:
+    Verify that one-time OAuth state is persisted in PostgreSQL,
+    succeeds once, and rejects replay attacks upon immediate reuse.
+    """
+    init_db()
+    with SessionLocal() as db:
+        state_token = create_oauth_state(db, broker_name="PAYTM_MONEY", ttl_seconds=300)
+        assert len(state_token) >= 32
+
+        # 1. State must exist in PostgreSQL
+        record = db.query(OAuthState).filter(OAuthState.state == state_token).first()
+        assert record is not None
+        assert record.is_used is False
+
+        # 2. First verification: must SUCCEED and mark consumed
+        is_valid = verify_and_consume_oauth_state(db, state_token)
+        assert is_valid is True
+
+        # Check in DB that is_used is now True
+        db.refresh(record)
+        assert record.is_used is True
+
+        # 3. Second verification: Replay attack with same state must be REJECTED
+        is_reused = verify_and_consume_oauth_state(db, state_token)
+        assert is_reused is False
+
+        # 4. Unknown/random state must be REJECTED
+        assert verify_and_consume_oauth_state(db, "forged_random_state") is False
+
+
+def test_encrypted_credential_and_session_vaulting_in_postgresql():
+    """
+    CRITICAL SECURITY TEST:
+    Verify API keys, secrets, and JWT access tokens are stored AES-256-GCM encrypted
+    in the database and decrypted cleanly on recovery.
+    """
+    init_db()
+    with SessionLocal() as db:
+        test_key = "pm_api_key_secret_vault_99"
+        test_sec = "pm_api_sec_secret_vault_88"
+        test_acc = "pm_jwt_acc_token_top_secret_77"
+        test_pub = "pm_jwt_pub_token_secret_66"
+        test_read = "pm_jwt_read_token_secret_55"
+        user_info = {"name": "Test Trader", "clientCode": "PM9081"}
+
+        # Store in PostgreSQL
+        record = store_encrypted_paytm_session(
+            db=db,
+            api_key=test_key,
+            api_secret=test_sec,
+            access_token=test_acc,
+            public_access_token=test_pub,
+            read_access_token=test_read,
+            user_details=user_info,
+        )
+
+        assert record.is_active is True
+
+        # Ensure raw secret and token are NOT stored in plaintext in the database columns!
+        assert test_sec not in record.encrypted_credentials
+        assert test_acc not in record.encrypted_token
+
+        # Load and decrypt
+        loaded = load_encrypted_paytm_session(db)
+        assert loaded is not None
+        assert loaded["api_key"] == test_key
+        assert loaded["api_secret"] == test_sec
+        assert loaded["access_token"] == test_acc
+        assert loaded["public_access_token"] == test_pub
+        assert loaded["read_access_token"] == test_read
+        assert loaded["user_details"]["name"] == "Test Trader"
+
+
+def test_api_brokers_paytm_connect_endpoint():
+    """Verify POST /api/brokers/paytm/connect initiates state and returns login URL."""
+    init_db()
+    paytm_auth_service.configure_credentials(api_key="api_connect_key_123", api_secret="api_connect_sec_456")
+    with SessionLocal() as db:
+        res = api_paytm_connect(db=db)
+        assert res["status"] == "success"
+        assert "login_url" in res
+        assert "state" in res
+        assert res["provider"] == "PAYTM_MONEY"
+
+        # Verify state exists in PostgreSQL
+        state_record = db.query(OAuthState).filter(OAuthState.state == res["state"]).first()
+        assert state_record is not None
+        assert state_record.is_used is False
+
+
+@pytest.mark.asyncio
+async def test_api_brokers_paytm_callback_with_state_validation():
+    """Verify callback validates real state from PostgreSQL and marks it consumed."""
+    init_db()
+    paytm_auth_service.configure_credentials(
+        api_key="cb_state_key_111",
+        api_secret="cb_state_sec_222"
+    )
+
+    mock_response_body = json.dumps({
+        "data": {
+            "accessToken": "jwt_verified_state_token",
+            "publicAccessToken": "jwt_public_state_token",
+        },
+        "status": "success",
+    }).encode("utf-8")
+
+    mock_resp = MagicMock()
+    mock_resp.read.return_value = mock_response_body
+    mock_resp.__enter__.return_value = mock_resp
+
+    mock_request = MagicMock()
+    mock_request.method = "GET"
+
+    with SessionLocal() as db:
+        # Create a valid state in PostgreSQL
+        valid_state = create_oauth_state(db, broker_name="PAYTM_MONEY", ttl_seconds=300)
+
+        with patch("urllib.request.urlopen", return_value=mock_resp):
+            # 1. First callback with valid state -> 200 SUCCESS
+            resp = await paytm_oauth_callback(
+                request=mock_request,
+                requestToken="req_tok_val_123",
+                state=valid_state,
+                db=db
+            )
+            assert resp.status_code == 200
+            assert "Paytm Money Connected!" in resp.body.decode("utf-8")
+
+            # 2. Re-invoking callback with the SAME consumed state -> 400 REJECTED
+            resp_replay = await paytm_oauth_callback(
+                request=mock_request,
+                requestToken="req_tok_val_123",
+                state=valid_state,
+                db=db
+            )
+            assert resp_replay.status_code == 400
+            assert "Invalid or Expired State Token" in resp_replay.body.decode("utf-8")
+
+
+def test_api_brokers_paytm_disconnect_and_state_recovery():
+    """Verify disconnect invalidates session in DB, and restart restores active session."""
+    init_db()
+    with SessionLocal() as db:
+        # 1. Setup active session in DB and service
+        paytm_auth_service.set_tokens(
+            access_token="session_recovery_access_jwt",
+            public_access_token="session_recovery_public_jwt"
+        )
+        paytm_auth_service.configure_credentials(
+            api_key="recovery_test_key",
+            api_secret="recovery_test_secret"
+        )
+        paytm_auth_service._user_details = {"name": "Recovery User"}
+        paytm_auth_service.save_session_to_db(db)
+
+        # 2. Simulate server restart: Wipe in-memory session tokens
+        paytm_auth_service._access_token = ""
+        paytm_auth_service._public_access_token = ""
+        paytm_auth_service._last_auth_time = None
+        assert paytm_auth_service.is_authenticated() is False
+
+        # 3. Server restart recovery: Restore from PostgreSQL
+        restored = paytm_auth_service.restore_session_from_db(db)
+        assert restored is True
+        assert paytm_auth_service.is_authenticated() is True
+        assert paytm_auth_service.get_access_token() == "session_recovery_access_jwt"
+
+        # 4. Disconnect endpoint
+        disc_res = api_paytm_disconnect(db=db)
+        assert disc_res["status"] == "success"
+        assert paytm_auth_service.is_authenticated() is False
+
+        # Check DB status is deactivated
+        cred = db.query(BrokerCredential).filter(BrokerCredential.broker_name == BrokerName.PAYTM_MONEY).first()
+        assert cred.is_active is False
+
 

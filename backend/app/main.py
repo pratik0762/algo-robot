@@ -149,6 +149,12 @@ async def lifespan(app: FastAPI):
                 universe_manager.sync_universe(db=db)
             symbol_resolver.hydrate_cache(db=db)
             live_quote_service.hydrate_initial_quotes(db=db)
+            # Restore active Paytm Money session from PostgreSQL
+            try:
+                from app.market_data.paytm_auth import paytm_auth_service
+                paytm_auth_service.restore_session_from_db(db=db)
+            except Exception as e:
+                logger.debug("Paytm Money session restore on reboot: %s", e)
     except Exception as e:
         logger.error("Database initialization failed: %s", e)
 
