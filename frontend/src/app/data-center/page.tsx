@@ -468,12 +468,12 @@ export default function MarketDataCenterPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0e17", color: "#f1f5f9", fontFamily: "var(--font-sans, sans-serif)" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-primary)", color: "var(--text-primary)", fontFamily: "var(--font-sans, sans-serif)" }}>
       {/* Top Header */}
       <header
         style={{
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(15, 23, 42, 0.8)",
+          borderBottom: "1px solid var(--border-subtle)",
+          background: "var(--bg-card)",
           backdropFilter: "blur(12px)",
           position: "sticky",
           top: 0,
