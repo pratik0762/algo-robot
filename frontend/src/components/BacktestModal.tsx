@@ -260,11 +260,11 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
           maxWidth: '1280px',
           maxHeight: '94vh',
           background: 'linear-gradient(180deg, #0e1526 0%, #0a0d16 100%)',
-          border: '1px solid rgba(99, 102, 241, 0.4)',
+          border: '1px solid rgba(37, 99, 235, 0.4)',
           borderRadius: '16px',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25)',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(37, 99, 235, 0.25)',
           overflow: 'hidden'
         }}
       >
@@ -276,7 +276,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%)'
+            background: 'linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%)'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -285,12 +285,12 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
-                boxShadow: '0 0 16px rgba(99, 102, 241, 0.4)'
+                boxShadow: '0 0 16px rgba(37, 99, 235, 0.4)'
               }}
             >
               <BarChart2 size={20} />
@@ -319,7 +319,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
               <button
                 onClick={() => setModalTab('CONFIG')}
                 style={{
-                  background: modalTab === 'CONFIG' ? '#4f46e5' : 'transparent',
+                  background: modalTab === 'CONFIG' ? '#1d4ed8' : 'transparent',
                   color: modalTab === 'CONFIG' ? '#ffffff' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '6px',
@@ -334,7 +334,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
               <button
                 onClick={() => setModalTab('HISTORY')}
                 style={{
-                  background: modalTab === 'HISTORY' ? '#4f46e5' : 'transparent',
+                  background: modalTab === 'HISTORY' ? '#1d4ed8' : 'transparent',
                   color: modalTab === 'HISTORY' ? '#ffffff' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '6px',
@@ -704,8 +704,8 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
                                 <button
                                   onClick={() => handleLoadSavedRun(r.backtest_id)}
                                   style={{
-                                    background: 'rgba(99, 102, 241, 0.2)',
-                                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                                    background: 'rgba(37, 99, 235, 0.2)',
+                                    border: '1px solid rgba(37, 99, 235, 0.4)',
                                     color: '#a5b4fc',
                                     borderRadius: '6px',
                                     padding: '4px 8px',
@@ -747,7 +747,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
             <>
               {!results && !loading && (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-                  <BarChart2 size={42} color="#6366f1" style={{ margin: '0 auto 16px auto', opacity: 0.8 }} />
+                  <BarChart2 size={42} color="#2563eb" style={{ margin: '0 auto 16px auto', opacity: 0.8 }} />
                   <h3 style={{ fontSize: '1.05rem', color: '#ffffff', margin: '0 0 8px 0' }}>
                     Ready to Backtest Quantitative Strategy
                   </h3>
@@ -759,7 +759,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
 
               {loading && (
                 <div style={{ textAlign: 'center', padding: '80px 20px', color: '#818cf8' }}>
-                  <RotateCcw size={36} className="pulse-indicator" color="#6366f1" style={{ margin: '0 auto 16px auto' }} />
+                  <RotateCcw size={36} className="pulse-indicator" color="#2563eb" style={{ margin: '0 auto 16px auto' }} />
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff' }}>
                     Simulating Historical Candle Walkforward...
                   </div>
@@ -778,7 +778,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
                         Simulation Report: {results.strategy_name} ({results.instrument_type})
                       </span>
                       {results.backtest_id && (
-                        <span style={{ fontSize: '0.64rem', color: '#818cf8', background: 'rgba(99, 102, 241, 0.15)', padding: '2px 6px', borderRadius: '4px' }}>
+                        <span style={{ fontSize: '0.64rem', color: '#818cf8', background: 'rgba(37, 99, 235, 0.15)', padding: '2px 6px', borderRadius: '4px' }}>
                           ID: {results.backtest_id}
                         </span>
                       )}
@@ -811,7 +811,7 @@ export default function BacktestModal({ isOpen, onClose, initialStrategyId }: Ba
                     </div>
 
                     {/* Win Rate */}
-                    <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '12px', padding: '14px 16px' }}>
+                    <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(37, 99, 235, 0.3)', borderRadius: '12px', padding: '14px 16px' }}>
                       <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
                         WIN RATE
                       </div>

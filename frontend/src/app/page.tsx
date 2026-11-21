@@ -477,7 +477,7 @@ export default function HomePage() {
                 fontWeight: 700,
                 fontSize: '0.85rem',
                 textDecoration: 'none',
-                boxShadow: '0 0 16px rgba(99, 102, 241, 0.25)',
+                boxShadow: '0 0 16px rgba(37, 99, 235, 0.25)',
               }}
               title="Open dedicated page with all 140+ official Indian indices, GIFT NIFTY, and INDIA VIX"
             >
@@ -488,7 +488,7 @@ export default function HomePage() {
                   fontSize: '0.7rem',
                   padding: '2px 6px',
                   borderRadius: '6px',
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                  background: 'linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%)',
                   color: '#fff',
                   fontWeight: 800,
                 }}
@@ -631,7 +631,7 @@ export default function HomePage() {
               height: '34px',
               borderRadius: '8px',
               background: mounted && canScrollHubLeft ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
-              border: mounted && canScrollHubLeft ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              border: mounted && canScrollHubLeft ? '1px solid rgba(37, 99, 235, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
               color: mounted && canScrollHubLeft ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
               cursor: mounted && canScrollHubLeft ? 'pointer' : 'default',
               display: 'flex',
@@ -728,7 +728,7 @@ export default function HomePage() {
               height: '34px',
               borderRadius: '8px',
               background: (!mounted || canScrollHubRight) ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.03)',
-              border: (!mounted || canScrollHubRight) ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+              border: (!mounted || canScrollHubRight) ? '1px solid rgba(37, 99, 235, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
               color: (!mounted || canScrollHubRight) ? '#c7d2fe' : 'rgba(255, 255, 255, 0.2)',
               cursor: (!mounted || canScrollHubRight) ? 'pointer' : 'default',
               display: 'flex',
@@ -755,7 +755,7 @@ export default function HomePage() {
                 <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   TOTAL INDEX M-CAP
                 </span>
-                <Coins size={16} color="#6366f1" style={{ flexShrink: 0 }} />
+                <Coins size={16} color="#2563eb" style={{ flexShrink: 0 }} />
               </div>
               <div style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                 ₹{(stats.totalMarketCap / 100000).toFixed(2)}L Cr
@@ -1068,7 +1068,7 @@ export default function HomePage() {
                   fontWeight: selectedSector === sec ? 700 : 500,
                   background:
                     selectedSector === sec
-                      ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)'
+                      ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)'
                       : 'rgba(255, 255, 255, 0.04)',
                   color: selectedSector === sec ? 'white' : 'var(--text-secondary)',
                   border:

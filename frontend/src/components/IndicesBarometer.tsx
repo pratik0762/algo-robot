@@ -17,6 +17,7 @@ import {
 import Link from 'next/link';
 import { getApiBase } from '@/config/api';
 import MarketStatusBanner, { MarketStatusDetail } from '@/components/MarketStatusBanner';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export interface LiveTickerItem {
   name: string;
@@ -187,7 +188,7 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
           gap: '8px',
         }}
       >
-        <RefreshCw size={13} className="pulse-indicator" color="#6366f1" />
+        <RefreshCw size={13} className="pulse-indicator" color="#2563eb" />
         <span>Loading live market indices, GIFT NIFTY & India VIX...</span>
       </div>
     );
@@ -203,8 +204,8 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
       )}
       <div
         style={{
-          background: 'linear-gradient(90deg, rgba(13, 17, 28, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)',
-          borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
+          background: 'var(--bg-secondary)',
+          borderBottom: '1px solid var(--border-subtle)',
           padding: '8px 16px',
           display: 'flex',
           alignItems: 'center',
@@ -226,13 +227,13 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
               padding: '7px 14px',
               minHeight: '34px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
               color: '#fff',
               fontWeight: 700,
               fontSize: '0.74rem',
               border: 'none',
               cursor: 'pointer',
-              boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)',
+              boxShadow: '0 0 12px rgba(37, 99, 235, 0.35)',
               whiteSpace: 'nowrap',
               textDecoration: 'none',
             }}
@@ -275,14 +276,14 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
               width: '26px',
               height: '32px',
               borderRadius: '6px',
-              background: 'rgba(30, 41, 59, 0.85)',
-              border: '1px solid rgba(99, 102, 241, 0.35)',
-              color: '#c7d2fe',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-secondary)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              boxShadow: 'var(--card-shadow)',
               transition: 'all 0.15s ease',
               zIndex: 3,
             }}
@@ -339,15 +340,15 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
                     minHeight: '34px',
                     borderRadius: '8px',
                     background: isGift
-                      ? 'rgba(236, 72, 153, 0.12)'
+                      ? 'rgba(37, 99, 235, 0.12)'
                       : isVix
                       ? 'rgba(245, 158, 11, 0.12)'
-                      : 'rgba(255, 255, 255, 0.03)',
+                      : 'var(--bg-card)',
                     border: isGift
-                      ? '1px solid rgba(236, 72, 153, 0.4)'
+                      ? '1px solid rgba(59, 130, 246, 0.4)'
                       : isVix
                       ? '1px solid rgba(245, 158, 11, 0.4)'
-                      : '1px solid rgba(255, 255, 255, 0.06)',
+                      : '1px solid var(--border-subtle)',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
                     flexShrink: 0,
@@ -442,14 +443,14 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
               width: '26px',
               height: '32px',
               borderRadius: '6px',
-              background: 'rgba(30, 41, 59, 0.85)',
-              border: '1px solid rgba(99, 102, 241, 0.35)',
-              color: '#c7d2fe',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-secondary)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              boxShadow: 'var(--card-shadow)',
               transition: 'all 0.15s ease',
               zIndex: 3,
             }}
@@ -460,8 +461,9 @@ export default function IndicesBarometer({ onOpenAllIndices, onSelectIndex }: In
           </button>
         </div>
 
-        {/* Timestamp & Refresh Button */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+        {/* Timestamp, Theme Toggle & Refresh Button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <ThemeToggle showLabel={false} />
           <button
             onClick={fetchLiveTicker}
             style={{

@@ -204,7 +204,7 @@ export default function SupplyDemandStrategyDesk({
       <div
         style={{
           background: 'linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
+          border: '1px solid rgba(37, 99, 235, 0.3)',
           borderRadius: 'var(--radius-lg)',
           padding: '24px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
@@ -215,7 +215,7 @@ export default function SupplyDemandStrategyDesk({
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #a855f7 100%)',
                   color: '#ffffff',
                   fontSize: '0.72rem',
                   fontWeight: 900,
@@ -306,8 +306,8 @@ export default function SupplyDemandStrategyDesk({
                 fontSize: '0.82rem',
                 fontWeight: 700,
                 padding: '9px 16px',
-                border: '1px solid rgba(99, 102, 241, 0.4)',
-                background: 'rgba(99, 102, 241, 0.12)',
+                border: '1px solid rgba(37, 99, 235, 0.4)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 color: '#a5b4fc'
               }}
             >
@@ -380,7 +380,7 @@ export default function SupplyDemandStrategyDesk({
                 key={s}
                 onClick={() => setSymbol(s)}
                 style={{
-                  background: symbol === s ? '#4f46e5' : 'rgba(255, 255, 255, 0.05)',
+                  background: symbol === s ? '#1d4ed8' : 'rgba(255, 255, 255, 0.05)',
                   border: symbol === s ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.1)',
                   color: symbol === s ? '#ffffff' : 'var(--text-secondary)',
                   padding: '5px 12px',
@@ -598,7 +598,7 @@ export default function SupplyDemandStrategyDesk({
                 : '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-md)',
               padding: '20px',
-              boxShadow: analysis?.has_active_signal ? '0 0 20px rgba(99, 102, 241, 0.2)' : 'none'
+              boxShadow: analysis?.has_active_signal ? '0 0 20px rgba(37, 99, 235, 0.2)' : 'none'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -734,8 +734,8 @@ export default function SupplyDemandStrategyDesk({
                     key={m}
                     onClick={() => setEntryMode(m)}
                     style={{
-                      background: entryMode === m ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.04)',
-                      border: entryMode === m ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.1)',
+                      background: entryMode === m ? 'rgba(37, 99, 235, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                      border: entryMode === m ? '1px solid #2563eb' : '1px solid rgba(255, 255, 255, 0.1)',
                       color: entryMode === m ? '#ffffff' : 'var(--text-secondary)',
                       padding: '8px 10px',
                       borderRadius: '6px',
@@ -769,7 +769,7 @@ export default function SupplyDemandStrategyDesk({
                   step="5"
                   value={minScore}
                   onChange={(e) => setMinScore(Number(e.target.value))}
-                  style={{ width: '100%', marginTop: '6px', accentColor: '#6366f1' }}
+                  style={{ width: '100%', marginTop: '6px', accentColor: '#2563eb' }}
                 />
               </div>
 
@@ -804,7 +804,7 @@ export default function SupplyDemandStrategyDesk({
                 padding: '9px',
                 fontSize: '0.82rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                 color: '#ffffff'
               }}
             >

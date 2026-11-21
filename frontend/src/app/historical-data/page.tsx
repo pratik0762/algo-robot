@@ -293,7 +293,7 @@ export default function HistoricalDataCenterPage() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "8px",
-                  background: "linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)",
+                  background: "linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -356,7 +356,7 @@ export default function HistoricalDataCenterPage() {
                 color: "#ffffff",
                 padding: "8px 16px",
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
+                background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)",
                 border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
               }}
@@ -381,7 +381,7 @@ export default function HistoricalDataCenterPage() {
         <div style={{ background: "#131b2e", padding: "18px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase" }}>Registered Sources</span>
-            <Layers size={18} color="#6366f1" />
+            <Layers size={18} color="#2563eb" />
           </div>
           <div style={{ fontSize: "1.6rem", fontWeight: 800 }}>{sources.length}</div>
           <div style={{ fontSize: "0.75rem", color: "#10b981", marginTop: "4px" }}>NSE Capital Market, F&O, Indices & BSE</div>
@@ -447,9 +447,9 @@ export default function HistoricalDataCenterPage() {
                 fontWeight: 700,
                 border: "none",
                 cursor: "pointer",
-                background: isActive ? "rgba(99, 102, 241, 0.15)" : "transparent",
+                background: isActive ? "rgba(37, 99, 235, 0.15)" : "transparent",
                 color: isActive ? "#818cf8" : "#94a3b8",
-                borderBottom: isActive ? "2px solid #6366f1" : "2px solid transparent",
+                borderBottom: isActive ? "2px solid #2563eb" : "2px solid transparent",
                 transition: "all 0.15s ease",
                 whiteSpace: "nowrap",
               }}
@@ -602,7 +602,7 @@ export default function HistoricalDataCenterPage() {
                     width: "100%",
                     padding: "9px 16px",
                     borderRadius: "6px",
-                    background: "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
+                    background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)",
                     color: "#ffffff",
                     fontWeight: 700,
                     fontSize: "0.85rem",
@@ -817,7 +817,7 @@ export default function HistoricalDataCenterPage() {
                       fontSize: "0.8rem",
                       fontWeight: 700,
                       border: "1px solid rgba(255, 255, 255, 0.08)",
-                      background: filterExchange === ex ? "#6366f1" : "rgba(255, 255, 255, 0.03)",
+                      background: filterExchange === ex ? "#2563eb" : "rgba(255, 255, 255, 0.03)",
                       color: "#ffffff",
                       cursor: "pointer",
                     }}
@@ -891,7 +891,7 @@ export default function HistoricalDataCenterPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))", gap: "20px" }}>
             <div style={{ background: "#131b2e", padding: "24px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
               <h3 style={{ fontSize: "1.2rem", fontWeight: 800, marginBottom: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <UploadCloud size={20} color="#6366f1" />
+                <UploadCloud size={20} color="#2563eb" />
                 Upload Official Exchange Archive
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "20px" }}>
@@ -953,7 +953,7 @@ export default function HistoricalDataCenterPage() {
                     width: "100%",
                     padding: "12px",
                     borderRadius: "8px",
-                    background: selectedFile ? "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)" : "rgba(255, 255, 255, 0.05)",
+                    background: selectedFile ? "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)" : "rgba(255, 255, 255, 0.05)",
                     color: selectedFile ? "#ffffff" : "#64748b",
                     fontWeight: 700,
                     fontSize: "0.9rem",

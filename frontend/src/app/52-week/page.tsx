@@ -795,7 +795,7 @@ export default function Week52Page() {
                 padding: '5px 10px',
                 borderRadius: '6px',
                 border: 'none',
-                background: exchangeFilter === 'ALL' ? 'rgba(99, 102, 241, 0.35)' : 'transparent',
+                background: exchangeFilter === 'ALL' ? 'rgba(37, 99, 235, 0.35)' : 'transparent',
                 color: exchangeFilter === 'ALL' ? '#ffffff' : 'var(--text-muted)',
                 fontWeight: exchangeFilter === 'ALL' ? 800 : 600,
                 fontSize: '0.72rem',
@@ -933,7 +933,7 @@ export default function Week52Page() {
             {/* Playbook Header */}
             <div
               style={{
-                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
+                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%)',
                 border: '1px solid rgba(245, 158, 11, 0.4)',
                 borderRadius: '14px',
                 padding: '20px 24px',

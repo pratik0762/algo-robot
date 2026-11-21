@@ -277,11 +277,11 @@ export default function AllIndicesPage() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '12px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)',
+                boxShadow: '0 0 20px rgba(37, 99, 235, 0.4)',
               }}
             >
               <Layers size={22} color="white" />
@@ -615,13 +615,13 @@ export default function AllIndicesPage() {
                     borderRadius: '10px',
                     fontSize: '0.8rem',
                     fontWeight: isSelected ? 700 : 500,
-                    background: isSelected ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'rgba(255, 255, 255, 0.04)',
+                    background: isSelected ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'rgba(255, 255, 255, 0.04)',
                     border: isSelected ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
                     color: isSelected ? '#ffffff' : 'var(--text-secondary)',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
                     transition: 'all 0.15s ease',
-                    boxShadow: isSelected ? '0 0 16px rgba(99, 102, 241, 0.4)' : 'none',
+                    boxShadow: isSelected ? '0 0 16px rgba(37, 99, 235, 0.4)' : 'none',
                   }}
                 >
                   {cat}
@@ -722,7 +722,7 @@ export default function AllIndicesPage() {
                         cursor: 'pointer',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(99, 102, 241, 0.10)';
+                        e.currentTarget.style.backgroundColor = 'rgba(37, 99, 235, 0.10)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.015)';
@@ -746,9 +746,9 @@ export default function AllIndicesPage() {
                               fontWeight: 700,
                               padding: '2px 6px',
                               borderRadius: '4px',
-                              background: 'rgba(99, 102, 241, 0.12)',
+                              background: 'rgba(37, 99, 235, 0.12)',
                               color: '#a5b4fc',
-                              border: '1px solid rgba(99, 102, 241, 0.25)',
+                              border: '1px solid rgba(37, 99, 235, 0.25)',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '2px',
@@ -767,9 +767,9 @@ export default function AllIndicesPage() {
                             fontWeight: 700,
                             padding: '2px 7px',
                             borderRadius: '5px',
-                            background: 'rgba(99, 102, 241, 0.12)',
+                            background: 'rgba(37, 99, 235, 0.12)',
                             color: '#a5b4fc',
-                            border: '1px solid rgba(99, 102, 241, 0.25)',
+                            border: '1px solid rgba(37, 99, 235, 0.25)',
                             whiteSpace: 'nowrap',
                           }}
                         >

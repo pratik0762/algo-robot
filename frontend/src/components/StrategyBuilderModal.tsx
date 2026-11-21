@@ -514,7 +514,7 @@ export default function StrategyBuilderModal({
           background: 'linear-gradient(180deg, #0e1322 0%, #090c15 100%)',
           border: '1px solid #1e293b',
           borderRadius: '16px',
-          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(99, 102, 241, 0.15)',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(37, 99, 235, 0.15)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden'
@@ -537,14 +537,14 @@ export default function StrategyBuilderModal({
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
                 fontWeight: 900,
                 fontSize: '1.1rem',
-                boxShadow: '0 0 15px rgba(99, 102, 241, 0.4)'
+                boxShadow: '0 0 15px rgba(37, 99, 235, 0.4)'
               }}
             >
               +
@@ -571,9 +571,9 @@ export default function StrategyBuilderModal({
                 {formData.version && (
                   <span
                     style={{
-                      background: 'rgba(99, 102, 241, 0.15)',
+                      background: 'rgba(37, 99, 235, 0.15)',
                       color: '#a5b4fc',
-                      border: '1px solid rgba(99, 102, 241, 0.3)',
+                      border: '1px solid rgba(37, 99, 235, 0.3)',
                       padding: '2px 8px',
                       borderRadius: '6px',
                       fontSize: '0.68rem',
@@ -637,9 +637,9 @@ export default function StrategyBuilderModal({
                   borderRadius: '8px',
                   fontSize: '0.75rem',
                   fontWeight: isActive ? 800 : 600,
-                  background: isActive ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                  background: isActive ? 'rgba(37, 99, 235, 0.2)' : 'transparent',
                   color: isActive ? '#c7d2fe' : '#64748b',
-                  border: isActive ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid transparent',
+                  border: isActive ? '1px solid rgba(37, 99, 235, 0.4)' : '1px solid transparent',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                   transition: 'all 0.15s ease'
@@ -898,7 +898,7 @@ export default function StrategyBuilderModal({
                     type="button"
                     onClick={handleAddIndicator}
                     style={{
-                      background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                      background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '8px',
@@ -906,7 +906,7 @@ export default function StrategyBuilderModal({
                       fontSize: '0.78rem',
                       fontWeight: 800,
                       cursor: 'pointer',
-                      boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)'
+                      boxShadow: '0 0 12px rgba(37, 99, 235, 0.35)'
                     }}
                   >
                     + Add Indicator
@@ -942,7 +942,7 @@ export default function StrategyBuilderModal({
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <span
                             style={{
-                              background: 'rgba(99, 102, 241, 0.2)',
+                              background: 'rgba(37, 99, 235, 0.2)',
                               color: '#a5b4fc',
                               padding: '4px 10px',
                               borderRadius: '6px',
@@ -1515,7 +1515,7 @@ export default function StrategyBuilderModal({
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {formData.indicators.map((ind, i) => (
-                      <span key={i} style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#c7d2fe', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                      <span key={i} style={{ background: 'rgba(37, 99, 235, 0.15)', color: '#c7d2fe', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
                         {ind.name}
                       </span>
                     ))}

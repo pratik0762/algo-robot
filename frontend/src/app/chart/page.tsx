@@ -1176,7 +1176,7 @@ function HeatmapContent() {
                 href={`/signals?search=${encodeURIComponent(selectedStock.symbol)}`}
                 className="btn"
                 style={{
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                  background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                   color: 'white',
                   padding: '9px 18px',
                   borderRadius: '8px',
@@ -1185,7 +1185,7 @@ function HeatmapContent() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 0 15px rgba(99, 102, 241, 0.35)',
+                  boxShadow: '0 0 15px rgba(37, 99, 235, 0.35)',
                   border: 'none',
                   cursor: 'pointer'
                 }}

@@ -607,7 +607,7 @@ export default function StrategyPage() {
             background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.7))',
             padding: '24px 28px',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(99, 102, 241, 0.35)',
+            border: '1px solid rgba(37, 99, 235, 0.35)',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.36)'
           }}
         >
@@ -653,7 +653,7 @@ export default function StrategyPage() {
                 </h1>
                 <span
                   style={{
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                     color: '#ffffff',
                     padding: '2px 8px',
                     borderRadius: '4px',
@@ -683,8 +683,8 @@ export default function StrategyPage() {
                 fontSize: '0.82rem',
                 fontWeight: 700,
                 padding: '9px 16px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
-                boxShadow: '0 0 16px rgba(99, 102, 241, 0.4)'
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
+                boxShadow: '0 0 16px rgba(37, 99, 235, 0.4)'
               }}
             >
               <PlusCircle size={16} />
@@ -737,8 +737,8 @@ export default function StrategyPage() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '10px',
-                background: 'rgba(99, 102, 241, 0.15)',
-                border: '1px solid rgba(99, 102, 241, 0.3)',
+                background: 'rgba(37, 99, 235, 0.15)',
+                border: '1px solid rgba(37, 99, 235, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -895,8 +895,8 @@ export default function StrategyPage() {
           <button
             onClick={() => setActiveTab('REPOSITORY')}
             style={{
-              background: activeTab === 'REPOSITORY' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-              border: activeTab === 'REPOSITORY' ? '1px solid #6366f1' : '1px solid transparent',
+              background: activeTab === 'REPOSITORY' ? 'rgba(37, 99, 235, 0.2)' : 'transparent',
+              border: activeTab === 'REPOSITORY' ? '1px solid #2563eb' : '1px solid transparent',
               color: activeTab === 'REPOSITORY' ? '#ffffff' : 'var(--text-secondary)',
               padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
@@ -921,8 +921,8 @@ export default function StrategyPage() {
           <button
             onClick={() => setActiveTab('BUILDER')}
             style={{
-              background: activeTab === 'BUILDER' ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-              border: activeTab === 'BUILDER' ? '1px solid #6366f1' : '1px solid transparent',
+              background: activeTab === 'BUILDER' ? 'rgba(37, 99, 235, 0.2)' : 'transparent',
+              border: activeTab === 'BUILDER' ? '1px solid #2563eb' : '1px solid transparent',
               color: activeTab === 'BUILDER' ? '#ffffff' : 'var(--text-secondary)',
               padding: '8px 10px',
               borderRadius: 'var(--radius-md)',
@@ -1100,7 +1100,7 @@ export default function StrategyPage() {
                 <button
                   onClick={() => setSelectedCategory('ALL')}
                   style={{
-                    background: selectedCategory === 'ALL' ? '#6366f1' : 'rgba(255, 255, 255, 0.04)',
+                    background: selectedCategory === 'ALL' ? '#2563eb' : 'rgba(255, 255, 255, 0.04)',
                     color: selectedCategory === 'ALL' ? '#ffffff' : 'var(--text-secondary)',
                     border: '1px solid var(--border-subtle)',
                     padding: '6px 12px',
@@ -1117,7 +1117,7 @@ export default function StrategyPage() {
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     style={{
-                      background: selectedCategory === cat ? '#6366f1' : 'rgba(255, 255, 255, 0.04)',
+                      background: selectedCategory === cat ? '#2563eb' : 'rgba(255, 255, 255, 0.04)',
                       color: selectedCategory === cat ? '#ffffff' : 'var(--text-secondary)',
                       border: '1px solid var(--border-subtle)',
                       padding: '6px 12px',
@@ -1194,13 +1194,13 @@ export default function StrategyPage() {
                     key={strat.id}
                     onClick={() => setSelectedStrategyId(strat.id)}
                     style={{
-                      background: isSelected ? 'rgba(99, 102, 241, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                      border: isSelected ? '1px solid #6366f1' : '1px solid var(--border-subtle)',
+                      background: isSelected ? 'rgba(37, 99, 235, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: isSelected ? '1px solid #2563eb' : '1px solid var(--border-subtle)',
                       borderRadius: 'var(--radius-lg)',
                       padding: '20px',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      boxShadow: isSelected ? '0 8px 30px rgba(99, 102, 241, 0.18)' : 'none',
+                      boxShadow: isSelected ? '0 8px 30px rgba(37, 99, 235, 0.18)' : 'none',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
@@ -1211,9 +1211,9 @@ export default function StrategyPage() {
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <span
                           style={{
-                            background: 'rgba(99, 102, 241, 0.18)',
+                            background: 'rgba(37, 99, 235, 0.18)',
                             color: '#a5b4fc',
-                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            border: '1px solid rgba(37, 99, 235, 0.35)',
                             padding: '2px 8px',
                             borderRadius: '4px',
                             fontSize: '0.64rem',
@@ -1262,8 +1262,8 @@ export default function StrategyPage() {
                           }}
                           title={`Edit ${strat.name}`}
                           style={{
-                            background: 'rgba(99, 102, 241, 0.14)',
-                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            background: 'rgba(37, 99, 235, 0.14)',
+                            border: '1px solid rgba(37, 99, 235, 0.35)',
                             color: '#a5b4fc',
                             padding: '4px 9px',
                             borderRadius: 'var(--radius-sm)',
@@ -1518,8 +1518,8 @@ export default function StrategyPage() {
                             }
                           }}
                           style={{
-                            background: selected ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.04)',
-                            border: selected ? '1px solid #6366f1' : '1px solid var(--border-subtle)',
+                            background: selected ? 'rgba(37, 99, 235, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                            border: selected ? '1px solid #2563eb' : '1px solid var(--border-subtle)',
                             color: selected ? '#ffffff' : 'var(--text-secondary)',
                             padding: '6px 12px',
                             borderRadius: 'var(--radius-sm)',
@@ -2135,9 +2135,9 @@ export default function StrategyPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <span
                   style={{
-                    background: 'rgba(99, 102, 241, 0.2)',
+                    background: 'rgba(37, 99, 235, 0.2)',
                     color: '#a5b4fc',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                    border: '1px solid rgba(37, 99, 235, 0.4)',
                     padding: '2px 8px',
                     borderRadius: '4px',
                     fontSize: '0.64rem',

@@ -656,7 +656,7 @@ export default function MarketHeatmapPage() {
                   fontWeight: 700,
                   cursor: 'pointer',
                   border: 'none',
-                  background: activeTab === 'treemap' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  background: activeTab === 'treemap' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                   color: activeTab === 'treemap' ? '#ffffff' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -675,7 +675,7 @@ export default function MarketHeatmapPage() {
                   fontWeight: 700,
                   cursor: 'pointer',
                   border: 'none',
-                  background: activeTab === 'sectors' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  background: activeTab === 'sectors' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                   color: activeTab === 'sectors' ? '#ffffff' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -694,7 +694,7 @@ export default function MarketHeatmapPage() {
                   fontWeight: 700,
                   cursor: 'pointer',
                   border: 'none',
-                  background: activeTab === 'index_contrib' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  background: activeTab === 'index_contrib' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                   color: activeTab === 'index_contrib' ? '#ffffff' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -1042,7 +1042,7 @@ export default function MarketHeatmapPage() {
                   <button
                     onClick={() => setTreemapDisplayMode('treemap')}
                     style={{
-                      background: treemapDisplayMode === 'treemap' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                      background: treemapDisplayMode === 'treemap' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                       border: 'none',
                       color: treemapDisplayMode === 'treemap' ? '#ffffff' : 'var(--text-secondary)',
                       borderRadius: '4px',
@@ -1184,8 +1184,8 @@ export default function MarketHeatmapPage() {
                           onClick={e => e.stopPropagation()}
                           style={{
                             flex: 1,
-                            background: 'rgba(99, 102, 241, 0.1)',
-                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                            background: 'rgba(37, 99, 235, 0.1)',
+                            border: '1px solid rgba(37, 99, 235, 0.3)',
                             borderRadius: '4px',
                             color: '#818cf8',
                             fontSize: '0.68rem',
@@ -1988,7 +1988,7 @@ export default function MarketHeatmapPage() {
                 href={`/chart?symbol=${encodeURIComponent(selectedStock.symbol)}`}
                 style={{
                   textDecoration: 'none',
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                  background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                   padding: '8px 12px',
                   borderRadius: '6px',
                   color: '#ffffff',

@@ -53,7 +53,7 @@ function CompanyDetailInner() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <RefreshCw size={32} className="pulse-indicator" color="#6366f1" />
+        <RefreshCw size={32} className="pulse-indicator" color="#2563eb" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ function CompanyDetailInner() {
               <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#818cf8' }}>{company.symbol}</h1>
               <span className="badge badge-primary">NSE NIFTY 50</span>
               <span className="badge badge-success">ISIN: {company.isin}</span>
-              <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.4)' }}>Tickertape Verified</span>
+              <span className="badge" style={{ background: 'rgba(37, 99, 235, 0.2)', color: '#818cf8', border: '1px solid rgba(37, 99, 235, 0.4)' }}>Tickertape Verified</span>
             </div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginTop: '4px' }}>{company.company_name}</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px' }}>
@@ -340,7 +340,7 @@ function CompanyDetailInner() {
                     </td>
                   ))}
                 </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(99,102,241,0.06)' }}>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(37, 99, 235,0.06)' }}>
                   <td style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: '#a5b4fc' }}>EBITDA</td>
                   {company.quarterly_results?.map((q: any) => (
                     <td key={q.quarter_name} style={{ padding: '12px 16px', fontWeight: 700, color: '#a5b4fc' }}>
@@ -476,7 +476,7 @@ function CompanyDetailInner() {
                     </td>
                   ))}
                 </tr>
-                <tr style={{ borderBottom: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(99, 102, 241, 0.08)' }}>
+                <tr style={{ borderBottom: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(37, 99, 235, 0.08)' }}>
                   <td style={{ textAlign: 'left', padding: '14px 18px', fontWeight: 800, color: '#a5b4fc' }}>Total Liabilities & Shareholder&apos;s Equity (₹ Cr)</td>
                   {company.balance_sheet?.map((b: any) => (
                     <td key={b.financial_year} style={{ padding: '14px 18px', fontWeight: 800, color: '#a5b4fc', fontSize: '0.92rem' }}>
@@ -535,7 +535,7 @@ export default function CompanyDetailPage() {
   return (
     <Suspense fallback={
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <RefreshCw size={32} className="pulse-indicator" color="#6366f1" />
+        <RefreshCw size={32} className="pulse-indicator" color="#2563eb" />
       </div>
     }>
       <CompanyDetailInner />

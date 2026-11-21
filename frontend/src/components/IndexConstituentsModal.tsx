@@ -174,9 +174,9 @@ export default function IndexConstituentsModal({
           display: 'flex',
           flexDirection: 'column',
           background: 'rgba(11, 15, 28, 0.98)',
-          border: '1px solid rgba(99, 102, 241, 0.35)',
+          border: '1px solid rgba(37, 99, 235, 0.35)',
           borderRadius: '20px',
-          boxShadow: '0 30px 80px -15px rgba(0, 0, 0, 0.95), 0 0 50px rgba(99, 102, 241, 0.2)',
+          boxShadow: '0 30px 80px -15px rgba(0, 0, 0, 0.95), 0 0 50px rgba(37, 99, 235, 0.2)',
           overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -201,11 +201,11 @@ export default function IndexConstituentsModal({
                 width: '46px',
                 height: '46px',
                 borderRadius: '12px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 25px rgba(99, 102, 241, 0.45)',
+                boxShadow: '0 0 25px rgba(37, 99, 235, 0.45)',
               }}
             >
               <Building2 size={24} color="white" />
@@ -223,9 +223,9 @@ export default function IndexConstituentsModal({
                       fontWeight: 700,
                       padding: '3px 10px',
                       borderRadius: '6px',
-                      background: 'rgba(99, 102, 241, 0.15)',
+                      background: 'rgba(37, 99, 235, 0.15)',
                       color: '#a5b4fc',
-                      border: '1px solid rgba(99, 102, 241, 0.3)',
+                      border: '1px solid rgba(37, 99, 235, 0.3)',
                     }}
                   >
                     {data.category}
@@ -419,7 +419,7 @@ export default function IndexConstituentsModal({
         <div style={{ flex: 1, overflowY: 'auto', padding: '20px 28px' }}>
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '320px', gap: '14px' }}>
-              <RefreshCw size={28} className="spin" color="#6366f1" />
+              <RefreshCw size={28} className="spin" color="#2563eb" />
               <div style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
                 Loading full constituent stocks for {indexName}...
               </div>
@@ -541,7 +541,7 @@ export default function IndexConstituentsModal({
                                 fontWeight: 700,
                                 padding: '2px 8px',
                                 borderRadius: '6px',
-                                background: 'rgba(99, 102, 241, 0.12)',
+                                background: 'rgba(37, 99, 235, 0.12)',
                                 color: '#a5b4fc',
                               }}
                             >
@@ -567,8 +567,8 @@ export default function IndexConstituentsModal({
                                   gap: '4px',
                                   padding: '5px 12px',
                                   borderRadius: '6px',
-                                  background: 'rgba(99, 102, 241, 0.15)',
-                                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                                  background: 'rgba(37, 99, 235, 0.15)',
+                                  border: '1px solid rgba(37, 99, 235, 0.3)',
                                   color: '#a5b4fc',
                                   fontSize: '0.74rem',
                                   fontWeight: 700,

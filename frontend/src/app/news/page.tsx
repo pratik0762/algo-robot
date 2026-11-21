@@ -247,9 +247,9 @@ export default function NewsPage() {
                 <span
                   className="badge"
                   style={{
-                    background: 'rgba(99, 102, 241, 0.2)',
+                    background: 'rgba(37, 99, 235, 0.2)',
                     color: '#a5b4fc',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                    border: '1px solid rgba(37, 99, 235, 0.4)',
                     fontSize: '0.68rem',
                     fontWeight: 800,
                   }}
@@ -291,7 +291,7 @@ export default function NewsPage() {
         {newsData?.market_news_sentiment && (
           <div
             style={{
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%)',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%)',
               border: '1px solid rgba(245, 158, 11, 0.35)',
               borderRadius: 'var(--radius-lg)',
               padding: '14px 20px',
@@ -398,7 +398,7 @@ export default function NewsPage() {
                         {item.company_symbol !== 'BROAD_MARKET' ? (
                           <span
                             style={{
-                              background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                              background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                               color: '#ffffff',
                               fontWeight: 900,
                               fontSize: '0.75rem',
@@ -684,7 +684,7 @@ export default function NewsPage() {
         <section>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h2 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Newspaper size={18} color="#6366f1" />
+              <Newspaper size={18} color="#2563eb" />
               <span>LIVE COMPANY NEWS & IMPACT DISCLOSURES ({filteredNews.length})</span>
             </h2>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -719,13 +719,13 @@ export default function NewsPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span
                         style={{
-                          background: 'rgba(99, 102, 241, 0.2)',
+                          background: 'rgba(37, 99, 235, 0.2)',
                           color: '#818cf8',
                           fontWeight: 800,
                           fontSize: '0.72rem',
                           padding: '2px 8px',
                           borderRadius: '6px',
-                          border: '1px solid rgba(99, 102, 241, 0.3)',
+                          border: '1px solid rgba(37, 99, 235, 0.3)',
                         }}
                       >
                         {item.company_symbol}

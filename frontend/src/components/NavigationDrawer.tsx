@@ -49,8 +49,8 @@ export const NAV_HUBS: NavHubItem[] = [
     count: 50,
     icon: Building2,
     badge: 'Flagship 50',
-    color: '#6366f1',
-    gradient: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)'
+    color: '#2563eb',
+    gradient: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)'
   },
   {
     id: 'sensex',
@@ -409,11 +409,11 @@ export default function NavigationDrawer({
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 15px rgba(99, 102, 241, 0.4)',
+                boxShadow: '0 0 15px rgba(37, 99, 235, 0.4)',
                 flexShrink: 0,
               }}
             >
@@ -480,8 +480,8 @@ export default function NavigationDrawer({
           <div
             onClick={handleSelectFinancialHub}
             style={{
-              background: pathname === '/' ? 'rgba(99, 102, 241, 0.16)' : 'rgba(255, 255, 255, 0.03)',
-              border: pathname === '/' ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)',
+              background: pathname === '/' ? 'rgba(37, 99, 235, 0.16)' : 'rgba(255, 255, 255, 0.03)',
+              border: pathname === '/' ? '1px solid #2563eb' : '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: 'var(--radius-lg)',
               padding: '12px 16px',
               minHeight: '56px',
@@ -491,7 +491,7 @@ export default function NavigationDrawer({
               justifyContent: 'space-between',
               gap: '12px',
               transition: 'all 0.2s ease',
-              boxShadow: pathname === '/' ? '0 4px 20px -2px rgba(99, 102, 241, 0.25)' : 'none',
+              boxShadow: pathname === '/' ? '0 4px 20px -2px rgba(37, 99, 235, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
             }}
@@ -502,13 +502,13 @@ export default function NavigationDrawer({
                   width: '38px',
                   height: '38px',
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                  background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   flexShrink: 0,
-                  boxShadow: '0 0 16px rgba(99, 102, 241, 0.4)',
+                  boxShadow: '0 0 16px rgba(37, 99, 235, 0.4)',
                 }}
               >
                 <Building2 size={18} />
@@ -542,8 +542,8 @@ export default function NavigationDrawer({
             onMouseEnter={prefetchFiiDii}
             style={{
               background: pathname === '/fii-dii'
-                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)'
-                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%)',
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(37, 99, 235, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%)',
               border: pathname === '/fii-dii' ? '1px solid #10b981' : '1px solid rgba(16, 185, 129, 0.35)',
               borderRadius: 'var(--radius-lg)',
               padding: '12px 16px',
@@ -922,9 +922,9 @@ export default function NavigationDrawer({
             onMouseEnter={prefetchStrategy}
             style={{
               background: pathname === '/strategy'
-                ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.18) 100%)'
-                : 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.06) 100%)',
-              border: pathname === '/strategy' ? '1px solid #6366f1' : '1px solid rgba(99, 102, 241, 0.35)',
+                ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(168, 85, 247, 0.18) 100%)'
+                : 'linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(168, 85, 247, 0.06) 100%)',
+              border: pathname === '/strategy' ? '1px solid #2563eb' : '1px solid rgba(37, 99, 235, 0.35)',
               borderRadius: 'var(--radius-lg)',
               padding: '12px 16px',
               minHeight: '56px',
@@ -934,7 +934,7 @@ export default function NavigationDrawer({
               justifyContent: 'space-between',
               gap: '12px',
               transition: 'all 0.2s ease',
-              boxShadow: pathname === '/strategy' ? '0 4px 20px -2px rgba(99, 102, 241, 0.25)' : 'none',
+              boxShadow: pathname === '/strategy' ? '0 4px 20px -2px rgba(37, 99, 235, 0.25)' : 'none',
               boxSizing: 'border-box',
               width: '100%',
             }}
@@ -945,13 +945,13 @@ export default function NavigationDrawer({
                   width: '38px',
                   height: '38px',
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)',
+                  background: 'linear-gradient(135deg, #1d4ed8 0%, #a855f7 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   flexShrink: 0,
-                  boxShadow: '0 0 16px rgba(99, 102, 241, 0.4)',
+                  boxShadow: '0 0 16px rgba(37, 99, 235, 0.4)',
                 }}
               >
                 <SlidersHorizontal size={18} />
@@ -1052,8 +1052,8 @@ export default function NavigationDrawer({
             onMouseEnter={prefetchOptionChain}
             style={{
               background: pathname === '/option-chain'
-                ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.24) 0%, rgba(99, 102, 241, 0.20) 100%)'
-                : 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%)',
+                ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.24) 0%, rgba(37, 99, 235, 0.20) 100%)'
+                : 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(37, 99, 235, 0.06) 100%)',
               border: pathname === '/option-chain' ? '1px solid #8b5cf6' : '1px solid rgba(139, 92, 246, 0.35)',
               borderRadius: 'var(--radius-lg)',
               padding: '12px 16px',

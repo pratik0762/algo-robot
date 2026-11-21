@@ -138,8 +138,8 @@ function BrokerContent() {
                 fontWeight: 700,
                 padding: '9px 16px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(99, 102, 241, 0.15)',
-                border: '1px solid rgba(99, 102, 241, 0.4)',
+                background: 'rgba(37, 99, 235, 0.15)',
+                border: '1px solid rgba(37, 99, 235, 0.4)',
                 color: '#818cf8',
                 textDecoration: 'none'
               }}

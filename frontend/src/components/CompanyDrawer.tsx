@@ -469,7 +469,7 @@ export default function CompanyDrawer({
               fontSize: '0.85rem',
               color: 'var(--text-secondary)',
               lineHeight: 1.5,
-              borderLeft: '4px solid #6366f1',
+              borderLeft: '4px solid #2563eb',
             }}
           >
             <strong style={{ color: 'white' }}>Profile: </strong>
@@ -593,7 +593,7 @@ export default function CompanyDrawer({
                       </td>
                     ))}
                   </tr>
-                  <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(99, 102, 241, 0.06)' }}>
+                  <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(37, 99, 235, 0.06)' }}>
                     <td style={{ textAlign: 'left', padding: '10px 14px', fontWeight: 700, color: '#a5b4fc' }}>
                       EBITDA (Operating Profit)
                     </td>
@@ -691,7 +691,7 @@ export default function CompanyDrawer({
                       </td>
                     ))}
                   </tr>
-                  <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(99, 102, 241, 0.06)' }}>
+                  <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(37, 99, 235, 0.06)' }}>
                     <td style={{ textAlign: 'left', padding: '10px 14px', fontWeight: 700, color: '#a5b4fc' }}>Annual EBITDA</td>
                     {company.annual_financials.map((a) => (
                       <td key={a.quarter_name} style={{ padding: '10px 14px', fontWeight: 700, color: '#a5b4fc' }}>
@@ -884,8 +884,8 @@ export default function CompanyDrawer({
             <div>
               <div
                 style={{
-                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08))',
-                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(16, 185, 129, 0.08))',
+                  border: '1px solid rgba(37, 99, 235, 0.3)',
                   borderRadius: 'var(--radius-md)',
                   padding: '16px 20px',
                   marginBottom: '20px',

@@ -81,7 +81,7 @@ export default function CompanyDetailModal({
           background: '#0d1322',
           borderRadius: 'var(--radius-xl)',
           padding: '32px',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
+          border: '1px solid rgba(37, 99, 235, 0.3)',
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -113,7 +113,7 @@ export default function CompanyDetailModal({
               </span>
               <span className="badge badge-primary">NSE / BSE LISTED</span>
               <span className="badge badge-success">ISIN: {company.isin}</span>
-              <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.4)' }}>Tickertape Verified</span>
+              <span className="badge" style={{ background: 'rgba(37, 99, 235, 0.2)', color: '#818cf8', border: '1px solid rgba(37, 99, 235, 0.4)' }}>Tickertape Verified</span>
             </div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '4px' }}>
               {company.company_name}
@@ -228,7 +228,7 @@ export default function CompanyDetailModal({
             color: 'var(--text-secondary)',
             lineHeight: 1.5,
             marginBottom: '24px',
-            borderLeft: '4px solid #6366f1',
+            borderLeft: '4px solid #2563eb',
           }}
         >
           <strong>Corporate Profile: </strong>
@@ -477,7 +477,7 @@ export default function CompanyDetailModal({
                     </td>
                   ))}
                 </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(99, 102, 241, 0.06)' }}>
+                <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(37, 99, 235, 0.06)' }}>
                   <td style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: '#a5b4fc' }}>Operating Profit (EBITDA)</td>
                   {company.quarterly_results.map((q) => (
                     <td key={q.quarter_name} style={{ padding: '12px 16px', fontWeight: 700, color: '#a5b4fc' }}>
@@ -644,7 +644,7 @@ export default function CompanyDetailModal({
                 </tr>
 
                 {/* 8. Total Liabilities & Shareholder's Equity */}
-                <tr style={{ borderBottom: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(99, 102, 241, 0.08)' }}>
+                <tr style={{ borderBottom: '1px solid rgba(129, 140, 248, 0.3)', background: 'rgba(37, 99, 235, 0.08)' }}>
                   <td style={{ textAlign: 'left', padding: '14px 18px', fontWeight: 800, color: '#a5b4fc' }}>
                     Total Liabilities & Shareholder&apos;s Equity (₹ Cr)
                   </td>
@@ -784,8 +784,8 @@ export default function CompanyDetailModal({
             {/* Header info strip */}
             <div
               style={{
-                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08))',
-                border: '1px solid rgba(99, 102, 241, 0.3)',
+                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(16, 185, 129, 0.08))',
+                border: '1px solid rgba(37, 99, 235, 0.3)',
                 borderRadius: 'var(--radius-md)',
                 padding: '16px 20px',
                 marginBottom: '24px',
@@ -986,7 +986,7 @@ export default function CompanyDetailModal({
                     fontWeight: 800,
                     padding: '3px 8px',
                     borderRadius: '6px',
-                    background: 'rgba(99, 102, 241, 0.15)',
+                    background: 'rgba(37, 99, 235, 0.15)',
                     color: '#818cf8',
                   }}
                 >

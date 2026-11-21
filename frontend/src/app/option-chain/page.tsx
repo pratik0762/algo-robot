@@ -1367,7 +1367,7 @@ export default function OptionChainPage() {
                 onClick={() => setSymbolDropdownOpen(!symbolDropdownOpen)}
                 style={{
                   background: 'rgba(15, 23, 42, 0.9)',
-                  border: '1px solid rgba(99, 102, 241, 0.4)',
+                  border: '1px solid rgba(37, 99, 235, 0.4)',
                   borderRadius: '8px',
                   padding: '7px 14px',
                   display: 'flex',
@@ -1398,7 +1398,7 @@ export default function OptionChainPage() {
                   left: 0,
                   width: '320px',
                   background: '#0a0f1d',
-                  border: '1px solid rgba(99, 102, 241, 0.35)',
+                  border: '1px solid rgba(37, 99, 235, 0.35)',
                   borderRadius: '10px',
                   boxShadow: '0 12px 36px rgba(0, 0, 0, 0.6)',
                   zIndex: 100,
@@ -1433,7 +1433,7 @@ export default function OptionChainPage() {
                           fontSize: '0.68rem',
                           fontWeight: 700,
                           borderRadius: '4px',
-                          background: instrumentCategory === cat ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                          background: instrumentCategory === cat ? '#2563eb' : 'rgba(255, 255, 255, 0.05)',
                           border: 'none',
                           color: '#ffffff',
                           cursor: 'pointer'
@@ -1461,17 +1461,17 @@ export default function OptionChainPage() {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           cursor: 'pointer',
-                          background: selectedSymbol === inst.symbol ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                          background: selectedSymbol === inst.symbol ? 'rgba(37, 99, 235, 0.2)' : 'transparent',
                           fontSize: '0.78rem'
                         }}
                         onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = selectedSymbol === inst.symbol ? 'rgba(99, 102, 241, 0.2)' : 'transparent')}
+                        onMouseLeave={e => (e.currentTarget.style.background = selectedSymbol === inst.symbol ? 'rgba(37, 99, 235, 0.2)' : 'transparent')}
                       >
                         <div>
                           <strong style={{ color: '#ffffff' }}>{inst.symbol}</strong>
                           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: '6px' }}>{inst.name}</span>
                         </div>
-                        <span style={{ fontSize: '0.65rem', color: '#a5b4fc', background: 'rgba(99, 102, 241, 0.15)', padding: '2px 5px', borderRadius: '4px' }}>
+                        <span style={{ fontSize: '0.65rem', color: '#a5b4fc', background: 'rgba(37, 99, 235, 0.15)', padding: '2px 5px', borderRadius: '4px' }}>
                           Lot: {inst.lot_size}
                         </span>
                       </div>
@@ -1523,7 +1523,7 @@ export default function OptionChainPage() {
                   fontWeight: 700,
                   cursor: 'pointer',
                   border: 'none',
-                  background: viewMode === 'workstation' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  background: viewMode === 'workstation' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                   color: viewMode === 'workstation' ? '#ffffff' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -1565,7 +1565,7 @@ export default function OptionChainPage() {
                   fontWeight: 700,
                   cursor: 'pointer',
                   border: 'none',
-                  background: viewMode === 'fullchain' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'transparent',
+                  background: viewMode === 'fullchain' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'transparent',
                   color: viewMode === 'fullchain' ? '#ffffff' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
@@ -1655,7 +1655,7 @@ export default function OptionChainPage() {
                         key={leg.id || idx}
                         style={{
                           background: leg.disabled ? 'rgba(255, 255, 255, 0.02)' : 'rgba(15, 23, 42, 0.75)',
-                          border: `1px solid ${leg.disabled ? 'rgba(255, 255, 255, 0.04)' : 'rgba(99, 102, 241, 0.25)'}`,
+                          border: `1px solid ${leg.disabled ? 'rgba(255, 255, 255, 0.04)' : 'rgba(37, 99, 235, 0.25)'}`,
                           borderRadius: '8px',
                           padding: '8px 10px',
                           display: 'flex',
@@ -1670,7 +1670,7 @@ export default function OptionChainPage() {
                           type="checkbox"
                           checked={!leg.disabled}
                           onChange={e => handleUpdateLeg(idx, { disabled: !e.target.checked })}
-                          style={{ cursor: 'pointer', accentColor: '#6366f1' }}
+                          style={{ cursor: 'pointer', accentColor: '#2563eb' }}
                         />
 
                         {/* Buy / Sell Toggle Pill */}
@@ -1719,8 +1719,8 @@ export default function OptionChainPage() {
                         <button
                           onClick={() => handleUpdateLeg(idx, { option_type: leg.option_type === 'CE' ? 'PE' : 'CE' })}
                           style={{
-                            background: leg.option_type === 'CE' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                            border: `1px solid ${leg.option_type === 'CE' ? '#6366f1' : '#f59e0b'}`,
+                            background: leg.option_type === 'CE' ? 'rgba(37, 99, 235, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                            border: `1px solid ${leg.option_type === 'CE' ? '#2563eb' : '#f59e0b'}`,
                             color: leg.option_type === 'CE' ? '#818cf8' : '#fbbf24',
                             borderRadius: '4px',
                             padding: '2px 6px',
@@ -1900,8 +1900,8 @@ export default function OptionChainPage() {
                     onClick={() => setLeftTab('chain')}
                     style={{
                       flex: 1,
-                      background: 'rgba(99, 102, 241, 0.15)',
-                      border: '1px solid rgba(99, 102, 241, 0.4)',
+                      background: 'rgba(37, 99, 235, 0.15)',
+                      border: '1px solid rgba(37, 99, 235, 0.4)',
                       borderRadius: '6px',
                       padding: '7px 12px',
                       color: '#818cf8',
@@ -1975,7 +1975,7 @@ export default function OptionChainPage() {
                       type="checkbox"
                       checked={manualPnlEnabled}
                       onChange={e => setManualPnlEnabled(e.target.checked)}
-                      style={{ cursor: 'pointer', accentColor: '#6366f1' }}
+                      style={{ cursor: 'pointer', accentColor: '#2563eb' }}
                     />
                     Manual P/L
                   </label>
@@ -2017,8 +2017,8 @@ export default function OptionChainPage() {
                       key={tab.id}
                       onClick={() => setLeftTab(tab.id as any)}
                       style={{
-                        background: leftTab === tab.id ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
-                        borderBottom: leftTab === tab.id ? '2px solid #6366f1' : '2px solid transparent',
+                        background: leftTab === tab.id ? 'rgba(37, 99, 235, 0.2)' : 'transparent',
+                        borderBottom: leftTab === tab.id ? '2px solid #2563eb' : '2px solid transparent',
                         borderTop: 'none',
                         borderLeft: 'none',
                         borderRight: 'none',
@@ -2094,7 +2094,7 @@ export default function OptionChainPage() {
                           onClick={() => handleSelectTemplateUpgraded(t.id)}
                           style={{
                             background: 'rgba(15, 23, 42, 0.6)',
-                            border: '1px solid rgba(99, 102, 241, 0.25)',
+                            border: '1px solid rgba(37, 99, 235, 0.25)',
                             borderRadius: '8px',
                             padding: '8px 6px',
                             textAlign: 'center',
@@ -2106,7 +2106,7 @@ export default function OptionChainPage() {
                             e.currentTarget.style.transform = 'translateY(-2px)';
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+                            e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.25)';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
@@ -2190,7 +2190,7 @@ export default function OptionChainPage() {
                             <div style={{ display: 'flex', gap: '6px' }}>
                               <button
                                 onClick={() => handleLoadSavedStrategy(s)}
-                                style={{ background: 'rgba(99, 102, 241, 0.2)', border: '1px solid #6366f1', color: '#818cf8', borderRadius: '4px', padding: '3px 8px', fontSize: '0.72rem', cursor: 'pointer' }}
+                                style={{ background: 'rgba(37, 99, 235, 0.2)', border: '1px solid #2563eb', color: '#818cf8', borderRadius: '4px', padding: '3px 8px', fontSize: '0.72rem', cursor: 'pointer' }}
                               >
                                 Load
                               </button>
@@ -2393,13 +2393,13 @@ export default function OptionChainPage() {
                     <div style={{ display: 'inline-flex', gap: '2px', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '3px', padding: '1px' }}>
                       <button
                         onClick={() => setBreakevenMode('target')}
-                        style={{ background: breakevenMode === 'target' ? '#6366f1' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
+                        style={{ background: breakevenMode === 'target' ? '#2563eb' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
                       >
                         Target
                       </button>
                       <button
                         onClick={() => setBreakevenMode('expiry')}
-                        style={{ background: breakevenMode === 'expiry' ? '#6366f1' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
+                        style={{ background: breakevenMode === 'expiry' ? '#2563eb' : 'transparent', border: 'none', color: '#ffffff', fontSize: '0.58rem', padding: '1px 4px', borderRadius: '2px', cursor: 'pointer' }}
                       >
                         Expiry
                       </button>
@@ -2787,11 +2787,11 @@ export default function OptionChainPage() {
                     <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff' }}>Greeks</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.64rem', color: 'var(--text-muted)' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={greeksMultiplyByLot} onChange={e => setGreeksMultiplyByLot(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#6366f1' }} />
+                        <input type="checkbox" checked={greeksMultiplyByLot} onChange={e => setGreeksMultiplyByLot(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#2563eb' }} />
                         Lot Size
                       </label>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '3px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={greeksMultiplyByLotsNum} onChange={e => setGreeksMultiplyByLotsNum(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#6366f1' }} />
+                        <input type="checkbox" checked={greeksMultiplyByLotsNum} onChange={e => setGreeksMultiplyByLotsNum(e.target.checked)} style={{ cursor: 'pointer', accentColor: '#2563eb' }} />
                         Lots
                       </label>
                     </div>
@@ -2903,7 +2903,7 @@ export default function OptionChainPage() {
                         fontWeight: 700,
                         cursor: 'pointer',
                         border: 'none',
-                        background: smartSelectorMode === 'manual' ? '#6366f1' : 'transparent',
+                        background: smartSelectorMode === 'manual' ? '#2563eb' : 'transparent',
                         color: smartSelectorMode === 'manual' ? '#ffffff' : 'var(--text-secondary)'
                       }}
                     >
@@ -3127,8 +3127,8 @@ export default function OptionChainPage() {
                             style={{
                               marginTop: '8px',
                               width: '100%',
-                              background: 'rgba(99, 102, 241, 0.15)',
-                              border: '1px solid rgba(99, 102, 241, 0.4)',
+                              background: 'rgba(37, 99, 235, 0.15)',
+                              border: '1px solid rgba(37, 99, 235, 0.4)',
                               color: '#818cf8',
                               borderRadius: '4px',
                               padding: '4px',
@@ -3182,7 +3182,7 @@ export default function OptionChainPage() {
                               key={idx}
                               style={{
                                 borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                                background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'transparent'
+                                background: isSelected ? 'rgba(37, 99, 235, 0.15)' : 'transparent'
                               }}
                             >
                               <td style={{ padding: '8px 10px', fontWeight: 800, color: '#ffffff' }}>
@@ -3231,8 +3231,8 @@ export default function OptionChainPage() {
                                 <button
                                   onClick={() => setSelectedPlanStrategyIdx(idx)}
                                   style={{
-                                    background: isSelected ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
-                                    border: `1px solid ${isSelected ? '#6366f1' : 'var(--border-subtle)'}`,
+                                    background: isSelected ? '#2563eb' : 'rgba(255, 255, 255, 0.05)',
+                                    border: `1px solid ${isSelected ? '#2563eb' : 'var(--border-subtle)'}`,
                                     color: '#ffffff',
                                     borderRadius: '4px',
                                     padding: '3px 8px',
@@ -3314,7 +3314,7 @@ export default function OptionChainPage() {
                             }
                           }}
                           style={{
-                            background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                             border: 'none',
                             borderRadius: '6px',
                             padding: '8px 16px',
@@ -3325,7 +3325,7 @@ export default function OptionChainPage() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '6px',
-                            boxShadow: '0 2px 8px rgba(99, 102, 241, 0.4)'
+                            boxShadow: '0 2px 8px rgba(37, 99, 235, 0.4)'
                           }}
                         >
                           <Zap size={14} />
@@ -3458,7 +3458,7 @@ export default function OptionChainPage() {
                       fontSize: '0.72rem',
                       fontWeight: 700,
                       cursor: 'pointer',
-                      background: sideFilter === side ? '#6366f1' : 'rgba(255, 255, 255, 0.05)',
+                      background: sideFilter === side ? '#2563eb' : 'rgba(255, 255, 255, 0.05)',
                       border: 'none',
                       color: '#ffffff'
                     }}
@@ -3489,7 +3489,7 @@ export default function OptionChainPage() {
                     )}
                   </tr>
 
-                  <tr style={{ background: '#0d131f', borderBottom: '2px solid rgba(99, 102, 241, 0.3)', position: 'sticky', top: '37px', zIndex: 9, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  <tr style={{ background: '#0d131f', borderBottom: '2px solid rgba(37, 99, 235, 0.3)', position: 'sticky', top: '37px', zIndex: 9, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                     {(sideFilter === 'BOTH' || sideFilter === 'CALLS') && (
                       <>
                         <th style={{ padding: '8px 6px', textAlign: 'center' }}>+ Leg</th>
@@ -3599,7 +3599,7 @@ export default function OptionChainPage() {
           }}>
             <div style={{
               background: '#0d131f',
-              border: '1px solid rgba(99, 102, 241, 0.4)',
+              border: '1px solid rgba(37, 99, 235, 0.4)',
               borderRadius: '12px',
               padding: '24px',
               width: '100%',

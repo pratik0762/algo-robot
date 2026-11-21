@@ -78,12 +78,12 @@ export default function MarketStatusBanner({ statusDetail: propDetail, compact =
     ? 'rgba(239, 68, 68, 0.16)'
     : isWeekend
     ? 'rgba(245, 158, 11, 0.16)'
-    : 'rgba(99, 102, 241, 0.16)';
+    : 'rgba(37, 99, 235, 0.16)';
   const badgeBorder = isHoliday
     ? 'rgba(239, 68, 68, 0.4)'
     : isWeekend
     ? 'rgba(245, 158, 11, 0.4)'
-    : 'rgba(99, 102, 241, 0.4)';
+    : 'rgba(37, 99, 235, 0.4)';
   const badgeColor = isHoliday ? '#f87171' : isWeekend ? '#fbbf24' : '#a5b4fc';
 
   if (compact) {

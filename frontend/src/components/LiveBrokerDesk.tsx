@@ -263,14 +263,14 @@ export default function LiveBrokerDesk() {
               padding: '14px',
               borderRadius: 'var(--radius-md)',
               cursor: 'pointer',
-              border: activeBroker === 'PAPER_TRADING' ? '2px solid #6366f1' : '1px solid var(--border-color)',
-              background: activeBroker === 'PAPER_TRADING' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.02)',
+              border: activeBroker === 'PAPER_TRADING' ? '2px solid #2563eb' : '1px solid var(--border-color)',
+              background: activeBroker === 'PAPER_TRADING' ? 'rgba(37, 99, 235, 0.15)' : 'rgba(255,255,255,0.02)',
               transition: 'all 0.15s ease'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <b style={{ fontSize: '0.90rem' }}>Virtual Paper Desk</b>
-              {activeBroker === 'PAPER_TRADING' && <CheckCircle2 size={16} color="#6366f1" />}
+              {activeBroker === 'PAPER_TRADING' && <CheckCircle2 size={16} color="#2563eb" />}
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '4px' }}>
               Zero real financial risk. Trades filled in simulated real-time market.

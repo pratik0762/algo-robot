@@ -468,11 +468,11 @@ function TradeSignalsContent() {
                 borderRadius: '8px',
                 fontSize: '0.8rem',
                 fontWeight: 700,
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                 color: '#ffffff',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 0 15px rgba(99, 102, 241, 0.35)'
+                boxShadow: '0 0 15px rgba(37, 99, 235, 0.35)'
               }}
               title="Simulate / Trigger a New Real-Time Signal (Tests Toast Notification)"
             >
@@ -510,7 +510,7 @@ function TradeSignalsContent() {
               </div>
             </div>
 
-            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
+            <div style={{ background: 'var(--panel)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(37, 99, 235, 0.3)' }}>
               <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
                 Large-Cap Signals
               </div>
@@ -637,11 +637,11 @@ function TradeSignalsContent() {
                 borderRadius: '8px',
                 fontSize: '0.8rem',
                 fontWeight: viewMode === 'ALL' ? 800 : 600,
-                background: viewMode === 'ALL' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'rgba(255, 255, 255, 0.04)',
+                background: viewMode === 'ALL' ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)' : 'rgba(255, 255, 255, 0.04)',
                 border: viewMode === 'ALL' ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
                 color: viewMode === 'ALL' ? '#ffffff' : 'var(--text-secondary)',
                 cursor: 'pointer',
-                boxShadow: viewMode === 'ALL' ? '0 0 14px rgba(99, 102, 241, 0.35)' : 'none',
+                boxShadow: viewMode === 'ALL' ? '0 0 14px rgba(37, 99, 235, 0.35)' : 'none',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -729,7 +729,7 @@ function TradeSignalsContent() {
                       fontSize: '0.78rem',
                       fontWeight: isActive ? 800 : 600,
                       background: isActive
-                        ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)'
+                        ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)'
                         : isCustom
                         ? 'rgba(16, 185, 129, 0.08)'
                         : 'rgba(255, 255, 255, 0.04)',
@@ -741,7 +741,7 @@ function TradeSignalsContent() {
                       color: isActive ? '#ffffff' : isCustom ? '#34d399' : 'var(--text-secondary)',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
-                      boxShadow: isActive ? '0 0 14px rgba(99, 102, 241, 0.4)' : 'none',
+                      boxShadow: isActive ? '0 0 14px rgba(37, 99, 235, 0.4)' : 'none',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '6px',
@@ -776,8 +776,8 @@ function TradeSignalsContent() {
                   borderRadius: '8px',
                   fontSize: '0.78rem',
                   fontWeight: 700,
-                  background: 'rgba(99, 102, 241, 0.1)',
-                  border: '1px dashed rgba(99, 102, 241, 0.4)',
+                  background: 'rgba(37, 99, 235, 0.1)',
+                  border: '1px dashed rgba(37, 99, 235, 0.4)',
                   color: '#a5b4fc',
                   textDecoration: 'none',
                   display: 'inline-flex',
@@ -816,7 +816,7 @@ function TradeSignalsContent() {
                         borderRadius: '6px',
                         fontSize: '0.74rem',
                         fontWeight: isActive ? 800 : 500,
-                        background: isActive ? '#6366f1' : 'transparent',
+                        background: isActive ? '#2563eb' : 'transparent',
                         color: isActive ? '#ffffff' : 'var(--text-secondary)',
                         border: 'none',
                         cursor: 'pointer',
@@ -836,7 +836,7 @@ function TradeSignalsContent() {
                   { id: 'SELL', label: 'SELL Only' },
                 ].map((act) => {
                   const isActive = selectedType === act.id;
-                  let activeBg = '#6366f1';
+                  let activeBg = '#2563eb';
                   if (act.id === 'BUY') activeBg = '#059669';
                   if (act.id === 'SELL') activeBg = '#dc2626';
 
@@ -913,7 +913,7 @@ function TradeSignalsContent() {
                           borderRadius: '6px',
                           fontSize: '0.74rem',
                           fontWeight: isActive ? 800 : 500,
-                          background: isActive ? '#6366f1' : 'transparent',
+                          background: isActive ? '#2563eb' : 'transparent',
                           color: isActive ? '#ffffff' : 'var(--text-secondary)',
                           border: 'none',
                           cursor: 'pointer',
@@ -939,7 +939,7 @@ function TradeSignalsContent() {
                     { id: 'ACTIVE', label: 'Still Active' },
                   ].map((out) => {
                     const isActive = outcomeFilter === out.id;
-                    let activeBg = '#6366f1';
+                    let activeBg = '#2563eb';
                     if (out.id.includes('TARGET')) activeBg = '#059669';
                     if (out.id === 'STOP_LOSS_HIT') activeBg = '#dc2626';
                     if (out.id === 'EXPIRED') activeBg = '#64748b';
@@ -998,7 +998,7 @@ function TradeSignalsContent() {
               marginBottom: '20px',
               padding: '16px 20px',
               background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.88) 100%)',
-              border: '1px solid rgba(99, 102, 241, 0.35)',
+              border: '1px solid rgba(37, 99, 235, 0.35)',
               borderRadius: '12px',
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)'
             }}
@@ -1006,7 +1006,7 @@ function TradeSignalsContent() {
             {/* Strategy Header Strip */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.25)', border: '1px solid #818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c7d2fe' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(37, 99, 235, 0.25)', border: '1px solid #818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c7d2fe' }}>
                   <Zap size={18} />
                 </div>
                 <div>
@@ -1014,7 +1014,7 @@ function TradeSignalsContent() {
                     <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#ffffff' }}>
                       {activeStrategyObj.name}
                     </span>
-                    <span style={{ background: 'rgba(99, 102, 241, 0.2)', border: '1px solid #818cf8', color: '#c7d2fe', fontSize: '0.64rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
+                    <span style={{ background: 'rgba(37, 99, 235, 0.2)', border: '1px solid #818cf8', color: '#c7d2fe', fontSize: '0.64rem', fontWeight: 800, padding: '2px 8px', borderRadius: '4px' }}>
                       {activeStrategyObj.badge}
                     </span>
                     {activeStrategyObj.is_custom && (
@@ -1044,14 +1044,14 @@ function TradeSignalsContent() {
                     borderRadius: '6px',
                     fontSize: '0.74rem',
                     fontWeight: 800,
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                     border: '1px solid #818cf8',
                     color: '#ffffff',
                     textDecoration: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '5px',
-                    boxShadow: '0 0 12px rgba(99, 102, 241, 0.35)'
+                    boxShadow: '0 0 12px rgba(37, 99, 235, 0.35)'
                   }}
                   title="Edit or adjust strategy logic on Strategy Desk"
                 >
@@ -1093,8 +1093,8 @@ function TradeSignalsContent() {
                         <span
                           key={idx}
                           style={{
-                            background: 'rgba(99, 102, 241, 0.12)',
-                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                            background: 'rgba(37, 99, 235, 0.12)',
+                            border: '1px solid rgba(37, 99, 235, 0.3)',
                             color: '#e0e7ff',
                             fontSize: '0.68rem',
                             fontWeight: 700,
@@ -1168,12 +1168,12 @@ function TradeSignalsContent() {
         {/* Signals List - Rendered in the exact format of the attached screenshot */}
         {loading ? (
           <div style={{ padding: '48px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
-            <RefreshCw size={24} className="pulse-indicator" color="#6366f1" style={{ margin: '0 auto 12px auto' }} />
+            <RefreshCw size={24} className="pulse-indicator" color="#2563eb" style={{ margin: '0 auto 12px auto' }} />
             <div>Loading live algorithmic trade signals...</div>
           </div>
         ) : filteredSignals.length === 0 ? (
           <div style={{ padding: '44px 24px', textAlign: 'center', background: 'var(--panel)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
-            <Activity size={32} color="#6366f1" style={{ margin: '0 auto 12px auto' }} />
+            <Activity size={32} color="#2563eb" style={{ margin: '0 auto 12px auto' }} />
             <h3 style={{ margin: '0 0 6px 0', fontSize: '1.05rem', color: '#ffffff' }}>
               {activeStrategyObj ? `No Active Signals for "${activeStrategyObj.name}"` : 'No Trade Signals Found'}
             </h3>
@@ -1206,7 +1206,7 @@ function TradeSignalsContent() {
                     borderRadius: '6px',
                     fontSize: '0.76rem',
                     fontWeight: 700,
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                    background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                     border: '1px solid #818cf8',
                     color: '#ffffff',
                     textDecoration: 'none',
@@ -1290,7 +1290,7 @@ function TradeSignalsContent() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
                         <span
                           style={{
-                            background: 'rgba(99, 102, 241, 0.22)',
+                            background: 'rgba(37, 99, 235, 0.22)',
                             border: '1px solid rgba(129, 140, 248, 0.5)',
                             color: '#e0e7ff',
                             fontSize: '0.72rem',
@@ -1374,8 +1374,8 @@ function TradeSignalsContent() {
 
                         <span
                           style={{
-                            background: 'rgba(99, 102, 241, 0.18)',
-                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            background: 'rgba(37, 99, 235, 0.18)',
+                            border: '1px solid rgba(37, 99, 235, 0.35)',
                             color: '#a5b4fc',
                             fontSize: '0.65rem',
                             fontWeight: 800,
@@ -1536,8 +1536,8 @@ function TradeSignalsContent() {
                         {/* Phase 5: Strategy Version Badge */}
                         <span
                           style={{
-                            background: 'rgba(99, 102, 241, 0.15)',
-                            border: '1px solid rgba(99, 102, 241, 0.4)',
+                            background: 'rgba(37, 99, 235, 0.15)',
+                            border: '1px solid rgba(37, 99, 235, 0.4)',
                             color: '#a5b4fc',
                             fontSize: '0.62rem',
                             fontWeight: 800,

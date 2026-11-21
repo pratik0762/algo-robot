@@ -531,7 +531,7 @@ export default function FiiDiiPage() {
         <section
           className="glass-panel"
           style={{
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.85) 50%, rgba(99, 102, 241, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.85) 50%, rgba(37, 99, 235, 0.1) 100%)',
             border: '1px solid rgba(16, 185, 129, 0.4)',
             borderRadius: '20px',
             padding: '28px',
@@ -753,7 +753,7 @@ export default function FiiDiiPage() {
                       width: '40px',
                       height: '40px',
                       borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1179,7 +1179,7 @@ export default function FiiDiiPage() {
               padding: '20px',
               borderRadius: '16px',
               border: '1px solid rgba(129, 140, 248, 0.3)',
-              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
+              background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -1460,7 +1460,7 @@ export default function FiiDiiPage() {
                             fontWeight: 800,
                             background: item.institutional_sentiment_badge.includes('ACCUMULATION')
                               ? 'rgba(16, 185, 129, 0.15)'
-                              : 'rgba(99, 102, 241, 0.15)',
+                              : 'rgba(37, 99, 235, 0.15)',
                             color: item.institutional_sentiment_badge.includes('ACCUMULATION')
                               ? '#34d399'
                               : '#818cf8',

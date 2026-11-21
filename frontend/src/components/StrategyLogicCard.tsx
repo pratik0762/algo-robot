@@ -103,7 +103,7 @@ export default function StrategyLogicCard({
         style={{
           marginTop: '12px',
           background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%)',
-          border: '1px dashed rgba(99, 102, 241, 0.3)',
+          border: '1px dashed rgba(37, 99, 235, 0.3)',
           borderRadius: '12px',
           padding: '14px 18px',
           display: 'flex',
@@ -119,8 +119,8 @@ export default function StrategyLogicCard({
               width: '32px',
               height: '32px',
               borderRadius: '8px',
-              background: 'rgba(99, 102, 241, 0.15)',
-              border: '1px solid rgba(99, 102, 241, 0.3)',
+              background: 'rgba(37, 99, 235, 0.15)',
+              border: '1px solid rgba(37, 99, 235, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -173,7 +173,7 @@ export default function StrategyLogicCard({
       style={{
         marginTop: '14px',
         background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(11, 15, 25, 0.98) 100%)',
-        border: '1px solid rgba(99, 102, 241, 0.35)',
+        border: '1px solid rgba(37, 99, 235, 0.35)',
         borderRadius: '14px',
         overflow: 'hidden',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)',
@@ -185,8 +185,8 @@ export default function StrategyLogicCard({
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
           padding: '14px 20px',
-          background: 'linear-gradient(90deg, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0.6) 100%)',
-          borderBottom: isExpanded ? '1px solid rgba(99, 102, 241, 0.2)' : 'none',
+          background: 'linear-gradient(90deg, rgba(37, 99, 235, 0.12) 0%, rgba(15, 23, 42, 0.6) 100%)',
+          borderBottom: isExpanded ? '1px solid rgba(37, 99, 235, 0.2)' : 'none',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -200,7 +200,7 @@ export default function StrategyLogicCard({
               width: '32px',
               height: '32px',
               borderRadius: '8px',
-              background: 'rgba(99, 102, 241, 0.25)',
+              background: 'rgba(37, 99, 235, 0.25)',
               border: '1px solid rgba(129, 140, 248, 0.5)',
               display: 'flex',
               alignItems: 'center',
@@ -218,9 +218,9 @@ export default function StrategyLogicCard({
               </span>
               <span
                 style={{
-                  background: 'rgba(99, 102, 241, 0.2)',
+                  background: 'rgba(37, 99, 235, 0.2)',
                   color: '#a5b4fc',
-                  border: '1px solid rgba(99, 102, 241, 0.4)',
+                  border: '1px solid rgba(37, 99, 235, 0.4)',
                   fontSize: '0.62rem',
                   fontWeight: 800,
                   padding: '2px 8px',
@@ -291,7 +291,7 @@ export default function StrategyLogicCard({
               type="button"
               onClick={() => onBacktestStrategy(strategy.id)}
               style={{
-                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
                 border: '1px solid #818cf8',
                 color: '#ffffff',
                 borderRadius: '6px',
@@ -302,7 +302,7 @@ export default function StrategyLogicCard({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '5px',
-                boxShadow: '0 0 10px rgba(99, 102, 241, 0.35)',
+                boxShadow: '0 0 10px rgba(37, 99, 235, 0.35)',
                 transition: 'all 0.15s ease'
               }}
               title={`Run Backtest simulation on ${strategy.name}`}
@@ -316,8 +316,8 @@ export default function StrategyLogicCard({
               type="button"
               onClick={() => onEditStrategy(strategy)}
               style={{
-                background: 'rgba(99, 102, 241, 0.15)',
-                border: '1px solid rgba(99, 102, 241, 0.35)',
+                background: 'rgba(37, 99, 235, 0.15)',
+                border: '1px solid rgba(37, 99, 235, 0.35)',
                 color: '#a5b4fc',
                 borderRadius: '6px',
                 padding: '4px 10px',
@@ -758,8 +758,8 @@ export default function StrategyLogicCard({
             {/* 10. Current Strategy Status */}
             <div
               style={{
-                background: 'rgba(99, 102, 241, 0.05)',
-                border: '1px solid rgba(99, 102, 241, 0.25)',
+                background: 'rgba(37, 99, 235, 0.05)',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 borderRadius: '8px',
                 padding: '12px 14px'
               }}
