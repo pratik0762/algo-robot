@@ -21,10 +21,15 @@ class FeedStatus(str, enum.Enum):
 
 
 class DataAuthenticity(str, enum.Enum):
-    REAL_LIVE = "REAL_LIVE"       # Active genuine tick received during market hours
-    REAL_CLOSED = "REAL_CLOSED"   # Authentic settlement/closing quote outside market hours
+    LIVE = "LIVE"                 # Genuine tick received during active market trading hours
+    DELAYED = "DELAYED"           # Genuine tick/snapshot but with exchange delay (e.g. 15-min delayed)
+    HISTORICAL = "HISTORICAL"     # Settled completed OHLCV bar or candle from exchange archive
+    CACHED = "CACHED"             # Persisted local cache when external network is offline
     STALE = "STALE"               # Genuine tick but last updated > 10 seconds ago
+    SIMULATED = "SIMULATED"       # Offline test mode only (strictly disabled when REAL_ONLY=True)
     UNAVAILABLE = "UNAVAILABLE"   # Feed offline, disconnected, or unsubscribed
+    REAL_LIVE = "LIVE"            # Backward compatibility alias
+    REAL_CLOSED = "CACHED"        # Backward compatibility alias
 
 
 @dataclass
