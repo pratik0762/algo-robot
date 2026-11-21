@@ -696,17 +696,22 @@ class LiveTickEngine:
         return self.get_gift_nifty()
 
     def get_gift_nifty(self) -> Dict[str, Any]:
-        """Return enriched GIFT Nifty payload with real-time session tracking and TradingView provenance."""
+        """Return enriched GIFT Nifty payload with real-time session tracking, explicit provider attribution, and provenance."""
         session_info = get_gift_nifty_session_info()
         data = dict(self.gift_nifty)
         data["source"] = self.gift_nifty.get("source", "TradingView (NSEIX:NIFTY1!)")
         data["tv_symbol"] = "NSEIX:NIFTY1!"
+        data["exchange"] = "NSE IX (GIFT City, Gandhinagar)"
+        data["provider_attribution"] = "TRADINGVIEW_EXCHANGE_FEED"
+        data["paytm_support_status"] = "UNSUPPORTED_BY_PROVIDER"
+        data["paytm_support_reason"] = "Paytm Money API currently supports domestic NSE_EQ, BSE_EQ, and NSE_FNO segments only, not international NSE IFSC."
         data["session_info"] = session_info
         data["is_trading_active"] = session_info["is_open"]
         data["trading_session"] = session_info["session"]
         data["trading_hours"] = session_info["trading_hours"]
         data["status"] = session_info["status_label"]
         data["badge"] = session_info["badge"]
+        data["provenance"] = "LIVE" if session_info["is_open"] else "EOD"
         return data
 
     def get_all_stocks_ticks(self) -> List[Dict[str, Any]]:
