@@ -26,6 +26,7 @@ import {
   HardDrive
 } from 'lucide-react';
 import { getApiBase } from '@/config/api';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export interface NavHubItem {
   id: string;
@@ -435,25 +436,28 @@ export default function NavigationDrawer({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid var(--border-subtle)',
-              color: 'var(--text-secondary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
-            title="Close Drawer (Esc)"
-          >
-            <X size={15} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <ThemeToggle showLabel={false} />
+            <button
+              onClick={onClose}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid var(--border-subtle)',
+                color: 'var(--text-secondary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              title="Close Drawer (Esc)"
+            >
+              <X size={15} />
+            </button>
+          </div>
         </div>
 
         {/* Drawer Content */}

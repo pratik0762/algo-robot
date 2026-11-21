@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { TradeSignalsProvider } from '@/context/TradeSignalsContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export const metadata: Metadata = {
-  title: 'Nifty 50 Financial Reports | National Stock Exchange of India (NSE)',
-  description: 'In-depth financial statements, quarterly results, balance sheets, and official filings for all 50 Nifty 50 constituent companies sourced from NSE India.',
+  title: 'Algo Robot | Indian Equities & Algorithmic Trading Desk',
+  description: 'Ultra-low latency algorithmic trading robot, live multi-broker market data pipeline, and quantitative strategy execution for NSE and BSE India.',
 };
 
 export default function RootLayout({
@@ -13,14 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body suppressHydrationWarning>
-        <TradeSignalsProvider>
-          {children}
-        </TradeSignalsProvider>
+        <ThemeProvider>
+          <TradeSignalsProvider>
+            {children}
+          </TradeSignalsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -28,6 +28,7 @@ import {
   Radio
 } from "lucide-react";
 import { getApiBase } from "@/config/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NavigationDrawer = dynamic(() => import("@/components/NavigationDrawer"), {
   ssr: false,
@@ -557,6 +558,8 @@ export default function MarketDataCenterPage() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <ThemeToggle showLabel={true} />
+
             <Link
               href="/historical-data"
               style={{
